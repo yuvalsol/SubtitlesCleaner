@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesApp", "SubtitlesApp\SubtitlesApp.csproj", "{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegexTester", "RegexTester\RegexTester.csproj", "{4FBA507D-75DE-4C93-A401-06C3874252EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCL", "SubtitlesCL\SubtitlesCL.csproj", "{FA664445-F006-42D6-A94C-DDDF82ED7167}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesEditor", "SubtitlesEditor\SubtitlesEditor.csproj", "{445E239A-DA9D-4864-A1B5-01B299AE12DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Subtitles", "Subtitles", "{E1704D77-E9D2-462A-8810-2CB1E3043C2D}"
+	ProjectSection(SolutionItems) = preProject
+		Subtitles\Test.srt = Subtitles\Test.srt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FBA507D-75DE-4C93-A401-06C3874252EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FBA507D-75DE-4C93-A401-06C3874252EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FBA507D-75DE-4C93-A401-06C3874252EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FBA507D-75DE-4C93-A401-06C3874252EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA664445-F006-42D6-A94C-DDDF82ED7167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA664445-F006-42D6-A94C-DDDF82ED7167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA664445-F006-42D6-A94C-DDDF82ED7167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA664445-F006-42D6-A94C-DDDF82ED7167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445E239A-DA9D-4864-A1B5-01B299AE12DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445E239A-DA9D-4864-A1B5-01B299AE12DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445E239A-DA9D-4864-A1B5-01B299AE12DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445E239A-DA9D-4864-A1B5-01B299AE12DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6B3C386E-0299-4030-94E4-94A2D548B107}
+	EndGlobalSection
+EndGlobal
