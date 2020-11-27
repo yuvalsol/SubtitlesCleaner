@@ -508,8 +508,7 @@ namespace SubtitlesCL
 
         private static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
         private static readonly Regex regexDialog = new Regex(@"^(?<Italic>\<i\>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        private static readonly Regex regexContainsDialog_CapitalLetter = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
-        private static readonly Regex regexContainsDialog_NonCapitalLetter = new Regex(@" - [a-zá-ú0-9]", RegexOptions.Compiled);
+        private static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
 
         private static List<string> CleanSubtitleLines(List<string> lines)
         {
@@ -586,7 +585,7 @@ namespace SubtitlesCL
                     line,
                     index,
                     isMatchDialog = regexDialog.IsMatch(line),
-                    isContainsDialog_CapitalLetter = regexContainsDialog_CapitalLetter.IsMatch(line),
+                    isContainsDialog_CapitalLetter = regexContainsDialog.IsMatch(line),
                     isStartsWithDots = line.StartsWith("..."),
                     isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
                     isStartsWithI = line.StartsWith("I "),
@@ -804,7 +803,7 @@ namespace SubtitlesCL
                     line,
                     index,
                     isMatchDialog = regexDialog.IsMatch(line),
-                    isContainsDialog_CapitalLetter = regexContainsDialog_CapitalLetter.IsMatch(line),
+                    isContainsDialog_CapitalLetter = regexContainsDialog.IsMatch(line),
                     isStartsWithDots = line.StartsWith("..."),
                     isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
                     isStartsWithI = line.StartsWith("I "),
@@ -1351,12 +1350,14 @@ namespace SubtitlesCL
 
         private static readonly Regex regexDash1 = new Regex(@"\s*-\s*</i>$", RegexOptions.Compiled);
         private static readonly Regex regexDash2 = new Regex(@"(?<![A-ZÁ-Úa-zá-ú]+-[A-ZÁ-Úa-zá-ú]+)\s*-\s*$", RegexOptions.Compiled); // doesn't match un-fuckin-$reasonable
+        private static readonly Regex regexDash3 = new Regex(@"[a-zá-ú](?<Dash> - )[a-zá-ú]", RegexOptions.Compiled);
 
         private static string CleanDash(string line)
         {
             return line
                 .Replace(regexDash1, "...</i>")
-                .Replace(regexDash2, "...");
+                .Replace(regexDash2, "...")
+                .Replace(regexDash3, "Dash", "... ");
         }
 
         private static bool IsRedundantItalics(string line1, string line2)
