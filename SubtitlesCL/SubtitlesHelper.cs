@@ -1143,8 +1143,8 @@ namespace SubtitlesCL
             return line.Replace(regexOne, "1");
         }
 
-        private static readonly Regex regexHI1 = new Regex(@"^(?<Prefix>- )?\(.*?\)(?<Subtitle>.+)$", RegexOptions.Compiled);
-        private static readonly Regex regexHI2 = new Regex(@"^(?<Prefix>- )?\[.*?\](?<Subtitle>.+)$", RegexOptions.Compiled);
+        private static readonly Regex regexHI1 = new Regex(@"^(?<Prefix>- )?\(.*?\)(\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
+        private static readonly Regex regexHI2 = new Regex(@"^(?<Prefix>- )?\[.*?\](\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
         private static readonly Regex regexHI3 = new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled);
         private static readonly Regex regexHI4 = new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled);
         private static readonly Regex regexHI5 = new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*\:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled);
@@ -1154,6 +1154,7 @@ namespace SubtitlesCL
         private static readonly Regex regexHI9 = new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled);
         private static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HIChars + @"]*[A-Z]+[" + HIChars + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         private static readonly Regex regexHIPrefix_Dash = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
+        private static readonly Regex regexHIPrefix_Colon = new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled);
         private static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
 
         private static string CleanHearingImpaired(string line)
@@ -1199,7 +1200,8 @@ namespace SubtitlesCL
             }
 
             line = line
-                .Replace(regexHIPrefix_Dash, string.Empty);
+                .Replace(regexHIPrefix_Dash, string.Empty)
+                .Replace(regexHIPrefix_Colon, string.Empty);
 
             return line;
         }
@@ -1372,9 +1374,9 @@ namespace SubtitlesCL
 
 			// Roman numerals
 			 new OCRRule() { Find = new Regex(@"\b[VXLCDM]*(lll)\b", RegexOptions.Compiled), ReplaceBy = "III" }
-			,new OCRRule() { Find = new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(ll)I{0,1}\b", RegexOptions.Compiled), ReplaceBy = "II" }
-			,new OCRRule() { Find = new Regex(@"^(ll)\b", RegexOptions.Compiled), ReplaceBy = "II" }
-			,new OCRRule() { Find = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b", RegexOptions.Compiled), ReplaceBy = "I" }
+            ,new OCRRule() { Find = new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(ll)I{0,1}\b", RegexOptions.Compiled), ReplaceBy = "II" }
+            ,new OCRRule() { Find = new Regex(@"^(ll)\b", RegexOptions.Compiled), ReplaceBy = "II" }
+            ,new OCRRule() { Find = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b", RegexOptions.Compiled), ReplaceBy = "I" }
 
 			// Replace "II" with "ll" at the end of a lowercase word
 			,new OCRRule() { Find = new Regex(@"[a-zá-ú](II)", RegexOptions.Compiled), ReplaceBy = "ll" }
@@ -1406,21 +1408,21 @@ namespace SubtitlesCL
 
 			// Custom
 			,new OCRRule() { Find = new Regex(@"^(Iive)\b", RegexOptions.Compiled), ReplaceBy = "Live" }
-			,new OCRRule() { Find = new Regex(@"^(Iiving)\b", RegexOptions.Compiled), ReplaceBy = "Living" }
-			,new OCRRule() { Find = new Regex(@"\b(Iive)\b", RegexOptions.Compiled), ReplaceBy = "live" }
-			,new OCRRule() { Find = new Regex(@"\b(Iiving)\b", RegexOptions.Compiled), ReplaceBy = "living" }
+            ,new OCRRule() { Find = new Regex(@"^(Iiving)\b", RegexOptions.Compiled), ReplaceBy = "Living" }
+            ,new OCRRule() { Find = new Regex(@"\b(Iive)\b", RegexOptions.Compiled), ReplaceBy = "live" }
+            ,new OCRRule() { Find = new Regex(@"\b(Iiving)\b", RegexOptions.Compiled), ReplaceBy = "living" }
 
             // Custom
 			,new OCRRule() { Find = new Regex(@"\b(fianc'e)\b", RegexOptions.Compiled), ReplaceBy = "fiancé" }
-			,new OCRRule() { Find = new Regex(@"\b(Fianc'e)\b", RegexOptions.Compiled), ReplaceBy = "Fiancé" }
-			,new OCRRule() { Find = new Regex(@"\b(caf'e)\b", RegexOptions.Compiled), ReplaceBy = "café" }
-			,new OCRRule() { Find = new Regex(@"\b(Caf'e)\b", RegexOptions.Compiled), ReplaceBy = "Café" }
+            ,new OCRRule() { Find = new Regex(@"\b(Fianc'e)\b", RegexOptions.Compiled), ReplaceBy = "Fiancé" }
+            ,new OCRRule() { Find = new Regex(@"\b(caf'e)\b", RegexOptions.Compiled), ReplaceBy = "café" }
+            ,new OCRRule() { Find = new Regex(@"\b(Caf'e)\b", RegexOptions.Compiled), ReplaceBy = "Café" }
             
             // "I" at the beginning of a word before lowercase vowels is most likely an "l"
 			,new OCRRule() { Find = new Regex(@"\b(I)[oaeiuyá-ú]", RegexOptions.Compiled), ReplaceBy = "l",
                 IgnoreRules = new List<IgnoreRule>() {
                     new IgnoreRule() { IgnoreFind = new Regex(@"\b(I)[oaeiuyá-ú].{2}", RegexOptions.Compiled), Ignore="Iago" }
-                } 
+                }
             }
 			// "I" after an uppercase letter at the beginning and before a lowercase letter is most likely an "l"
 			,new OCRRule() { Find = new Regex(@"\b[A-ZÁ-Ú](I)[a-zá-ú]", RegexOptions.Compiled), ReplaceBy = "l" }
@@ -1428,7 +1430,7 @@ namespace SubtitlesCL
 			,new OCRRule() { Find = new Regex(@"\b(l)[^aeiouyàá-úl]", RegexOptions.Compiled), ReplaceBy = "I",
                 IgnoreRules = new List<IgnoreRule>() {
                     new IgnoreRule() { IgnoreFind = new Regex(@"\b(l)[^aeiouyàá-úl].{1}", RegexOptions.Compiled), Ignore="lbs" }
-                } 
+                }
             }
 
 			// Fixes for "I" at the beginning of the word before lowercase vowels
@@ -1438,13 +1440,13 @@ namespace SubtitlesCL
 			,new OCRRule() { Find = new Regex(@"\b(lowa)\b", RegexOptions.Compiled), ReplaceBy = "Iowa" }
 			// The word "Ill"
 			,new OCRRule() { Find = new Regex(@"[.?!-]\s?(III)\b", RegexOptions.Compiled), ReplaceBy = "Ill" }
-			,new OCRRule() { Find = new Regex(@"^(III)\b.", RegexOptions.Compiled), ReplaceBy = "Ill" }
+            ,new OCRRule() { Find = new Regex(@"^(III)\b.", RegexOptions.Compiled), ReplaceBy = "Ill" }
 			// The word "Ion" and its derivatives
 			,new OCRRule() { Find = new Regex(@"\b(l)on\b.", RegexOptions.Compiled), ReplaceBy = "I" }
-			,new OCRRule() { Find = new Regex(@"\b(l)oni", RegexOptions.Compiled), ReplaceBy = "I" }
+            ,new OCRRule() { Find = new Regex(@"\b(l)oni", RegexOptions.Compiled), ReplaceBy = "I" }
 			// The word "Iodine" and its derivatives
 			,new OCRRule() { Find = new Regex(@"\b(l)odi", RegexOptions.Compiled), ReplaceBy = "I" }
-			,new OCRRule() { Find = new Regex(@"\b(l)odo", RegexOptions.Compiled), ReplaceBy = "I" }
+            ,new OCRRule() { Find = new Regex(@"\b(l)odo", RegexOptions.Compiled), ReplaceBy = "I" }
 
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(L)\b", RegexOptions.Compiled), ReplaceBy = "I",
@@ -1453,29 +1455,29 @@ namespace SubtitlesCL
                     new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)'chaim", RegexOptions.Compiled), Ignore="L'chaim" }
                 }
             }
-			,new OCRRule() { Find = new Regex(@"\b(L'm)\b", RegexOptions.Compiled), ReplaceBy = "I'm" }
-			,new OCRRule() { Find = new Regex(@"\b(L'd)\b", RegexOptions.Compiled), ReplaceBy = "I'd" }
-			,new OCRRule() { Find = new Regex(@"\b(Lt's)\b", RegexOptions.Compiled), ReplaceBy = "It's" }
-			,new OCRRule() { Find = new Regex(@"\b(Ln)\b", RegexOptions.Compiled), ReplaceBy = "In" }
-			,new OCRRule() { Find = new Regex(@"\b(Ls)\b", RegexOptions.Compiled), ReplaceBy = "Is" }
-			,new OCRRule() { Find = new Regex(@"\b(I.A.)\b", RegexOptions.Compiled), ReplaceBy = "L.A." }
+            ,new OCRRule() { Find = new Regex(@"\b(L'm)\b", RegexOptions.Compiled), ReplaceBy = "I'm" }
+            ,new OCRRule() { Find = new Regex(@"\b(L'd)\b", RegexOptions.Compiled), ReplaceBy = "I'd" }
+            ,new OCRRule() { Find = new Regex(@"\b(Lt's)\b", RegexOptions.Compiled), ReplaceBy = "It's" }
+            ,new OCRRule() { Find = new Regex(@"\b(Ln)\b", RegexOptions.Compiled), ReplaceBy = "In" }
+            ,new OCRRule() { Find = new Regex(@"\b(Ls)\b", RegexOptions.Compiled), ReplaceBy = "Is" }
+            ,new OCRRule() { Find = new Regex(@"\b(I.A.)\b", RegexOptions.Compiled), ReplaceBy = "L.A." }
 
 			// Custom
 			,new OCRRule() { Find = new Regex(@"\b(FBl)\b", RegexOptions.Compiled), ReplaceBy = "FBI" }
-			,new OCRRule() { Find = new Regex(@"\b(F\.B\.l)\b", RegexOptions.Compiled), ReplaceBy = "F.B.I" }
+            ,new OCRRule() { Find = new Regex(@"\b(F\.B\.l)\b", RegexOptions.Compiled), ReplaceBy = "F.B.I" }
             ,new OCRRule() { Find = new Regex(@"\b(SHIEID)\b", RegexOptions.Compiled), ReplaceBy = "SHIELD" }
             ,new OCRRule() { Find = new Regex(@"\b(S\.H\.I\.E\.I\.D)\b", RegexOptions.Compiled), ReplaceBy = "S.H.I.E.L.D" }
-			,new OCRRule() { Find = new Regex(@"\b(ofthe)\b", RegexOptions.Compiled), ReplaceBy = "of the" }
+            ,new OCRRule() { Find = new Regex(@"\b(ofthe)\b", RegexOptions.Compiled), ReplaceBy = "of the" }
 
 
 			// Other OCR errors
 
 			// Fix zero and capital 'o' ripping mistakes
 			,new OCRRule() { Find = new Regex(@"[0-9](O)", RegexOptions.Compiled), ReplaceBy = "0" }
-			,new OCRRule() { Find = new Regex(@"[0-9](\.O)", RegexOptions.Compiled), ReplaceBy = ".0" }
-			,new OCRRule() { Find = new Regex(@"[0-9](,O)", RegexOptions.Compiled), ReplaceBy = ",0" }
-			,new OCRRule() { Find = new Regex(@"[A-Z](0)", RegexOptions.Compiled), ReplaceBy = "O" }
-			,new OCRRule() { Find = new Regex(@"\b(0)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = "O" }
+            ,new OCRRule() { Find = new Regex(@"[0-9](\.O)", RegexOptions.Compiled), ReplaceBy = ".0" }
+            ,new OCRRule() { Find = new Regex(@"[0-9](,O)", RegexOptions.Compiled), ReplaceBy = ",0" }
+            ,new OCRRule() { Find = new Regex(@"[A-Z](0)", RegexOptions.Compiled), ReplaceBy = "O" }
+            ,new OCRRule() { Find = new Regex(@"\b(0)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = "O" }
 
             // Spaces fixes
 
@@ -1528,7 +1530,7 @@ namespace SubtitlesCL
             //,new OCRRule() { Find = new Regex(@"(I-I)", RegexOptions.Compiled), ReplaceBy = "I... I..." }
 
             ,new OCRRule() { Find = new Regex(@"^(j|J)\b", RegexOptions.Compiled), ReplaceBy = "♪" }
-			,new OCRRule() { Find = new Regex(@"\b(j|J)$", RegexOptions.Compiled), ReplaceBy = "♪" }
+            ,new OCRRule() { Find = new Regex(@"\b(j|J)$", RegexOptions.Compiled), ReplaceBy = "♪" }
         };
 
         #endregion
@@ -1649,9 +1651,7 @@ namespace SubtitlesCL
         #region Errors
 
         private static readonly Regex regexBrackets = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled);
-        //private static readonly Regex regexColon1 = new Regex(@"\D:", RegexOptions.Compiled);
-        //private static readonly Regex regexColon2 = new Regex(@":\D", RegexOptions.Compiled);
-        private static readonly Regex regexColon3 = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
+        private static readonly Regex regexColon = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
         private static readonly Regex regexOneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled); // Course 1 can
         private static readonly Regex regexSlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled); // " / " -> " I "
 
@@ -1659,7 +1659,7 @@ namespace SubtitlesCL
         {
             return subtitle.Lines.Any(line =>
                 regexBrackets.IsMatch(line) ||
-                regexColon3.IsMatch(line) ||
+                regexColon.IsMatch(line) ||
                 regexOneInsteadOfI.IsMatch(line) ||
                 regexSlashInsteadOfI.IsMatch(line)
             );
