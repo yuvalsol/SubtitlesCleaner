@@ -966,6 +966,8 @@ namespace SubtitlesCL
 
             line = CleanDash(line);
 
+            line = CleanDots(line);
+
             return line;
         }
 
@@ -977,6 +979,9 @@ namespace SubtitlesCL
             SubtitleError subtitleError = SubtitleError.None;
 
             if (line != CleanDash(line))
+                subtitleError |= SubtitleError.Punctuation_Error;
+
+            if (line != CleanDots(line))
                 subtitleError |= SubtitleError.Punctuation_Error;
 
             return subtitleError;
@@ -1369,6 +1374,14 @@ namespace SubtitlesCL
                 .Replace(regexDash1, "...</i>")
                 .Replace(regexDash2, "...")
                 .Replace(regexDash3, "Dash", "... ");
+        }
+
+        private static readonly Regex regexDotsWithNoSpace = new Regex(@"[A-ZÁ-Úa-zá-ú](?<Dots>\.{2,})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+
+        private static string CleanDots(string line)
+        {
+            return line
+                .Replace(regexDotsWithNoSpace, "Dots", "... ");
         }
 
         private static bool IsRedundantItalics(string line1, string line2)
