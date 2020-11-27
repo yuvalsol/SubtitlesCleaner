@@ -506,8 +506,10 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines
 
+        private static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
         private static readonly Regex regexDialog = new Regex(@"^(?<Italic>\<i\>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        private static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Úa-zá-ú0-9]", RegexOptions.Compiled);
+        private static readonly Regex regexContainsDialog_CapitalLetter = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
+        private static readonly Regex regexContainsDialog_NonCapitalLetter = new Regex(@" - [a-zá-ú0-9]", RegexOptions.Compiled);
 
         private static List<string> CleanSubtitleLines(List<string> lines)
         {
@@ -584,50 +586,110 @@ namespace SubtitlesCL
                     line,
                     index,
                     isMatchDialog = regexDialog.IsMatch(line),
-                    isContainsDialog = regexContainsDialog.IsMatch(line),
+                    isContainsDialog_CapitalLetter = regexContainsDialog_CapitalLetter.IsMatch(line),
                     isStartsWithDots = line.StartsWith("..."),
-                    isStartsWithDotsAndItalics = line.StartsWith("<i>...")
+                    isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
+                    isStartsWithI = line.StartsWith("I "),
+                    isEndsWithDots = line.EndsWith("...")
                 }).ToArray();
 
                 if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
+                    // ...line 1
+                    // - Line 2
                     lines[0] = "- " + lines[0];
+                    // - ...line 1
+                    // - Line 2
                 }
                 else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
+                    // <i>...line 1
+                    // - Line 2
                     lines[0] = "<i>- " + lines[0].Substring(3);
+                    // <i>- ...line 1
+                    // - Line 2
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
                 {
+                    // - Line 1
+                    // ...line 2
                     for (int i = 1; i < lines.Count; i++)
                         lines[i] = "- " + lines[i];
+                    // - Line 1
+                    // - ...line 2
                 }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog == false))
+                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
-                    char firstCharSecondLine = lines[1][0];
+                    string firstCharSecondLine = (lines[1][0]).ToString();
 
-                    if ('A' <= firstCharSecondLine && firstCharSecondLine <= 'Z')
+                    if (regexCapitalLetter.IsMatch(firstCharSecondLine))
                     {
-                        lines[1] = "- " + lines[1];
+                        // - Line 1 - Dialog
+                        // I am line 2
+                        if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[1].isStartsWithI)
+                        {
+                            // don't do anything
+                        }
+                        // - Line 1 - Dialog...
+                        // Line 2
+                        else if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[0].isEndsWithDots)
+                        {
+                            // don't do anything
+                        }
+                        else
+                        {
+                            // - Line 1
+                            // Line 2
+                            lines[1] = "- " + lines[1];
+                            // - Line 1
+                            // - Line 2
+                        }
                     }
                     else
                     {
-                        Match match = regexDialog.Match(lines[0]);
-                        lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                        // - Line 1 - Dialog
+                        // line 2
+                        if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[1].isMatchDialog == false)
+                        {
+                            // don't do anything
+                        }
+                        else
+                        {
+                            // - Line 1
+                            // line 2
+                            Match match = regexDialog.Match(lines[0]);
+                            lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            // Line 1
+                            // line 2
+                        }
                     }
                 }
                 else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    char firstCharSecondLine = lines[0][0];
+                    string firstCharFirstLine = (lines[0][0]).ToString();
 
-                    if ('A' <= firstCharSecondLine && firstCharSecondLine <= 'Z')
+                    if (regexCapitalLetter.IsMatch(firstCharFirstLine))
                     {
+                        // Line 1
+                        // - Line 2
                         lines[0] = "- " + lines[0];
+                        // - Line 1
+                        // - Line 2
                     }
                     else
                     {
+                        // Line 1
+                        // - line 2
                         Match match = regexDialog.Match(lines[1]);
                         lines[1] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                        // Line 1
+                        // line 2
                     }
                 }
                 else if (resultsDialog.Count(x => x.isMatchDialog) > 1)
@@ -742,9 +804,11 @@ namespace SubtitlesCL
                     line,
                     index,
                     isMatchDialog = regexDialog.IsMatch(line),
-                    isContainsDialog = regexContainsDialog.IsMatch(line),
+                    isContainsDialog_CapitalLetter = regexContainsDialog_CapitalLetter.IsMatch(line),
                     isStartsWithDots = line.StartsWith("..."),
-                    isStartsWithDotsAndItalics = line.StartsWith("<i>...")
+                    isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
+                    isStartsWithI = line.StartsWith("I "),
+                    isEndsWithDots = line.EndsWith("...")
                 }).ToArray();
 
                 if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
@@ -759,26 +823,50 @@ namespace SubtitlesCL
                 {
                     subtitleError |= SubtitleError.Dialog_Error;
                 }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog == false))
+                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
-                    char firstCharSecondLine = lines[1][0];
+                    string firstCharSecondLine = (lines[1][0]).ToString();
 
-                    if ('A' <= firstCharSecondLine && firstCharSecondLine <= 'Z')
+                    if (regexCapitalLetter.IsMatch(firstCharSecondLine))
                     {
-                        subtitleError |= SubtitleError.Dialog_Error;
+                        if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[1].isStartsWithI)
+                        {
+                            // don't do anything
+                        }
+                        else if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[0].isEndsWithDots)
+                        {
+                            // don't do anything
+                        }
+                        else
+                        {
+                            subtitleError |= SubtitleError.Dialog_Error;
+                        }
                     }
                     else
                     {
-                        Match match = regexDialog.Match(lines[0]);
-                        if (lines[0] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
-                            subtitleError |= SubtitleError.Dialog_Error;
+                        if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[1].isMatchDialog == false)
+                        {
+                            // don't do anything
+                        }
+                        else
+                        {
+                            Match match = regexDialog.Match(lines[0]);
+                            if (lines[0] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
+                                subtitleError |= SubtitleError.Dialog_Error;
+                        }
                     }
                 }
                 else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    char firstCharSecondLine = lines[0][0];
+                    string firstCharFirstLine = (lines[0][0]).ToString();
 
-                    if ('A' <= firstCharSecondLine && firstCharSecondLine <= 'Z')
+                    if (regexCapitalLetter.IsMatch(firstCharFirstLine))
                     {
                         subtitleError |= SubtitleError.Dialog_Error;
                     }

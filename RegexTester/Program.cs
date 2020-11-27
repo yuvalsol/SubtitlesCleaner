@@ -10,16 +10,10 @@ namespace RegexTester
     {
         static void Main(string[] args)
         {
-            //string input = "-[laughs]: Mmm.";
-            //string input = "- : Mmm.";
-            string input = "<i>   -    :    Mmm.";
-
-            Regex regexHIPrefix_Z = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
-
-            Console.WriteLine(input);
-            Console.WriteLine(regexHIPrefix_Z.IsMatch(input));
-            Console.WriteLine(regexHIPrefix_Z.Replace(input, string.Empty));
-
+            Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
+            string input = "a";
+            bool isCapitalLetter = regexCapitalLetter.IsMatch(input);
+            Console.WriteLine($"isCapitalLetter: {isCapitalLetter}");
         }
     }
 }
