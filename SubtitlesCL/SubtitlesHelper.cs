@@ -988,6 +988,17 @@ namespace SubtitlesCL
 
         private static List<string> CleanSubtitleLinesPost(List<string> lines)
         {
+            // Line 1 - Dialog
+            bool isMatchDialog = regexDialog.IsMatch(lines[0]);
+            bool isContainsDialog = regexContainsDialog.IsMatch(lines[0]);
+            if (isMatchDialog == false && isContainsDialog)
+            {
+                if (lines[0].StartsWith("<i>"))
+                    lines[0] = "<i>- " + lines[0].Substring(3);
+                else
+                    lines[0] = "- " + lines[0];
+            }
+
             if (lines.Count > 1)
             {
                 for (int i = 1; i < lines.Count; i++)
