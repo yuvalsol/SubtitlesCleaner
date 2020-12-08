@@ -26,8 +26,8 @@ namespace SubtitlesApp
         [Option("cleanHICaseInsensitive", Required = false, HelpText = "Clean HI case-insensitive")]
         public bool cleanHICaseInsensitive { get; set; }
 
-        [Option("subtitlesNumbers", Required = false, HelpText = "Set subtitles numbers")]
-        public bool subtitlesNumbers { get; set; }
+        [Option("subtitlesOrder", Required = false, HelpText = "Set subtitles order")]
+        public bool subtitlesOrder { get; set; }
 
         [Option("report", Required = false, HelpText = "Report on subtitles files that need cleaning")]
         public bool report { get; set; }
@@ -78,8 +78,8 @@ namespace SubtitlesApp
             if (cleanHICaseInsensitive)
                 cmd += " --cleanHICaseInsensitive";
 
-            if (subtitlesNumbers)
-                cmd += " --subtitlesNumbers";
+            if (subtitlesOrder)
+                cmd += " --subtitlesOrder";
 
             if (report)
                 cmd += " --report";

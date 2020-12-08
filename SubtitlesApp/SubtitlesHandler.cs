@@ -116,10 +116,10 @@ namespace SubtitlesApp
             if (filePaths == null || filePaths.Length == 0)
                 return;
 
-            if (options.subtitlesNumbers)
+            if (options.subtitlesOrder)
             {
                 foreach (var filePath in filePaths)
-                    SubtitlesNumbers(options, filePath);
+                    SetSubtitlesOrder(options, filePath);
             }
             else if (options.report)
             {
@@ -170,11 +170,11 @@ namespace SubtitlesApp
                 Print(subtitles);
         }
 
-        private void SubtitlesNumbers(Options options, string filePath)
+        private void SetSubtitlesOrder(Options options, string filePath)
         {
             List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
 
-            subtitles = subtitles.SubtitlesNumbers();
+            subtitles = subtitles.SetSubtitlesOrder();
 
             if (options.save)
                 Save(subtitles, filePath, isDisableBackupFile: true);

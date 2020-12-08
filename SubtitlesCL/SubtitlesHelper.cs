@@ -368,7 +368,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        public static List<Subtitle> SubtitlesNumbers(this List<Subtitle> subtitles)
+        public static List<Subtitle> SetSubtitlesOrder(this List<Subtitle> subtitles)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -398,6 +398,8 @@ namespace SubtitlesCL
                 if (subtitle.Lines == null || subtitle.Lines.Count == 0)
                     subtitles.RemoveAt(k);
             }
+
+            subtitles.Sort();
 
             return subtitles;
         }
