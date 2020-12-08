@@ -1771,7 +1771,6 @@ namespace SubtitlesCL
         public static bool HasErrors(this Subtitle subtitle)
         {
             return subtitle.Lines.Any(line =>
-                line.Contains("\"?") ||
                 regexBrackets.IsMatch(line) ||
                 regexColon.IsMatch(line) ||
                 regexOneInsteadOfI.IsMatch(line) ||
