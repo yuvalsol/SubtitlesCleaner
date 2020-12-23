@@ -8,12 +8,14 @@ namespace SubtitlesEditor
 {
     public partial class AdjustForm : Form
     {
-        public AdjustForm(DateTime firstShow, DateTime lastShow)
+        public AdjustForm(string initialDirectory, DateTime firstShow, DateTime lastShow)
         {
             InitializeComponent();
 
             timePickerX1.Value = timePickerX2.Value = firstShow;
             timePickerY1.Value = timePickerY2.Value = lastShow;
+
+            openFileDialog.InitialDirectory = initialDirectory;
         }
 
         public DateTime X1 { get { return timePickerX1.Value; } }

@@ -595,7 +595,11 @@ namespace SubtitlesEditor
             if (subtitles == null || subtitles.Count == 0)
                 return;
 
-            var dialog = new AdjustForm(subtitles[0].Show, subtitles[subtitles.Count - 1].Show);
+            string initialDirectory = Path.GetDirectoryName(filePath);
+            DateTime firstShow = subtitles[0].Show;
+            DateTime lastShow = subtitles[subtitles.Count - 1].Show;
+
+            var dialog = new AdjustForm(initialDirectory, firstShow, lastShow);
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
