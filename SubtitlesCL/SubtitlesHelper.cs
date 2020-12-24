@@ -533,6 +533,17 @@ namespace SubtitlesCL
                 }
             }
 
+            if (lines.Count == 2)
+            {
+                string line1 = lines[0];
+                string line2 = lines[1];
+                if (line1 == "<i>-" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
+                {
+                    lines[1] = "<i>" + line2.Substring(2);
+                    lines.RemoveAt(0);
+                }
+            }
+
             if (lines.Count == 1)
             {
                 if (regexDialog.IsMatch(lines[0]))
