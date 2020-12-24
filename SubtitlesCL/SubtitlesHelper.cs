@@ -1322,11 +1322,16 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static readonly Regex regexHICaseInsensitive = new Regex(@"\b[A-ZÁ-Úa-zá-ú0-9 #\-']+:\s*", RegexOptions.Compiled);
+        private static readonly Regex regexHICaseInsensitive1 = new Regex(@"\b[A-ZÁ-Úa-zá-ú0-9 #\-']+:\s*", RegexOptions.Compiled);
+        private static readonly Regex regexHICaseInsensitive2 = new Regex(@"\[.*?\]", RegexOptions.Compiled);
+        private static readonly Regex regexHICaseInsensitive3 = new Regex(@"\(.*?\)", RegexOptions.Compiled);
 
         private static string CleanHearingImpairedCaseInsensitive(string line)
         {
-            return regexHICaseInsensitive.Replace(line, string.Empty);
+            line = regexHICaseInsensitive1.Replace(line, string.Empty);
+            line = regexHICaseInsensitive2.Replace(line, string.Empty);
+            line = regexHICaseInsensitive3.Replace(line, string.Empty);
+            return line;
         }
 
         private static readonly Regex regexMissingSpaces1 = new Regex(@"^(?<Prefix>♪+)[^ ♪]", RegexOptions.Compiled);
