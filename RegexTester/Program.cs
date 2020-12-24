@@ -10,10 +10,10 @@ namespace RegexTester
     {
         static void Main(string[] args)
         {
-            Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
-            string input = "a";
-            bool isCapitalLetter = regexCapitalLetter.IsMatch(input);
-            Console.WriteLine($"isCapitalLetter: {isCapitalLetter}");
+            Regex regexItalicsAndHI = new Regex(@"<i>\-\s+</i>", RegexOptions.Compiled);
+            string input = "<i>- </i> What?";
+            Console.WriteLine(input);
+            Console.WriteLine(regexItalicsAndHI.Replace(input, "- "));
         }
     }
 }

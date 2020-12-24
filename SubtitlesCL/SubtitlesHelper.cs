@@ -1222,6 +1222,7 @@ namespace SubtitlesCL
         }
 
         private static readonly Regex regexEmptyItalics = new Regex(@"<i>\s*</i>", RegexOptions.Compiled);
+        private static readonly Regex regexItalicsAndHI = new Regex(@"<i>\-\s+</i>", RegexOptions.Compiled);
         private static readonly Regex regexItalic1 = new Regex(@"(?<Prefix>[^ ])<i>[ ]", RegexOptions.Compiled);
         private static readonly Regex regexItalic2 = new Regex(@"[ ]</i>(?<Suffix>[^ ])", RegexOptions.Compiled);
         private static readonly Regex regexItalic3 = new Regex(@"\.<i>\s+", RegexOptions.Compiled);
@@ -1246,6 +1247,7 @@ namespace SubtitlesCL
             return line
                 .Replace("<i/>", "</i>").Replace("</ i>", "</i>")
                 .Replace(regexEmptyItalics, string.Empty)
+                .Replace(regexItalicsAndHI, "- ")
                 .Replace(regexItalic3, ". <i>")
                 .Replace(regexItalic4, ", <i>")
                 .Replace(regexItalic5, "<i>")
