@@ -1184,7 +1184,7 @@ namespace SubtitlesCL
                 .Replace("“", "\"").Replace("”", "\"").Replace(regexX22, "\"").Replace(@"\x22", "\"").Replace("''", "\"").Replace(regexQuotes, "\"")
                 .Replace(regexRedundantDot, "Dot", string.Empty)
                 .Replace(" ?", "?").Replace(" !", "!").Replace(" :", ":")
-                .Replace("…", "...").Replace("--", "...").Replace(". ..", "...").Replace(".. .", "...").Replace(" . . .", "...").Replace(regexCommas, "...").Replace(regexDots, "...")
+                .Replace("…", "...").Replace("--", "...").Replace(". ..", "...").Replace(".. .", "...").Replace(". . .", "...").Replace(regexCommas, "...").Replace(regexDots, "...")
                 .Replace("—", "...").Replace("–", "...").Replace("―", "...").Replace("‒", "...")
                 .Replace("‐", "-")
                 .Replace("- -", "-")
