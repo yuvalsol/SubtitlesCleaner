@@ -1590,6 +1590,8 @@ namespace SubtitlesCL
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(L)\b", RegexOptions.Compiled), ReplaceBy = "I",
                 IgnoreRules = new List<IgnoreRule>() {
+                    new IgnoreRule() { IgnoreFind = new Regex(@"-(L)-", RegexOptions.Compiled), Ignore="-L-" },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\.(L)\.", RegexOptions.Compiled), Ignore=".L." },
                     new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)\.A\.", RegexOptions.Compiled), Ignore="L.A." },
                     new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)'chaim", RegexOptions.Compiled), Ignore="L'chaim" }
                 }
