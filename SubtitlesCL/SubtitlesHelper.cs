@@ -1185,6 +1185,7 @@ namespace SubtitlesCL
         private static string CleanPunctuations(string line)
         {
             return line
+                .Replace("`e", "é")
                 .Replace("'’", "'").Replace("´", "'").Replace("`", "'").Replace("‘", "'").Replace("’", "'")
                 .Replace("“", "\"").Replace("”", "\"").Replace(regexX22, "\"").Replace(@"\x22", "\"").Replace("''", "\"").Replace(regexQuotes, "\"")
                 .Replace(regexRedundantDot, "Dot", string.Empty)
