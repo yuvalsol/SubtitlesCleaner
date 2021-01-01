@@ -279,7 +279,7 @@ namespace SubtitlesCL
                     {
                         string cleanLine = (CleanSubtitleLine(line) ?? string.Empty).Trim();
 
-                        if (string.IsNullOrEmpty(cleanLine))
+                        if (IsEmptyLine(cleanLine))
                             subtitle.Lines.RemoveAt(i);
                         else
                             subtitle.Lines[i] = cleanLine;
@@ -322,7 +322,7 @@ namespace SubtitlesCL
                 {
                     string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i]) ?? string.Empty).Trim();
 
-                    if (string.IsNullOrEmpty(cleanLine))
+                    if (IsEmptyLine(cleanLine))
                         subtitle.Lines.RemoveAt(i);
                     else
                         subtitle.Lines[i] = cleanLine;
@@ -354,7 +354,7 @@ namespace SubtitlesCL
                     {
                         string cleanLine = (CleanHearingImpairedCaseInsensitive(line) ?? string.Empty).Trim();
 
-                        if (string.IsNullOrEmpty(cleanLine))
+                        if (IsEmptyLine(cleanLine))
                             subtitle.Lines.RemoveAt(i);
                         else
                             subtitle.Lines[i] = cleanLine;
