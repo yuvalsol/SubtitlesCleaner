@@ -1686,6 +1686,9 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\.{2})(?:\s|</i>|$)", RegexOptions.Compiled), ReplaceBy = "..." }
             //,new OCRRule() { Find = new Regex(@"(I-I-I)", RegexOptions.Compiled), ReplaceBy = "I... I... I..." }
             //,new OCRRule() { Find = new Regex(@"(I-I)", RegexOptions.Compiled), ReplaceBy = "I... I..." }
+            
+            // Text . Next text
+            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\s\.)\s[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = ". " }
 
             // I6 -> 16
             ,new OCRRule() { Find = new Regex(@"\b(I)\d+\b", RegexOptions.Compiled), ReplaceBy = "1" }
