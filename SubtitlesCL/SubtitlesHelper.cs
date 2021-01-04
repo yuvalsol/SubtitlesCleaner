@@ -1612,14 +1612,13 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(Lf)\b", RegexOptions.Compiled), ReplaceBy = "If" }
 
 			// Custom
-            ,new OCRRule() { Find = new Regex(@"\b(o)\b", RegexOptions.Compiled), ReplaceBy = "a" }
+            ,new OCRRule() { Find = new Regex(@"\s(o)\s", RegexOptions.Compiled), ReplaceBy = "a" }
             ,new OCRRule() { Find = new Regex(@"\b(ofthe)\b", RegexOptions.Compiled), ReplaceBy = "of the" }
             ,new OCRRule() { Find = new Regex(@"\b(onthe)\b", RegexOptions.Compiled), ReplaceBy = "on the" }
             ,new OCRRule() { Find = new Regex(@"\b(fora)\b", RegexOptions.Compiled), ReplaceBy = "for a" }
             ,new OCRRule() { Find = new Regex(@"\b(numberi)\b", RegexOptions.Compiled), ReplaceBy = "number one" }
             ,new OCRRule() { Find = new Regex(@"\b(Timeto)\b", RegexOptions.Compiled), ReplaceBy = "Time to" }
             ,new OCRRule() { Find = new Regex(@"\b(timeto)\b", RegexOptions.Compiled), ReplaceBy = "time to" }
-            
 
             // Custom
 			,new OCRRule() { Find = new Regex(@"\b(FBl)\b", RegexOptions.Compiled), ReplaceBy = "FBI" }
