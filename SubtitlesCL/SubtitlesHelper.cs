@@ -1137,6 +1137,8 @@ namespace SubtitlesCL
                 line.ContainsCI("thepiratebay") ||
                 line.ContainsCI("Best watched using Open Subtitles MKV Player") ||
                 line.ContainsCI("ENGLISH SDH") ||
+                line.ContainsCI("ENGLISH - SDH") ||
+                line.ContainsCI("ENGLISH - US - SDH") ||
                 line.ContainsCI("Closed-Caption") ||
                 line.ContainsCI("Closed Caption") ||
                 line.ContainsCI("Captions, Inc.") ||
