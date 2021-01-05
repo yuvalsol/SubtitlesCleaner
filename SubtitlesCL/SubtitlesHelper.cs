@@ -1625,6 +1625,8 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(numberi)\b", RegexOptions.Compiled), ReplaceBy = "number one" }
             ,new OCRRule() { Find = new Regex(@"\b(Timeto)\b", RegexOptions.Compiled), ReplaceBy = "Time to" }
             ,new OCRRule() { Find = new Regex(@"\b(timeto)\b", RegexOptions.Compiled), ReplaceBy = "time to" }
+            ,new OCRRule() { Find = new Regex(@"\b(Don'tdo)\b", RegexOptions.Compiled), ReplaceBy = "Don't do" }
+            ,new OCRRule() { Find = new Regex(@"\b(don'tdo)\b", RegexOptions.Compiled), ReplaceBy = "don't do" }
 
             // Custom
 			,new OCRRule() { Find = new Regex(@"\b(FBl)\b", RegexOptions.Compiled), ReplaceBy = "FBI" }
