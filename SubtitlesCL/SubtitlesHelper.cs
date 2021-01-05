@@ -740,6 +740,12 @@ namespace SubtitlesCL
                         lines.Add("- " + line.Substring(0, index + 1));
                         lines.Add(line.Substring(index + 2));
                     }
+                    else if ((index = line.IndexOf("! - ")) != -1)
+                    {
+                        lines.Clear();
+                        lines.Add("- " + line.Substring(0, index + 1));
+                        lines.Add(line.Substring(index + 2));
+                    }
                 }
             }
 
