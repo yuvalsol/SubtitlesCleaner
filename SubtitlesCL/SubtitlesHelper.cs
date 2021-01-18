@@ -1289,6 +1289,8 @@ namespace SubtitlesCL
         private static readonly Regex regexHI7 = new Regex(@"\s+\[.*?\]\s+", RegexOptions.Compiled);
         private static readonly Regex regexHI8 = new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled);
         private static readonly Regex regexHI9 = new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled);
+        private static readonly Regex regexHI10 = new Regex(@"^[" + HIChars.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        private static readonly Regex regexHI11 = new Regex(@"^-\s*[" + HIChars + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
         private static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HIChars + @"]*[A-Z]+[" + HIChars + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         private static readonly Regex regexHIPrefix_Dash = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
         private static readonly Regex regexHIPrefix_Colon = new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled);
@@ -1328,7 +1330,8 @@ namespace SubtitlesCL
 
             line = line
                 .Replace(regexHI6, " ").Replace(regexHI7, " ")
-                .Replace(regexHI8, string.Empty).Replace(regexHI9, string.Empty);
+                .Replace(regexHI8, string.Empty).Replace(regexHI9, string.Empty)
+                .Replace(regexHI10, string.Empty).Replace(regexHI11, "- ");
 
             if (regexHIPrefix.IsMatch(line))
             {
