@@ -1350,9 +1350,11 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static readonly Regex regexMissingSpaces1 = new Regex(@"^(?<Prefix>♪+)[^ ♪]", RegexOptions.Compiled);
-        private static readonly Regex regexMissingSpaces2 = new Regex(@"[^ ♪](?<Suffix>♪+)$", RegexOptions.Compiled);
-        private static readonly Regex regexMissingSpaces3 = new Regex(@"\s+(?<Dash>-)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        private static readonly Regex regexMissingSpaces1 = new Regex(@"^(?<Prefix>(?:<i>)?♪+)[^ ♪]", RegexOptions.Compiled);
+        private static readonly Regex regexMissingSpaces2 = new Regex(@"^(?<Prefix>♪+)(?:<i>)?[^ ♪]", RegexOptions.Compiled);
+        private static readonly Regex regexMissingSpaces3 = new Regex(@"[^ ♪](?:</i>)?(?<Suffix>♪+)$", RegexOptions.Compiled);
+        private static readonly Regex regexMissingSpaces4 = new Regex(@"[^ ♪](?<Suffix>♪+(?:</i>)?)$", RegexOptions.Compiled);
+        private static readonly Regex regexMissingSpaces5 = new Regex(@"\s+(?<Dash>-)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
 
         private static string CleanMissingSpaces(string line)
         {
@@ -1365,12 +1367,24 @@ namespace SubtitlesCL
             if (regexMissingSpaces2.IsMatch(line))
             {
                 Match match = regexMissingSpaces2.Match(line);
-                line = line.Insert(match.Groups["Suffix"].Index, " ");
+                line = line.Insert(match.Groups["Prefix"].Index + match.Groups["Prefix"].Length, " ");
             }
 
             if (regexMissingSpaces3.IsMatch(line))
             {
                 Match match = regexMissingSpaces3.Match(line);
+                line = line.Insert(match.Groups["Suffix"].Index, " ");
+            }
+
+            if (regexMissingSpaces4.IsMatch(line))
+            {
+                Match match = regexMissingSpaces4.Match(line);
+                line = line.Insert(match.Groups["Suffix"].Index, " ");
+            }
+
+            if (regexMissingSpaces5.IsMatch(line))
+            {
+                Match match = regexMissingSpaces5.Match(line);
                 line = line.Insert(match.Groups["Dash"].Index + match.Groups["Dash"].Length, " ");
             }
 
