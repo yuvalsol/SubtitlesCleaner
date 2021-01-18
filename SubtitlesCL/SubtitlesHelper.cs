@@ -547,6 +547,11 @@ namespace SubtitlesCL
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
                 }
+                else if (line1 == "- <i>" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
+                {
+                    lines[1] = "<i>" + line2.Substring(2);
+                    lines.RemoveAt(0);
+                }
             }
 
             if (lines.Count == 1)
