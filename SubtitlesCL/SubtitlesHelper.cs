@@ -1645,10 +1645,22 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(onthe)\b", RegexOptions.Compiled), ReplaceBy = "on the" }
             ,new OCRRule() { Find = new Regex(@"\b(fora)\b", RegexOptions.Compiled), ReplaceBy = "for a" }
             ,new OCRRule() { Find = new Regex(@"\b(numberi)\b", RegexOptions.Compiled), ReplaceBy = "number one" }
-            ,new OCRRule() { Find = new Regex(@"\b(Timeto)\b", RegexOptions.Compiled), ReplaceBy = "Time to" }
-            ,new OCRRule() { Find = new Regex(@"\b(timeto)\b", RegexOptions.Compiled), ReplaceBy = "time to" }
-            ,new OCRRule() { Find = new Regex(@"\b(Don'tdo)\b", RegexOptions.Compiled), ReplaceBy = "Don't do" }
-            ,new OCRRule() { Find = new Regex(@"\b(don'tdo)\b", RegexOptions.Compiled), ReplaceBy = "don't do" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:time)(to)\b", RegexOptions.Compiled), ReplaceBy = " to" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:don't)(do)\b", RegexOptions.Compiled), ReplaceBy = " do" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:don't)(just)\b", RegexOptions.Compiled), ReplaceBy = " just" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:for)(just)\b", RegexOptions.Compiled), ReplaceBy = " just" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:after)(just)\b", RegexOptions.Compiled), ReplaceBy = " just" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:off)(too)\b", RegexOptions.Compiled), ReplaceBy = " too" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:off)(first)\b", RegexOptions.Compiled), ReplaceBy = " first" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(this)\b", RegexOptions.Compiled), ReplaceBy = " this" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(they)\b", RegexOptions.Compiled), ReplaceBy = " they" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(this)\b", RegexOptions.Compiled), ReplaceBy = " this" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:that)(jerk)\b", RegexOptions.Compiled), ReplaceBy = " jerk" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:this)(jerk)\b", RegexOptions.Compiled), ReplaceBy = " jerk" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(them)\b", RegexOptions.Compiled), ReplaceBy = " them" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(thing)\b", RegexOptions.Compiled), ReplaceBy = " thing" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(things)\b", RegexOptions.Compiled), ReplaceBy = " things" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(too)\b", RegexOptions.Compiled), ReplaceBy = " too" }
 
             // Custom
 			,new OCRRule() { Find = new Regex(@"\b(FBl)\b", RegexOptions.Compiled), ReplaceBy = "FBI" }
