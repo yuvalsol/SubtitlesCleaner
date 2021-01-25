@@ -1661,6 +1661,9 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(?i:of)(thing)\b", RegexOptions.Compiled), ReplaceBy = " thing" }
             ,new OCRRule() { Find = new Regex(@"\b(?i:of)(things)\b", RegexOptions.Compiled), ReplaceBy = " things" }
             ,new OCRRule() { Find = new Regex(@"\b(?i:of)(too)\b", RegexOptions.Compiled), ReplaceBy = " too" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(we)\b", RegexOptions.Compiled), ReplaceBy = " we" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(the)\b", RegexOptions.Compiled), ReplaceBy = " the" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(those)\b", RegexOptions.Compiled), ReplaceBy = " those" }
 
             // Custom
 			,new OCRRule() { Find = new Regex(@"\b(FBl)\b", RegexOptions.Compiled), ReplaceBy = "FBI" }
