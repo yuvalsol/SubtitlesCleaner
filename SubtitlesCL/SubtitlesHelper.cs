@@ -1916,7 +1916,8 @@ namespace SubtitlesCL
                 regexOneInsteadOfI.IsMatch(line) ||
                 regexSlash.IsMatch(line) ||
                 regexSlashInsteadOfI.IsMatch(line) ||
-                regexMissingSpace.IsMatch(line)
+                regexMissingSpace.IsMatch(line) ||
+                line.EndsWith("'?")
             );
         }
 
