@@ -1066,6 +1066,39 @@ namespace SubtitlesCL
                 }
             }
 
+            // ends with '?
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string line = lines[i];
+                if (line.EndsWith("'?"))
+                {
+                    int lastIndex = line.Length - 2;
+                    if (line.IndexOf("'") == lastIndex) // there is no ' before '?
+                    {
+                        if (i == 0)
+                        {
+                            lines[i] = line.Replace("'?", "?");
+                        }
+                        else
+                        {
+                            bool replaceQM = true;
+
+                            for (int k = 0; k < i; k++)
+                            {
+                                if (lines[k].Contains("'"))
+                                {
+                                    replaceQM = false;
+                                    break;
+                                }
+                            }
+
+                            if (replaceQM)
+                                lines[i] = line.Replace("'?", "?");
+                        }
+                    }
+                }
+            }
+
             return lines;
         }
 
