@@ -1663,6 +1663,7 @@ namespace SubtitlesCL
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
             ,new OCRRule() { Find = new Regex(@"\b(I- l)", RegexOptions.Compiled), ReplaceBy = "H" }
+            ,new OCRRule() { Find = new Regex(@"\b(I\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
 
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(L'm)\b", RegexOptions.Compiled), ReplaceBy = "I'm" }
