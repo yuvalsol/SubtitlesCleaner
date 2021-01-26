@@ -1895,9 +1895,14 @@ namespace SubtitlesCL
         private static readonly Regex regexBrackets = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled);
         private static readonly Regex regexColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
         private static readonly Regex regexColon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
-        private static readonly Regex regexOneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled); // Course 1 can
-        private static readonly Regex regexSlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled); // " / " -> " I "
-        private static readonly Regex regexMissingSpace = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled); // replace with new line
+        // Course 1 can
+        private static readonly Regex regexOneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        // a/b
+        private static readonly Regex regexSlash = new Regex(@"[A-ZÁ-Úa-zá-ú]/[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        // " / " -> " I "
+        private static readonly Regex regexSlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled);
+        // replace with new line
+        private static readonly Regex regexMissingSpace = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
 
         public static bool HasErrors(this Subtitle subtitle)
         {
@@ -1906,6 +1911,7 @@ namespace SubtitlesCL
                 regexColonStartLine.IsMatch(line) ||
                 regexColon.IsMatch(line) ||
                 regexOneInsteadOfI.IsMatch(line) ||
+                regexSlash.IsMatch(line) ||
                 regexSlashInsteadOfI.IsMatch(line) ||
                 regexMissingSpace.IsMatch(line)
             );
