@@ -1892,7 +1892,7 @@ namespace SubtitlesCL
 
         #region Errors
 
-        private static readonly Regex regexBrackets = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled);
+        private static readonly Regex regexBrackets = new Regex(@"[\({\[~\]}\)]", RegexOptions.Compiled);
         private static readonly Regex regexColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
         private static readonly Regex regexColon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
         // Course 1 can
