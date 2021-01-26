@@ -1572,10 +1572,17 @@ namespace SubtitlesCL
         }
 
         private static readonly OCRRule[] ocrRules = new OCRRule[] {
-			// The most common OCR error - I (uppercase i) and l (lowercase L) mistakes
+			// Custom
+             new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
+            ,new OCRRule() { Find = new Regex(@"\b(I- l)", RegexOptions.Compiled), ReplaceBy = "H" }
+            ,new OCRRule() { Find = new Regex(@"\b(L\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
+            ,new OCRRule() { Find = new Regex(@"\b(I\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
+
+			
+            // The most common OCR error - I (uppercase i) and l (lowercase L) mistakes
 
 			// Roman numerals
-			 new OCRRule() { Find = new Regex(@"\b[VXLCDM]*(lll)\b", RegexOptions.Compiled), ReplaceBy = "III" }
+			,new OCRRule() { Find = new Regex(@"\b[VXLCDM]*(lll)\b", RegexOptions.Compiled), ReplaceBy = "III" }
             ,new OCRRule() { Find = new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(ll)I{0,1}\b", RegexOptions.Compiled), ReplaceBy = "II" }
             ,new OCRRule() { Find = new Regex(@"^(ll)\b", RegexOptions.Compiled), ReplaceBy = "II" }
             ,new OCRRule() { Find = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b", RegexOptions.Compiled), ReplaceBy = "I" }
@@ -1659,11 +1666,6 @@ namespace SubtitlesCL
                     new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)'chaim", RegexOptions.Compiled), Ignore="L'chaim" }
                 }
             }
-
-			// Custom
-            ,new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
-            ,new OCRRule() { Find = new Regex(@"\b(I- l)", RegexOptions.Compiled), ReplaceBy = "H" }
-            ,new OCRRule() { Find = new Regex(@"\b(I\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
 
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(L'm)\b", RegexOptions.Compiled), ReplaceBy = "I'm" }
