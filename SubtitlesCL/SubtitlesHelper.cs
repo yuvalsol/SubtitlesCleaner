@@ -1070,32 +1070,21 @@ namespace SubtitlesCL
             for (int i = 0; i < lines.Count; i++)
             {
                 string line = lines[i];
-                if (line.EndsWith("'?"))
+                if (line.EndsWith("'?") && line.EndsWith("in'?") == false)
                 {
-                    int lastIndex = line.Length - 2;
-                    if (line.IndexOf("'") == lastIndex) // there is no ' before '?
-                    {
-                        if (i == 0)
-                        {
-                            lines[i] = line.Replace("'?", "?");
-                        }
-                        else
-                        {
-                            bool replaceQM = true;
+                    string str = string.Join(" ", lines.Take(i + 1))
+                        .Replace("Can't", string.Empty).Replace("can't", string.Empty)
+                        .Replace("Didn't", string.Empty).Replace("didn't", string.Empty)
+                        .Replace("Doesn't", string.Empty).Replace("doesn't", string.Empty)
+                        .Replace("Don't", string.Empty).Replace("don't", string.Empty)
+                        .Replace("Hadn't", string.Empty).Replace("hadn't", string.Empty)
+                        .Replace("Isn't", string.Empty).Replace("isn't", string.Empty)
+                        .Replace("Won't", string.Empty).Replace("won't", string.Empty)
+                        .Replace("Wouldn't", string.Empty).Replace("wouldn't", string.Empty)
+                        .Replace("in'", string.Empty);
 
-                            for (int k = 0; k < i; k++)
-                            {
-                                if (lines[k].Contains("'"))
-                                {
-                                    replaceQM = false;
-                                    break;
-                                }
-                            }
-
-                            if (replaceQM)
-                                lines[i] = line.Replace("'?", "?");
-                        }
-                    }
+                    if (str.IndexOf("'") == str.Length - 2) // there is no ' before '?
+                        lines[i] = line.Replace("'?", "?");
                 }
             }
 
