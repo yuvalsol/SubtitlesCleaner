@@ -1178,6 +1178,7 @@ namespace SubtitlesCL
                 line.ContainsCI("sync by") ||
                 line.ContainsCI("OpenSubtitles") ||
                 line.ContainsCI("www.AllSubs.org") ||
+                line.ContainsCI("subscene") ||
                 line.ContainsCI("thepiratebay") ||
                 line.ContainsCI("Best watched using Open Subtitles MKV Player") ||
                 line.ContainsCI("ENGLISH SDH") ||
@@ -1200,7 +1201,9 @@ namespace SubtitlesCL
                 line.ContainsCI("Translation by") ||
                 line.ContainsCI("Translations by") ||
                 line.ContainsCI("Synced & corrected") ||
+                line.ContainsCI("Synced and corrected") ||
                 line.ContainsCI("Copyright Australian") ||
+                line.ContainsCI("corrected by") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
