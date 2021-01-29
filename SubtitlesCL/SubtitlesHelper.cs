@@ -1910,7 +1910,7 @@ namespace SubtitlesCL
                 regexSlash.IsMatch(line) ||
                 regexSlashInsteadOfI.IsMatch(line) ||
                 regexMissingSpace.IsMatch(line) ||
-                line.EndsWith("'?")
+                (line.EndsWith("'?") && line.EndsWith("in'?") == false)
             );
         }
 
