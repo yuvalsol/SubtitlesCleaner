@@ -1193,6 +1193,7 @@ namespace SubtitlesCL
                 line.ContainsCI("Synced and corrected") ||
                 line.ContainsCI("Copyright Australian") ||
                 line.ContainsCI("corrected by") ||
+                line.ContainsCI("NETFLIX PRESENTS") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
