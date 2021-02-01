@@ -1132,6 +1132,8 @@ namespace SubtitlesCL
 
         #endregion
 
+        #endregion
+
         #region Clean & Validation
 
         private static bool IsEmptyLine(string line)
@@ -1194,6 +1196,7 @@ namespace SubtitlesCL
                 line.ContainsCI("Copyright Australian") ||
                 line.ContainsCI("corrected by") ||
                 line.ContainsCI("NETFLIX PRESENTS") ||
+                line.ContainsCI("Captions copyright") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
@@ -1770,8 +1773,6 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"^(j|J)\b", RegexOptions.Compiled), ReplaceBy = "♪" }
             ,new OCRRule() { Find = new Regex(@"\b(j|J)$", RegexOptions.Compiled), ReplaceBy = "♪" }
         };
-
-        #endregion
 
         #endregion
 
