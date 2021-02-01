@@ -1892,6 +1892,8 @@ namespace SubtitlesCL
         #region Errors
 
         private static readonly Regex regexBrackets = new Regex(@"[\({\[~\]}\)]", RegexOptions.Compiled);
+        private static readonly Regex regexAngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
+        private static readonly Regex regexAngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
         private static readonly Regex regexColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
         private static readonly Regex regexColon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
         // Course 1 can
@@ -1903,16 +1905,24 @@ namespace SubtitlesCL
         // replace with new line
         private static readonly Regex regexMissingSpace = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
 
+        private static readonly Regex regexHIWithoutBracket = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled);
+
+        private static readonly Regex regexHIFullLineWithoutBrackets = new Regex(@"^[" + HIChars + @"]+$", RegexOptions.Compiled);
+
         public static bool HasErrors(this Subtitle subtitle)
         {
             return subtitle.Lines.Any(line =>
                 regexBrackets.IsMatch(line) ||
+                regexAngleBracketLeft.IsMatch(line) ||
+                regexAngleBracketRight.IsMatch(line) ||
                 regexColonStartLine.IsMatch(line) ||
                 regexColon.IsMatch(line) ||
                 regexOneInsteadOfI.IsMatch(line) ||
                 regexSlash.IsMatch(line) ||
                 regexSlashInsteadOfI.IsMatch(line) ||
                 regexMissingSpace.IsMatch(line) ||
+                regexHIWithoutBracket.IsMatch(line) ||
+                regexHIFullLineWithoutBrackets.IsMatch(line) ||
                 (line.EndsWith("'?") && line.EndsWith("in'?") == false)
             );
         }
