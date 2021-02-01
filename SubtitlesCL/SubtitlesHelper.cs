@@ -1199,6 +1199,7 @@ namespace SubtitlesCL
                 line.ContainsCI("Captions copyright") ||
                 line.ContainsCI("contain strong language") ||
                 line.ContainsCI("contains strong language") ||
+                line.ContainsCI("HighCode") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
