@@ -1197,6 +1197,8 @@ namespace SubtitlesCL
                 line.ContainsCI("corrected by") ||
                 line.ContainsCI("NETFLIX PRESENTS") ||
                 line.ContainsCI("Captions copyright") ||
+                line.ContainsCI("contain strong language") ||
+                line.ContainsCI("contains strong language") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
