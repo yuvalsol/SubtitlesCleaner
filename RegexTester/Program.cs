@@ -1,50 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Drawing;
 using System.Text.RegularExpressions;
+using Console = Colorful.Console;
 
 namespace RegexTester
 {
     class Program
     {
-        private static readonly Regex regexBrackets = new Regex(@"[\({\[~\]}\)]", RegexOptions.Compiled);
-        private static readonly Regex regexAngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
-        private static readonly Regex regexAngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
-        private static readonly Regex regexColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
-        private static readonly Regex regexColon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
-        // Course 1 can
-        private static readonly Regex regexOneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
-        // a/b
-        private static readonly Regex regexSlash = new Regex(@"[A-ZÁ-Úa-zá-ú]/[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
-        // " / " -> " I "
-        private static readonly Regex regexSlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled);
-        // replace with new line
-        private static readonly Regex regexMissingSpace = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
-
-        private static readonly Regex regexHIWithoutBracket = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled);
-
-        private const string HIChars = @"A-ZÁ-Ú0-9 #\-'.";
-        private static readonly Regex regexHIFullLineWithoutBrackets = new Regex(@"^[" + HIChars + @"]+$", RegexOptions.Compiled);
-
         static void Main(string[] args)
         {
-            string input = "I...";
+            string input = "Morn. Your morn's awkward. My morn. morning. Morning.";
             PrintInput(input);
 
-            PrintIsMatch(input, true,
-                regexBrackets,
-                regexAngleBracketLeft,
-                regexAngleBracketRight,
-                regexColonStartLine,
-                regexColon,
-                regexOneInsteadOfI,
-                regexSlash,
-                regexSlashInsteadOfI,
-                regexMissingSpace,
-                regexHIWithoutBracket,
-                regexHIFullLineWithoutBrackets
-            );
+            Regex regex = new Regex(@"\b(?i:m)orn\b", RegexOptions.Compiled);
+
+            PrintIsMatch(input, regex);
         }
 
         private static void PrintInput(string input)
@@ -69,12 +39,18 @@ namespace RegexTester
             Console.WriteLine();
         }
 
-        private static void PrintMatches(MatchCollection matches)
+        private static void PrintMatches(string input, Regex regex)
         {
-            foreach (Match match in matches)
+            foreach (Match match in regex.Matches(input))
             {
                 Console.WriteLine(match.Value);
-                Console.WriteLine("I: {0}, L: {1}", match.Index, match.Length);
+                Console.WriteLine("Index: {0}, Length: {1}", match.Index, match.Length);
+
+                Console.Write(input.Substring(0, match.Index));
+                Console.Write(input.Substring(match.Index, match.Length), Color.Red);
+                Console.Write(input.Substring(match.Index + match.Length));
+                Console.WriteLine();
+
                 Console.WriteLine();
             }
         }
@@ -94,9 +70,11 @@ namespace RegexTester
                 isAnyMatch |= isMatch;
                 if (isShowOnlySuccess == false || isMatch)
                 {
-                    Console.WriteLine(regex.ToString());
+                    Console.WriteLine("Regex: {0}", regex.ToString());
                     Console.WriteLine("Is Match: {0}", isMatch);
                     Console.WriteLine();
+                    if (isMatch)
+                        PrintMatches(input, regex);
                 }
             }
 

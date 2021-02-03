@@ -1701,6 +1701,10 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(?i:if)(those)\b", RegexOptions.Compiled), ReplaceBy = " those" }
 
             // Custom
+            ,new OCRRule() { Find = new Regex(@"\b(Morn)\b", RegexOptions.Compiled), ReplaceBy = "Mom" }
+            ,new OCRRule() { Find = new Regex(@"\b(morn)\b", RegexOptions.Compiled), ReplaceBy = "mom" }
+
+            // Custom
 			,new OCRRule() { Find = new Regex(@"\b(FBl)\b", RegexOptions.Compiled), ReplaceBy = "FBI" }
             ,new OCRRule() { Find = new Regex(@"\b(F\.B\.l)\b", RegexOptions.Compiled), ReplaceBy = "F.B.I" }
             ,new OCRRule() { Find = new Regex(@"\b(SHIEID)\b", RegexOptions.Compiled), ReplaceBy = "SHIELD" }
