@@ -1923,7 +1923,7 @@ namespace SubtitlesCL
                 regexSlashInsteadOfI.IsMatch(line) ||
                 regexMissingSpace.IsMatch(line) ||
                 regexHIWithoutBracket.IsMatch(line) ||
-                regexHIFullLineWithoutBrackets.IsMatch(line) ||
+                (regexHIFullLineWithoutBrackets.IsMatch(line) && line != "I...") ||
                 (line.EndsWith("'?") && line.EndsWith("in'?") == false)
             );
         }
