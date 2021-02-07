@@ -1779,6 +1779,8 @@ namespace SubtitlesCL
 
             ,new OCRRule() { Find = new Regex(@"^(j|J)\b", RegexOptions.Compiled), ReplaceBy = "♪" }
             ,new OCRRule() { Find = new Regex(@"\b(j|J)$", RegexOptions.Compiled), ReplaceBy = "♪" }
+            // ♪ Text &
+            ,new OCRRule() { Find = new Regex(@"^♪.*?(&)$", RegexOptions.Compiled), ReplaceBy = "♪" }
         };
 
         #endregion
