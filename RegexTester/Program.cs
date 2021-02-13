@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using SubtitlesCL;
 
 namespace RegexTester
 {
@@ -7,11 +8,15 @@ namespace RegexTester
     {
         static void Main(string[] args)
         {
-            string input = "Morn. Your morn's awkward. My morn. morning. Morning.";
+            string input = "10:30 tonight.";
             RegexHelper.PrintInput(input);
 
-            Regex regex = new Regex(@"\b(?i:m)orn\b", RegexOptions.Compiled);
-            RegexHelper.PrintIsMatch(input, regex);
+            bool hasErrors = SubtitlesHelper.HasErrors(input);
+            Console.WriteLine(hasErrors ? "Has Errors" : "No Errors");
+            Console.WriteLine();
+
+            RegexHelper.PrintIsMatch(input, SubtitlesHelper.regexColonStartLine);
+            RegexHelper.PrintIsMatch(input, SubtitlesHelper.regexColonStartLineExclude);
         }
     }
 }

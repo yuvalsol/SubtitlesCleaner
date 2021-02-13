@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace System
 {
@@ -13,14 +14,16 @@ namespace System
         {
             if (regex.IsMatch(input))
             {
-                Match match = regex.Match(input);
-                if (match.Success)
+                foreach (Match match in regex.Matches(input).Cast<Match>().Reverse())
                 {
-                    Group group = match.Groups[groupName];
-                    return
-                        input.Substring(0, group.Index) +
-                        replacement +
-                        input.Substring(group.Index + group.Length);
+                    if (match.Success)
+                    {
+                        Group group = match.Groups[groupName];
+                        input =
+                            input.Substring(0, group.Index) +
+                            replacement +
+                            input.Substring(group.Index + group.Length);
+                    }
                 }
             }
 

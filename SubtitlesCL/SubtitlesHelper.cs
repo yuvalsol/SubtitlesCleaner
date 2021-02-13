@@ -15,14 +15,14 @@ namespace SubtitlesCL
         private const string hideTimeFormat = @"(?<Hide_HH>\d{2}):(?<Hide_MM>\d{2}):(?<Hide_SS>\d{2}),(?<Hide_MS>\d{3})";
         private const string fullTimeFormat = showTimeFormat + " --> " + hideTimeFormat;
 
-        private static readonly Regex regexTime = new Regex(@"^" + fullTimeFormat + "$", RegexOptions.Compiled);
-        private static readonly Regex regexSubtitleNumber = new Regex(@"^\d+$", RegexOptions.Compiled);
+        public static readonly Regex regexTime = new Regex(@"^" + fullTimeFormat + "$", RegexOptions.Compiled);
+        public static readonly Regex regexSubtitleNumber = new Regex(@"^\d+$", RegexOptions.Compiled);
 
-        private static readonly Regex regexShowTime = new Regex(@"^" + showTimeFormat + "$", RegexOptions.Compiled);
-        private static readonly Regex regexShiftTime = new Regex(@"^(?<Shift_Sign>-|\+)?(?:(?:(?:(?<Shift_HH>\d{1,2}):)?(?<Shift_MM>\d{1,2}):)?(?<Shift_SS>\d{1,2})(?:,|:|\.))?(?<Shift_MS>\d{1,3})$", RegexOptions.Compiled);
+        public static readonly Regex regexShowTime = new Regex(@"^" + showTimeFormat + "$", RegexOptions.Compiled);
+        public static readonly Regex regexShiftTime = new Regex(@"^(?<Shift_Sign>-|\+)?(?:(?:(?:(?<Shift_HH>\d{1,2}):)?(?<Shift_MM>\d{1,2}):)?(?<Shift_SS>\d{1,2})(?:,|:|\.))?(?<Shift_MS>\d{1,3})$", RegexOptions.Compiled);
 
         private const string showTimeFormatAlternate = @"(?:(?<Show_HH>\d{2}):)?(?<Show_MM>\d{2}):(?<Show_SS>\d{2})(?:[.,](?<Show_MS>\d{3}))?";
-        private static readonly Regex regexShowTimeAlternate = new Regex(@"^" + showTimeFormatAlternate + "$", RegexOptions.Compiled);
+        public static readonly Regex regexShowTimeAlternate = new Regex(@"^" + showTimeFormatAlternate + "$", RegexOptions.Compiled);
 
         public static DateTime ParseShowTime(string showTime)
         {
@@ -96,7 +96,7 @@ namespace SubtitlesCL
         #region Get
 
         /*public static readonly Encoding Windows1252 = Encoding.GetEncoding("Windows-1252");
-        private static readonly Regex regexAccentedCharacters = new Regex(@"[á-úÁ-Ú]", RegexOptions.Compiled);
+        public static readonly Regex regexAccentedCharacters = new Regex(@"[á-úÁ-Ú]", RegexOptions.Compiled);
 
         public static bool HasAccentedCharacters(string filePath)
         {
@@ -437,6 +437,65 @@ namespace SubtitlesCL
                 subtitle.SubtitleError = SubtitleError.Not_Subtitle;
         }
 
+        #region Clean Multiple Lines Pre
+
+        private static List<string> CleanSubtitleLinesPre(List<string> lines)
+        {
+            if (lines == null || lines.Count == 0)
+                return null;
+
+            if (lines.Count > 1)
+            {
+                var resultsHIPrefix = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+                    isMatchHIPrefix = regexHIPrefixWithoutDialogDash.IsMatch(line)
+                }).ToArray();
+
+                if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
+                {
+                    foreach (var item in resultsHIPrefix)
+                    {
+                        if (item.isMatchHIPrefix)
+                        {
+                            Match match = regexHIPrefixWithoutDialogDash.Match(lines[item.index]);
+                            lines[item.index] = (match.Groups["Prefix"].Value + " - " + match.Groups["Subtitle"].Value).Trim();
+                        }
+                    }
+                }
+            }
+
+            return lines;
+        }
+
+        private static SubtitleError CheckSubtitleLinesPre(List<string> lines)
+        {
+            if (lines == null || lines.Count == 0)
+                return SubtitleError.None;
+
+            SubtitleError subtitleError = SubtitleError.None;
+
+            if (lines.Count > 1)
+            {
+                var resultsHIPrefix = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+                    isMatchHIPrefix = regexHIPrefixWithoutDialogDash.IsMatch(line)
+                }).ToArray();
+
+                if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
+                {
+                    subtitleError |= SubtitleError.Hearing_Impaired;
+                }
+            }
+
+            return subtitleError;
+        }
+
+        #endregion
+
         #region Clean Single Line
 
         private static string CleanSubtitleLine(string line)
@@ -508,9 +567,9 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines
 
-        private static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
-        private static readonly Regex regexDialog = new Regex(@"^(?<Italic>\<i\>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        private static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
+        public static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
+        public static readonly Regex regexDialog = new Regex(@"^(?<Italic>\<i\>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
+        public static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
 
         private static List<string> CleanSubtitleLines(List<string> lines)
         {
@@ -927,65 +986,6 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Clean Multiple Lines Pre
-
-        private static List<string> CleanSubtitleLinesPre(List<string> lines)
-        {
-            if (lines == null || lines.Count == 0)
-                return null;
-
-            if (lines.Count > 1)
-            {
-                var resultsHIPrefix = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-                    isMatchHIPrefix = regexHIPrefixWithoutDialogDash.IsMatch(line)
-                }).ToArray();
-
-                if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
-                {
-                    foreach (var item in resultsHIPrefix)
-                    {
-                        if (item.isMatchHIPrefix)
-                        {
-                            Match match = regexHIPrefixWithoutDialogDash.Match(lines[item.index]);
-                            lines[item.index] = (match.Groups["Prefix"].Value + " - " + match.Groups["Subtitle"].Value).Trim();
-                        }
-                    }
-                }
-            }
-
-            return lines;
-        }
-
-        private static SubtitleError CheckSubtitleLinesPre(List<string> lines)
-        {
-            if (lines == null || lines.Count == 0)
-                return SubtitleError.None;
-
-            SubtitleError subtitleError = SubtitleError.None;
-
-            if (lines.Count > 1)
-            {
-                var resultsHIPrefix = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-                    isMatchHIPrefix = regexHIPrefixWithoutDialogDash.IsMatch(line)
-                }).ToArray();
-
-                if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
-                {
-                    subtitleError |= SubtitleError.Hearing_Impaired;
-                }
-            }
-
-            return subtitleError;
-        }
-
-        #endregion
-
         #region Clean Single Line Post
 
         private static string CleanSubtitleLinePost(string line)
@@ -1098,6 +1098,12 @@ namespace SubtitlesCL
 
             SubtitleError subtitleError = SubtitleError.None;
 
+            // Line 1 - Dialog
+            bool isMatchDialog = regexDialog.IsMatch(lines[0]);
+            bool isContainsDialog = regexContainsDialog.IsMatch(lines[0]);
+            if (isMatchDialog == false && isContainsDialog)
+                subtitleError |= SubtitleError.Missing_Dash;
+
             if (lines.Count > 1)
             {
                 for (int i = 1; i < lines.Count; i++)
@@ -1123,6 +1129,31 @@ namespace SubtitlesCL
                             subtitleError |= SubtitleError.Missing_Dash;
                             break;
                         }
+                    }
+                }
+            }
+
+            // ends with '?
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string line = lines[i];
+                if (line.EndsWith("'?") && line.EndsWith("in'?") == false)
+                {
+                    string str = string.Join(" ", lines.Take(i + 1))
+                        .Replace("Can't", string.Empty).Replace("can't", string.Empty)
+                        .Replace("Didn't", string.Empty).Replace("didn't", string.Empty)
+                        .Replace("Doesn't", string.Empty).Replace("doesn't", string.Empty)
+                        .Replace("Don't", string.Empty).Replace("don't", string.Empty)
+                        .Replace("Hadn't", string.Empty).Replace("hadn't", string.Empty)
+                        .Replace("Isn't", string.Empty).Replace("isn't", string.Empty)
+                        .Replace("Won't", string.Empty).Replace("won't", string.Empty)
+                        .Replace("Wouldn't", string.Empty).Replace("wouldn't", string.Empty)
+                        .Replace("in'", string.Empty);
+
+                    if (str.IndexOf("'") == str.Length - 2) // there is no ' before '?
+                    {
+                        subtitleError |= SubtitleError.Punctuation_Error;
+                        break;
                     }
                 }
             }
@@ -1167,6 +1198,7 @@ namespace SubtitlesCL
                 line.ContainsCI("Subtitling") ||
                 line.ContainsCI("SUBTITLES EDITED BY") ||
                 line.ContainsCI("sync by") ||
+                line.ContainsCI("synchronized by") ||
                 line.ContainsCI("OpenSubtitles") ||
                 line.ContainsCI("www.AllSubs.org") ||
                 line.ContainsCI("subscene") ||
@@ -1200,11 +1232,15 @@ namespace SubtitlesCL
                 line.ContainsCI("contain strong language") ||
                 line.ContainsCI("contains strong language") ||
                 line.ContainsCI("HighCode") ||
+                line.ContainsCI("Eng subs") ||
+                line.ContainsCI("Eng subtitles") ||
+                line.ContainsCI("ripped by") ||
+                line.ContainsCI("rip by") ||
+                line.ContainsCI("Proofread by") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
                 line.Contains("PRODUCED BY") ||
-                line.Contains("Proofread by") ||
                 line.Contains(@"\fad") ||
                 line.Contains(@"\move") ||
 
@@ -1219,13 +1255,13 @@ namespace SubtitlesCL
                 );
         }
 
-        private static readonly Regex regexX22 = new Regex(@"\x22{2,}", RegexOptions.Compiled);
-        private static readonly Regex regexQuotes = new Regex(@"""{2,}", RegexOptions.Compiled);
-        private static readonly Regex regexRedundantDot = new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)", RegexOptions.Compiled);
-        private static readonly Regex regexCommas = new Regex(@",{2,}", RegexOptions.Compiled);
-        private static readonly Regex regexDots = new Regex(@"\.{4,}", RegexOptions.Compiled);
-        private static readonly Regex regexNumberSign = new Regex(@"#(?![0-9])", RegexOptions.Compiled);
-        private static readonly Regex regexMultipleEighthNotes = new Regex(@"♪{2,}", RegexOptions.Compiled);
+        public static readonly Regex regexX22 = new Regex(@"\x22{2,}", RegexOptions.Compiled);
+        public static readonly Regex regexQuotes = new Regex(@"""{2,}", RegexOptions.Compiled);
+        public static readonly Regex regexRedundantDot = new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)", RegexOptions.Compiled);
+        public static readonly Regex regexCommas = new Regex(@",{2,}", RegexOptions.Compiled);
+        public static readonly Regex regexDots = new Regex(@"\.{4,}", RegexOptions.Compiled);
+        public static readonly Regex regexNumberSign = new Regex(@"#(?![0-9])", RegexOptions.Compiled);
+        public static readonly Regex regexMultipleEighthNotes = new Regex(@"♪{2,}", RegexOptions.Compiled);
 
         private static string CleanPunctuations(string line)
         {
@@ -1239,11 +1275,11 @@ namespace SubtitlesCL
                 .Replace("—", "...").Replace("–", "...").Replace("―", "...").Replace("‒", "...")
                 .Replace("‐", "-")
                 .Replace("- -", "-")
-                .Replace(";", ",")
+                .Replace(";", ",").Replace("，", ",")
                 .Replace("♫", "♪").Replace("¶", "♪").Replace("*", "♪").Replace(regexNumberSign, "♪").Replace(regexMultipleEighthNotes, "♪");
         }
 
-        private static readonly Regex regexEighthNotes = new Regex(@"^(?:♪|\s)+$", RegexOptions.Compiled);
+        public static readonly Regex regexEighthNotes = new Regex(@"^(?:♪|\s)+$", RegexOptions.Compiled);
 
         private static bool IsEighthNotes(string line)
         {
@@ -1251,10 +1287,10 @@ namespace SubtitlesCL
         }
 
         private const string HIChars = @"A-ZÁ-Ú0-9 #\-'.";
-        private static readonly Regex regexHIFullLine1 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\(.*?\)(?:\s*</i>)?$", RegexOptions.Compiled);
-        private static readonly Regex regexHIFullLine2 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\[.*?\](?:\s*</i>)?$", RegexOptions.Compiled);
-        private static readonly Regex regexHIFullLine3 = new Regex(@"^[" + HIChars + @"\[\]]+\:\s*$", RegexOptions.Compiled);
-        private static readonly Regex regexHIFullLine4 = new Regex(@"^[" + HIChars + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine1 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\(.*?\)(?:\s*</i>)?$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine2 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\[.*?\](?:\s*</i>)?$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine3 = new Regex(@"^[" + HIChars + @"\[\]]+\:\s*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine4 = new Regex(@"^[" + HIChars + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
 
         private static bool IsHearingImpairedFullLine(string line)
         {
@@ -1265,21 +1301,21 @@ namespace SubtitlesCL
                 regexHIFullLine4.IsMatch(line);
         }
 
-        private static readonly Regex regexScreenPosition = new Regex(@"{\\an\d*}", RegexOptions.Compiled);
+        public static readonly Regex regexScreenPosition = new Regex(@"{\\an\d*}", RegexOptions.Compiled);
 
         private static string CleanScreenPosition(string line)
         {
             return line.Replace(regexScreenPosition, string.Empty);
         }
 
-        private static readonly Regex regexEmptyItalics = new Regex(@"<i>\s*</i>", RegexOptions.Compiled);
-        private static readonly Regex regexItalicsAndHI = new Regex(@"<i>\-\s+</i>", RegexOptions.Compiled);
-        private static readonly Regex regexItalic1 = new Regex(@"(?<Prefix>[^ ])<i>[ ]", RegexOptions.Compiled);
-        private static readonly Regex regexItalic2 = new Regex(@"[ ]</i>(?<Suffix>[^ ])", RegexOptions.Compiled);
-        private static readonly Regex regexItalic3 = new Regex(@"\.<i>\s+", RegexOptions.Compiled);
-        private static readonly Regex regexItalic4 = new Regex(@",<i>\s+", RegexOptions.Compiled);
-        private static readonly Regex regexItalic5 = new Regex(@"<i>\s+", RegexOptions.Compiled);
-        private static readonly Regex regexItalic6 = new Regex(@"\s+</i>", RegexOptions.Compiled);
+        public static readonly Regex regexEmptyItalics = new Regex(@"<i>\s*</i>", RegexOptions.Compiled);
+        public static readonly Regex regexItalicsAndHI = new Regex(@"<i>\-\s+</i>", RegexOptions.Compiled);
+        public static readonly Regex regexItalic1 = new Regex(@"(?<Prefix>[^ ])<i>[ ]", RegexOptions.Compiled);
+        public static readonly Regex regexItalic2 = new Regex(@"[ ]</i>(?<Suffix>[^ ])", RegexOptions.Compiled);
+        public static readonly Regex regexItalic3 = new Regex(@"\.<i>\s+", RegexOptions.Compiled);
+        public static readonly Regex regexItalic4 = new Regex(@",<i>\s+", RegexOptions.Compiled);
+        public static readonly Regex regexItalic5 = new Regex(@"<i>\s+", RegexOptions.Compiled);
+        public static readonly Regex regexItalic6 = new Regex(@"\s+</i>", RegexOptions.Compiled);
 
         private static string CleanItalics(string line)
         {
@@ -1305,28 +1341,28 @@ namespace SubtitlesCL
                 .Replace(regexItalic6, "</i>");
         }
 
-        private static readonly Regex regexOne = new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled);
+        public static readonly Regex regexOne = new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled);
 
         private static string CleanOnes(string line)
         {
             return line.Replace(regexOne, "1");
         }
 
-        private static readonly Regex regexHI1 = new Regex(@"^(?<Prefix>- )?\(.*?\)(\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
-        private static readonly Regex regexHI2 = new Regex(@"^(?<Prefix>- )?\[.*?\](\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
-        private static readonly Regex regexHI3 = new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled);
-        private static readonly Regex regexHI4 = new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled);
-        private static readonly Regex regexHI5 = new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*\:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled);
-        private static readonly Regex regexHI6 = new Regex(@"\s+\(.*?\)\s+", RegexOptions.Compiled);
-        private static readonly Regex regexHI7 = new Regex(@"\s+\[.*?\]\s+", RegexOptions.Compiled);
-        private static readonly Regex regexHI8 = new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled);
-        private static readonly Regex regexHI9 = new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled);
-        private static readonly Regex regexHI10 = new Regex(@"^[" + HIChars.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
-        private static readonly Regex regexHI11 = new Regex(@"^-\s*[" + HIChars + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
-        private static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HIChars + @"]*[A-Z]+[" + HIChars + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        private static readonly Regex regexHIPrefix_Dash = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
-        private static readonly Regex regexHIPrefix_Colon = new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled);
-        private static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
+        public static readonly Regex regexHI1 = new Regex(@"^(?<Prefix>- )?\(.*?\)(\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2 = new Regex(@"^(?<Prefix>- )?\[.*?\](\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI3 = new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI4 = new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled);
+        public static readonly Regex regexHI5 = new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*\:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI6 = new Regex(@"\s+\(.*?\)\s+", RegexOptions.Compiled);
+        public static readonly Regex regexHI7 = new Regex(@"\s+\[.*?\]\s+", RegexOptions.Compiled);
+        public static readonly Regex regexHI8 = new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled);
+        public static readonly Regex regexHI9 = new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled);
+        public static readonly Regex regexHI10 = new Regex(@"^[" + HIChars.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHI11 = new Regex(@"^-\s*[" + HIChars + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HIChars + @"]*[A-Z]+[" + HIChars + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefix_Dash = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefix_Colon = new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
 
         private static string CleanHearingImpaired(string line)
         {
@@ -1378,9 +1414,9 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static readonly Regex regexHICaseInsensitive1 = new Regex(@"\b[A-ZÁ-Úa-zá-ú0-9 #\-']+:\s*", RegexOptions.Compiled);
-        private static readonly Regex regexHICaseInsensitive2 = new Regex(@"\[.*?\]", RegexOptions.Compiled);
-        private static readonly Regex regexHICaseInsensitive3 = new Regex(@"\(.*?\)", RegexOptions.Compiled);
+        public static readonly Regex regexHICaseInsensitive1 = new Regex(@"\b[A-ZÁ-Úa-zá-ú0-9 #\-']+:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHICaseInsensitive2 = new Regex(@"\[.*?\]", RegexOptions.Compiled);
+        public static readonly Regex regexHICaseInsensitive3 = new Regex(@"\(.*?\)", RegexOptions.Compiled);
 
         private static string CleanHearingImpairedCaseInsensitive(string line)
         {
@@ -1390,11 +1426,11 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static readonly Regex regexMissingSpaces1 = new Regex(@"^(?<Prefix>(?:<i>)?♪+)[^ ♪]", RegexOptions.Compiled);
-        private static readonly Regex regexMissingSpaces2 = new Regex(@"^(?<Prefix>♪+)(?:<i>)?[^ ♪]", RegexOptions.Compiled);
-        private static readonly Regex regexMissingSpaces3 = new Regex(@"[^ ♪](?:</i>)?(?<Suffix>♪+)$", RegexOptions.Compiled);
-        private static readonly Regex regexMissingSpaces4 = new Regex(@"[^ ♪](?<Suffix>♪+(?:</i>)?)$", RegexOptions.Compiled);
-        private static readonly Regex regexMissingSpaces5 = new Regex(@"\s+(?<Dash>-)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexMissingSpaces1 = new Regex(@"^(?<Prefix>(?:<i>)?♪+)[^ ♪]", RegexOptions.Compiled);
+        public static readonly Regex regexMissingSpaces2 = new Regex(@"^(?<Prefix>♪+)(?:<i>)?[^ ♪]", RegexOptions.Compiled);
+        public static readonly Regex regexMissingSpaces3 = new Regex(@"[^ ♪](?:</i>)?(?<Suffix>♪+)$", RegexOptions.Compiled);
+        public static readonly Regex regexMissingSpaces4 = new Regex(@"[^ ♪](?<Suffix>♪+(?:</i>)?)$", RegexOptions.Compiled);
+        public static readonly Regex regexMissingSpaces5 = new Regex(@"\s+(?<Dash>-)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
 
         private static string CleanMissingSpaces(string line)
         {
@@ -1431,7 +1467,7 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static readonly Regex regexSpaces = new Regex(@"\s{2,}", RegexOptions.Compiled);
+        public static readonly Regex regexSpaces = new Regex(@"\s{2,}", RegexOptions.Compiled);
 
         private static string CleanSpaces(string line)
         {
@@ -1440,10 +1476,10 @@ namespace SubtitlesCL
                 .Trim();
         }
 
-        private static readonly Regex regexHI1Start = new Regex(@"^\([^\(\)]*?$", RegexOptions.Compiled);
-        private static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)$", RegexOptions.Compiled);
-        private static readonly Regex regexHI2Start = new Regex(@"^\[[^\[\]]*?$", RegexOptions.Compiled);
-        private static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\]$", RegexOptions.Compiled);
+        public static readonly Regex regexHI1Start = new Regex(@"^\([^\(\)]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2Start = new Regex(@"^\[[^\[\]]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\]$", RegexOptions.Compiled);
 
         private static bool IsHearingImpairedMultipleLines(string line1, string line2)
         {
@@ -1452,9 +1488,9 @@ namespace SubtitlesCL
                 (regexHI2Start.IsMatch(line1) && regexHI2End.IsMatch(line2));
         }
 
-        private static readonly Regex regexDash1 = new Regex(@"\s*-\s*</i>$", RegexOptions.Compiled);
-        private static readonly Regex regexDash2 = new Regex(@"(?<![A-ZÁ-Úa-zá-ú]+-[A-ZÁ-Úa-zá-ú]+)\s*-\s*$", RegexOptions.Compiled); // doesn't match un-fuckin-$reasonable
-        private static readonly Regex regexDash3 = new Regex(@"[a-zá-ú](?<Dash> - )[a-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexDash1 = new Regex(@"\s*-\s*</i>$", RegexOptions.Compiled);
+        public static readonly Regex regexDash2 = new Regex(@"(?<![A-ZÁ-Úa-zá-ú]+-[A-ZÁ-Úa-zá-ú]+)\s*-\s*$", RegexOptions.Compiled); // doesn't match un-fuckin-$reasonable
+        public static readonly Regex regexDash3 = new Regex(@"[a-zá-ú](?<Dash> - )[a-zá-ú]", RegexOptions.Compiled);
 
         private static string CleanDash(string line)
         {
@@ -1464,7 +1500,7 @@ namespace SubtitlesCL
                 .Replace(regexDash3, "Dash", "... ");
         }
 
-        private static readonly Regex regexDotsWithNoSpace = new Regex(@"[A-ZÁ-Úa-zá-ú](?<Dots>\.{2,})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexDotsWithNoSpace = new Regex(@"[A-ZÁ-Úa-zá-ú](?<Dots>\.{2,})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
 
         private static string CleanDots(string line)
         {
@@ -1781,6 +1817,12 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(j|J)$", RegexOptions.Compiled), ReplaceBy = "♪" }
             // ♪ Text &
             ,new OCRRule() { Find = new Regex(@"^♪.*?(&)$", RegexOptions.Compiled), ReplaceBy = "♪" }
+
+            // Ordinal Numbers
+            ,new OCRRule() { Find = new Regex(@"\b\d*1(\s+)st\b", RegexOptions.Compiled), ReplaceBy = "" }
+            ,new OCRRule() { Find = new Regex(@"\b\d*2(\s+)nd\b", RegexOptions.Compiled), ReplaceBy = "" }
+            ,new OCRRule() { Find = new Regex(@"\b\d*3(\s+)rd\b", RegexOptions.Compiled), ReplaceBy = "" }
+            ,new OCRRule() { Find = new Regex(@"\b\d*[4-9](\s+)th\b", RegexOptions.Compiled), ReplaceBy = "" }
         };
 
         #endregion
@@ -1898,40 +1940,49 @@ namespace SubtitlesCL
 
         #region Errors
 
-        private static readonly Regex regexBrackets = new Regex(@"[\({\[~\]}\)]", RegexOptions.Compiled);
-        private static readonly Regex regexAngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
-        private static readonly Regex regexAngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
-        private static readonly Regex regexColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
-        private static readonly Regex regexColon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
+        public static readonly Regex regexBrackets = new Regex(@"[\({\[~\]}\)]", RegexOptions.Compiled);
+        public static readonly Regex regexAngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
+        public static readonly Regex regexAngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
+        public static readonly Regex regexColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
+        // ^10:30
+        public static readonly Regex regexColonStartLineExclude = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled);
+        public static readonly Regex regexColon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
         // Course 1 can
-        private static readonly Regex regexOneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexOneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
         // a/b
-        private static readonly Regex regexSlash = new Regex(@"[A-ZÁ-Úa-zá-ú]/[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexSlash = new Regex(@"[A-ZÁ-Úa-zá-ú]/[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
         // " / " -> " I "
-        private static readonly Regex regexSlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled);
+        public static readonly Regex regexSlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled);
         // replace with new line
-        private static readonly Regex regexMissingSpace = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexMissingSpace = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
 
-        private static readonly Regex regexHIWithoutBracket = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled);
+        public static readonly Regex regexHIWithoutBracket = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled);
 
-        private static readonly Regex regexHIFullLineWithoutBrackets = new Regex(@"^[" + HIChars + @"]+$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLineWithoutBrackets = new Regex(@"^[" + HIChars + @"]+$", RegexOptions.Compiled);
+        // I... OK. 100.
+        public static readonly Regex regexHIFullLineWithoutBracketsExclude = new Regex(@"^(I|OK|\d+)\.*$", RegexOptions.Compiled);
 
         public static bool HasErrors(this Subtitle subtitle)
         {
-            return subtitle.Lines.Any(line =>
+            return subtitle.Lines.Any(HasErrors);
+        }
+
+        public static bool HasErrors(string line)
+        {
+            return
                 regexBrackets.IsMatch(line) ||
                 regexAngleBracketLeft.IsMatch(line) ||
                 regexAngleBracketRight.IsMatch(line) ||
-                regexColonStartLine.IsMatch(line) ||
+                (regexColonStartLine.IsMatch(line) && regexColonStartLineExclude.IsMatch(line) == false) ||
                 regexColon.IsMatch(line) ||
                 regexOneInsteadOfI.IsMatch(line) ||
                 regexSlash.IsMatch(line) ||
                 regexSlashInsteadOfI.IsMatch(line) ||
                 regexMissingSpace.IsMatch(line) ||
                 regexHIWithoutBracket.IsMatch(line) ||
-                (regexHIFullLineWithoutBrackets.IsMatch(line) && line != "I..." && line != "OK.") ||
-                (line.EndsWith("'?") && line.EndsWith("in'?") == false)
-            );
+                (regexHIFullLineWithoutBrackets.IsMatch(line) && regexHIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
+                (line.EndsWith("'?") && line.EndsWith("in'?") == false);
+
         }
 
         #endregion
