@@ -1960,7 +1960,7 @@ namespace SubtitlesCL
 
         public static readonly Regex regexHIFullLineWithoutBrackets = new Regex(@"^[" + HIChars + @"]+$", RegexOptions.Compiled);
         // I... OK. 100.
-        public static readonly Regex regexHIFullLineWithoutBracketsExclude = new Regex(@"^(I|OK|\d+)\.*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLineWithoutBracketsExclude = new Regex(@"^(-\s)?(I|OK|\d+)\.*$", RegexOptions.Compiled);
 
         public static bool HasErrors(this Subtitle subtitle)
         {
