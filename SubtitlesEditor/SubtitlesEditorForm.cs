@@ -140,6 +140,8 @@ namespace SubtitlesEditor
 
         #region Load Subtitles File
 
+        private const bool cleanHICaseInsensitive = false;
+
         private void LoadFile(string filePath)
         {
             string extension = Path.GetExtension(filePath);
@@ -147,7 +149,7 @@ namespace SubtitlesEditor
             if (isSRT)
             {
                 subtitles = SubtitlesHelper.GetSubtitles(filePath);
-                subtitles.CheckSubtitles();
+                subtitles.CheckSubtitles(cleanHICaseInsensitive);
                 originalSubtitles = subtitles.Clone();
                 this.filePath = filePath;
                 SetSubtitlesToEditor(subtitles);
@@ -292,8 +294,8 @@ namespace SubtitlesEditor
             if (subtitles == null)
                 return;
 
-            var newSubtitles = subtitles.CleanSubtitles();
-            newSubtitles.CheckSubtitles();
+            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -308,7 +310,7 @@ namespace SubtitlesEditor
                 return;
 
             var newSubtitles = originalSubtitles.Clone();
-            newSubtitles.CheckSubtitles();
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(false);
         }
@@ -840,7 +842,7 @@ namespace SubtitlesEditor
             }
 
             if (isFound && isReplaced)
-                subtitle.CheckSubtitle();
+                subtitle.CheckSubtitle(cleanHICaseInsensitive);
         }
 
         #endregion
@@ -853,7 +855,7 @@ namespace SubtitlesEditor
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (e.Item2 ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            subtitle.CheckSubtitle();
+            subtitle.CheckSubtitle(cleanHICaseInsensitive);
 
             editorRow.Text = subtitle.ToStringWithPipe();
             editorRow.Lines = subtitle.ToString();

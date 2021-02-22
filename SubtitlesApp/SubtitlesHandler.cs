@@ -149,10 +149,7 @@ namespace SubtitlesApp
             List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
 
             if (options.clean)
-                subtitles = subtitles.CleanSubtitles();
-
-            if (options.cleanHICaseInsensitive)
-                subtitles = subtitles.CleanHICaseInsensitive();
+                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive);
 
             if (options.shift)
                 subtitles.Shift(options.shiftTime, options.subtitleNumber);
@@ -201,7 +198,7 @@ namespace SubtitlesApp
             Console.WriteLine(fileName);
 
             List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
-            List<Subtitle> subtitlesCleaned = subtitles.Clone().CleanSubtitles();
+            List<Subtitle> subtitlesCleaned = subtitles.Clone().CleanSubtitles(false);
 
             List<string> lines = new List<string>();
 

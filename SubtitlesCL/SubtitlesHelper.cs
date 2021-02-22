@@ -203,18 +203,18 @@ namespace SubtitlesCL
 
         #region Clean & Check
 
-        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles)
+        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
-            return IterateSubtitles(
-                IterateSubtitlesPost(
-                IterateSubtitlesOCR(
-                IterateSubtitles(
-                IterateSubtitlesOCR(
-                IterateSubtitles(
-                IterateSubtitlesPre(subtitles)))))));
+            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive);
+            subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
+            subtitles = IterateSubtitlesOCR(subtitles);
+            subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
+            subtitles = IterateSubtitlesOCR(subtitles);
+            subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive);
+            return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles)
+        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -241,7 +241,7 @@ namespace SubtitlesCL
                     }
                 }
 
-                subtitle.Lines = CleanSubtitleLinesPre(subtitle.Lines);
+                subtitle.Lines = CleanSubtitleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
 
                 if (subtitle.Lines == null || subtitle.Lines.Count == 0)
                     subtitles.RemoveAt(k);
@@ -250,7 +250,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles)
+        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -277,7 +277,7 @@ namespace SubtitlesCL
                     }
                     else
                     {
-                        string cleanLine = (CleanSubtitleLine(line) ?? string.Empty).Trim();
+                        string cleanLine = (CleanSubtitleLine(line, cleanHICaseInsensitive) ?? string.Empty).Trim();
 
                         if (IsEmptyLine(cleanLine))
                             subtitle.Lines.RemoveAt(i);
@@ -286,7 +286,7 @@ namespace SubtitlesCL
                     }
                 }
 
-                subtitle.Lines = CleanSubtitleLines(subtitle.Lines);
+                subtitle.Lines = CleanSubtitleLines(subtitle.Lines, cleanHICaseInsensitive);
 
                 if (subtitle.Lines == null || subtitle.Lines.Count == 0)
                     subtitles.RemoveAt(k);
@@ -306,7 +306,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles)
+        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -320,7 +320,7 @@ namespace SubtitlesCL
 
                 for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
                 {
-                    string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i]) ?? string.Empty).Trim();
+                    string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i], cleanHICaseInsensitive) ?? string.Empty).Trim();
 
                     if (IsEmptyLine(cleanLine))
                         subtitle.Lines.RemoveAt(i);
@@ -328,41 +328,7 @@ namespace SubtitlesCL
                         subtitle.Lines[i] = cleanLine;
                 }
 
-                subtitle.Lines = CleanSubtitleLinesPost(subtitle.Lines);
-            }
-
-            return subtitles;
-        }
-
-        public static List<Subtitle> CleanHICaseInsensitive(this List<Subtitle> subtitles)
-        {
-            if (subtitles == null)
-                return new List<Subtitle>();
-
-            if (subtitles.Count == 0)
-                return subtitles;
-
-            for (int k = subtitles.Count - 1; k >= 0; k--)
-            {
-                Subtitle subtitle = subtitles[k];
-
-                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
-                {
-                    string line = subtitle.Lines[i];
-
-                    if (string.IsNullOrEmpty(line) == false)
-                    {
-                        string cleanLine = (CleanHearingImpairedCaseInsensitive(line) ?? string.Empty).Trim();
-
-                        if (IsEmptyLine(cleanLine))
-                            subtitle.Lines.RemoveAt(i);
-                        else
-                            subtitle.Lines[i] = cleanLine;
-                    }
-                }
-
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
-                    subtitles.RemoveAt(k);
+                subtitle.Lines = CleanSubtitleLinesPost(subtitle.Lines, cleanHICaseInsensitive);
             }
 
             return subtitles;
@@ -404,7 +370,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        public static void CheckSubtitles(this List<Subtitle> subtitles)
+        public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
             if (subtitles == null)
                 return;
@@ -413,22 +379,22 @@ namespace SubtitlesCL
                 return;
 
             foreach (Subtitle subtitle in subtitles)
-                CheckSubtitle(subtitle);
+                CheckSubtitle(subtitle, cleanHICaseInsensitive);
         }
 
-        public static void CheckSubtitle(this Subtitle subtitle)
+        public static void CheckSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive)
         {
             subtitle.SubtitleError = SubtitleError.None;
 
             foreach (string line in subtitle.Lines)
             {
-                subtitle.SubtitleError |= CheckSubtitleLine(line);
-                subtitle.SubtitleError |= CheckSubtitleLinePost(line);
+                subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive);
+                subtitle.SubtitleError |= CheckSubtitleLinePost(line, cleanHICaseInsensitive);
             }
 
-            subtitle.SubtitleError |= CheckSubtitleLinesPre(subtitle.Lines);
-            subtitle.SubtitleError |= CheckSubtitleLines(subtitle.Lines);
-            subtitle.SubtitleError |= CheckSubtitleLinesPost(subtitle.Lines);
+            subtitle.SubtitleError |= CheckSubtitleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
+            subtitle.SubtitleError |= CheckSubtitleLines(subtitle.Lines, cleanHICaseInsensitive);
+            subtitle.SubtitleError |= CheckSubtitleLinesPost(subtitle.Lines, cleanHICaseInsensitive);
 
             foreach (string line in subtitle.Lines)
                 subtitle.SubtitleError |= CheckSubtitleOCR(line);
@@ -439,7 +405,7 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Pre
 
-        private static List<string> CleanSubtitleLinesPre(List<string> lines)
+        private static List<string> CleanSubtitleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return null;
@@ -450,7 +416,7 @@ namespace SubtitlesCL
                 {
                     line,
                     index,
-                    isMatchHIPrefix = regexHIPrefixWithoutDialogDash.IsMatch(line)
+                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
                 }).ToArray();
 
                 if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
@@ -459,7 +425,7 @@ namespace SubtitlesCL
                     {
                         if (item.isMatchHIPrefix)
                         {
-                            Match match = regexHIPrefixWithoutDialogDash.Match(lines[item.index]);
+                            Match match = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).Match(lines[item.index]);
                             lines[item.index] = (match.Groups["Prefix"].Value + " - " + match.Groups["Subtitle"].Value).Trim();
                         }
                     }
@@ -469,7 +435,7 @@ namespace SubtitlesCL
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleLinesPre(List<string> lines)
+        private static SubtitleError CheckSubtitleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return SubtitleError.None;
@@ -482,7 +448,7 @@ namespace SubtitlesCL
                 {
                     line,
                     index,
-                    isMatchHIPrefix = regexHIPrefixWithoutDialogDash.IsMatch(line)
+                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
                 }).ToArray();
 
                 if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
@@ -498,14 +464,14 @@ namespace SubtitlesCL
 
         #region Clean Single Line
 
-        private static string CleanSubtitleLine(string line)
+        private static string CleanSubtitleLine(string line, bool cleanHICaseInsensitive)
         {
             line = CleanPunctuations(line);
 
             if (IsEighthNotes(line))
                 return null;
 
-            if (IsHearingImpairedFullLine(line))
+            if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
                 return null;
 
             line = CleanScreenPosition(line);
@@ -514,7 +480,7 @@ namespace SubtitlesCL
 
             line = CleanOnes(line);
 
-            line = CleanHearingImpaired(line);
+            line = CleanHearingImpaired(line, cleanHICaseInsensitive);
 
             line = CleanMissingSpaces(line);
 
@@ -523,7 +489,7 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static SubtitleError CheckSubtitleLine(string line)
+        private static SubtitleError CheckSubtitleLine(string line, bool cleanHICaseInsensitive)
         {
             if (IsEmptyLine(line))
                 return SubtitleError.Empty_Line;
@@ -539,7 +505,7 @@ namespace SubtitlesCL
             if (IsEighthNotes(line))
                 return SubtitleError.Empty_Line;
 
-            if (IsHearingImpairedFullLine(line))
+            if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
                 return SubtitleError.Hearing_Impaired;
 
             if (line != CleanScreenPosition(line))
@@ -551,7 +517,7 @@ namespace SubtitlesCL
             if (line != CleanOnes(line))
                 subtitleError |= SubtitleError.Redundant_Spaces;
 
-            if (line != CleanHearingImpaired(line))
+            if (line != CleanHearingImpaired(line, cleanHICaseInsensitive))
                 subtitleError |= SubtitleError.Hearing_Impaired;
 
             if (line != CleanMissingSpaces(line))
@@ -571,7 +537,7 @@ namespace SubtitlesCL
         public static readonly Regex regexDialog = new Regex(@"^(?<Italic>\<i\>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
 
-        private static List<string> CleanSubtitleLines(List<string> lines)
+        private static List<string> CleanSubtitleLines(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return null;
@@ -621,9 +587,9 @@ namespace SubtitlesCL
                     lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
                 }
 
-                if (regexHIPrefix.IsMatch(lines[0]))
+                if ((cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(lines[0]))
                 {
-                    Match match = regexHIPrefix.Match(lines[0]);
+                    Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     lines[0] = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
                 }
 
@@ -642,12 +608,12 @@ namespace SubtitlesCL
                 {
                     line,
                     index,
-                    isMatchHIPrefix = regexHIPrefix.IsMatch(line)
+                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
                 }).ToArray();
 
                 if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
                 {
-                    Match match = regexHIPrefix.Match(lines[0]);
+                    Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     lines[0] = match.Groups["Subtitle"].Value;
                 }
                 else if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
@@ -656,7 +622,7 @@ namespace SubtitlesCL
                     {
                         if (item.isMatchHIPrefix)
                         {
-                            Match match = regexHIPrefix.Match(lines[item.index]);
+                            Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[item.index]);
                             lines[item.index] = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
                         }
                     }
@@ -816,7 +782,7 @@ namespace SubtitlesCL
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleLines(List<string> lines)
+        private static SubtitleError CheckSubtitleLines(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return SubtitleError.None;
@@ -843,7 +809,7 @@ namespace SubtitlesCL
                 if (regexDialog.IsMatch(lines[0]))
                     subtitleError |= SubtitleError.Dialog_Error;
 
-                if (regexHIPrefix.IsMatch(lines[0]))
+                if ((cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(lines[0]))
                     subtitleError |= SubtitleError.Hearing_Impaired;
 
                 if (lines[0] == "-")
@@ -861,12 +827,12 @@ namespace SubtitlesCL
                 {
                     line,
                     index,
-                    isMatchHIPrefix = regexHIPrefix.IsMatch(line)
+                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
                 }).ToArray();
 
                 if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
                 {
-                    Match match = regexHIPrefix.Match(lines[0]);
+                    Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     if (lines[0] != match.Groups["Subtitle"].Value)
                         subtitleError |= SubtitleError.Hearing_Impaired;
                 }
@@ -876,7 +842,7 @@ namespace SubtitlesCL
                     {
                         if (item.isMatchHIPrefix)
                         {
-                            Match match = regexHIPrefix.Match(lines[item.index]);
+                            Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[item.index]);
                             if (lines[item.index] != match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value)
                             {
                                 subtitleError |= SubtitleError.Hearing_Impaired;
@@ -988,7 +954,7 @@ namespace SubtitlesCL
 
         #region Clean Single Line Post
 
-        private static string CleanSubtitleLinePost(string line)
+        private static string CleanSubtitleLinePost(string line, bool cleanHICaseInsensitive)
         {
             if (string.IsNullOrEmpty(line))
                 return line;
@@ -1000,7 +966,7 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static SubtitleError CheckSubtitleLinePost(string line)
+        private static SubtitleError CheckSubtitleLinePost(string line, bool cleanHICaseInsensitive)
         {
             if (IsEmptyLine(line))
                 return SubtitleError.Empty_Line;
@@ -1020,7 +986,7 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Post
 
-        private static List<string> CleanSubtitleLinesPost(List<string> lines)
+        private static List<string> CleanSubtitleLinesPost(List<string> lines, bool cleanHICaseInsensitive)
         {
             // Line 1 - Dialog
             bool isMatchDialog = regexDialog.IsMatch(lines[0]);
@@ -1091,7 +1057,7 @@ namespace SubtitlesCL
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleLinesPost(List<string> lines)
+        private static SubtitleError CheckSubtitleLinesPost(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return SubtitleError.None;
@@ -1287,18 +1253,22 @@ namespace SubtitlesCL
         }
 
         private const string HIChars = @"A-ZÁ-Ú0-9 #\-'.";
+        private const string HICharsCI = @"A-ZÁ-Úa-zá-ú0-9 #\-'.";
+
         public static readonly Regex regexHIFullLine1 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\(.*?\)(?:\s*</i>)?$", RegexOptions.Compiled);
         public static readonly Regex regexHIFullLine2 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\[.*?\](?:\s*</i>)?$", RegexOptions.Compiled);
         public static readonly Regex regexHIFullLine3 = new Regex(@"^[" + HIChars + @"\[\]]+\:\s*$", RegexOptions.Compiled);
         public static readonly Regex regexHIFullLine4 = new Regex(@"^[" + HIChars + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine3CI = new Regex(@"^[" + HICharsCI + @"\[\]]+\:\s*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine4CI = new Regex(@"^[" + HICharsCI + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
 
-        private static bool IsHearingImpairedFullLine(string line)
+        private static bool IsHearingImpairedFullLine(string line, bool cleanHICaseInsensitive)
         {
             return
                 regexHIFullLine1.IsMatch(line) ||
                 regexHIFullLine2.IsMatch(line) ||
-                regexHIFullLine3.IsMatch(line) ||
-                regexHIFullLine4.IsMatch(line);
+                (cleanHICaseInsensitive ? regexHIFullLine3CI : regexHIFullLine3).IsMatch(line) ||
+                (cleanHICaseInsensitive ? regexHIFullLine4CI : regexHIFullLine4).IsMatch(line);
         }
 
         public static readonly Regex regexScreenPosition = new Regex(@"{\\an\d*}", RegexOptions.Compiled);
@@ -1360,11 +1330,15 @@ namespace SubtitlesCL
         public static readonly Regex regexHI10 = new Regex(@"^[" + HIChars.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHI11 = new Regex(@"^-\s*[" + HIChars + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HIChars + @"]*[A-Z]+[" + HIChars + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI10CI = new Regex(@"^[" + HICharsCI.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHI11CI = new Regex(@"^-\s*[" + HICharsCI + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefixCI = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HICharsCI + @"]*[A-Z]+[" + HICharsCI + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefix_Dash = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefix_Colon = new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefixWithoutDialogDashCI = new Regex(regexHIPrefixCI.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
 
-        private static string CleanHearingImpaired(string line)
+        private static string CleanHearingImpaired(string line, bool cleanHICaseInsensitive)
         {
             if (regexHI1.IsMatch(line))
             {
@@ -1399,11 +1373,12 @@ namespace SubtitlesCL
             line = line
                 .Replace(regexHI6, " ").Replace(regexHI7, " ")
                 .Replace(regexHI8, string.Empty).Replace(regexHI9, string.Empty)
-                .Replace(regexHI10, string.Empty).Replace(regexHI11, "- ");
+                .Replace(cleanHICaseInsensitive ? regexHI10CI : regexHI10, string.Empty)
+                .Replace(cleanHICaseInsensitive ? regexHI11CI : regexHI11, "- ");
 
-            if (regexHIPrefix.IsMatch(line))
+            if ((cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line))
             {
-                Match match = regexHIPrefix.Match(line);
+                Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(line);
                 line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
             }
 
@@ -1411,18 +1386,6 @@ namespace SubtitlesCL
                 .Replace(regexHIPrefix_Dash, string.Empty)
                 .Replace(regexHIPrefix_Colon, string.Empty);
 
-            return line;
-        }
-
-        public static readonly Regex regexHICaseInsensitive1 = new Regex(@"\b[A-ZÁ-Úa-zá-ú0-9 #\-']+:\s*", RegexOptions.Compiled);
-        public static readonly Regex regexHICaseInsensitive2 = new Regex(@"\[.*?\]", RegexOptions.Compiled);
-        public static readonly Regex regexHICaseInsensitive3 = new Regex(@"\(.*?\)", RegexOptions.Compiled);
-
-        private static string CleanHearingImpairedCaseInsensitive(string line)
-        {
-            line = regexHICaseInsensitive1.Replace(line, string.Empty);
-            line = regexHICaseInsensitive2.Replace(line, string.Empty);
-            line = regexHICaseInsensitive3.Replace(line, string.Empty);
             return line;
         }
 
@@ -1802,6 +1765,9 @@ namespace SubtitlesCL
              // 1, 000
             ,new OCRRule() { Find = new Regex(@"\b\d(, )\d{3}\b", RegexOptions.Compiled), ReplaceBy = "," }
 
+            // /t -> It
+            ,new OCRRule() { Find = new Regex(@"(/t)", RegexOptions.Compiled), ReplaceBy = "It" }
+
             // Text..
             ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\.{2})(?:\s|</i>|$)", RegexOptions.Compiled), ReplaceBy = "..." }
             //,new OCRRule() { Find = new Regex(@"(I-I-I)", RegexOptions.Compiled), ReplaceBy = "I... I... I..." }
@@ -1813,8 +1779,8 @@ namespace SubtitlesCL
             // I6 -> 16
             ,new OCRRule() { Find = new Regex(@"\b(I)\d+\b", RegexOptions.Compiled), ReplaceBy = "1" }
 
-            ,new OCRRule() { Find = new Regex(@"^(j|J)\b", RegexOptions.Compiled), ReplaceBy = "♪" }
-            ,new OCRRule() { Find = new Regex(@"\b(j|J)$", RegexOptions.Compiled), ReplaceBy = "♪" }
+            ,new OCRRule() { Find = new Regex(@"^(J['&!]?|j['&!]?)\s", RegexOptions.Compiled), ReplaceBy = "♪" }
+            ,new OCRRule() { Find = new Regex(@"\s(['&!]?J|['&!]?j)$", RegexOptions.Compiled), ReplaceBy = "♪" }
             // ♪ Text &
             ,new OCRRule() { Find = new Regex(@"^♪.*?(&)$", RegexOptions.Compiled), ReplaceBy = "♪" }
 
@@ -1962,6 +1928,8 @@ namespace SubtitlesCL
         // A... I... OK. 100.
         public static readonly Regex regexHIFullLineWithoutBracketsExclude = new Regex(@"^(-\s)?(A|I|OK|\d+)\.*$", RegexOptions.Compiled);
 
+        public static readonly Regex regexDoubleQuateAndQuestionMark = new Regex(@"(""\?)(\s|$)", RegexOptions.Compiled);
+
         public static bool HasErrors(this Subtitle subtitle)
         {
             return subtitle.Lines.Any(HasErrors);
@@ -1981,8 +1949,8 @@ namespace SubtitlesCL
                 regexMissingSpace.IsMatch(line) ||
                 regexHIWithoutBracket.IsMatch(line) ||
                 (regexHIFullLineWithoutBrackets.IsMatch(line) && regexHIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
+                regexDoubleQuateAndQuestionMark.IsMatch(line) ||
                 (line.EndsWith("'?") && line.EndsWith("in'?") == false);
-
         }
 
         #endregion
