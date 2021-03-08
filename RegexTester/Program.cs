@@ -8,13 +8,12 @@ namespace RegexTester
     {
         static void Main(string[] args)
         {
-            string input = @"house no later than 5:30.";
+            string input = @"What is ""uppity""?";
             RegexHelper.PrintInput(input);
 
             PrintHasErrors(input);
 
-            RegexHelper.PrintIsMatch(input, SubtitlesHelper.regexColonStartLine);
-            RegexHelper.PrintIsMatch(input, SubtitlesHelper.regexColonStartLineExclude);
+            RegexHelper.PrintIsMatch(input, SubtitlesHelper.regexDoubleQuateAndQuestionMark);
         }
 
         private static void PrintHasErrors(string input)
