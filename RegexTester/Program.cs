@@ -8,7 +8,7 @@ namespace RegexTester
     {
         static void Main(string[] args)
         {
-            string input = @"What is ""uppity""?";
+            string input = @"""Forty-two errors""?";
             RegexHelper.PrintInput(input);
 
             PrintHasErrors(input);
