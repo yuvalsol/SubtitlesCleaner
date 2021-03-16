@@ -1161,6 +1161,7 @@ namespace SubtitlesCL
                 line.ContainsCI("subtitles by") ||
                 line.ContainsCI("Subtitled By") ||
                 line.ContainsCI("Subtitles:") ||
+                line.ContainsCI("Subs by") ||
                 line.ContainsCI("Subtitling") ||
                 line.ContainsCI("SUBTITLES EDITED BY") ||
                 line.ContainsCI("sync by") ||
