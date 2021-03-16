@@ -1926,8 +1926,8 @@ namespace SubtitlesCL
         public static readonly Regex regexHIWithoutBracket = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled);
 
         public static readonly Regex regexHIFullLineWithoutBrackets = new Regex(@"^[" + HIChars + @"]+$", RegexOptions.Compiled);
-        // A... I... OK. 100.
-        public static readonly Regex regexHIFullLineWithoutBracketsExclude = new Regex(@"^(-\s)?(A|I|OK|O\.K\.|\d+\.\d+|\d+)\.*$", RegexOptions.Compiled);
+        // A... I... OK. 100. 123.45.
+        public static readonly Regex regexHIFullLineWithoutBracketsExclude = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+)\.*$", RegexOptions.Compiled);
 
         public static readonly Regex regexDoubleQuateAndQuestionMark = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled);
 
