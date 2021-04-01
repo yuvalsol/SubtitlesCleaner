@@ -1440,10 +1440,10 @@ namespace SubtitlesCL
                 .Trim();
         }
 
-        public static readonly Regex regexHI1Start = new Regex(@"^\([^\(\)]*?$", RegexOptions.Compiled);
-        public static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI2Start = new Regex(@"^\[[^\[\]]*?$", RegexOptions.Compiled);
-        public static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\]$", RegexOptions.Compiled);
+        public static readonly Regex regexHI1Start = new Regex(@"^(?:\s*<i>)?\([^\(\)]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)(?:\s*</i>)?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2Start = new Regex(@"^(?:\s*<i>)?\[[^\[\]]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\](?:\s*</i>)?$", RegexOptions.Compiled);
 
         private static bool IsHearingImpairedMultipleLines(string line1, string line2)
         {
