@@ -210,6 +210,8 @@ namespace SubtitlesCL
             subtitles = IterateSubtitlesOCR(subtitles);
             subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
             subtitles = IterateSubtitlesOCR(subtitles);
+            subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
+            subtitles = IterateSubtitlesOCR(subtitles);
             subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive);
             return subtitles;
         }
