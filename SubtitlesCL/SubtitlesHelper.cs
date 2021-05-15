@@ -1744,7 +1744,8 @@ namespace SubtitlesCL
                     new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{1}", RegexOptions.Compiled), Ignore="p.m." },
                     new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), Ignore="a.k.a" },
                     new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), Ignore="A.K.A" },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), Ignore=".com", EndsWith = true }
+                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), Ignore=".com", EndsWith = true },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"w{2}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")]", RegexOptions.Compiled), Ignore="www.", StartsWith = true }
                 }
             }
 
