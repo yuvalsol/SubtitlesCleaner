@@ -639,7 +639,9 @@ namespace SubtitlesCL
                     isStartsWithDots = line.StartsWith("..."),
                     isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
                     isStartsWithI = line.StartsWith("I "),
-                    isEndsWithDots = line.EndsWith("...")
+                    isStartsWithContractionI = line.StartsWith("I'"),
+                    isEndsWithDots = line.EndsWith("..."),
+                    isEndsWithComma = line.EndsWith(",")
                 }).ToArray();
 
                 if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
@@ -677,7 +679,7 @@ namespace SubtitlesCL
                         // I am line 2
                         if (resultsDialog[0].isMatchDialog &&
                             resultsDialog[0].isContainsDialog_CapitalLetter &&
-                            resultsDialog[1].isStartsWithI)
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
                         {
                             // don't do anything
                         }
@@ -688,6 +690,17 @@ namespace SubtitlesCL
                             resultsDialog[0].isEndsWithDots)
                         {
                             // don't do anything
+                        }
+                        else if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isEndsWithComma &&
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
+                        {
+                            // - Line 1,
+                            // I'll Line 2
+                            Match match = regexDialog.Match(lines[0]);
+                            lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            // Line 1,
+                            // I'll Line 2
                         }
                         else
                         {
@@ -863,7 +876,9 @@ namespace SubtitlesCL
                     isStartsWithDots = line.StartsWith("..."),
                     isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
                     isStartsWithI = line.StartsWith("I "),
-                    isEndsWithDots = line.EndsWith("...")
+                    isStartsWithContractionI = line.StartsWith("I'"),
+                    isEndsWithDots = line.EndsWith("..."),
+                    isEndsWithComma = line.EndsWith(",")
                 }).ToArray();
 
                 if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
@@ -886,7 +901,7 @@ namespace SubtitlesCL
                     {
                         if (resultsDialog[0].isMatchDialog &&
                             resultsDialog[0].isContainsDialog_CapitalLetter &&
-                            resultsDialog[1].isStartsWithI)
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
                         {
                             // don't do anything
                         }
@@ -895,6 +910,14 @@ namespace SubtitlesCL
                             resultsDialog[0].isEndsWithDots)
                         {
                             // don't do anything
+                        }
+                        else if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isEndsWithComma &&
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
+                        {
+                            Match match = regexDialog.Match(lines[0]);
+                            if (lines[0] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
+                                subtitleError |= SubtitleError.Dialog_Error;
                         }
                         else
                         {
