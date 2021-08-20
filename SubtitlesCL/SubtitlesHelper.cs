@@ -1603,7 +1603,44 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(L\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
             ,new OCRRule() { Find = new Regex(@"\b(I\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
 
-			
+            // Custom
+            // Contractions
+            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )d\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )m\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:a)ren(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:c)ouldn(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:d)on(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:h)e(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:h)e(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:i)sn(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:i)t(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:l)et(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:s)he(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:s)he(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:t)hat(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:t)here(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:t)here(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:t)hey(""|''|'’| ""|"" )re\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:w)e(""|''|'’| ""|"" )re\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:w)eren(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:w)hat(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:w)ould(""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:w)ouldn(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:y)ou(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:y)ou(""|''|'’| ""|"" )re\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:y)ou(""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\b(?i:o)(""|''|'’| ""|"" )er\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            // 'tweren't
+            ,new OCRRule() { Find = new Regex(@"(?i:t)weren(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            ,new OCRRule() { Find = new Regex(@"\s?(""|''|'’| ""|"" )(?i:t)weren't\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            // 'em
+            ,new OCRRule() { Find = new Regex(@"\b\s(""|''|'’| ""|"" )em\b", RegexOptions.Compiled), ReplaceBy = "'" }
+            // 's
+            ,new OCRRule() { Find = new Regex(@"[a-z](""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
+
+
             // The most common OCR error - I (uppercase i) and l (lowercase L) mistakes
 
 			// Roman numerals
