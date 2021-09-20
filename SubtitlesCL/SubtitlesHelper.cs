@@ -1844,6 +1844,7 @@ namespace SubtitlesCL
             // I6 -> 16
             ,new OCRRule() { Find = new Regex(@"\b(I)\d+\b", RegexOptions.Compiled), ReplaceBy = "1" }
 
+            ,new OCRRule() { Find = new Regex(@"^(Jj)$", RegexOptions.Compiled | RegexOptions.IgnoreCase), ReplaceBy = "♪" }
             ,new OCRRule() { Find = new Regex(@"^(J['&!]?|j['&!]?)\s", RegexOptions.Compiled), ReplaceBy = "♪" }
             ,new OCRRule() { Find = new Regex(@"\s(['&!]?J|['&!]?j)$", RegexOptions.Compiled), ReplaceBy = "♪" }
             // ♪ Text &
