@@ -1333,6 +1333,7 @@ namespace SubtitlesCL
             return line
                 .Replace("<i/>", "</i>").Replace("</ i>", "</i>")
                 .Replace(regexEmptyItalics, string.Empty)
+                .Replace("<u/>", "</u>").Replace("</ u>", "</u>")
                 .Replace(regexEmptyUnderlines, string.Empty)
                 .Replace(regexItalicsAndHI, "- ")
                 .Replace(regexItalic3, ". <i>")
