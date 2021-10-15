@@ -1163,6 +1163,7 @@ namespace SubtitlesCL
             return
                 string.IsNullOrEmpty(line) ||
                 line == "-" ||
+                line == "- ." ||
                 line == "!" ||
                 line == "?" ||
                 line == ":" ||
@@ -1306,6 +1307,7 @@ namespace SubtitlesCL
         }
 
         public static readonly Regex regexEmptyItalics = new Regex(@"<i>\s*</i>", RegexOptions.Compiled);
+        public static readonly Regex regexEmptyUnderlines = new Regex(@"<u>\s*</u>", RegexOptions.Compiled);
         public static readonly Regex regexItalicsAndHI = new Regex(@"<i>\-\s+</i>", RegexOptions.Compiled);
         public static readonly Regex regexItalic1 = new Regex(@"(?<Prefix>[^ ])<i>[ ]", RegexOptions.Compiled);
         public static readonly Regex regexItalic2 = new Regex(@"[ ]</i>(?<Suffix>[^ ])", RegexOptions.Compiled);
@@ -1331,6 +1333,7 @@ namespace SubtitlesCL
             return line
                 .Replace("<i/>", "</i>").Replace("</ i>", "</i>")
                 .Replace(regexEmptyItalics, string.Empty)
+                .Replace(regexEmptyUnderlines, string.Empty)
                 .Replace(regexItalicsAndHI, "- ")
                 .Replace(regexItalic3, ". <i>")
                 .Replace(regexItalic4, ", <i>")
