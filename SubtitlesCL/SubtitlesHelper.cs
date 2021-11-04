@@ -1231,6 +1231,7 @@ namespace SubtitlesCL
                 line.ContainsCI("rip by") ||
                 line.ContainsCI("Proofread by") ||
                 line.ContainsCI("explosiveskull") ||
+                line.ContainsCI("OCR by") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
