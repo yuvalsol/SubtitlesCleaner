@@ -1268,8 +1268,7 @@ namespace SubtitlesCL
                 .Replace(" ?", "?").Replace(" !", "!").Replace(" :", ":")
                 .Replace("…", "...").Replace("---", "...").Replace("--", "...").Replace(". ..", "...").Replace(".. .", "...").Replace(". . .", "...").Replace(regexCommas, "...").Replace(regexDots, "...")
                 .Replace("—", "...").Replace("–", "...").Replace("―", "...").Replace("‒", "...")
-                .Replace("‐", "-")
-                .Replace("- -", "-")
+                .Replace("‐", "-").Replace("- -", "-").Replace("=", "-")
                 .Replace(";", ",").Replace("，", ",")
                 .Replace("♫", "♪").Replace("¶", "♪").Replace("*", "♪").Replace(regexNumberSign, "♪").Replace(regexMultipleEighthNotes, "♪");
         }
