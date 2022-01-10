@@ -13,7 +13,10 @@ namespace SubtitlesCL
 
         public override string ToString()
         {
-            return Find.ToString() + " -> " + ReplaceBy;
+            return
+                Find.ToString() +
+                " -> " +
+                (ReplaceBy.StartsWith(" ") || ReplaceBy.EndsWith(" ") ? "\"" + ReplaceBy + "\"" : ReplaceBy);
         }
     }
 
