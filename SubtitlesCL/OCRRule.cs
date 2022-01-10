@@ -13,7 +13,7 @@ namespace SubtitlesCL
 
         public override string ToString()
         {
-            return Find.ToString();
+            return Find.ToString() + " -> " + ReplaceBy;
         }
     }
 

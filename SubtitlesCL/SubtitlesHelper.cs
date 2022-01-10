@@ -1513,6 +1513,8 @@ namespace SubtitlesCL
 
         private static string CleanSubtitleOCR(string line, bool isPrintOCR)
         {
+            int ocrCounter = 0;
+
             foreach (var rule in ocrRules)
             {
                 if (rule.Find.IsMatch(line))
@@ -1521,10 +1523,13 @@ namespace SubtitlesCL
                     if (isIgnore)
                         continue;
 
+                    ocrCounter++;
+
                     if (isPrintOCR)
                     {
-                        Console.WriteLine(rule);
-                        Console.WriteLine(line);
+                        Console.WriteLine(ocrCounter);
+                        Console.WriteLine("OCR:    " + rule);
+                        Console.WriteLine("Before: " + line);
                     }
 
                     Match match = rule.Find.Match(line);
@@ -1533,11 +1538,13 @@ namespace SubtitlesCL
 
                     if (isPrintOCR)
                     {
-                        Console.WriteLine(line);
-                        Console.WriteLine();
+                        Console.WriteLine("After:  " + line);
                     }
                 }
             }
+
+            if (isPrintOCR && ocrCounter > 0)
+                Console.WriteLine();
 
             return line;
         }
