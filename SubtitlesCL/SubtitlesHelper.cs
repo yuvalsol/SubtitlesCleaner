@@ -1813,6 +1813,10 @@ namespace SubtitlesCL
             // Spaces after aphostrophes, eg. "I' d" to "I'd", "I' LL" to "I'LL", "Hasn 't" and "Hasn' t", etc.
 			,new OCRRule() { Find = new Regex(@"(?i)[A-ZÁ-Úa-zá-ú]('\s|\s')(ll|ve|s|m|d|t)\b", RegexOptions.Compiled), ReplaceBy = "'" }
 
+			// Gun Calibre
+            // Derringer.22
+            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\.)\d+\b", RegexOptions.Compiled), ReplaceBy = " ." }
+
             // Smart space after dot(s)
             // Add space after a single dot
             ,new OCRRule() { Find = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")\,]", RegexOptions.Compiled), ReplaceBy = ". ",
