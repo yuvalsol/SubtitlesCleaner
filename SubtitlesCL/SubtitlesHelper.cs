@@ -1251,19 +1251,22 @@ namespace SubtitlesCL
         }
 
         public static readonly Regex regexX22 = new Regex(@"\x22{2,}", RegexOptions.Compiled);
-        public static readonly Regex regexQuotes = new Regex(@"""{2,}", RegexOptions.Compiled);
+        public static readonly Regex regexDoubleQuotes = new Regex(@"""{2,}", RegexOptions.Compiled);
         public static readonly Regex regexRedundantDot = new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)", RegexOptions.Compiled);
         public static readonly Regex regexCommas = new Regex(@",{2,}", RegexOptions.Compiled);
         public static readonly Regex regexDots = new Regex(@"\.{4,}", RegexOptions.Compiled);
         public static readonly Regex regexNumberSign = new Regex(@"#(?![0-9])", RegexOptions.Compiled);
         public static readonly Regex regexMultipleEighthNotes = new Regex(@"♪{2,}", RegexOptions.Compiled);
+        public static readonly Regex regexTripleQuotesStart = new Regex(@"^'{3}", RegexOptions.Compiled);
+        public static readonly Regex regexTripleQuotesEnd = new Regex(@"'{3}$", RegexOptions.Compiled);
 
         private static string CleanPunctuations(string line)
         {
             return line
                 .Replace("`e", "é")
                 .Replace("'’", "'").Replace("´", "'").Replace("`", "'").Replace("‘", "'").Replace("’", "'")
-                .Replace("“", "\"").Replace("”", "\"").Replace(regexX22, "\"").Replace(@"\x22", "\"").Replace("''", "\"").Replace(regexQuotes, "\"")
+                .Replace(regexTripleQuotesStart, "\"'").Replace(regexTripleQuotesEnd, "'\"")
+                .Replace("“", "\"").Replace("”", "\"").Replace(regexX22, "\"").Replace(@"\x22", "\"").Replace("''", "\"").Replace(regexDoubleQuotes, "\"")
                 .Replace(regexRedundantDot, "Dot", string.Empty)
                 .Replace(" ?", "?").Replace(" !", "!").Replace(" :", ":")
                 .Replace("…", "...").Replace("---", "...").Replace("--", "...").Replace(". ..", "...").Replace(".. .", "...").Replace(". . .", "...").Replace(regexCommas, "...").Replace(regexDots, "...")
