@@ -12,6 +12,8 @@ namespace SubtitlesApp
     class SubtitlesHandler
     {
         private static readonly bool IsProduction = true;
+        private static readonly bool CleanHICaseInsensitive = false;
+        private static readonly bool IsPrintOCR = false;
 
         public void Run(string[] args)
         {
@@ -149,7 +151,7 @@ namespace SubtitlesApp
             List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
 
             if (options.clean)
-                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive);
+                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrintOCR);
 
             if (options.shift)
                 subtitles.Shift(options.shiftTime, options.subtitleNumber);
@@ -198,7 +200,7 @@ namespace SubtitlesApp
             Console.WriteLine(fileName);
 
             List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
-            List<Subtitle> subtitlesCleaned = subtitles.Clone().CleanSubtitles(false);
+            List<Subtitle> subtitlesCleaned = subtitles.Clone().CleanSubtitles(false, false);
 
             List<string> lines = new List<string>();
 

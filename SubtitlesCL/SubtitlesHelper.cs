@@ -203,15 +203,15 @@ namespace SubtitlesCL
 
         #region Clean & Check
 
-        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive)
+        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintOCR)
         {
             subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive);
             subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
-            subtitles = IterateSubtitlesOCR(subtitles);
+            subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR);
             subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
-            subtitles = IterateSubtitlesOCR(subtitles);
+            subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR);
             subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
-            subtitles = IterateSubtitlesOCR(subtitles);
+            subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR);
             subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive);
             return subtitles;
         }
@@ -297,12 +297,12 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesOCR(List<Subtitle> subtitles)
+        private static List<Subtitle> IterateSubtitlesOCR(List<Subtitle> subtitles, bool isPrintOCR)
         {
             foreach (var subtitle in subtitles)
             {
                 for (int i = 0; i < subtitle.Lines.Count; i++)
-                    subtitle.Lines[i] = CleanSubtitleOCR(subtitle.Lines[i]);
+                    subtitle.Lines[i] = CleanSubtitleOCR(subtitle.Lines[i], isPrintOCR);
             }
 
             return subtitles;
@@ -1511,9 +1511,7 @@ namespace SubtitlesCL
 
         #region OCR Errors
 
-        private static readonly bool IsPrintOCR = false;
-
-        private static string CleanSubtitleOCR(string line)
+        private static string CleanSubtitleOCR(string line, bool isPrintOCR)
         {
             foreach (var rule in ocrRules)
             {
@@ -1523,7 +1521,7 @@ namespace SubtitlesCL
                     if (isIgnore)
                         continue;
 
-                    if (IsPrintOCR)
+                    if (isPrintOCR)
                     {
                         Console.WriteLine(rule);
                         Console.WriteLine(line);
@@ -1533,9 +1531,10 @@ namespace SubtitlesCL
                     Group group = match.Groups[1];
                     line = line.Remove(group.Index, group.Length).Insert(group.Index, rule.ReplaceBy).Trim();
 
-                    if (IsPrintOCR)
+                    if (isPrintOCR)
                     {
                         Console.WriteLine(line);
+                        Console.WriteLine();
                     }
                 }
             }

@@ -140,7 +140,7 @@ namespace SubtitlesEditor
 
         #region Load Subtitles File
 
-        private const bool cleanHICaseInsensitive = false;
+        private static readonly bool cleanHICaseInsensitive = false;
 
         private void LoadFile(string filePath)
         {
@@ -294,7 +294,7 @@ namespace SubtitlesEditor
             if (subtitles == null)
                 return;
 
-            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive);
+            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
             newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
