@@ -1655,6 +1655,8 @@ namespace SubtitlesCL
                 IgnoreRules = new List<IgnoreRule>() {
                     // Il y a, il y avait
                     new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{4}", RegexOptions.Compiled), Ignore=" y a", EndsWith = true }
+                    // Il faut
+                    ,new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{5}", RegexOptions.Compiled), Ignore=" faut", EndsWith = true }
                 }
             }
 
