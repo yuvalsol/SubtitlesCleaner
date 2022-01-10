@@ -1651,7 +1651,12 @@ namespace SubtitlesCL
 			,new OCRRule() { Find = new Regex(@"\b[VXLCDM]*(lll)\b", RegexOptions.Compiled), ReplaceBy = "III" }
             ,new OCRRule() { Find = new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(ll)I{0,1}\b", RegexOptions.Compiled), ReplaceBy = "II" }
             ,new OCRRule() { Find = new Regex(@"^(ll)\b", RegexOptions.Compiled), ReplaceBy = "II" }
-            ,new OCRRule() { Find = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b", RegexOptions.Compiled), ReplaceBy = "I" }
+            ,new OCRRule() { Find = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b", RegexOptions.Compiled), ReplaceBy = "I",
+                IgnoreRules = new List<IgnoreRule>() {
+                    // Il y a, il y avait
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{4}", RegexOptions.Compiled), Ignore=" y a", EndsWith = true }
+                }
+            }
 
 			// Replace "II" with "ll" at the end of a lowercase word
 			,new OCRRule() { Find = new Regex(@"[a-zá-ú](II)", RegexOptions.Compiled), ReplaceBy = "ll" }
