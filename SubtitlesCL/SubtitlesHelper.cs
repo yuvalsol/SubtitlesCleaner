@@ -1794,6 +1794,9 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b(S\.H\.I\.E\.I\.D)\b", RegexOptions.Compiled), ReplaceBy = "S.H.I.E.L.D" }
             ,new OCRRule() { Find = new Regex(@"\b(I.A.)\b", RegexOptions.Compiled), ReplaceBy = "L.A." }
 
+            // Custom
+            ,new OCRRule() { Find = new Regex(@"\b(?:Mr|Mrs|Dr|St)(\s+)\b", RegexOptions.Compiled), ReplaceBy = ". " }
+
 
 			// Other OCR errors
 
