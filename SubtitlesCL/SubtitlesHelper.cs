@@ -538,6 +538,7 @@ namespace SubtitlesCL
         public static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
         public static readonly Regex regexDialog = new Regex(@"^(?<Italic>\<i\>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
+        public static readonly Regex regexEndsWithLowerCaseLetter = new Regex(@"[a-zá-ú]$", RegexOptions.Compiled);
 
         private static List<string> CleanSubtitleLines(List<string> lines, bool cleanHICaseInsensitive)
         {
@@ -641,7 +642,8 @@ namespace SubtitlesCL
                     isStartsWithI = line.StartsWith("I "),
                     isStartsWithContractionI = line.StartsWith("I'"),
                     isEndsWithDots = line.EndsWith("..."),
-                    isEndsWithComma = line.EndsWith(",")
+                    isEndsWithComma = line.EndsWith(","),
+                    isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
                 }).ToArray();
 
                 if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
@@ -700,6 +702,17 @@ namespace SubtitlesCL
                             Match match = regexDialog.Match(lines[0]);
                             lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
                             // Line 1,
+                            // I'll Line 2
+                        }
+                        else if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isEndsWithLowerCaseLetter &&
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
+                        {
+                            // - Line 1 end with lower case letter
+                            // I'll Line 2
+                            Match match = regexDialog.Match(lines[0]);
+                            lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            // Line 1 end with lower case letter
                             // I'll Line 2
                         }
                         else
@@ -878,7 +891,8 @@ namespace SubtitlesCL
                     isStartsWithI = line.StartsWith("I "),
                     isStartsWithContractionI = line.StartsWith("I'"),
                     isEndsWithDots = line.EndsWith("..."),
-                    isEndsWithComma = line.EndsWith(",")
+                    isEndsWithComma = line.EndsWith(","),
+                    isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
                 }).ToArray();
 
                 if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
@@ -913,6 +927,14 @@ namespace SubtitlesCL
                         }
                         else if (resultsDialog[0].isMatchDialog &&
                             resultsDialog[0].isEndsWithComma &&
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
+                        {
+                            Match match = regexDialog.Match(lines[0]);
+                            if (lines[0] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
+                                subtitleError |= SubtitleError.Dialog_Error;
+                        }
+                        else if (resultsDialog[0].isMatchDialog &&
+                            resultsDialog[0].isEndsWithLowerCaseLetter &&
                             (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
                         {
                             Match match = regexDialog.Match(lines[0]);
