@@ -78,6 +78,9 @@ namespace SubtitlesApp
             if (clean)
                 cmd += " --clean";
 
+            if (firstSubtitlesCount != null)
+                cmd += " --firstSubtitlesCount " + firstSubtitlesCount.Value;
+
             if (cleanHICaseInsensitive)
                 cmd += " --cleanHICaseInsensitive";
 
