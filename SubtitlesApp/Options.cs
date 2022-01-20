@@ -5,9 +5,6 @@ namespace SubtitlesApp
 {
     class Options
     {
-        [Option("path", Required = false, HelpText = "Path to file or folder")]
-        public string path { get; set; }
-
         [Option("print", Required = false, HelpText = "Print to console")]
         public bool print { get; set; }
 
@@ -58,6 +55,9 @@ namespace SubtitlesApp
 
         [Option("showEnd", Required = false, HelpText = "Show end")]
         public string showEnd { get; set; }
+
+        [Option("path", Required = false, HelpText = "Path to file or folder")]
+        public string path { get; set; }
 
         public override string ToString()
         {
