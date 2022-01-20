@@ -1316,20 +1316,36 @@ namespace SubtitlesCL
         private const string HIChars = @"A-ZÁ-Ú0-9 #\-'.";
         private const string HICharsCI = @"A-ZÁ-Úa-zá-ú0-9 #\-'.";
 
-        public static readonly Regex regexHIFullLine1 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\(.*?\)(?:\s*</i>)?$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine2 = new Regex(@"^(?:-\s*)?(?:<i>\s*)?\[.*?\](?:\s*</i>)?$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine3 = new Regex(@"^[" + HIChars + @"\[\]]+\:\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine4 = new Regex(@"^[" + HIChars + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine3CI = new Regex(@"^[" + HICharsCI + @"\[\]]+\:\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine4CI = new Regex(@"^[" + HICharsCI + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
+        // ^(HI)$
+        // ^- (HI)$
+        public static readonly Regex regexHIFullLine1 = new Regex(@"^\s*-?\s*\(.*?\)\s*$", RegexOptions.Compiled);
+        // ^<i>(HI)</i>$
+        // ^- <i>(HI)</i>$
+        // ^<i>- (HI)</i>$
+        public static readonly Regex regexHIFullLine2 = new Regex(@"^\s*-?\s*<i>\s*-?\s*\(.*?\)\s*</i>\s*$", RegexOptions.Compiled);
+
+        // ^[HI]$
+        // ^- [HI]$
+        public static readonly Regex regexHIFullLine3 = new Regex(@"^\s*-?\s*\[.*?\]\s*$", RegexOptions.Compiled);
+        // ^<i>[HI]</i>$
+        // ^- <i>[HI]</i>$
+        // ^<i>- [HI]</i>$
+        public static readonly Regex regexHIFullLine4 = new Regex(@"^\s*-?\s*<i>\s*-?\s*\[.*?\]\s*</i>\s*$", RegexOptions.Compiled);
+
+        public static readonly Regex regexHIFullLine5 = new Regex(@"^[" + HIChars + @"\[\]]+\:\s*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine6 = new Regex(@"^[" + HIChars + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine5CI = new Regex(@"^[" + HICharsCI + @"\[\]]+\:\s*$", RegexOptions.Compiled);
+        public static readonly Regex regexHIFullLine6CI = new Regex(@"^[" + HICharsCI + @"]+\[.*?\]\:\s*$", RegexOptions.Compiled);
 
         private static bool IsHearingImpairedFullLine(string line, bool cleanHICaseInsensitive)
         {
             return
                 regexHIFullLine1.IsMatch(line) ||
                 regexHIFullLine2.IsMatch(line) ||
-                (cleanHICaseInsensitive ? regexHIFullLine3CI : regexHIFullLine3).IsMatch(line) ||
-                (cleanHICaseInsensitive ? regexHIFullLine4CI : regexHIFullLine4).IsMatch(line);
+                regexHIFullLine3.IsMatch(line) ||
+                regexHIFullLine4.IsMatch(line) ||
+                (cleanHICaseInsensitive ? regexHIFullLine5CI : regexHIFullLine5).IsMatch(line) ||
+                (cleanHICaseInsensitive ? regexHIFullLine6CI : regexHIFullLine6).IsMatch(line);
         }
 
         public static readonly Regex regexScreenPosition = new Regex(@"{\\an\d*}", RegexOptions.Compiled);
