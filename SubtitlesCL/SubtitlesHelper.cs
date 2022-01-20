@@ -1206,58 +1206,63 @@ namespace SubtitlesCL
         private static bool IsNotSubtitle(string line)
         {
             return
-                line.ContainsCI("subtitles by") ||
-                line.ContainsCI("Subtitled By") ||
-                line.ContainsCI("Subtitles:") ||
-                line.ContainsCI("Subs by") ||
-                line.ContainsCI("Subtitling") ||
-                line.ContainsCI("SUBTITLES EDITED BY") ||
-                line.ContainsCI("sync by") ||
-                line.ContainsCI("synchronized by") ||
-                line.ContainsCI("OpenSubtitles") ||
-                line.ContainsCI("www.AllSubs.org") ||
-                line.ContainsCI("subscene") ||
-                line.ContainsCI("thepiratebay") ||
-                line.ContainsCI("Best watched using Open Subtitles MKV Player") ||
-                line.ContainsCI("ENGLISH SDH") ||
-                line.ContainsCI("ENGLISH - SDH") ||
-                line.ContainsCI("ENGLISH - US - SDH") ||
-                line.ContainsCI("Closed-Caption") ||
-                line.ContainsCI("Closed Caption") ||
-                line.ContainsCI("Captions, Inc.") ||
-                line.ContainsCI("Captions by") ||
+                line.ContainsCI("AllSubs.org") ||
+                line.ContainsCI("Best watched using") ||
                 line.ContainsCI("Captioned by") ||
                 line.ContainsCI("Captioning by") ||
                 line.ContainsCI("Captioning made possible by") ||
-                line.ContainsCI("Captions made possible by") ||
                 line.ContainsCI("Captioning performed by") ||
-                line.ContainsCI("Captions performed by") ||
                 line.ContainsCI("Captioning sponsored by") ||
+                line.ContainsCI("Captions by") ||
+                line.ContainsCI("Captions copyright") ||
+                line.ContainsCI("Captions made possible by") ||
+                line.ContainsCI("Captions performed by") ||
                 line.ContainsCI("Captions sponsored by") ||
+                line.ContainsCI("Captions, Inc.") ||
+                line.ContainsCI("Closed Caption") ||
+                line.ContainsCI("Closed-Caption") ||
+                line.ContainsCI("contain strong language") ||
+                line.ContainsCI("contains strong language") ||
+                line.ContainsCI("Copyright Australian") ||
+                line.ContainsCI("corrected by") ||
                 line.ContainsCI("DVDRIP by") ||
+                line.ContainsCI("Eng subs") ||
+                line.ContainsCI("Eng subtitles") ||
+                line.ContainsCI("ENGLISH - SDH") ||
+                line.ContainsCI("ENGLISH - US - SDH") ||
+                line.ContainsCI("ENGLISH SDH") ||
+                line.ContainsCI("explosiveskull") ||
+                line.ContainsCI("HighCode") ||
+                line.ContainsCI("MKV Player") ||
+                line.ContainsCI("NETFLIX PRESENTS") ||
+                line.ContainsCI("OCR by") ||
+                line.ContainsCI("Open Subtitles") ||
+                line.ContainsCI("OpenSubtitles") ||
+                line.ContainsCI("Proofread by") ||
+                line.ContainsCI("rip by") ||
+                line.ContainsCI("ripped by") ||
+                line.ContainsCI("SharePirate.com") ||
+                line.ContainsCI("Subs by") ||
+                line.ContainsCI("subscene") ||
+                line.ContainsCI("Subtitled By") ||
+                line.ContainsCI("subtitles by") ||
+                line.ContainsCI("SUBTITLES EDITED BY") ||
+                line.ContainsCI("Subtitles:") ||
+                line.ContainsCI("Subtitling") ||
+                line.ContainsCI("sync by") ||
+                line.ContainsCI("Synced & corrected") ||
+                line.ContainsCI("Synced and corrected") ||
+                line.ContainsCI("synchronization by") ||
+                line.ContainsCI("synchronized by") ||
+                line.ContainsCI("thepiratebay") ||
                 line.ContainsCI("Translated by") ||
                 line.ContainsCI("Translation by") ||
                 line.ContainsCI("Translations by") ||
-                line.ContainsCI("Synced & corrected") ||
-                line.ContainsCI("Synced and corrected") ||
-                line.ContainsCI("Copyright Australian") ||
-                line.ContainsCI("corrected by") ||
-                line.ContainsCI("NETFLIX PRESENTS") ||
-                line.ContainsCI("Captions copyright") ||
-                line.ContainsCI("contain strong language") ||
-                line.ContainsCI("contains strong language") ||
-                line.ContainsCI("HighCode") ||
-                line.ContainsCI("Eng subs") ||
-                line.ContainsCI("Eng subtitles") ||
-                line.ContainsCI("ripped by") ||
-                line.ContainsCI("rip by") ||
-                line.ContainsCI("Proofread by") ||
-                line.ContainsCI("explosiveskull") ||
-                line.ContainsCI("OCR by") ||
 
                 line.Contains("DIRECTED BY") ||
                 line.Contains("WRITTEN BY") ||
                 line.Contains("PRODUCED BY") ||
+
                 line.Contains(@"\fad") ||
                 line.Contains(@"\move") ||
 
