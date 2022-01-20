@@ -1543,8 +1543,7 @@ namespace SubtitlesCL
                 .Replace(regexDash3, "Dash", "... ");
         }
 
-        // Contiguous Matches: \G
-        public static readonly Regex regexDotsWithNoSpace = new Regex(@"\G([A-ZÁ-Úa-zá-ú0-9]+)(?<Dots>\.{2,})", RegexOptions.Compiled);
+        public static readonly Regex regexDotsWithNoSpace = new Regex(@"[A-ZÁ-Úa-zá-ú0-9](?:(?<Dots>\.{2,})[A-ZÁ-Úa-zá-ú0-9])+", RegexOptions.Compiled);
 
         private static string CleanDots(string line)
         {

@@ -19,10 +19,16 @@ namespace System
                     if (match.Success)
                     {
                         Group group = match.Groups[groupName];
-                        input =
-                            input.Substring(0, group.Index) +
-                            replacement +
-                            input.Substring(group.Index + group.Length);
+                        if (group.Success)
+                        {
+                            foreach (Capture capture in group.Captures.Cast<Capture>().Reverse())
+                            {
+                                input =
+                                    input.Substring(0, capture.Index) +
+                                    replacement +
+                                    input.Substring(capture.Index + capture.Length);
+                            }
+                        }
                     }
                 }
             }
