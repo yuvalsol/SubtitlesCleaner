@@ -103,7 +103,7 @@ namespace SubtitlesCL
             return regexAccentedCharacters.IsMatch(File.ReadAllText(filePath, Windows1252));
         }*/
 
-        public static List<Subtitle> GetSubtitles(string filePath)
+        public static List<Subtitle> GetSubtitles(string filePath, int? firstSubtitlesCount = null)
         {
             List<string> lines = new List<string>(File.ReadAllLines(filePath, Encoding.UTF8));
 
@@ -168,6 +168,9 @@ namespace SubtitlesCL
 
             if (subtitle != null)
                 subtitles.Add(subtitle);
+
+            if (firstSubtitlesCount != null && firstSubtitlesCount > 0)
+                return subtitles.Take(firstSubtitlesCount.Value).ToList();
 
             return subtitles;
         }

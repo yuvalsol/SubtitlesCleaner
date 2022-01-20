@@ -23,6 +23,9 @@ namespace SubtitlesApp
         [Option("clean", Required = false, HelpText = "Clean the subtitles")]
         public bool clean { get; set; }
 
+        [Option("firstSubtitlesCount", Required = false, HelpText = "Get the first number of subtitles")]
+        public int? firstSubtitlesCount { get; set; }
+
         [Option("cleanHICaseInsensitive", Required = false, HelpText = "Clean HI case-insensitive")]
         public bool cleanHICaseInsensitive { get; set; }
 

@@ -14,6 +14,7 @@ namespace SubtitlesApp
         private static readonly bool IsProduction = true;
         private static readonly bool CleanHICaseInsensitive = false;
         private static readonly bool IsPrintOCR = false;
+        private static readonly int? FirstSubtitlesCount = null;
 
         public void Run(string[] args)
         {
@@ -148,7 +149,7 @@ namespace SubtitlesApp
 
         private void CleanSubtitles(Options options, string filePath)
         {
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
+            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, options.firstSubtitlesCount ?? FirstSubtitlesCount);
 
             if (options.clean)
                 subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrintOCR);
