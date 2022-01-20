@@ -1916,7 +1916,11 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"(/t)", RegexOptions.Compiled), ReplaceBy = "It" }
 
             // Text..
-            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\.{2})(?:\s|</i>|$)", RegexOptions.Compiled), ReplaceBy = "..." }
+            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\.{2})(?:\s|♪|</i>|$)", RegexOptions.Compiled), ReplaceBy = "..." }
+            // ..Text
+            ,new OCRRule() { Find = new Regex(@"(?:\s|♪|<i>|^)(\.{2})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = "..." }
+            
+            // I-I-I, I-I
             //,new OCRRule() { Find = new Regex(@"(I-I-I)", RegexOptions.Compiled), ReplaceBy = "I... I... I..." }
             //,new OCRRule() { Find = new Regex(@"(I-I)", RegexOptions.Compiled), ReplaceBy = "I... I..." }
             
