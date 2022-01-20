@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace SubtitlesApp
 {
@@ -8,6 +9,8 @@ namespace SubtitlesApp
         {
             try
             {
+                Console.OutputEncoding = Encoding.UTF8;
+
                 new SubtitlesHandler().Run(args);
             }
             catch (Exception ex)

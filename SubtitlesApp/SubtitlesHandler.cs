@@ -340,8 +340,6 @@ namespace SubtitlesApp
 
         private void Print(List<Subtitle> subtitles)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-
             foreach (var line in subtitles.ToLines())
                 Console.WriteLine(line);
         }

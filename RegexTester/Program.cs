@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using SubtitlesCL;
 
@@ -8,6 +9,8 @@ namespace RegexTester
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             string input = @"""Forty-two errors""?";
             RegexHelper.PrintInput(input);
 
