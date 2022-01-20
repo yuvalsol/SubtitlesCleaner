@@ -1614,19 +1614,47 @@ namespace SubtitlesCL
                         string ignoreValue = match.Value;
                         if (string.IsNullOrEmpty(ignoreValue) == false)
                         {
-                            if (ignoreRule.StartsWith)
+                            if (ignoreRule.Ignore != null)
                             {
-                                if (ignoreValue.StartsWith(ignoreRule.Ignore))
-                                    return true;
+                                if (ignoreRule.StringComparisonIgnoreCase)
+                                {
+                                    if (ignoreRule.Ignore.Any(x => string.Compare(x, ignoreValue, StringComparison.InvariantCultureIgnoreCase) == 0))
+                                        return true;
+                                }
+                                else
+                                {
+                                    if (ignoreRule.Ignore.Any(x => x == ignoreValue))
+                                        return true;
+                                }
                             }
-                            else if (ignoreRule.EndsWith)
+
+                            if (ignoreRule.StartsWithIgnore != null)
                             {
-                                if (ignoreValue.EndsWith(ignoreRule.Ignore))
-                                    return true;
+                                if (ignoreRule.StringComparisonIgnoreCase)
+                                {
+                                    if (ignoreRule.StartsWithIgnore.Any(x => ignoreValue.StartsWith(x, StringComparison.InvariantCultureIgnoreCase)))
+                                        return true;
+                                }
+                                else
+                                {
+                                    if (ignoreRule.StartsWithIgnore.Any(x => ignoreValue.StartsWith(x)))
+                                        return true;
+
+                                }
                             }
-                            else if (ignoreValue == ignoreRule.Ignore)
+
+                            if (ignoreRule.EndsWithIgnore != null)
                             {
-                                return true;
+                                if (ignoreRule.StringComparisonIgnoreCase)
+                                {
+                                    if (ignoreRule.EndsWithIgnore.Any(x => ignoreValue.EndsWith(x, StringComparison.InvariantCultureIgnoreCase)))
+                                        return true;
+                                }
+                                else
+                                {
+                                    if (ignoreRule.EndsWithIgnore.Any(x => ignoreValue.EndsWith(x)))
+                                        return true;
+                                }
                             }
                         }
                     }
@@ -1690,9 +1718,9 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b", RegexOptions.Compiled), ReplaceBy = "I",
                 IgnoreRules = new List<IgnoreRule>() {
                     // Il y a, il y avait
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{4}", RegexOptions.Compiled), Ignore=" y a", EndsWith = true }
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{4}", RegexOptions.Compiled), EndsWithIgnore = new string[] { " y a" } }
                     // Il faut
-                    ,new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{5}", RegexOptions.Compiled), Ignore=" faut", EndsWith = true }
+                    ,new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{5}", RegexOptions.Compiled), EndsWithIgnore = new string[] { " faut" } }
                 }
             }
 
@@ -1739,7 +1767,7 @@ namespace SubtitlesCL
             // "I" at the beginning of a word before lowercase vowels is most likely an "l"
 			,new OCRRule() { Find = new Regex(@"\b(I)[oaeiuyá-ú]", RegexOptions.Compiled), ReplaceBy = "l",
                 IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(I)[oaeiuyá-ú].{2}", RegexOptions.Compiled), Ignore="Iago" }
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(I)[oaeiuyá-ú].{2}", RegexOptions.Compiled), Ignore = new string[] { "Iago" } }
                 }
             }
 			// "I" after an uppercase letter at the beginning and before a lowercase letter is most likely an "l"
@@ -1747,7 +1775,7 @@ namespace SubtitlesCL
 			// "l" at the beginning before a consonant different from "l" is most likely an "I"
 			,new OCRRule() { Find = new Regex(@"\b(l)[^aeiouyàá-úl]", RegexOptions.Compiled), ReplaceBy = "I",
                 IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(l)[^aeiouyàá-úl].{1}", RegexOptions.Compiled), Ignore="lbs" }
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(l)[^aeiouyàá-úl].{1}", RegexOptions.Compiled), Ignore = new string[] { "lbs" } }
                 }
             }
 
@@ -1769,10 +1797,10 @@ namespace SubtitlesCL
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(L)\b", RegexOptions.Compiled), ReplaceBy = "I",
                 IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@"-(L)-", RegexOptions.Compiled), Ignore="-L-" },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\.(L)\.", RegexOptions.Compiled), Ignore=".L." },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)\.A\.", RegexOptions.Compiled), Ignore="L.A." },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)'chaim", RegexOptions.Compiled), Ignore="L'chaim" }
+                    new IgnoreRule() { IgnoreFind = new Regex(@"-(L)-", RegexOptions.Compiled), Ignore = new string[] { "-L-" } },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\.(L)\.", RegexOptions.Compiled), Ignore = new string[] { ".L." } },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)\.A\.", RegexOptions.Compiled), Ignore = new string[] { "L.A." } },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)'chaim", RegexOptions.Compiled), Ignore = new string[] { "L'chaim" } }
                 }
             }
 
@@ -1854,13 +1882,10 @@ namespace SubtitlesCL
             // Add space after a single dot
             ,new OCRRule() { Find = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")\,]", RegexOptions.Compiled), ReplaceBy = ". ",
                 IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@".{1}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")]", RegexOptions.Compiled), Ignore="Ph.D" },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{1}", RegexOptions.Compiled), Ignore="a.m." },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{1}", RegexOptions.Compiled), Ignore="p.m." },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), Ignore="a.k.a" },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), Ignore="A.K.A" },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), Ignore=".com", EndsWith = true },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"w{2}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")]", RegexOptions.Compiled), Ignore="www.", StartsWith = true }
+                    new IgnoreRule() { IgnoreFind = new Regex(@".{1}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")]", RegexOptions.Compiled), Ignore = new string[] { "Ph.D" } },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{1}", RegexOptions.Compiled), Ignore = new string[] { "a.m.", "p.m." }, StringComparisonIgnoreCase = true },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")].{2}", RegexOptions.Compiled), EndsWithIgnore = new string[] { ".com", "a.k.a" }, StringComparisonIgnoreCase = true },
+                    new IgnoreRule() { IgnoreFind = new Regex(@"w{2}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!\<"")]", RegexOptions.Compiled), StartsWithIgnore = new string[] { "www." }, StringComparisonIgnoreCase = true }
                 }
             }
 

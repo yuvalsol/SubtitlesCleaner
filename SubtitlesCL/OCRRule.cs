@@ -23,9 +23,10 @@ namespace SubtitlesCL
     class IgnoreRule
     {
         public Regex IgnoreFind { get; set; }
-        public string Ignore { get; set; }
-        public bool StartsWith { get; set; }
-        public bool EndsWith { get; set; }
+        public string[] Ignore { get; set; }
+        public string[] StartsWithIgnore { get; set; }
+        public string[] EndsWithIgnore { get; set; }
+        public bool StringComparisonIgnoreCase { get; set; }
 
         public override string ToString()
         {
