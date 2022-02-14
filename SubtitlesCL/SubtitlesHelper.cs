@@ -1224,17 +1224,17 @@ namespace SubtitlesCL
                 line.ContainsCI("Captions, Inc.") ||
                 line.ContainsCI("Closed Caption") ||
                 line.ContainsCI("Closed-Caption") ||
-                line.ContainsCI("contain strong language") ||
-                line.ContainsCI("contains strong language") ||
+                line.ContainsCI("Contain Strong Language") ||
+                line.ContainsCI("Contains Strong Language") ||
                 line.ContainsCI("Copyright Australian") ||
-                line.ContainsCI("corrected by") ||
+                line.ContainsCI("Corrected by") ||
                 line.ContainsCI("DVDRIP by") ||
-                line.ContainsCI("Eng subs") ||
-                line.ContainsCI("Eng subtitles") ||
                 line.ContainsCI("ENGLISH - SDH") ||
                 line.ContainsCI("ENGLISH - US - SDH") ||
                 line.ContainsCI("ENGLISH SDH") ||
-                line.ContainsCI("explosiveskull") ||
+                line.ContainsCI("Eng subs") ||
+                line.ContainsCI("Eng subtitles") ||
+                line.ContainsCI("ExplosiveSkull") ||
                 line.ContainsCI("HighCode") ||
                 line.ContainsCI("MKV Player") ||
                 line.ContainsCI("NETFLIX PRESENTS") ||
@@ -1242,22 +1242,23 @@ namespace SubtitlesCL
                 line.ContainsCI("Open Subtitles") ||
                 line.ContainsCI("OpenSubtitles") ||
                 line.ContainsCI("Proofread by") ||
-                line.ContainsCI("rip by") ||
-                line.ContainsCI("ripped by") ||
+                line.ContainsCI("Rip by") ||
+                line.ContainsCI("Ripped by") ||
+                line.ContainsCI("SUBTITLES EDITED BY") ||
                 line.ContainsCI("SharePirate.com") ||
                 line.ContainsCI("Subs by") ||
-                line.ContainsCI("subscene") ||
+                line.ContainsCI("Subscene") ||
                 line.ContainsCI("Subtitled By") ||
-                line.ContainsCI("subtitles by") ||
-                line.ContainsCI("SUBTITLES EDITED BY") ||
+                line.ContainsCI("Subtitles by") ||
                 line.ContainsCI("Subtitles:") ||
+                line.ContainsCI("Subtitletools.com") ||
                 line.ContainsCI("Subtitling") ||
-                line.ContainsCI("sync by") ||
+                line.ContainsCI("Sync by") ||
                 line.ContainsCI("Synced & corrected") ||
                 line.ContainsCI("Synced and corrected") ||
-                line.ContainsCI("synchronization by") ||
-                line.ContainsCI("synchronized by") ||
-                line.ContainsCI("thepiratebay") ||
+                line.ContainsCI("Synchronization by") ||
+                line.ContainsCI("Synchronized by") ||
+                line.ContainsCI("ThePirateBay") ||
                 line.ContainsCI("Translated by") ||
                 line.ContainsCI("Translation by") ||
                 line.ContainsCI("Translations by") ||
