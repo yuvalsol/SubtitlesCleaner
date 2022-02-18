@@ -1892,7 +1892,7 @@ namespace SubtitlesCL
 			,new OCRRule() { Find = new Regex(@"\d( :)", RegexOptions.Compiled), ReplaceBy = ":" }
 
             // Spaces after aphostrophes, eg. "I' d" to "I'd", "I' LL" to "I'LL", "Hasn 't" and "Hasn' t", etc.
-			,new OCRRule() { Find = new Regex(@"(?i)[A-ZÁ-Úa-zá-ú]('\s|\s')(ll|ve|s|m|d|t)\b", RegexOptions.Compiled), ReplaceBy = "'" }
+			,new OCRRule() { Find = new Regex(@"(?i)[A-ZÁ-Úa-zá-ú]('\s|\s')(ll|ve|s|m|d|t|re)\b", RegexOptions.Compiled), ReplaceBy = "'" }
 
 			// Gun Calibre
             // Derringer.22
