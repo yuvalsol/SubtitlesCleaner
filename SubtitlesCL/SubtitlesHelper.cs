@@ -209,12 +209,15 @@ namespace SubtitlesCL
         public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintOCR)
         {
             subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive);
-            subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
-            subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR);
-            subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
-            subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR);
-            subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive);
-            subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR);
+
+            bool subtitlesChanged = false;
+            do
+            {
+                subtitlesChanged = false;
+                subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, ref subtitlesChanged);
+                subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR, ref subtitlesChanged);
+            } while (subtitlesChanged);
+
             subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive);
             return subtitles;
         }
@@ -255,7 +258,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
+        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive, ref bool subtitlesChanged)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -274,10 +277,12 @@ namespace SubtitlesCL
                     if (IsEmptyLine(line))
                     {
                         subtitle.Lines.RemoveAt(i);
+                        subtitlesChanged = true;
                     }
                     else if (IsNotSubtitle(line))
                     {
                         subtitle.Lines = null;
+                        subtitlesChanged = true;
                         break;
                     }
                     else
@@ -285,27 +290,49 @@ namespace SubtitlesCL
                         string cleanLine = (CleanSubtitleLine(line, cleanHICaseInsensitive) ?? string.Empty).Trim();
 
                         if (IsEmptyLine(cleanLine))
+                        {
                             subtitle.Lines.RemoveAt(i);
+                            subtitlesChanged = true;
+                        }
                         else
+                        {
+                            subtitlesChanged = subtitlesChanged || (subtitle.Lines[i] != cleanLine);
                             subtitle.Lines[i] = cleanLine;
+                        }
                     }
                 }
 
-                subtitle.Lines = CleanSubtitleLines(subtitle.Lines, cleanHICaseInsensitive);
+                List<string> cleanLines = CleanSubtitleLines(subtitle.Lines, cleanHICaseInsensitive);
 
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
+                if (cleanLines == null || cleanLines.Count == 0)
+                {
                     subtitles.RemoveAt(k);
+                    subtitlesChanged = true;
+                }
+                else
+                {
+                    subtitlesChanged =
+                        subtitlesChanged ||
+                        subtitle.Lines.Count != cleanLines.Count ||
+                        subtitle.Lines.Zip(cleanLines, (l1, l2) => l1 != l2).Any(isLineChanged => isLineChanged);
+
+                    subtitle.Lines = cleanLines;
+                }
             }
 
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesOCR(List<Subtitle> subtitles, bool isPrintOCR)
+        private static List<Subtitle> IterateSubtitlesOCR(List<Subtitle> subtitles, bool isPrintOCR, ref bool subtitlesChanged)
         {
             foreach (var subtitle in subtitles)
             {
                 for (int i = 0; i < subtitle.Lines.Count; i++)
-                    subtitle.Lines[i] = CleanSubtitleOCR(subtitle.Lines[i], isPrintOCR);
+                {
+                    string cleanLine = CleanSubtitleOCR(subtitle.Lines[i], isPrintOCR);
+                    subtitlesChanged = subtitlesChanged || (subtitle.Lines[i] != cleanLine);
+                    subtitle.Lines[i] = cleanLine;
+                }
             }
 
             return subtitles;
