@@ -1991,6 +1991,12 @@ namespace SubtitlesCL
             ,new OCRRule() { Find = new Regex(@"\b\d*2(\s+)nd\b", RegexOptions.Compiled), ReplaceBy = "" }
             ,new OCRRule() { Find = new Regex(@"\b\d*3(\s+)rd\b", RegexOptions.Compiled), ReplaceBy = "" }
             ,new OCRRule() { Find = new Regex(@"\b\d*[4-9](\s+)th\b", RegexOptions.Compiled), ReplaceBy = "" }
+
+            // 1 -> I
+            // 1 can/can't/did/didn't/do/don't/had/hadn't/am/ain't/will/won't/would/wouldn't
+            ,new OCRRule() { Find = new Regex(@"\b(1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), ReplaceBy = "I" }
+            // can/can't/did/didn't/do/don't/had/hadn't/am/ain't/will/won't/would/wouldn't 1
+            ,new OCRRule() { Find = new Regex(@"\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(1)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), ReplaceBy = "I" }
         };
 
         #endregion
