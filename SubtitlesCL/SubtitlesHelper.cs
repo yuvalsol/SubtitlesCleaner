@@ -1954,7 +1954,7 @@ namespace SubtitlesCL
              // a ... a
             ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\s+)\.{3}\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = "" }
              // 1, 000
-            ,new OCRRule() { Find = new Regex(@"\b\d+(, | ,)\d{3}\b", RegexOptions.Compiled), ReplaceBy = "," }
+            ,new OCRRule() { Find = new Regex(@"\b\d+(, | ,)0{3}\b", RegexOptions.Compiled), ReplaceBy = "," }
 
             // /t -> It
             ,new OCRRule() { Find = new Regex(@"(/t)", RegexOptions.Compiled), ReplaceBy = "It" }
