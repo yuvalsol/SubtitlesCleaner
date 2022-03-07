@@ -1713,7 +1713,10 @@ namespace SubtitlesCL
 
         private static readonly OCRRule[] ocrRules = new OCRRule[] {
 			// Custom
-             new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
+             new OCRRule() { Find = new Regex(@"(ﬁ)", RegexOptions.Compiled), ReplaceBy = "fi" }
+
+			// Custom
+            ,new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
             ,new OCRRule() { Find = new Regex(@"\b(I- l)", RegexOptions.Compiled), ReplaceBy = "H" }
             ,new OCRRule() { Find = new Regex(@"\b(L\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
             ,new OCRRule() { Find = new Regex(@"\b(I\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
