@@ -1447,18 +1447,22 @@ namespace SubtitlesCL
 
         public static readonly Regex regexHI1 = new Regex(@"^(?<Prefix>- )?\(.*?\)(\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
         public static readonly Regex regexHI2 = new Regex(@"^(?<Prefix>- )?\[.*?\](\:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI3 = new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI4 = new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled);
-        public static readonly Regex regexHI5 = new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*\:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI6 = new Regex(@"\s+\(.*?\)\s+", RegexOptions.Compiled);
-        public static readonly Regex regexHI7 = new Regex(@"\s+\[.*?\]\s+", RegexOptions.Compiled);
-        public static readonly Regex regexHI8 = new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled);
-        public static readonly Regex regexHI9 = new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled);
-        public static readonly Regex regexHI10 = new Regex(@"^[" + HIChars.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
-        public static readonly Regex regexHI11 = new Regex(@"^-\s*[" + HIChars + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHI3 = new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\(.*?\)(\:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI4 = new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\[.*?\](\:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI5 = new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\(.*?\)\:$", RegexOptions.Compiled);
+        public static readonly Regex regexHI6 = new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\[.*?\]\:$", RegexOptions.Compiled);
+        public static readonly Regex regexHI7 = new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI8 = new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled);
+        public static readonly Regex regexHI9 = new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*\:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled);
+        public static readonly Regex regexHI10 = new Regex(@"\s+\(.*?\)\s+", RegexOptions.Compiled);
+        public static readonly Regex regexHI11 = new Regex(@"\s+\[.*?\]\s+", RegexOptions.Compiled);
+        public static readonly Regex regexHI12 = new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled);
+        public static readonly Regex regexHI13 = new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled);
+        public static readonly Regex regexHI14 = new Regex(@"^[" + HIChars.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHI15 = new Regex(@"^-\s*[" + HIChars + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HIChars + @"]*[A-Z]+[" + HIChars + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI10CI = new Regex(@"^[" + HICharsCI.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
-        public static readonly Regex regexHI11CI = new Regex(@"^-\s*[" + HICharsCI + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHI14CI = new Regex(@"^[" + HICharsCI.Replace("-'", "'") + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
+        public static readonly Regex regexHI15CI = new Regex(@"^-\s*[" + HICharsCI + @"]+\[.*?\]\:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefixCI = new Regex(@"^(?<Prefix>(?:\<i\>)?-?\s*|-?\s*(?:\<i\>)?\s*)[" + HICharsCI + @"]*[A-Z]+[" + HICharsCI + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefix_Dash = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefix_Colon = new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled);
@@ -1482,26 +1486,50 @@ namespace SubtitlesCL
             if (regexHI3.IsMatch(line))
             {
                 Match match = regexHI3.Match(line);
-                line = match.Groups["Subtitle"].Value;
+                line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value + match.Groups["Suffix"].Value;
             }
 
             if (regexHI4.IsMatch(line))
             {
                 Match match = regexHI4.Match(line);
-                line = match.Groups["Subtitle"].Value;
+                line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value + match.Groups["Suffix"].Value;
             }
 
             if (regexHI5.IsMatch(line))
             {
                 Match match = regexHI5.Match(line);
+                line = match.Groups["Prefix"].Value;
+            }
+
+            if (regexHI6.IsMatch(line))
+            {
+                Match match = regexHI6.Match(line);
+                line = match.Groups["Prefix"].Value;
+            }
+
+            if (regexHI7.IsMatch(line))
+            {
+                Match match = regexHI7.Match(line);
+                line = match.Groups["Subtitle"].Value;
+            }
+
+            if (regexHI8.IsMatch(line))
+            {
+                Match match = regexHI8.Match(line);
+                line = match.Groups["Subtitle"].Value;
+            }
+
+            if (regexHI9.IsMatch(line))
+            {
+                Match match = regexHI9.Match(line);
                 line = match.Groups["Subtitle"].Value;
             }
 
             line = line
-                .Replace(regexHI6, " ").Replace(regexHI7, " ")
-                .Replace(regexHI8, string.Empty).Replace(regexHI9, string.Empty)
-                .Replace(cleanHICaseInsensitive ? regexHI10CI : regexHI10, string.Empty)
-                .Replace(cleanHICaseInsensitive ? regexHI11CI : regexHI11, "- ");
+                .Replace(regexHI10, " ").Replace(regexHI11, " ")
+                .Replace(regexHI12, string.Empty).Replace(regexHI13, string.Empty)
+                .Replace(cleanHICaseInsensitive ? regexHI14CI : regexHI14, string.Empty)
+                .Replace(cleanHICaseInsensitive ? regexHI15CI : regexHI15, "- ");
 
             if ((cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line))
             {
