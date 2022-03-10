@@ -577,6 +577,25 @@ namespace SubtitlesCL
 
             if (lines.Count > 1)
             {
+                string firstLine = lines[0];
+                string lastLine = lines[lines.Count - 1];
+
+                if (IsHearingImpairedMultipleLines_RoundBrackets(firstLine, lastLine))
+                {
+                    if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("(") || line.Contains(")")) == false)
+                    {
+                        return null;
+                    }
+                }
+
+                if (IsHearingImpairedMultipleLines_SquareBrackets(firstLine, lastLine))
+                {
+                    if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("[") || line.Contains("]")) == false)
+                    {
+                        return null;
+                    }
+                }
+
                 for (int i = 1; i < lines.Count; i++)
                 {
                     string line1 = lines[i - 1];
@@ -1547,16 +1566,28 @@ namespace SubtitlesCL
                 .Trim();
         }
 
+        // start (: ^ <i>? ♪? ( anything except () $
+        //   end ): ^ anything except () ) ♪? <i>? $
         public static readonly Regex regexHI1Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\([^\(\)]*?$", RegexOptions.Compiled);
         public static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
         public static readonly Regex regexHI2Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\[[^\[\]]*?$", RegexOptions.Compiled);
         public static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\]\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
 
+        private static bool IsHearingImpairedMultipleLines_RoundBrackets(string line1, string line2)
+        {
+            return regexHI1Start.IsMatch(line1) && regexHI1End.IsMatch(line2);
+        }
+
+        private static bool IsHearingImpairedMultipleLines_SquareBrackets(string line1, string line2)
+        {
+            return regexHI2Start.IsMatch(line1) && regexHI2End.IsMatch(line2);
+        }
+
         private static bool IsHearingImpairedMultipleLines(string line1, string line2)
         {
             return
-                (regexHI1Start.IsMatch(line1) && regexHI1End.IsMatch(line2)) ||
-                (regexHI2Start.IsMatch(line1) && regexHI2End.IsMatch(line2));
+                IsHearingImpairedMultipleLines_RoundBrackets(line1, line2) ||
+                IsHearingImpairedMultipleLines_SquareBrackets(line1, line2);
         }
 
         public static readonly Regex regexDash1 = new Regex(@"\s*-\s*</i>$", RegexOptions.Compiled);
