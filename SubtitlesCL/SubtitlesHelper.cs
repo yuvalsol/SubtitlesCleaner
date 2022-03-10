@@ -1946,7 +1946,7 @@ namespace SubtitlesCL
             // Add space after the last of two or more consecutive dots (e.g. "...")
             //,new OCRRule() { Find = new Regex(@"(\.\.)[^(\s\n\'\.\?\!\<"")]", RegexOptions.Compiled), ReplaceBy = ".. " }
             // Remove space after two or more consecutive dots (e.g. "...") at the beginning of the line
-            ,new OCRRule() { Find = new Regex(@"^\.{2,}(\s+)", RegexOptions.Compiled), ReplaceBy = "" }
+            ,new OCRRule() { Find = new Regex(@"^(?:<i>)?\.{2,}(\s+)", RegexOptions.Compiled), ReplaceBy = "" }
             // Add space after comma
             ,new OCRRule() { Find = new Regex(@"(\,)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = ", " }
 
