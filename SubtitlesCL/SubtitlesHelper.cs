@@ -1775,6 +1775,7 @@ namespace SubtitlesCL
              new OCRRule() { Find = new Regex(@"(ﬁ)", RegexOptions.Compiled), ReplaceBy = "fi" }
              ,new OCRRule() { Find = new Regex(@"(Η)", RegexOptions.Compiled), ReplaceBy = "H" } // Ascii H
              ,new OCRRule() { Find = new Regex(@"(Κ)", RegexOptions.Compiled), ReplaceBy = "K" } // Ascii K
+             ,new OCRRule() { Find = new Regex(@"(Τ)", RegexOptions.Compiled), ReplaceBy = "T" } // Ascii T
 
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
