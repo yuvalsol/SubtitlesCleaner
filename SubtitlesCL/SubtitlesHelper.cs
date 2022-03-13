@@ -1773,10 +1773,46 @@ namespace SubtitlesCL
         private static readonly OCRRule[] ocrRules = new OCRRule[] {
 			// Custom
              new OCRRule() { Find = new Regex(@"(ﬁ)", RegexOptions.Compiled), ReplaceBy = "fi" }
-             ,new OCRRule() { Find = new Regex(@"(Ε)", RegexOptions.Compiled), ReplaceBy = "E" } // Ascii E
-             ,new OCRRule() { Find = new Regex(@"(Η)", RegexOptions.Compiled), ReplaceBy = "H" } // Ascii H
-             ,new OCRRule() { Find = new Regex(@"(Κ)", RegexOptions.Compiled), ReplaceBy = "K" } // Ascii K
-             ,new OCRRule() { Find = new Regex(@"(Τ)", RegexOptions.Compiled), ReplaceBy = "T" } // Ascii T
+             ,new OCRRule() { Find = new Regex(@"(Α)", RegexOptions.Compiled), ReplaceBy = "A" } // 913 -> A
+             ,new OCRRule() { Find = new Regex(@"(Β)", RegexOptions.Compiled), ReplaceBy = "B" } // 914 -> B
+             ,new OCRRule() { Find = new Regex(@"(Ε)", RegexOptions.Compiled), ReplaceBy = "E" } // 917 -> E
+             ,new OCRRule() { Find = new Regex(@"(Ζ)", RegexOptions.Compiled), ReplaceBy = "Z" } // 918 -> Z
+             ,new OCRRule() { Find = new Regex(@"(Η)", RegexOptions.Compiled), ReplaceBy = "H" } // 919 -> H
+             ,new OCRRule() { Find = new Regex(@"(Ι)", RegexOptions.Compiled), ReplaceBy = "I" } // 921 -> I
+             ,new OCRRule() { Find = new Regex(@"(Κ)", RegexOptions.Compiled), ReplaceBy = "K" } // 922 -> K
+             ,new OCRRule() { Find = new Regex(@"(Μ)", RegexOptions.Compiled), ReplaceBy = "M" } // 924 -> M
+             ,new OCRRule() { Find = new Regex(@"(Ν)", RegexOptions.Compiled), ReplaceBy = "N" } // 925 -> N
+             ,new OCRRule() { Find = new Regex(@"(Ο)", RegexOptions.Compiled), ReplaceBy = "O" } // 927 -> O
+             ,new OCRRule() { Find = new Regex(@"(Ρ)", RegexOptions.Compiled), ReplaceBy = "P" } // 929 -> P
+             ,new OCRRule() { Find = new Regex(@"(Τ)", RegexOptions.Compiled), ReplaceBy = "T" } // 932 -> T
+             ,new OCRRule() { Find = new Regex(@"(Υ)", RegexOptions.Compiled), ReplaceBy = "Y" } // 933 -> Y
+             ,new OCRRule() { Find = new Regex(@"(Χ)", RegexOptions.Compiled), ReplaceBy = "X" } // 935 -> X
+             ,new OCRRule() { Find = new Regex(@"(ϲ)", RegexOptions.Compiled), ReplaceBy = "c" } // 1010 -> c
+             ,new OCRRule() { Find = new Regex(@"(ϳ)", RegexOptions.Compiled), ReplaceBy = "j" } // 1011 -> j
+             ,new OCRRule() { Find = new Regex(@"(Ϲ)", RegexOptions.Compiled), ReplaceBy = "C" } // 1017 -> C
+             ,new OCRRule() { Find = new Regex(@"(Ϻ)", RegexOptions.Compiled), ReplaceBy = "M" } // 1018 -> M
+             ,new OCRRule() { Find = new Regex(@"(Ѕ)", RegexOptions.Compiled), ReplaceBy = "S" } // 1029 -> S
+             ,new OCRRule() { Find = new Regex(@"(І)", RegexOptions.Compiled), ReplaceBy = "I" } // 1030 -> I
+             ,new OCRRule() { Find = new Regex(@"(Ј)", RegexOptions.Compiled), ReplaceBy = "J" } // 1032 -> J
+             ,new OCRRule() { Find = new Regex(@"(А)", RegexOptions.Compiled), ReplaceBy = "A" } // 1040 -> A
+             ,new OCRRule() { Find = new Regex(@"(В)", RegexOptions.Compiled), ReplaceBy = "B" } // 1042 -> B
+             ,new OCRRule() { Find = new Regex(@"(Е)", RegexOptions.Compiled), ReplaceBy = "E" } // 1045 -> E
+             ,new OCRRule() { Find = new Regex(@"(К)", RegexOptions.Compiled), ReplaceBy = "K" } // 1050 -> K
+             ,new OCRRule() { Find = new Regex(@"(М)", RegexOptions.Compiled), ReplaceBy = "M" } // 1052 -> M
+             ,new OCRRule() { Find = new Regex(@"(Н)", RegexOptions.Compiled), ReplaceBy = "H" } // 1053 -> H
+             ,new OCRRule() { Find = new Regex(@"(О)", RegexOptions.Compiled), ReplaceBy = "O" } // 1054 -> O
+             ,new OCRRule() { Find = new Regex(@"(Р)", RegexOptions.Compiled), ReplaceBy = "P" } // 1056 -> P
+             ,new OCRRule() { Find = new Regex(@"(С)", RegexOptions.Compiled), ReplaceBy = "C" } // 1057 -> C
+             ,new OCRRule() { Find = new Regex(@"(Т)", RegexOptions.Compiled), ReplaceBy = "T" } // 1058 -> T
+             ,new OCRRule() { Find = new Regex(@"(У)", RegexOptions.Compiled), ReplaceBy = "y" } // 1059 -> y
+             ,new OCRRule() { Find = new Regex(@"(Х)", RegexOptions.Compiled), ReplaceBy = "X" } // 1061 -> X
+             ,new OCRRule() { Find = new Regex(@"(а)", RegexOptions.Compiled), ReplaceBy = "a" } // 1072 -> a
+             ,new OCRRule() { Find = new Regex(@"(е)", RegexOptions.Compiled), ReplaceBy = "e" } // 1077 -> e
+             ,new OCRRule() { Find = new Regex(@"(о)", RegexOptions.Compiled), ReplaceBy = "o" } // 1086 -> o
+             ,new OCRRule() { Find = new Regex(@"(р)", RegexOptions.Compiled), ReplaceBy = "p" } // 1088 -> p
+             ,new OCRRule() { Find = new Regex(@"(с)", RegexOptions.Compiled), ReplaceBy = "c" } // 1089 -> c
+             ,new OCRRule() { Find = new Regex(@"(у)", RegexOptions.Compiled), ReplaceBy = "y" } // 1091 -> y
+             ,new OCRRule() { Find = new Regex(@"(х)", RegexOptions.Compiled), ReplaceBy = "x" } // 1093 -> x
 
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
