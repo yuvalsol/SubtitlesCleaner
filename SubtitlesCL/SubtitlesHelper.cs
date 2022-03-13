@@ -1773,6 +1773,7 @@ namespace SubtitlesCL
         private static readonly OCRRule[] ocrRules = new OCRRule[] {
 			// Custom
              new OCRRule() { Find = new Regex(@"(ﬁ)", RegexOptions.Compiled), ReplaceBy = "fi" }
+             ,new OCRRule() { Find = new Regex(@"(Η)", RegexOptions.Compiled), ReplaceBy = "H" } // this is not Ascii H
 
 			// Custom
             ,new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
