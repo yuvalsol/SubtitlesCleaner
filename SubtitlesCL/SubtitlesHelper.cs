@@ -1330,6 +1330,7 @@ namespace SubtitlesCL
         public static readonly Regex regexX22 = new Regex(@"\x22{2,}", RegexOptions.Compiled);
         public static readonly Regex regexDoubleQuotes = new Regex(@"""{2,}", RegexOptions.Compiled);
         public static readonly Regex regexRedundantDot = new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)", RegexOptions.Compiled);
+        public static readonly Regex regexDashes = new Regex(@"-{2,}", RegexOptions.Compiled);
         public static readonly Regex regexCommas = new Regex(@",{2,}", RegexOptions.Compiled);
         public static readonly Regex regexDots = new Regex(@"\.{4,}", RegexOptions.Compiled);
         public static readonly Regex regexNumberSign = new Regex(@"#(?![0-9])", RegexOptions.Compiled);
@@ -1346,9 +1347,10 @@ namespace SubtitlesCL
                 .Replace("“", "\"").Replace("”", "\"").Replace(regexX22, "\"").Replace(@"\x22", "\"").Replace("''", "\"").Replace(regexDoubleQuotes, "\"")
                 .Replace(regexRedundantDot, "Dot", string.Empty)
                 .Replace(" ?", "?").Replace(" !", "!").Replace(" :", ":")
-                .Replace("…", "...").Replace("---", "...").Replace("--", "...").Replace(". ..", "...").Replace(".. .", "...").Replace(". . .", "...").Replace(regexCommas, "...").Replace(regexDots, "...")
-                .Replace("—", "...").Replace("–", "...").Replace("―", "...").Replace("‒", "...")
                 .Replace("‐", "-").Replace("- -", "-").Replace("=", "-")
+                .Replace("…", "...").Replace(". ..", "...").Replace(".. .", "...").Replace(". . .", "...")
+                .Replace(regexDashes, "...").Replace(regexCommas, "...").Replace(regexDots, "...")
+                .Replace("—", "...").Replace("–", "...").Replace("―", "...").Replace("‒", "...")
                 .Replace(";", ",").Replace("，", ",")
                 .Replace("♫", "♪").Replace("¶", "♪").Replace("*", "♪").Replace(regexNumberSign, "♪").Replace(regexMultipleEighthNotes, "♪");
         }
