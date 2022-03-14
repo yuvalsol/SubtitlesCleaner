@@ -1341,7 +1341,6 @@ namespace SubtitlesCL
         private static string CleanPunctuations(string line)
         {
             return line
-                .Replace("`e", "é")
                 .Replace("'’", "'").Replace("´", "'").Replace("`", "'").Replace("‘", "'").Replace("’", "'")
                 .Replace(regexTripleQuotesStart, "\"'").Replace(regexTripleQuotesEnd, "'\"")
                 .Replace("“", "\"").Replace("”", "\"").Replace(regexX22, "\"").Replace(@"\x22", "\"").Replace("''", "\"").Replace(regexDoubleQuotes, "\"")
@@ -1771,7 +1770,8 @@ namespace SubtitlesCL
 
         private static readonly OCRRule[] ocrRules = new OCRRule[] {
 			// Custom
-             new OCRRule() { Find = new Regex(@"(ﬁ)", RegexOptions.Compiled), ReplaceBy = "fi" }
+              new OCRRule() { Find = new Regex(@"(`e)", RegexOptions.Compiled), ReplaceBy = "é" }
+             ,new OCRRule() { Find = new Regex(@"(ﬁ)", RegexOptions.Compiled), ReplaceBy = "fi" }
              ,new OCRRule() { Find = new Regex(@"(Α)", RegexOptions.Compiled), ReplaceBy = "A" } // 913 -> A
              ,new OCRRule() { Find = new Regex(@"(Β)", RegexOptions.Compiled), ReplaceBy = "B" } // 914 -> B
              ,new OCRRule() { Find = new Regex(@"(Ε)", RegexOptions.Compiled), ReplaceBy = "E" } // 917 -> E
