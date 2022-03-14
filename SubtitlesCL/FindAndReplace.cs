@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace SubtitlesCL
 {
-    class FindAndReplace
+    public class FindAndReplace
     {
         public string Pattern { get; private set; }
         public string GroupName { get; private set; }
@@ -32,10 +32,10 @@ namespace SubtitlesCL
                 (Replacement.StartsWith(" ") || Replacement.EndsWith(" ") ? "\"" + Replacement + "\"" : Replacement);
         }
 
-        public string CleanSubtitleLine(string line)
+        public string Replace(string line)
         {
             if (string.IsNullOrEmpty(line))
-                return null;
+                return line;
             else if (string.IsNullOrEmpty(GroupName))
                 return Regex.Replace(line, Replacement);
             else

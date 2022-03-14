@@ -1,10 +1,16 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
+using SubtitlesCL;
 
 namespace System
 {
     public static partial class StringExtensions
     {
+        public static string Replace(this string input, FindAndReplace far)
+        {
+            return far.Replace(input);
+        }
+
         public static string Replace(this string input, Regex regex, string replacement)
         {
             return regex.Replace(input, replacement);
