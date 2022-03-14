@@ -2237,6 +2237,8 @@ namespace SubtitlesCL
 
         public static readonly Regex regexDoubleQuateAndQuestionMark = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled);
 
+        public static readonly Regex regexSpeachStartsWithLowerLetter = new Regex(@"^-\s+[a-zá-ú]", RegexOptions.Compiled);
+
         public static bool HasErrors(this Subtitle subtitle)
         {
             return subtitle.Lines.Any(HasErrors);
@@ -2257,6 +2259,7 @@ namespace SubtitlesCL
                 regexHIWithoutBracket.IsMatch(line) ||
                 (regexHIFullLineWithoutBrackets.IsMatch(line) && regexHIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
                 regexDoubleQuateAndQuestionMark.IsMatch(line) ||
+                regexSpeachStartsWithLowerLetter.IsMatch(line) ||
                 (line.EndsWith("'?") && line.EndsWith("in'?") == false);
         }
 
