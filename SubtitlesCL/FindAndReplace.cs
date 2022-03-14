@@ -16,7 +16,17 @@ namespace SubtitlesCL
             Pattern = pattern;
             Replacement = replacement;
             IgnoreCase = ignoreCase;
-            Regex = new Regex(Pattern, IgnoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
+
+            try
+            {
+                Regex = new Regex(Pattern, IgnoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(this.ToString());
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         public FindAndReplace(string pattern, string groupName, string replacement, bool ignoreCase = false) : this(pattern, replacement, ignoreCase)
@@ -27,8 +37,8 @@ namespace SubtitlesCL
         public override string ToString()
         {
             return
-                Pattern +
-                " -> " +
+                Pattern + " -> " +
+                (string.IsNullOrEmpty(GroupName) ? string.Empty : GroupName + " -> ") +
                 (Replacement.StartsWith(" ") || Replacement.EndsWith(" ") ? "\"" + Replacement + "\"" : Replacement);
         }
 
