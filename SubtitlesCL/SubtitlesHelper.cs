@@ -2241,6 +2241,9 @@ namespace SubtitlesCL
 
         public static readonly Regex regexSpeachStartsWithLowerLetter = new Regex(@"^-\s+[a-zá-ú]", RegexOptions.Compiled);
 
+        public static readonly Regex regexDuplicateOpenItalic = new Regex(@"\<i\>\<i\>", RegexOptions.Compiled);
+        public static readonly Regex regexDuplicateCloseItalic = new Regex(@"\</i\>\</i\>", RegexOptions.Compiled);
+
         public static bool HasErrors(this Subtitle subtitle)
         {
             return subtitle.Lines.Any(HasErrors);
@@ -2262,6 +2265,8 @@ namespace SubtitlesCL
                 (regexHIFullLineWithoutBrackets.IsMatch(line) && regexHIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
                 regexDoubleQuateAndQuestionMark.IsMatch(line) ||
                 regexSpeachStartsWithLowerLetter.IsMatch(line) ||
+                regexDuplicateOpenItalic.IsMatch(line) ||
+                regexDuplicateCloseItalic.IsMatch(line) ||
                 (line.EndsWith("'?") && line.EndsWith("in'?") == false);
         }
 
