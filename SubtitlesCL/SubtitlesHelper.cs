@@ -302,7 +302,8 @@ namespace SubtitlesCL
                     }
                 }
 
-                List<string> cleanLines = CleanSubtitleLines(subtitle.Lines, cleanHICaseInsensitive);
+                List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
+                cleanLines = CleanSubtitleLines(cleanLines, cleanHICaseInsensitive);
 
                 if (cleanLines == null || cleanLines.Count == 0)
                 {
@@ -496,69 +497,87 @@ namespace SubtitlesCL
 
         #region Clean Single Line
 
+        private static readonly bool isNewClean = true;
+
         private static string CleanSubtitleLine(string line, bool cleanHICaseInsensitive)
         {
-            line = CleanPunctuations(line);
+            if (isNewClean)
+            {
+                return CleanLine(line, cleanHICaseInsensitive);
+            }
+            else
+            {
+                line = CleanPunctuations(line);
 
-            if (IsEighthNotes(line))
-                return null;
+                if (IsEighthNotes(line))
+                    return null;
 
-            if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
-                return null;
+                if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
+                    return null;
 
-            line = CleanScreenPosition(line);
+                line = CleanScreenPosition(line);
 
-            line = CleanItalics(line);
+                line = CleanItalics(line);
 
-            line = CleanOnes(line);
+                line = CleanOnes(line);
 
-            line = CleanHearingImpaired(line, cleanHICaseInsensitive);
+                line = CleanHearingImpaired(line, cleanHICaseInsensitive);
 
-            line = CleanMissingSpaces(line);
+                line = CleanMissingSpaces(line);
 
-            line = CleanSpaces(line);
+                line = CleanSpaces(line);
 
-            return line;
+                return line;
+            }
         }
 
         private static SubtitleError CheckSubtitleLine(string line, bool cleanHICaseInsensitive)
         {
-            if (IsEmptyLine(line))
-                return SubtitleError.Empty_Line;
+            if (isNewClean)
+            {
+                SubtitleError subtitleError = SubtitleError.None;
+                CleanLine(line, cleanHICaseInsensitive, ref subtitleError);
+                return subtitleError;
+            }
+            else
+            {
+                if (IsEmptyLine(line))
+                    return SubtitleError.Empty_Line;
 
-            if (IsNotSubtitle(line))
-                return SubtitleError.Not_Subtitle;
+                if (IsNotSubtitle(line))
+                    return SubtitleError.Not_Subtitle;
 
-            SubtitleError subtitleError = SubtitleError.None;
+                SubtitleError subtitleError = SubtitleError.None;
 
-            if (line != CleanPunctuations(line))
-                subtitleError |= SubtitleError.Punctuation_Error;
+                if (line != CleanPunctuations(line))
+                    subtitleError |= SubtitleError.Punctuation_Error;
 
-            if (IsEighthNotes(line))
-                return SubtitleError.Empty_Line;
+                if (IsEighthNotes(line))
+                    return SubtitleError.Empty_Line;
 
-            if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
-                return SubtitleError.Hearing_Impaired;
+                if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
+                    return SubtitleError.Hearing_Impaired;
 
-            if (line != CleanScreenPosition(line))
-                subtitleError |= SubtitleError.Screen_Position;
+                if (line != CleanScreenPosition(line))
+                    subtitleError |= SubtitleError.Screen_Position;
 
-            if (line != CleanItalics(line))
-                subtitleError |= SubtitleError.Redundant_Spaces;
+                if (line != CleanItalics(line))
+                    subtitleError |= SubtitleError.Redundant_Spaces;
 
-            if (line != CleanOnes(line))
-                subtitleError |= SubtitleError.Redundant_Spaces;
+                if (line != CleanOnes(line))
+                    subtitleError |= SubtitleError.Redundant_Spaces;
 
-            if (line != CleanHearingImpaired(line, cleanHICaseInsensitive))
-                subtitleError |= SubtitleError.Hearing_Impaired;
+                if (line != CleanHearingImpaired(line, cleanHICaseInsensitive))
+                    subtitleError |= SubtitleError.Hearing_Impaired;
 
-            if (line != CleanMissingSpaces(line))
-                subtitleError |= SubtitleError.Missing_Spaces;
+                if (line != CleanMissingSpaces(line))
+                    subtitleError |= SubtitleError.Missing_Spaces;
 
-            if (line != CleanSpaces(line))
-                subtitleError |= SubtitleError.Redundant_Spaces;
+                if (line != CleanSpaces(line))
+                    subtitleError |= SubtitleError.Redundant_Spaces;
 
-            return subtitleError;
+                return subtitleError;
+            }
         }
 
         #endregion
@@ -628,6 +647,11 @@ namespace SubtitlesCL
                 {
                     lines[1] = "<i>" + line2.Substring(2);
                     lines.RemoveAt(0);
+                }
+                else if (line1.StartsWith("<i>") && line1.IndexOf("</i>") == -1 && line2.StartsWith("</i>"))
+                {
+                    lines[0] = lines[0] + "</i>";
+                    lines[1] = lines[1].Substring("</i>".Length);
                 }
             }
 
@@ -1371,6 +1395,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"</ u>"), "</u>", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"<u>\s*</u>"), "", SubtitleError.Redundant_Spaces)
 
+            ,new FindAndReplace(new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)"), "${Italic}${Space}${Dash}", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"<i>-\s+</i>"), "- ", SubtitleError.Redundant_Spaces)
 
             // a<i> b </i>c => a <i>b</i> c
@@ -1690,7 +1715,8 @@ namespace SubtitlesCL
 
         public static readonly Regex regexEmptyItalics = new Regex(@"<i>\s*</i>", RegexOptions.Compiled);
         public static readonly Regex regexEmptyUnderlines = new Regex(@"<u>\s*</u>", RegexOptions.Compiled);
-        public static readonly Regex regexItalicsAndHI = new Regex(@"<i>\-\s+</i>", RegexOptions.Compiled);
+        public static readonly Regex regexItalicsAndHI1 = new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)", RegexOptions.Compiled);
+        public static readonly Regex regexItalicsAndHI2 = new Regex(@"<i>-\s+</i>", RegexOptions.Compiled);
         public static readonly Regex regexItalic1 = new Regex(@"(?<Prefix>[^ ])<i>[ ]", RegexOptions.Compiled);
         public static readonly Regex regexItalic2 = new Regex(@"[ ]</i>(?<Suffix>[^ ])", RegexOptions.Compiled);
         public static readonly Regex regexItalic3 = new Regex(@"\.<i>\s+", RegexOptions.Compiled);
@@ -1712,12 +1738,18 @@ namespace SubtitlesCL
                 line = line.Remove(match.Index, match.Length).Insert(match.Index, "</i> " + match.Groups["Suffix"]);
             }
 
+            if (regexItalicsAndHI1.IsMatch(line))
+            {
+                Match match = regexItalicsAndHI1.Match(line);
+                line = line.Remove(match.Index, match.Length).Insert(match.Index, match.Groups["Italic"].Value + match.Groups["Space"].Value + match.Groups["Dash"].Value);
+            }
+
             return line
                 .Replace("<i/>", "</i>").Replace("</ i>", "</i>")
                 .Replace(regexEmptyItalics, string.Empty)
                 .Replace("<u/>", "</u>").Replace("</ u>", "</u>")
                 .Replace(regexEmptyUnderlines, string.Empty)
-                .Replace(regexItalicsAndHI, "- ")
+                .Replace(regexItalicsAndHI2, "- ")
                 .Replace(regexItalic3, ". <i>")
                 .Replace(regexItalic4, ", <i>")
                 .Replace(regexItalic5, "<i>")
