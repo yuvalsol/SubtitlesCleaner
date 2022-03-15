@@ -509,6 +509,8 @@ namespace SubtitlesCL
             {
                 line = CleanPunctuations(line);
 
+                line = CleanRedundantItalics(line);
+
                 if (IsEighthNotes(line))
                     return null;
 
@@ -551,6 +553,9 @@ namespace SubtitlesCL
 
                 if (line != CleanPunctuations(line))
                     subtitleError |= SubtitleError.Punctuation_Error;
+
+                if (line != CleanRedundantItalics(line))
+                    subtitleError |= SubtitleError.Redundant_Italics;
 
                 if (IsEighthNotes(line))
                     return SubtitleError.Empty_Line;
@@ -1351,6 +1356,13 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"♪{2,}"), "♪", SubtitleError.Punctuation_Error)
 
             #endregion
+
+            #region Redundant Italics
+
+            ,new FindAndReplace(new Regex(@"<i>\.</i>"), ".", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"<i>\.{2,}</i>"), "...", SubtitleError.Redundant_Italics)
+
+            #endregion
             
             #region Hearing Impaired Full Line
 
@@ -1484,7 +1496,7 @@ namespace SubtitlesCL
 
             #endregion
 
-            #region Redundant Spaces
+            #region Trim Redundant Spaces
         
             ,new FindAndReplace(new Regex(@"\s{2,}"), " ", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"^\s+"), "", SubtitleError.Redundant_Spaces)
@@ -1660,6 +1672,16 @@ namespace SubtitlesCL
                 .Replace("—", "...").Replace("–", "...").Replace("―", "...").Replace("‒", "...")
                 .Replace(";", ",").Replace("，", ",")
                 .Replace("♫", "♪").Replace("¶", "♪").Replace("*", "♪").Replace(regexNumberSign, "♪").Replace(regexMultipleEighthNotes, "♪");
+        }
+
+        public static readonly Regex regexItalicsAndDots1 = new Regex(@"<i>\.</i>", RegexOptions.Compiled);
+        public static readonly Regex regexItalicsAndDots2 = new Regex(@"<i>\.{2,}</i>", RegexOptions.Compiled);
+
+        private static string CleanRedundantItalics(string line)
+        {
+            return line
+                .Replace(regexItalicsAndDots1, ".")
+                .Replace(regexItalicsAndDots2, "...");
         }
 
         public static readonly Regex regexEighthNotes = new Regex(@"^(?:♪|\s)+$", RegexOptions.Compiled);
