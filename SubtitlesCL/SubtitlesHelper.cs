@@ -1468,13 +1468,13 @@ namespace SubtitlesCL
             #endregion
         };
 
-        private static string CleanLine(string line)
+        private static string CleanLine(string line, bool cleanHICaseInsensitive)
         {
             SubtitleError subtitleError = SubtitleError.None;
-            return CleanLine(line, ref subtitleError);
+            return CleanLine(line, cleanHICaseInsensitive, ref subtitleError);
         }
 
-        private static string CleanLine(string line, ref SubtitleError subtitleError)
+        private static string CleanLine(string line, bool cleanHICaseInsensitive, ref SubtitleError subtitleError)
         {
             if (string.IsNullOrEmpty(line))
             {
@@ -1484,7 +1484,7 @@ namespace SubtitlesCL
 
             foreach (var rule in FindAndReplaceRules)
             {
-                string newLine = rule.CleanLine(line);
+                string newLine = rule.CleanLine(line, cleanHICaseInsensitive);
 
                 if (line != newLine)
                 {

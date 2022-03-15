@@ -122,14 +122,14 @@ namespace SubtitlesCL
 
         #endregion
 
-        public string CleanLine(string line, bool isCaseInsensitive = false)
+        public string CleanLine(string line, bool cleanHICaseInsensitive = false)
         {
             if (string.IsNullOrEmpty(line))
                 return line;
             else if (string.IsNullOrEmpty(GroupName))
-                return (isCaseInsensitive && HasRegexCI ? RegexCI : Regex).Replace(line, Replacement);
+                return (cleanHICaseInsensitive && HasRegexCI ? RegexCI : Regex).Replace(line, Replacement);
             else
-                return (isCaseInsensitive && HasRegexCI ? RegexCI : Regex).ReplaceGroup(line, GroupName, Replacement);
+                return (cleanHICaseInsensitive && HasRegexCI ? RegexCI : Regex).ReplaceGroup(line, GroupName, Replacement);
         }
     }
 }
