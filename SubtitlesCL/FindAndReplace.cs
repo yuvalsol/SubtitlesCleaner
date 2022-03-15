@@ -9,13 +9,33 @@ namespace SubtitlesCL
         public string GroupName { get; private set; }
         public string Replacement { get; private set; }
         public bool IgnoreCase { get; private set; }
+        public SubtitleError SubtitleError { get; private set; }
         public Regex Regex { get; private set; }
 
-        public FindAndReplace(string pattern, string replacement, bool ignoreCase = false)
+        #region Constructors
+
+        public FindAndReplace(string pattern, string replacement, SubtitleError subtitleError)
+            : this(pattern, null, replacement, false, subtitleError)
+        {
+        }
+
+        public FindAndReplace(string pattern, string replacement, bool ignoreCase, SubtitleError subtitleError)
+            : this(pattern, null, replacement, ignoreCase, subtitleError)
+        {
+        }
+
+        public FindAndReplace(string pattern, string groupName, string replacement, SubtitleError subtitleError)
+            : this(pattern, groupName, replacement, false, subtitleError)
+        {
+        }
+
+        public FindAndReplace(string pattern, string groupName, string replacement, bool ignoreCase, SubtitleError subtitleError)
         {
             Pattern = pattern;
+            GroupName = groupName;
             Replacement = replacement;
             IgnoreCase = ignoreCase;
+            SubtitleError = subtitleError;
 
             try
             {
@@ -29,27 +49,87 @@ namespace SubtitlesCL
             }
         }
 
-        public FindAndReplace(string pattern, string groupName, string replacement, bool ignoreCase = false) : this(pattern, replacement, ignoreCase)
+        public FindAndReplace(Regex regex, string replacement, SubtitleError subtitleError)
+            : this(regex, null, replacement, subtitleError)
         {
-            GroupName = groupName;
         }
+
+        public FindAndReplace(Regex regex, string groupName, string replacement, SubtitleError subtitleError)
+        {
+            Regex = regex;
+            Pattern = Regex.ToString();
+            GroupName = groupName;
+            Replacement = replacement;
+            IgnoreCase = Regex.Options.HasFlag(RegexOptions.IgnoreCase);
+            SubtitleError = subtitleError;
+        }
+
+        #endregion
+
+        #region Case Insensitive
+
+        public bool HasRegexCI { get; private set; }
+        public string PatternCI { get; private set; }
+        public Regex RegexCI { get; private set; }
+
+        public FindAndReplace SetRegexCI(string patternCI)
+        {
+            try
+            {
+                RegexCI = new Regex(PatternCI);
+                PatternCI = RegexCI.ToString();
+                HasRegexCI = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(this.ToStringCI());
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+
+            return this;
+        }
+
+        public FindAndReplace SetRegexCI(Regex regexCI)
+        {
+            RegexCI = regexCI;
+            PatternCI = RegexCI.ToString();
+            HasRegexCI = true;
+            return this;
+        }
+
+        #endregion
+
+        #region ToString
 
         public override string ToString()
         {
+            return ToString(false);
+        }
+
+        public string ToStringCI()
+        {
+            return ToString(true);
+        }
+
+        private string ToString(bool isCaseInsensitive)
+        {
             return
-                Pattern + " -> " +
+                (isCaseInsensitive && HasRegexCI ? PatternCI : Pattern) + " -> " +
                 (string.IsNullOrEmpty(GroupName) ? string.Empty : GroupName + " -> ") +
                 (Replacement.StartsWith(" ") || Replacement.EndsWith(" ") ? "\"" + Replacement + "\"" : Replacement);
         }
 
-        public string Replace(string line)
+        #endregion
+
+        public string CleanLine(string line, bool isCaseInsensitive = false)
         {
             if (string.IsNullOrEmpty(line))
                 return line;
             else if (string.IsNullOrEmpty(GroupName))
-                return Regex.Replace(line, Replacement);
+                return (isCaseInsensitive && HasRegexCI ? RegexCI : Regex).Replace(line, Replacement);
             else
-                return Regex.ReplaceGroup(line, GroupName, Replacement);
+                return (isCaseInsensitive && HasRegexCI ? RegexCI : Regex).ReplaceGroup(line, GroupName, Replacement);
         }
     }
 }

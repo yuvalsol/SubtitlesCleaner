@@ -11,12 +11,15 @@ namespace RegexTester
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            string input = @"""Forty-two errors""?";
-            RegexHelper.PrintInput(input);
+            FindAndReplace far = 
+                new FindAndReplace(new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$"), "${Lyrics} ${Suffix}", SubtitleError.Missing_Spaces);
 
-            PrintHasErrors(input);
+            string line = @"Lyrics♪</i>";
+            RegexHelper.PrintInput(line);
 
-            RegexHelper.PrintIsMatch(input, SubtitlesHelper.regexDoubleQuateAndQuestionMark);
+            RegexHelper.PrintIsMatch(line, far.Regex);
+
+            Console.WriteLine(far.CleanLine(line));
         }
 
         private static void PrintHasErrors(string input)
