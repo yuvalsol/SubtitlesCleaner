@@ -497,92 +497,16 @@ namespace SubtitlesCL
 
         #region Clean Single Line
 
-        private static readonly bool isNewClean = true;
-
         private static string CleanSubtitleLine(string line, bool cleanHICaseInsensitive)
         {
-            if (isNewClean)
-            {
-                return CleanLine(line, cleanHICaseInsensitive);
-            }
-            else
-            {
-                line = CleanPunctuations(line);
-
-                line = CleanRedundantItalics(line);
-
-                if (IsEighthNotes(line))
-                    return null;
-
-                if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
-                    return null;
-
-                line = CleanScreenPosition(line);
-
-                line = CleanItalics(line);
-
-                line = CleanOnes(line);
-
-                line = CleanHearingImpaired(line, cleanHICaseInsensitive);
-
-                line = CleanMissingSpaces(line);
-
-                line = CleanSpaces(line);
-
-                return line;
-            }
+            return CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive);
         }
 
         private static SubtitleError CheckSubtitleLine(string line, bool cleanHICaseInsensitive)
         {
-            if (isNewClean)
-            {
-                SubtitleError subtitleError = SubtitleError.None;
-                CleanLine(line, cleanHICaseInsensitive, ref subtitleError);
-                return subtitleError;
-            }
-            else
-            {
-                if (IsEmptyLine(line))
-                    return SubtitleError.Empty_Line;
-
-                if (IsNotSubtitle(line))
-                    return SubtitleError.Not_Subtitle;
-
-                SubtitleError subtitleError = SubtitleError.None;
-
-                if (line != CleanPunctuations(line))
-                    subtitleError |= SubtitleError.Punctuation_Error;
-
-                if (line != CleanRedundantItalics(line))
-                    subtitleError |= SubtitleError.Redundant_Italics;
-
-                if (IsEighthNotes(line))
-                    return SubtitleError.Empty_Line;
-
-                if (IsHearingImpairedFullLine(line, cleanHICaseInsensitive))
-                    return SubtitleError.Hearing_Impaired;
-
-                if (line != CleanScreenPosition(line))
-                    subtitleError |= SubtitleError.Screen_Position;
-
-                if (line != CleanItalics(line))
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-
-                if (line != CleanOnes(line))
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-
-                if (line != CleanHearingImpaired(line, cleanHICaseInsensitive))
-                    subtitleError |= SubtitleError.Hearing_Impaired;
-
-                if (line != CleanMissingSpaces(line))
-                    subtitleError |= SubtitleError.Missing_Spaces;
-
-                if (line != CleanSpaces(line))
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-
-                return subtitleError;
-            }
+            SubtitleError subtitleError = SubtitleError.None;
+            CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, ref subtitleError);
+            return subtitleError;
         }
 
         #endregion
@@ -1261,257 +1185,307 @@ namespace SubtitlesCL
         private const string HI_CHARS = @"A-ZÁ-Ú0-9 #\-'.";
         private const string HI_CHARS_CI = @"A-ZÁ-Úa-zá-ú0-9 #\-'.";
 
-        public static readonly FindAndReplace[] FindAndReplaceRules = new FindAndReplace[] {
-            #region Empty Line
+        #region Empty Line
 
-            new FindAndReplace(new Regex(@"^[-!?:_#.*♪♫¶ ]*$"), "", SubtitleError.Empty_Line)
-            ,new FindAndReplace(new Regex(@"^<i>[-!?:_#.*♪♫¶ ]*</i>$"), "", SubtitleError.Empty_Line)
+        public static readonly FindAndReplace[] EmptyLine = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"^[-!?:_#.*♪♫¶ ]*$", RegexOptions.Compiled), "", SubtitleError.Empty_Line)
+            ,new FindAndReplace(new Regex(@"^<i>[-!?:_#.*♪♫¶ ]*</i>$", RegexOptions.Compiled), "", SubtitleError.Empty_Line)
+        };
 
-            #endregion
+        #endregion
 
-            #region Not Subtitle
+        #region Not Subtitle
 
-            ,new FindAndReplace(new Regex(@"AllSubs\.org", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Best watched using", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioned by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning made possible by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning performed by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning sponsored by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions copyright", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions made possible by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions performed by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions sponsored by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions, Inc\."), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Closed Caption", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Closed-Caption", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Contain Strong Language", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Contains Strong Language", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Copyright Australian", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Corrected by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"DVDRIP by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH - SDH", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH - US - SDH", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH SDH", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Eng subs", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Eng subtitles", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ExplosiveSkull", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"HighCode", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"MKV Player", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"NETFLIX PRESENTS", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"OCR by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Open Subtitles", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"OpenSubtitles", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Proofread by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Rip by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Ripped by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"SUBTITLES EDITED BY", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"SharePirate\.com", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subs by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subscene", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitled By", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitles by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitles:", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitletools\.com", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitling", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Sync by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synced & corrected", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synced and corrected", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synchronization by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synchronized by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ThePirateBay", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Translated by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Translation by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Translations by", RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+        public static readonly FindAndReplace[] NotSubtitle = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"AllSubs\.org", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Best watched using", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captioned by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captioning by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captioning made possible by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captioning performed by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captioning sponsored by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captions by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captions copyright", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captions made possible by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captions performed by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captions sponsored by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Captions, Inc\.", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Closed Caption", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Closed-Caption", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Contain Strong Language", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Contains Strong Language", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Copyright Australian", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Corrected by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"DVDRIP by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"ENGLISH - SDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"ENGLISH - US - SDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"ENGLISH SDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Eng subs", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Eng subtitles", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"ExplosiveSkull", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"HighCode", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"MKV Player", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"NETFLIX PRESENTS", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"OCR by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Open Subtitles", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"OpenSubtitles", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Proofread by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Rip by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Ripped by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"SUBTITLES EDITED BY", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"SharePirate\.com", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Subs by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Subscene", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Subtitled By", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Subtitles by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Subtitles:", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Subtitletools\.com", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Subtitling", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Sync by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Synced & corrected", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Synced and corrected", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Synchronization by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Synchronized by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"ThePirateBay", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Translated by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Translation by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"Translations by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
 
-            #endregion
+            ,new FindAndReplace(new Regex(@"DIRECTED BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"PRODUCED BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"WRITTEN BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
 
-            #region Punctuations
+            ,new FindAndReplace(new Regex(@"\\fad", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"\\move", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
 
-            ,new FindAndReplace(new Regex(@"'’"), "'", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[´`‘’]"), "'", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"^'{3}"), "\"'", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"'{3}$"), "'\"", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[“”]"), "\"", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"(\\x22)+"), "\"", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"'{2}"), "\"", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"""{2,}"), "\"", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)"), "Dot", string.Empty, SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\s\?"), "?", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\s!"), "!", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\s:"), ":", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[‐=]"), "-", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"-\s-"), "-", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[…—–―‒]"), "...", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\.\s\.\."), "...", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\.\.\s\."), "...", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\.\s\.\s\."), "...", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"-{2,}"), "...", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@",{2,}"), "...", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\.{4,}"), "...", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[;，]"), ",", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[♫¶*]"), "♪", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\#(?![0-9])"), "♪", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"♪{2,}"), "♪", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"<font color=", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"^-?\s*<font>.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"^-?\s*<font\s+.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+        };
 
-            #endregion
+        #endregion
 
-            #region Redundant Italics
+        #region Punctuations
 
-            ,new FindAndReplace(new Regex(@"<i>\.</i>"), ".", SubtitleError.Redundant_Italics)
-            ,new FindAndReplace(new Regex(@"<i>\.{2,}</i>"), "...", SubtitleError.Redundant_Italics)
+        public static readonly FindAndReplace[] Punctuations = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"'’", RegexOptions.Compiled), "'", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[´`‘’]", RegexOptions.Compiled), "'", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"^'{3}", RegexOptions.Compiled), "\"'", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"'{3}$", RegexOptions.Compiled), "'\"", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[“”]", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"(\\x22)+", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"'{2}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"""{2,}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\s\?", RegexOptions.Compiled), "?", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\s!", RegexOptions.Compiled), "!", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\s:", RegexOptions.Compiled), ":", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[‐=]", RegexOptions.Compiled), "-", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"-\s-", RegexOptions.Compiled), "-", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[…—–―‒]", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\.\s\.\.", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\.\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\.\s\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"-{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[;，]", RegexOptions.Compiled), ",", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[♫¶*]", RegexOptions.Compiled), "♪", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\#(?![0-9])", RegexOptions.Compiled), "♪", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"♪{2,}", RegexOptions.Compiled), "♪", SubtitleError.Punctuation_Error)
+        };
 
-            #endregion
-            
-            #region Hearing Impaired Full Line
+        #endregion
 
+        #region Redundant Italics
+
+        public static readonly FindAndReplace[] RedundantItalics = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"<i>\.</i>", RegexOptions.Compiled), ".", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"<i>\.{2,}</i>", RegexOptions.Compiled), "...", SubtitleError.Redundant_Italics)
+        };
+
+        #endregion
+
+        #region Hearing Impaired Full Line
+
+        public static readonly FindAndReplace[] HearingImpairedFullLine = new FindAndReplace[] {
             // ^(HI)$
             // ^- (HI)$
-            ,new FindAndReplace(new Regex(@"^\s*-?\s*\(.*?\)\s*$"), "", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^\s*-?\s*\[.*?\]\s*$"), "", SubtitleError.Hearing_Impaired)
+            new FindAndReplace(new Regex(@"^\s*-?\s*\(.*?\)\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^\s*-?\s*\[.*?\]\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
             // ^<i>(HI)</i>$
             // ^- <i>(HI)</i>$
             // ^<i>- (HI)</i>$
             // ^♪ <i>(HI)</i>$
             // ^<i>♪ (HI)</i>$
-            ,new FindAndReplace(new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\(.*?\)\s*</i>\s*$"), "", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\[.*?\]\s*</i>\s*$"), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\(.*?\)\s*</i>\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\[.*?\]\s*</i>\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
-            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"\[\]]+:\s*$"), "", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"\[\]]+:\s*$"))
-            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"]+\[.*?\]:\s*$"), "", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"]+\[.*?\]:\s*$"))
+            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"\[\]]+:\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"\[\]]+:\s*$", RegexOptions.Compiled))
+            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"]+\[.*?\]:\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"]+\[.*?\]:\s*$", RegexOptions.Compiled))
+        };
 
-            #endregion
+        #endregion
 
-            #region Screen Position
+        #region Screen Position
 
+        public static readonly FindAndReplace[] ScreenPosition = new FindAndReplace[] {
             // {\a1}
-            ,new FindAndReplace(new Regex(@"\{\\a\d+}"), "", SubtitleError.Screen_Position)
+            new FindAndReplace(new Regex(@"\{\\a\d+}", RegexOptions.Compiled), "", SubtitleError.Screen_Position)
             // {\an1}
-            ,new FindAndReplace(new Regex(@"\{\\an\d+}"), "", SubtitleError.Screen_Position)
+            ,new FindAndReplace(new Regex(@"\{\\an\d+}", RegexOptions.Compiled), "", SubtitleError.Screen_Position)
             // {\pos(250,270)}
-            ,new FindAndReplace(new Regex(@"\{\\pos\(\d+,\d+\)}"), "", SubtitleError.Screen_Position)
+            ,new FindAndReplace(new Regex(@"\{\\pos\(\d+,\d+\)}", RegexOptions.Compiled), "", SubtitleError.Screen_Position)
+        };
 
-            #endregion
+        #endregion
 
-            #region Redundant Spaces
+        #region Redundant Spaces
 
-            ,new FindAndReplace(new Regex(@"<i/>"), "</i>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"</ i>"), "</i>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"<i>\s*</i>"), "", SubtitleError.Redundant_Spaces)
+        public static readonly FindAndReplace[] RedundantSpaces = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"<i/>", RegexOptions.Compiled), "</i>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"</ i>", RegexOptions.Compiled), "</i>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"<i>\s*</i>", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
 
-            ,new FindAndReplace(new Regex(@"<u/>"), "</u>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"</ u>"), "</u>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"<u>\s*</u>"), "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"<u/>", RegexOptions.Compiled), "</u>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"</ u>", RegexOptions.Compiled), "</u>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"<u>\s*</u>", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
 
-            ,new FindAndReplace(new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)"), "${Italic}${Space}${Dash}", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"<i>-\s+</i>"), "- ", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)", RegexOptions.Compiled), "${Italic}${Space}${Dash}", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"<i>-\s+</i>", RegexOptions.Compiled), "- ", SubtitleError.Redundant_Spaces)
 
             // a<i> b </i>c => a <i>b</i> c
-            ,new FindAndReplace(new Regex(@"([^ ])<i>[ ]"), "$1 <i>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"[ ]</i>([^ ])"), "</i> $1", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"([^ ])<i>[ ]", RegexOptions.Compiled), "$1 <i>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"[ ]</i>([^ ])", RegexOptions.Compiled), "</i> $1", SubtitleError.Redundant_Spaces)
 
-            ,new FindAndReplace(new Regex(@"\.<i>\s+"), ". <i>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@",<i>\s+"), ", <i>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"<i>\s+"), "<i>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"\s+</i>"), "</i>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"\.<i>\s+", RegexOptions.Compiled), ". <i>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@",<i>\s+", RegexOptions.Compiled), ", <i>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"<i>\s+", RegexOptions.Compiled), "<i>", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"\s+</i>", RegexOptions.Compiled), "</i>", SubtitleError.Redundant_Spaces)
 
             // 1 987 => 1987 (Positive lookahead)
             // 1 1/2 => 1 1/2 (Negative lookahead)
-            ,new FindAndReplace(new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)"), "1", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled), "1", SubtitleError.Redundant_Spaces)
+        };
 
-            #endregion
+        #endregion
 
-            #region Hearing Impaired
+        #region Hearing Impaired
 
+        public static readonly FindAndReplace[] HearingImpaired = new FindAndReplace[] {
             // - (MAN): Text => - Text
-            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\(.*?\)(:\s*)?(?<Subtitle>.+)$"), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\[.*?\](:\s*)?(?<Subtitle>.+)$"), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+            new FindAndReplace(new Regex(@"^(?<Prefix>- )?\(.*?\)(:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\[.*?\](:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // <i>- MAN (laughting): Text</i> => <i>- Text</i>
-            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\(.*?\)(:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$"), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\[.*?\](:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$"), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\(.*?\)(:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\[.*?\](:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
 
             // DEBUG
             // this doesn't match
             // - MAN (laughting): Text
 
             // <i>MAN (laughting): => <i>
-            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\(.*?\):$"), "${Prefix}", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\[.*?\]:$"), "${Prefix}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\(.*?\):$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\[.*?\]:$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
 
             // Text (laughting) => Text
-            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\(.*?\)$"), "${Subtitle}", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\[.*?\]$"), "${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // MAN #1: Text => Text
-            ,new FindAndReplace(new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*:\s*(?<Subtitle>.+?)$"), "${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // Some (laughting) text => Some text
-            ,new FindAndReplace(new Regex(@"\s+\(.*?\)\s+"), " ", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"\s+\[.*?\]\s+"), " ", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"\s+\(.*?\)\s+", RegexOptions.Compiled), " ", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"\s+\[.*?\]\s+", RegexOptions.Compiled), " ", SubtitleError.Hearing_Impaired)
 
             // Text <i>(laughting)</i> => Text
-            ,new FindAndReplace(new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)"), "", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)"), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
             // MAN [laughting]: Text => Text
-            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*"), "", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:\s*"))
+            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled))
 
             // - MAN [laughting]: Text => - Text
-            ,new FindAndReplace(new Regex(@"^-\s*[" + HI_CHARS + @"]+\[.*?\]:\s*"), "- ", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^-\s*[" + HI_CHARS_CI + @"]+\[.*?\]:\s*"))
+            ,new FindAndReplace(new Regex(@"^-\s*[" + HI_CHARS + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "- ", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^-\s*[" + HI_CHARS_CI + @"]+\[.*?\]:\s*", RegexOptions.Compiled))
 
             // <i>- MAN LAUGHTING: Text => <i>- Text
             // - <i>MAN LAUGHTING: Text => - <i>Text
-            ,new FindAndReplace(new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-Z]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$"), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-Z]+[" + HI_CHARS_CI + @"]*:\s*(?<Subtitle>.*?)$"))
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-Z]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-Z]+[" + HI_CHARS_CI + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled))
 
             // <i>- : Text => Text
-            ,new FindAndReplace(new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*"), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
             // <i>: Text => Text
-            ,new FindAndReplace(new Regex(@"^(?:\s*<i>)?\s*:\s*"), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
-            #endregion
-
-            #region Missing Spaces
-        
-            // <i>♪Lyrics => <i>♪ Lyrics
-            ,new FindAndReplace(new Regex(@"^(?<Prefix>(?:<i>)?♪+)(?<Lyrics>[^ ♪])"), "${Prefix} ${Lyrics}", SubtitleError.Missing_Spaces)
-            // ♪<i>Lyrics => ♪ <i>Lyrics
-            ,new FindAndReplace(new Regex(@"^(?<Prefix>♪+)(?<Italic><i>)?(?<Lyrics>[^ ♪])"), "${Prefix} ${Italic}${Lyrics}", SubtitleError.Missing_Spaces)
-
-            // Lyrics</i>♪ => Lyrics</i> ♪
-            ,new FindAndReplace(new Regex(@"(?<Lyrics>[^ ♪])(?<Italic></i>)?(?<Suffix>♪+)$"), "${Lyrics}${Italic} ${Suffix}", SubtitleError.Missing_Spaces)
-            // Lyrics♪</i> => Lyrics ♪</i>
-            ,new FindAndReplace(new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$"), "${Lyrics} ${Suffix}", SubtitleError.Missing_Spaces)
-
-            //  -Text =>  - Text
-            ,new FindAndReplace(new Regex(@"(?<Prefix>\s+)(?<Dash>-)(?<Suffix>[A-ZÁ-Úa-zá-ú])"), "${Prefix}${Dash} ${Suffix}", SubtitleError.Missing_Spaces)
-
-            #endregion
-
-            #region Trim Redundant Spaces
-        
-            ,new FindAndReplace(new Regex(@"\s{2,}"), " ", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"^\s+"), "", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"\s+$"), "", SubtitleError.Redundant_Spaces)
-
-            #endregion
+            // {MAN} {MAN) {MAN] (MAN} [MAN}
+            ,new FindAndReplace(new Regex(@"\{[^\{\[\(\)\]\}]+[\)\]\}]", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"[\{\[\(][^\{\[\(\)\]\}]+\}", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
         };
 
-        private static string CleanLine(string line, bool cleanHICaseInsensitive)
+        #endregion
+
+        #region Missing Spaces
+
+        public static readonly FindAndReplace[] MissingSpaces = new FindAndReplace[] {
+            // <i>♪Lyrics => <i>♪ Lyrics
+            new FindAndReplace(new Regex(@"^(?<Prefix>(?:<i>)?♪+)(?<Lyrics>[^ ♪])", RegexOptions.Compiled), "${Prefix} ${Lyrics}", SubtitleError.Missing_Spaces)
+            // ♪<i>Lyrics => ♪ <i>Lyrics
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>♪+)(?<Italic><i>)?(?<Lyrics>[^ ♪])", RegexOptions.Compiled), "${Prefix} ${Italic}${Lyrics}", SubtitleError.Missing_Spaces)
+
+            // Lyrics</i>♪ => Lyrics</i> ♪
+            ,new FindAndReplace(new Regex(@"(?<Lyrics>[^ ♪])(?<Italic></i>)?(?<Suffix>♪+)$", RegexOptions.Compiled), "${Lyrics}${Italic} ${Suffix}", SubtitleError.Missing_Spaces)
+            // Lyrics♪</i> => Lyrics ♪</i>
+            ,new FindAndReplace(new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$", RegexOptions.Compiled), "${Lyrics} ${Suffix}", SubtitleError.Missing_Spaces)
+
+            //  -Text =>  - Text
+            ,new FindAndReplace(new Regex(@"(?<Prefix>\s+)(?<Dash>-)(?<Suffix>[A-ZÁ-Úa-zá-ú])", RegexOptions.Compiled), "${Prefix}${Dash} ${Suffix}", SubtitleError.Missing_Spaces)
+        };
+
+        #endregion
+
+        #region Trim Spaces
+
+        public static readonly FindAndReplace[] TrimSpaces = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"\s{2,}", RegexOptions.Compiled), " ", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"^\s+", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"\s+$", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
+        };
+
+        #endregion
+
+        #region Find And Replace Rules
+
+        public static readonly FindAndReplace[] FindAndReplaceRules =
+            EmptyLine
+            .Concat(NotSubtitle)
+            .Concat(Punctuations)
+            .Concat(RedundantItalics)
+            .Concat(HearingImpairedFullLine)
+            .Concat(ScreenPosition)
+            .Concat(RedundantSpaces)
+            .Concat(HearingImpaired)
+            .Concat(MissingSpaces)
+            .Concat(TrimSpaces)
+            .ToArray();
+
+        #endregion
+
+        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive = false)
         {
             SubtitleError subtitleError = SubtitleError.None;
-            return CleanLine(line, cleanHICaseInsensitive, ref subtitleError);
+            return CleanLine(line, rules, cleanHICaseInsensitive, ref subtitleError);
         }
 
-        private static string CleanLine(string line, bool cleanHICaseInsensitive, ref SubtitleError subtitleError)
+        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, ref SubtitleError subtitleError)
         {
             if (string.IsNullOrEmpty(line))
             {
@@ -1519,7 +1493,7 @@ namespace SubtitlesCL
                 return null;
             }
 
-            foreach (var rule in FindAndReplaceRules)
+            foreach (var rule in rules)
             {
                 string newLine = rule.CleanLine(line, cleanHICaseInsensitive);
 
@@ -1551,388 +1525,18 @@ namespace SubtitlesCL
 
         private static bool IsEmptyLine(string line)
         {
-            return
-                string.IsNullOrEmpty(line) ||
-                line == "-" ||
-                line == "- ." ||
-                line == "!" ||
-                line == "?" ||
-                line == ":" ||
-                line == "_" ||
-                line == "#" ||
-                line == "##" ||
-                line == "♪" ||
-                line == "♪♪" ||
-                line == "♪ ♪" ||
-                line == "♪  ♪" ||
-                line == "♪ - ♪" ||
-                line == "- ♪" ||
-                line == "- ♪♪" ||
-                line == "<i>♪</i>" ||
-                line == "<i>♪♪</i>";
+            return string.IsNullOrEmpty(CleanLine(line, EmptyLine));
         }
 
         private static bool IsNotSubtitle(string line)
         {
-            return
-                line.ContainsCI("AllSubs.org") ||
-                line.ContainsCI("Best watched using") ||
-                line.ContainsCI("Captioned by") ||
-                line.ContainsCI("Captioning by") ||
-                line.ContainsCI("Captioning made possible by") ||
-                line.ContainsCI("Captioning performed by") ||
-                line.ContainsCI("Captioning sponsored by") ||
-                line.ContainsCI("Captions by") ||
-                line.ContainsCI("Captions copyright") ||
-                line.ContainsCI("Captions made possible by") ||
-                line.ContainsCI("Captions performed by") ||
-                line.ContainsCI("Captions sponsored by") ||
-                line.ContainsCI("Captions, Inc.") ||
-                line.ContainsCI("Closed Caption") ||
-                line.ContainsCI("Closed-Caption") ||
-                line.ContainsCI("Contain Strong Language") ||
-                line.ContainsCI("Contains Strong Language") ||
-                line.ContainsCI("Copyright Australian") ||
-                line.ContainsCI("Corrected by") ||
-                line.ContainsCI("DVDRIP by") ||
-                line.ContainsCI("ENGLISH - SDH") ||
-                line.ContainsCI("ENGLISH - US - SDH") ||
-                line.ContainsCI("ENGLISH SDH") ||
-                line.ContainsCI("Eng subs") ||
-                line.ContainsCI("Eng subtitles") ||
-                line.ContainsCI("ExplosiveSkull") ||
-                line.ContainsCI("HighCode") ||
-                line.ContainsCI("MKV Player") ||
-                line.ContainsCI("NETFLIX PRESENTS") ||
-                line.ContainsCI("OCR by") ||
-                line.ContainsCI("Open Subtitles") ||
-                line.ContainsCI("OpenSubtitles") ||
-                line.ContainsCI("Proofread by") ||
-                line.ContainsCI("Rip by") ||
-                line.ContainsCI("Ripped by") ||
-                line.ContainsCI("SUBTITLES EDITED BY") ||
-                line.ContainsCI("SharePirate.com") ||
-                line.ContainsCI("Subs by") ||
-                line.ContainsCI("Subscene") ||
-                line.ContainsCI("Subtitled By") ||
-                line.ContainsCI("Subtitles by") ||
-                line.ContainsCI("Subtitles:") ||
-                line.ContainsCI("Subtitletools.com") ||
-                line.ContainsCI("Subtitling") ||
-                line.ContainsCI("Sync by") ||
-                line.ContainsCI("Synced & corrected") ||
-                line.ContainsCI("Synced and corrected") ||
-                line.ContainsCI("Synchronization by") ||
-                line.ContainsCI("Synchronized by") ||
-                line.ContainsCI("ThePirateBay") ||
-                line.ContainsCI("Translated by") ||
-                line.ContainsCI("Translation by") ||
-                line.ContainsCI("Translations by") ||
-
-                line.Contains("DIRECTED BY") ||
-                line.Contains("WRITTEN BY") ||
-                line.Contains("PRODUCED BY") ||
-
-                line.Contains(@"\fad") ||
-                line.Contains(@"\move") ||
-
-                line.Contains("<font color=") ||
-                (
-                    (line.EndsWith("</font>") || line.EndsWith("</ font>")) && (
-                        line.StartsWith("<font>") ||
-                        line.StartsWith("<font ") ||
-                        line.StartsWith("- <font>") ||
-                        line.StartsWith("- <font ")
-                    )
-                );
+            return string.IsNullOrEmpty(CleanLine(line, NotSubtitle));
         }
 
-        public static readonly Regex regexX22 = new Regex(@"\x22{2,}", RegexOptions.Compiled);
-        public static readonly Regex regexDoubleQuotes = new Regex(@"""{2,}", RegexOptions.Compiled);
-        public static readonly Regex regexRedundantDot = new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)", RegexOptions.Compiled);
-        public static readonly Regex regexDashes = new Regex(@"-{2,}", RegexOptions.Compiled);
-        public static readonly Regex regexCommas = new Regex(@",{2,}", RegexOptions.Compiled);
-        public static readonly Regex regexDots = new Regex(@"\.{4,}", RegexOptions.Compiled);
-        public static readonly Regex regexNumberSign = new Regex(@"#(?![0-9])", RegexOptions.Compiled);
-        public static readonly Regex regexMultipleEighthNotes = new Regex(@"♪{2,}", RegexOptions.Compiled);
-        public static readonly Regex regexTripleQuotesStart = new Regex(@"^'{3}", RegexOptions.Compiled);
-        public static readonly Regex regexTripleQuotesEnd = new Regex(@"'{3}$", RegexOptions.Compiled);
-
-        private static string CleanPunctuations(string line)
-        {
-            return line
-                .Replace("'’", "'").Replace("´", "'").Replace("`", "'").Replace("‘", "'").Replace("’", "'")
-                .Replace(regexTripleQuotesStart, "\"'").Replace(regexTripleQuotesEnd, "'\"")
-                .Replace("“", "\"").Replace("”", "\"").Replace(regexX22, "\"").Replace(@"\x22", "\"").Replace("''", "\"").Replace(regexDoubleQuotes, "\"")
-                .Replace(regexRedundantDot, "Dot", string.Empty)
-                .Replace(" ?", "?").Replace(" !", "!").Replace(" :", ":")
-                .Replace("‐", "-").Replace("- -", "-").Replace("=", "-")
-                .Replace("…", "...").Replace(". ..", "...").Replace(".. .", "...").Replace(". . .", "...")
-                .Replace(regexDashes, "...").Replace(regexCommas, "...").Replace(regexDots, "...")
-                .Replace("—", "...").Replace("–", "...").Replace("―", "...").Replace("‒", "...")
-                .Replace(";", ",").Replace("，", ",")
-                .Replace("♫", "♪").Replace("¶", "♪").Replace("*", "♪").Replace(regexNumberSign, "♪").Replace(regexMultipleEighthNotes, "♪");
-        }
-
-        public static readonly Regex regexItalicsAndDots1 = new Regex(@"<i>\.</i>", RegexOptions.Compiled);
-        public static readonly Regex regexItalicsAndDots2 = new Regex(@"<i>\.{2,}</i>", RegexOptions.Compiled);
-
-        private static string CleanRedundantItalics(string line)
-        {
-            return line
-                .Replace(regexItalicsAndDots1, ".")
-                .Replace(regexItalicsAndDots2, "...");
-        }
-
-        public static readonly Regex regexEighthNotes = new Regex(@"^(?:♪|\s)+$", RegexOptions.Compiled);
-
-        private static bool IsEighthNotes(string line)
-        {
-            return regexEighthNotes.IsMatch(line);
-        }
-
-        // ^(HI)$
-        // ^- (HI)$
-        public static readonly Regex regexHIFullLine1 = new Regex(@"^\s*-?\s*\(.*?\)\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine2 = new Regex(@"^\s*-?\s*\[.*?\]\s*$", RegexOptions.Compiled);
-
-        // ^<i>(HI)</i>$
-        // ^- <i>(HI)</i>$
-        // ^<i>- (HI)</i>$
-        // ^♪ <i>(HI)</i>$
-        // ^<i>♪ (HI)</i>$
-        public static readonly Regex regexHIFullLine3 = new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\(.*?\)\s*</i>\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine4 = new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\[.*?\]\s*</i>\s*$", RegexOptions.Compiled);
-
-        public static readonly Regex regexHIFullLine5 = new Regex(@"^[" + HI_CHARS + @"\[\]]+:\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine5CI = new Regex(@"^[" + HI_CHARS_CI + @"\[\]]+:\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine6 = new Regex(@"^[" + HI_CHARS + @"]+\[.*?\]:\s*$", RegexOptions.Compiled);
-        public static readonly Regex regexHIFullLine6CI = new Regex(@"^[" + HI_CHARS_CI + @"]+\[.*?\]:\s*$", RegexOptions.Compiled);
-
-        private static bool IsHearingImpairedFullLine(string line, bool cleanHICaseInsensitive)
-        {
-            return
-                regexHIFullLine1.IsMatch(line) ||
-                regexHIFullLine2.IsMatch(line) ||
-                regexHIFullLine3.IsMatch(line) ||
-                regexHIFullLine4.IsMatch(line) ||
-                (cleanHICaseInsensitive ? regexHIFullLine5CI : regexHIFullLine5).IsMatch(line) ||
-                (cleanHICaseInsensitive ? regexHIFullLine6CI : regexHIFullLine6).IsMatch(line);
-        }
-
-        // {\a1}
-        public static readonly Regex regexScreenPosition1 = new Regex(@"\{\\a\d+}", RegexOptions.Compiled);
-        // {\an1}
-        public static readonly Regex regexScreenPosition2 = new Regex(@"\{\\an\d+}", RegexOptions.Compiled);
-        // {\pos(250,270)}
-        public static readonly Regex regexScreenPosition3 = new Regex(@"\{\\pos\(\d+,\d+\)}", RegexOptions.Compiled);
-
-        private static string CleanScreenPosition(string line)
-        {
-            return line
-                .Replace(regexScreenPosition1, string.Empty)
-                .Replace(regexScreenPosition2, string.Empty)
-                .Replace(regexScreenPosition3, string.Empty);
-        }
-
-        public static readonly Regex regexEmptyItalics = new Regex(@"<i>\s*</i>", RegexOptions.Compiled);
-        public static readonly Regex regexEmptyUnderlines = new Regex(@"<u>\s*</u>", RegexOptions.Compiled);
-        public static readonly Regex regexItalicsAndHI1 = new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)", RegexOptions.Compiled);
-        public static readonly Regex regexItalicsAndHI2 = new Regex(@"<i>-\s+</i>", RegexOptions.Compiled);
-        public static readonly Regex regexItalic1 = new Regex(@"(?<Prefix>[^ ])<i>[ ]", RegexOptions.Compiled);
-        public static readonly Regex regexItalic2 = new Regex(@"[ ]</i>(?<Suffix>[^ ])", RegexOptions.Compiled);
-        public static readonly Regex regexItalic3 = new Regex(@"\.<i>\s+", RegexOptions.Compiled);
-        public static readonly Regex regexItalic4 = new Regex(@",<i>\s+", RegexOptions.Compiled);
-        public static readonly Regex regexItalic5 = new Regex(@"<i>\s+", RegexOptions.Compiled);
-        public static readonly Regex regexItalic6 = new Regex(@"\s+</i>", RegexOptions.Compiled);
-
-        private static string CleanItalics(string line)
-        {
-            if (regexItalic1.IsMatch(line))
-            {
-                Match match = regexItalic1.Match(line);
-                line = line.Remove(match.Index, match.Length).Insert(match.Index, match.Groups["Prefix"] + " <i>");
-            }
-
-            if (regexItalic2.IsMatch(line))
-            {
-                Match match = regexItalic2.Match(line);
-                line = line.Remove(match.Index, match.Length).Insert(match.Index, "</i> " + match.Groups["Suffix"]);
-            }
-
-            if (regexItalicsAndHI1.IsMatch(line))
-            {
-                Match match = regexItalicsAndHI1.Match(line);
-                line = line.Remove(match.Index, match.Length).Insert(match.Index, match.Groups["Italic"].Value + match.Groups["Space"].Value + match.Groups["Dash"].Value);
-            }
-
-            return line
-                .Replace("<i/>", "</i>").Replace("</ i>", "</i>")
-                .Replace(regexEmptyItalics, string.Empty)
-                .Replace("<u/>", "</u>").Replace("</ u>", "</u>")
-                .Replace(regexEmptyUnderlines, string.Empty)
-                .Replace(regexItalicsAndHI2, "- ")
-                .Replace(regexItalic3, ". <i>")
-                .Replace(regexItalic4, ", <i>")
-                .Replace(regexItalic5, "<i>")
-                .Replace(regexItalic6, "</i>");
-        }
-
-        public static readonly Regex regexOne = new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled);
-
-        private static string CleanOnes(string line)
-        {
-            return line.Replace(regexOne, "1");
-        }
-
-        public static readonly Regex regexHI1 = new Regex(@"^(?<Prefix>- )?\(.*?\)(:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI2 = new Regex(@"^(?<Prefix>- )?\[.*?\](:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI3 = new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\(.*?\)(:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI4 = new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\[.*?\](:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI5 = new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\(.*?\):$", RegexOptions.Compiled);
-        public static readonly Regex regexHI6 = new Regex(@"^(?<Prefix><i>)[A-Z]*\s*\[.*?\]:$", RegexOptions.Compiled);
-        public static readonly Regex regexHI7 = new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI8 = new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled);
-        public static readonly Regex regexHI9 = new Regex(@"^[0-9A-Z #\-'\[\]]*[A-Z#'\[\]][0-9A-Z #\-'\[\]]*:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled);
-        public static readonly Regex regexHI10 = new Regex(@"\s+\(.*?\)\s+", RegexOptions.Compiled);
-        public static readonly Regex regexHI11 = new Regex(@"\s+\[.*?\]\s+", RegexOptions.Compiled);
-        public static readonly Regex regexHI12 = new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled);
-        public static readonly Regex regexHI13 = new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled);
-        public static readonly Regex regexHI14 = new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled);
-        public static readonly Regex regexHI14CI = new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled);
-        public static readonly Regex regexHI15 = new Regex(@"^-\s*[" + HI_CHARS + @"]+\[.*?\]:\s*", RegexOptions.Compiled);
-        public static readonly Regex regexHI15CI = new Regex(@"^-\s*[" + HI_CHARS_CI + @"]+\[.*?\]:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-Z]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefixCI = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-Z]+[" + HI_CHARS_CI + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        public static readonly Regex regexHIPrefix_Dash = new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled);
-        public static readonly Regex regexHIPrefix_Colon = new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
         public static readonly Regex regexHIPrefixWithoutDialogDashCI = new Regex(regexHIPrefixCI.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
-
-        private static string CleanHearingImpaired(string line, bool cleanHICaseInsensitive)
-        {
-            if (regexHI1.IsMatch(line))
-            {
-                Match match = regexHI1.Match(line);
-                line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
-            }
-
-            if (regexHI2.IsMatch(line))
-            {
-                Match match = regexHI2.Match(line);
-                line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
-            }
-
-            if (regexHI3.IsMatch(line))
-            {
-                Match match = regexHI3.Match(line);
-                line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value + match.Groups["Suffix"].Value;
-            }
-
-            if (regexHI4.IsMatch(line))
-            {
-                Match match = regexHI4.Match(line);
-                line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value + match.Groups["Suffix"].Value;
-            }
-
-            if (regexHI5.IsMatch(line))
-            {
-                Match match = regexHI5.Match(line);
-                line = match.Groups["Prefix"].Value;
-            }
-
-            if (regexHI6.IsMatch(line))
-            {
-                Match match = regexHI6.Match(line);
-                line = match.Groups["Prefix"].Value;
-            }
-
-            if (regexHI7.IsMatch(line))
-            {
-                Match match = regexHI7.Match(line);
-                line = match.Groups["Subtitle"].Value;
-            }
-
-            if (regexHI8.IsMatch(line))
-            {
-                Match match = regexHI8.Match(line);
-                line = match.Groups["Subtitle"].Value;
-            }
-
-            if (regexHI9.IsMatch(line))
-            {
-                Match match = regexHI9.Match(line);
-                line = match.Groups["Subtitle"].Value;
-            }
-
-            line = line
-                .Replace(regexHI10, " ").Replace(regexHI11, " ")
-                .Replace(regexHI12, string.Empty).Replace(regexHI13, string.Empty)
-                .Replace(cleanHICaseInsensitive ? regexHI14CI : regexHI14, string.Empty)
-                .Replace(cleanHICaseInsensitive ? regexHI15CI : regexHI15, "- ");
-
-            if ((cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line))
-            {
-                Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(line);
-                line = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
-            }
-
-            line = line
-                .Replace(regexHIPrefix_Dash, string.Empty)
-                .Replace(regexHIPrefix_Colon, string.Empty);
-
-            return line;
-        }
-
-        public static readonly Regex regexMissingSpaces1 = new Regex(@"^(?<Prefix>(?:<i>)?♪+)[^ ♪]", RegexOptions.Compiled);
-        public static readonly Regex regexMissingSpaces2 = new Regex(@"^(?<Prefix>♪+)(?:<i>)?[^ ♪]", RegexOptions.Compiled);
-        public static readonly Regex regexMissingSpaces3 = new Regex(@"[^ ♪](?:</i>)?(?<Suffix>♪+)$", RegexOptions.Compiled);
-        public static readonly Regex regexMissingSpaces4 = new Regex(@"[^ ♪](?<Suffix>♪+(?:</i>)?)$", RegexOptions.Compiled);
-        public static readonly Regex regexMissingSpaces5 = new Regex(@"\s+(?<Dash>-)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
-
-        private static string CleanMissingSpaces(string line)
-        {
-            if (regexMissingSpaces1.IsMatch(line))
-            {
-                Match match = regexMissingSpaces1.Match(line);
-                line = line.Insert(match.Groups["Prefix"].Index + match.Groups["Prefix"].Length, " ");
-            }
-
-            if (regexMissingSpaces2.IsMatch(line))
-            {
-                Match match = regexMissingSpaces2.Match(line);
-                line = line.Insert(match.Groups["Prefix"].Index + match.Groups["Prefix"].Length, " ");
-            }
-
-            if (regexMissingSpaces3.IsMatch(line))
-            {
-                Match match = regexMissingSpaces3.Match(line);
-                line = line.Insert(match.Groups["Suffix"].Index, " ");
-            }
-
-            if (regexMissingSpaces4.IsMatch(line))
-            {
-                Match match = regexMissingSpaces4.Match(line);
-                line = line.Insert(match.Groups["Suffix"].Index, " ");
-            }
-
-            if (regexMissingSpaces5.IsMatch(line))
-            {
-                Match match = regexMissingSpaces5.Match(line);
-                line = line.Insert(match.Groups["Dash"].Index + match.Groups["Dash"].Length, " ");
-            }
-
-            return line;
-        }
-
-        public static readonly Regex regexSpaces = new Regex(@"\s{2,}", RegexOptions.Compiled);
-
-        private static string CleanSpaces(string line)
-        {
-            return line
-                .Replace(regexSpaces, " ")
-                .Trim();
-        }
 
         // start (: ^ <i>? ♪? ( anything except () $
         //   end ): ^ anything except () ) ♪? <i>? $
