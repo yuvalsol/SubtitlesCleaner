@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="FindAndReplace.cs" />
-    <Compile Include="OCRRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexExtensions.cs" />
     <Compile Include="StringExtensions.cs" />

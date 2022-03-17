@@ -215,7 +215,6 @@ namespace SubtitlesCL
             {
                 subtitlesChanged = false;
                 subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, ref subtitlesChanged);
-                subtitles = IterateSubtitlesOCR(subtitles, isPrintOCR, ref subtitlesChanged);
             } while (subtitlesChanged);
 
             subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive);
@@ -324,21 +323,6 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesOCR(List<Subtitle> subtitles, bool isPrintOCR, ref bool subtitlesChanged)
-        {
-            foreach (var subtitle in subtitles)
-            {
-                for (int i = 0; i < subtitle.Lines.Count; i++)
-                {
-                    string cleanLine = CleanSubtitleOCR(subtitle.Lines[i], isPrintOCR);
-                    subtitlesChanged = subtitlesChanged || (subtitle.Lines[i] != cleanLine);
-                    subtitle.Lines[i] = cleanLine;
-                }
-            }
-
-            return subtitles;
-        }
-
         private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
             if (subtitles == null)
@@ -428,9 +412,6 @@ namespace SubtitlesCL
             subtitle.SubtitleError |= CheckSubtitleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
             subtitle.SubtitleError |= CheckSubtitleLines(subtitle.Lines, cleanHICaseInsensitive);
             subtitle.SubtitleError |= CheckSubtitleLinesPost(subtitle.Lines, cleanHICaseInsensitive);
-
-            foreach (string line in subtitle.Lines)
-                subtitle.SubtitleError |= CheckSubtitleOCR(line);
 
             if ((subtitle.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle)
                 subtitle.SubtitleError = SubtitleError.Not_Subtitle;
@@ -1384,7 +1365,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\(.*?\)(:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-Z]*\s*\[.*?\](:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
 
-            // DEBUG
+            // debug
             // this doesn't match
             // - MAN (laughting): Text
 
@@ -1462,6 +1443,338 @@ namespace SubtitlesCL
 
         #endregion
 
+        #region OCR Error - Non-Ansi Chars
+
+        public static readonly FindAndReplace[] OCRError_NonAnsiChars = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"ﬁ", RegexOptions.Compiled), "fi", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"Α", RegexOptions.Compiled), "A", SubtitleError.OCR_Error) // 913 -> A
+            ,new FindAndReplace(new Regex(@"Β", RegexOptions.Compiled), "B", SubtitleError.OCR_Error) // 914 -> B
+            ,new FindAndReplace(new Regex(@"Ε", RegexOptions.Compiled), "E", SubtitleError.OCR_Error) // 917 -> E
+            ,new FindAndReplace(new Regex(@"Ζ", RegexOptions.Compiled), "Z", SubtitleError.OCR_Error) // 918 -> Z
+            ,new FindAndReplace(new Regex(@"Η", RegexOptions.Compiled), "H", SubtitleError.OCR_Error) // 919 -> H
+            ,new FindAndReplace(new Regex(@"Ι", RegexOptions.Compiled), "I", SubtitleError.OCR_Error) // 921 -> I
+            ,new FindAndReplace(new Regex(@"Κ", RegexOptions.Compiled), "K", SubtitleError.OCR_Error) // 922 -> K
+            ,new FindAndReplace(new Regex(@"Μ", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 924 -> M
+            ,new FindAndReplace(new Regex(@"Ν", RegexOptions.Compiled), "N", SubtitleError.OCR_Error) // 925 -> N
+            ,new FindAndReplace(new Regex(@"Ο", RegexOptions.Compiled), "O", SubtitleError.OCR_Error) // 927 -> O
+            ,new FindAndReplace(new Regex(@"Ρ", RegexOptions.Compiled), "P", SubtitleError.OCR_Error) // 929 -> P
+            ,new FindAndReplace(new Regex(@"Τ", RegexOptions.Compiled), "T", SubtitleError.OCR_Error) // 932 -> T
+            ,new FindAndReplace(new Regex(@"Υ", RegexOptions.Compiled), "Y", SubtitleError.OCR_Error) // 933 -> Y
+            ,new FindAndReplace(new Regex(@"Χ", RegexOptions.Compiled), "X", SubtitleError.OCR_Error) // 935 -> X
+            ,new FindAndReplace(new Regex(@"ϲ", RegexOptions.Compiled), "c", SubtitleError.OCR_Error) // 1010 -> c
+            ,new FindAndReplace(new Regex(@"ϳ", RegexOptions.Compiled), "j", SubtitleError.OCR_Error) // 1011 -> j
+            ,new FindAndReplace(new Regex(@"Ϲ", RegexOptions.Compiled), "C", SubtitleError.OCR_Error) // 1017 -> C
+            ,new FindAndReplace(new Regex(@"Ϻ", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 1018 -> M
+            ,new FindAndReplace(new Regex(@"Ѕ", RegexOptions.Compiled), "S", SubtitleError.OCR_Error) // 1029 -> S
+            ,new FindAndReplace(new Regex(@"І", RegexOptions.Compiled), "I", SubtitleError.OCR_Error) // 1030 -> I
+            ,new FindAndReplace(new Regex(@"Ј", RegexOptions.Compiled), "J", SubtitleError.OCR_Error) // 1032 -> J
+            ,new FindAndReplace(new Regex(@"А", RegexOptions.Compiled), "A", SubtitleError.OCR_Error) // 1040 -> A
+            ,new FindAndReplace(new Regex(@"В", RegexOptions.Compiled), "B", SubtitleError.OCR_Error) // 1042 -> B
+            ,new FindAndReplace(new Regex(@"Е", RegexOptions.Compiled), "E", SubtitleError.OCR_Error) // 1045 -> E
+            ,new FindAndReplace(new Regex(@"К", RegexOptions.Compiled), "K", SubtitleError.OCR_Error) // 1050 -> K
+            ,new FindAndReplace(new Regex(@"М", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 1052 -> M
+            ,new FindAndReplace(new Regex(@"Н", RegexOptions.Compiled), "H", SubtitleError.OCR_Error) // 1053 -> H
+            ,new FindAndReplace(new Regex(@"О", RegexOptions.Compiled), "O", SubtitleError.OCR_Error) // 1054 -> O
+            ,new FindAndReplace(new Regex(@"Р", RegexOptions.Compiled), "P", SubtitleError.OCR_Error) // 1056 -> P
+            ,new FindAndReplace(new Regex(@"С", RegexOptions.Compiled), "C", SubtitleError.OCR_Error) // 1057 -> C
+            ,new FindAndReplace(new Regex(@"Т", RegexOptions.Compiled), "T", SubtitleError.OCR_Error) // 1058 -> T
+            ,new FindAndReplace(new Regex(@"У", RegexOptions.Compiled), "y", SubtitleError.OCR_Error) // 1059 -> y
+            ,new FindAndReplace(new Regex(@"Х", RegexOptions.Compiled), "X", SubtitleError.OCR_Error) // 1061 -> X
+            ,new FindAndReplace(new Regex(@"а", RegexOptions.Compiled), "a", SubtitleError.OCR_Error) // 1072 -> a
+            ,new FindAndReplace(new Regex(@"е", RegexOptions.Compiled), "e", SubtitleError.OCR_Error) // 1077 -> e
+            ,new FindAndReplace(new Regex(@"о", RegexOptions.Compiled), "o", SubtitleError.OCR_Error) // 1086 -> o
+            ,new FindAndReplace(new Regex(@"р", RegexOptions.Compiled), "p", SubtitleError.OCR_Error) // 1088 -> p
+            ,new FindAndReplace(new Regex(@"с", RegexOptions.Compiled), "c", SubtitleError.OCR_Error) // 1089 -> c
+            ,new FindAndReplace(new Regex(@"у", RegexOptions.Compiled), "y", SubtitleError.OCR_Error) // 1091 -> y
+            ,new FindAndReplace(new Regex(@"х", RegexOptions.Compiled), "x", SubtitleError.OCR_Error) // 1093 -> x
+        };
+
+        #endregion
+
+        #region OCR Error - Mangled Letters
+
+        public static readonly FindAndReplace[] OCRError_MangledLetters = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"\b(?<OCR>I-l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>I- l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
+        };
+
+        #endregion
+
+        #region OCR Error - Contractions
+
+        public static readonly FindAndReplace[] OCRError_Contractions = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"\b(?i:I)(?<OCR>""|''|'’| ""|"" )d\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:I)(?<OCR>""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:I)(?<OCR>""|''|'’| ""|"" )m\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:I)(?<OCR>""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:a)ren(?<OCR>""|''|'’| ""|"" )t\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:c)ouldn(?<OCR>""|''|'’| ""|"" )t\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:d)on(?<OCR>""|''|'’| ""|"" )t\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:h)e(?<OCR>""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:h)e(?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:i)sn(?<OCR>""|''|'’| ""|"" )t\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:i)t(?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:l)et(?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:s)he(?<OCR>""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:s)he(?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:t)hat(?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:t)here(?<OCR>""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:t)here(?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:t)hey(?<OCR>""|''|'’| ""|"" )re\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:w)e(?<OCR>""|''|'’| ""|"" )re\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:w)eren(?<OCR>""|''|'’| ""|"" )t\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:w)hat(?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:w)ould(?<OCR>""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:w)ouldn(?<OCR>""|''|'’| ""|"" )t\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:y)ou(?<OCR>""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:y)ou(?<OCR>""|''|'’| ""|"" )re\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:y)ou(?<OCR>""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:o)(?<OCR>""|''|'’| ""|"" )er\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            // 'tweren't
+            ,new FindAndReplace(new Regex(@"(?i:t)weren(?<OCR>""|''|'’| ""|"" )t\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\s?(?<OCR>""|''|'’| ""|"" )(?i:t)weren't\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            // 'em
+            ,new FindAndReplace(new Regex(@"\b\s(?<OCR>""|''|'’| ""|"" )em\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            // 's
+            ,new FindAndReplace(new Regex(@"[a-z](?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+        };
+
+        #endregion
+
+        #region OCR Error - Accent Letters
+
+        public static readonly FindAndReplace[] OCRError_AccentLetters = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"\b(?i:F)ianc(?<OCR>'e)\b", RegexOptions.Compiled), "OCR", "é", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:C)af(?<OCR>'e)\b", RegexOptions.Compiled), "OCR", "é", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:C)ach(?<OCR>'e)\b", RegexOptions.Compiled), "OCR", "é", SubtitleError.OCR_Error)
+        };
+
+        #endregion
+
+        #region OCR Error - I and L
+
+        public static readonly FindAndReplace[] OCRError_I_And_L = new FindAndReplace[] {
+            // The most common OCR error - I (uppercase i) and l (lowercase L) mistakes
+
+            // Roman numerals
+            new FindAndReplace(new Regex(@"\b[VXLCDM]*(?<OCR>lll)\b", RegexOptions.Compiled), "OCR", "III", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(?<OCR>ll)I{0,1}\b", RegexOptions.Compiled), "OCR", "II", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"^(?<OCR>ll)\b", RegexOptions.Compiled), "OCR", "II", SubtitleError.OCR_Error)
+
+            // Ignore: Il y avait, Il y a, Il faut
+            ,new FindAndReplace(new Regex(@"\b[IVXLCDM]*(?<OCR>l)[IVX]*\b(?!(?: y avait| y a| faut)\b)", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+
+			// Replace "II" with "ll" at the end of a lowercase word
+			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>II)", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
+			// Replace "II" with "ll" at the beginning of a lowercase word
+			,new FindAndReplace(new Regex(@"(?<OCR>II)[a-zá-ú]", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
+			// Replace "I" with "l" in the middle of a lowercase word
+			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>I)[a-zá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
+			// Replace "I" with "l" at the end of a lowercase word
+			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>I)\b", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
+			// Replace "l" with "I" in the middle of an uppercase word
+			,new FindAndReplace(new Regex(@"[A-ZÁ-Ú](?<OCR>l)[A-ZÁ-Ú]", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+			// Replace "l" with "I" at the end of an uppercase word
+			,new FindAndReplace(new Regex(@"[A-ZÁ-Ú]{2,}(?<OCR>l)", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+
+			// Replace a single "l" with "I"
+			,new FindAndReplace(new Regex(@"\b(?<OCR>l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+
+			// Replace a single "i" with "I", but not <i> or </i>
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>(?<!<|/)i(?!>))\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+
+			// Replace "I'II"/"you'II" etc. with "I'll"/"you'll" etc.
+			,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú]'(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
+			// Replace "I 'II" with "I'll" or "I' II" with "I'll" - rare cases with a space before or after the apostrophe
+			,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>'\sII|\s'II)\b", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.OCR_Error)
+
+            // All
+            ,new FindAndReplace(new Regex(@"\bA(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
+
+            // Live, Living
+            ,new FindAndReplace(new Regex(@"^(?<OCR>I)(?:ive|iving)\b", RegexOptions.Compiled), "OCR", "L", SubtitleError.OCR_Error)
+            // live, living
+            ,new FindAndReplace(new Regex(@"\s+(?<OCR>I)(?:ive|iving)\b", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
+
+            // "I" at the beginning of a word before lowercase vowels is most likely an "l"
+            // Ignore: Iago
+			,new FindAndReplace(new Regex(@"\b(?<OCR>I)[oaeiuyá-ú](?!go\b)", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
+
+            // "I" after an uppercase letter at the beginning and before a lowercase letter is most likely an "l"
+            ,new FindAndReplace(new Regex(@"\b[A-ZÁ-Ú](?<OCR>I)[a-zá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
+
+            // "l" at the beginning before a consonant different from "l" is most likely an "I"
+            // Ignore: lbs
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)[^aeiouyàá-úl](?!s\b)", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+
+			// Fixes for "I" at the beginning of the word before lowercase vowels
+			// The name "Ian"
+			,new FindAndReplace(new Regex(@"\b(?<OCR>lan)\b", RegexOptions.Compiled), "OCR", "Ian", SubtitleError.OCR_Error)
+			// The name "Iowa"
+			,new FindAndReplace(new Regex(@"\b(?<OCR>lowa)\b", RegexOptions.Compiled), "OCR", "Iowa", SubtitleError.OCR_Error)
+			// The word "Ill"
+			,new FindAndReplace(new Regex(@"[.?!-]\s?(?<OCR>III)\b", RegexOptions.Compiled), "OCR", "Ill", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"^(?<OCR>III)\b.", RegexOptions.Compiled), "OCR", "Ill", SubtitleError.OCR_Error)
+			// The word "Ion" and its derivatives
+			,new FindAndReplace(new Regex(@"\b(?<OCR>l)on\b.", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)oni", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+			// The word "Iodine" and its derivatives
+			,new FindAndReplace(new Regex(@"\b(?<OCR>l)odi", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)odo", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+
+            // Ignore: -L-, -L., .L., L.A., L'chaim
+            ,new FindAndReplace(new Regex(@"(?<![-.])\b(?<OCR>L)\b(?!(?:[-.]|\.A\.|'chaim)\b)", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)'m\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)'d\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)t's\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)ts\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)n\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)s\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)f\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+        };
+
+        #endregion
+
+        #region OCR Error - Other
+
+        public static readonly FindAndReplace[] OCRError_Other = new FindAndReplace[] {
+
+			// Merged Words
+            new FindAndReplace(new Regex(@"\b(?<OCR>ofthe)\b", RegexOptions.Compiled), "OCR", "of the", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>onthe)\b", RegexOptions.Compiled), "OCR", "on the", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>fora)\b", RegexOptions.Compiled), "OCR", "for a", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>numberi)\b", RegexOptions.Compiled), "OCR", "number one", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:time)(?<OCR>to)\b", RegexOptions.Compiled), "OCR", " to", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:don't)(?<OCR>do)\b", RegexOptions.Compiled), "OCR", " do", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:don't)(?<OCR>just)\b", RegexOptions.Compiled), "OCR", " just", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:for)(?<OCR>just)\b", RegexOptions.Compiled), "OCR", " just", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:after)(?<OCR>just)\b", RegexOptions.Compiled), "OCR", " just", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:off)(?<OCR>too)\b", RegexOptions.Compiled), "OCR", " too", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:off)(?<OCR>first)\b", RegexOptions.Compiled), "OCR", " first", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>this)\b", RegexOptions.Compiled), "OCR", " this", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>they)\b", RegexOptions.Compiled), "OCR", " they", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>this)\b", RegexOptions.Compiled), "OCR", " this", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:that)(?<OCR>jerk)\b", RegexOptions.Compiled), "OCR", " jerk", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:this)(?<OCR>jerk)\b", RegexOptions.Compiled), "OCR", " jerk", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>them)\b", RegexOptions.Compiled), "OCR", " them", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>thing)\b", RegexOptions.Compiled), "OCR", " thing", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>things)\b", RegexOptions.Compiled), "OCR", " things", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>too)\b", RegexOptions.Compiled), "OCR", " too", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>we)\b", RegexOptions.Compiled), "OCR", " we", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>the)\b", RegexOptions.Compiled), "OCR", " the", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>those)\b", RegexOptions.Compiled), "OCR", " those", SubtitleError.OCR_Error)
+
+            // rn => m
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>Morn)\b", RegexOptions.Compiled), "OCR", "Mom", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>morn)\b", RegexOptions.Compiled), "OCR", "mom", SubtitleError.OCR_Error)
+
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>FBl)\b", RegexOptions.Compiled), "OCR", "FBI", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>F\.B\.l)\b", RegexOptions.Compiled), "OCR", "F.B.I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>SHIEID)\b", RegexOptions.Compiled), "OCR", "SHIELD", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>S\.H\.I\.E\.I\.D)\b", RegexOptions.Compiled), "OCR", "S.H.I.E.L.D", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>I.A.)\b", RegexOptions.Compiled), "OCR", "L.A.", SubtitleError.OCR_Error)
+
+            ,new FindAndReplace(new Regex(@"\b(?:Mr|Mrs|Dr|St)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
+
+			// Fix zero and capital 'o' ripping mistakes
+			,new FindAndReplace(new Regex(@"[0-9](?<OCR>O)", RegexOptions.Compiled), "OCR", "0", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"[0-9](?<OCR>\.O)", RegexOptions.Compiled), "OCR", ".0", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"[0-9](?<OCR>,O)", RegexOptions.Compiled), "OCR", ",0", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"[A-Z](?<OCR>0)", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>0)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+
+            // 9: 55
+			,new FindAndReplace(new Regex(@"[0-2]?\d(?<OCR>: )[0-5]\d", RegexOptions.Compiled), "OCR", ":", SubtitleError.OCR_Error)
+
+            // "1 :", "2 :" ... "n :" to "n:"
+			,new FindAndReplace(new Regex(@"\d(?<OCR> :)", RegexOptions.Compiled), "OCR", ":", SubtitleError.OCR_Error)
+
+            // Spaces after aphostrophes, eg. "I' d" to "I'd", "I' LL" to "I'LL", "Hasn 't" and "Hasn' t", etc.
+			,new FindAndReplace(new Regex(@"(?i)[A-ZÁ-Úa-zá-ú](?<OCR>'\s|\s')(?:ll|ve|s|m|d|t|re)\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+
+			// Gun Calibre
+            // Derringer.22
+            ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.)\d+\b", RegexOptions.Compiled), "OCR", " .", SubtitleError.OCR_Error)
+
+            // debug
+            // Smart space after dot(s)
+            // Add space after a single dot
+            ,new FindAndReplace(new Regex(@"[a-zá-úñä-ü](?<OCR>\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
+            //    IgnoreRules = new List<IgnoreRule>() {
+            //        new IgnoreRule() { IgnoreFind = new Regex(@".{1}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), Ignore = new string[] { "Ph.D" } },
+            //        new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")].{1}", RegexOptions.Compiled), Ignore = new string[] { "a.m.", "p.m." }, StringComparisonIgnoreCase = true },
+            //        new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")].{2}", RegexOptions.Compiled), EndsWithIgnore = new string[] { ".com", "a.k.a" }, StringComparisonIgnoreCase = true },
+            //        new IgnoreRule() { IgnoreFind = new Regex(@"w{2}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), StartsWithIgnore = new string[] { "www." }, StringComparisonIgnoreCase = true }
+            //    }
+            //}
+
+            // a.m., p.m.
+            ,new FindAndReplace(new Regex(@"(?<OCR>a\.\sm\.)", RegexOptions.Compiled), "OCR", "a.m.", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?<OCR>p\.\sm\.)", RegexOptions.Compiled), "OCR", "p.m.", SubtitleError.OCR_Error)
+
+            // Add space after the last of two or more consecutive dots (e.g. "...")
+            //,new FindAndReplace(new Regex(@"(?<OCR>\.\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), "OCR", ".. ", SubtitleError.OCR_Error)
+            // Remove space after two or more consecutive dots (e.g. "...") at the beginning of the line
+            ,new FindAndReplace(new Regex(@"^(?:<i>)?\.{2,}(?<OCR>\s+)", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
+            // Add space after comma
+            ,new FindAndReplace(new Regex(@"(?<OCR>\,)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", ", ", SubtitleError.OCR_Error)
+            
+            // x ...
+            ,new FindAndReplace(new Regex(@"(?<OCR>\s+)\.{3}(?:</i>)?$", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
+            // a ... a
+            ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\s+)\.{3}\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
+
+            // 1, 000
+            ,new FindAndReplace(new Regex(@"\b\d+(?<OCR>, | ,)0{3}\b", RegexOptions.Compiled), "OCR", ",", SubtitleError.OCR_Error)
+
+            // /t => It
+            ,new FindAndReplace(new Regex(@"(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.OCR_Error)
+
+            // Text..
+            ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.{2})(?:\s|♪|</i>|$)", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            // ..Text
+            ,new FindAndReplace(new Regex(@"(?:\s|♪|<i>|^)(?<OCR>\.{2})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            
+            // I-I-I, I-I
+            //,new FindAndReplace(new Regex(@"(?<OCR>I-I-I)", RegexOptions.Compiled), "OCR", "I... I... I...", SubtitleError.OCR_Error)
+            //,new FindAndReplace(new Regex(@"(?<OCR>I-I)", RegexOptions.Compiled), "OCR", "I... I...", SubtitleError.OCR_Error)
+            
+            // Text . Next text
+            ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\s\.)\s[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
+
+            // I6 => 16
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>I)\d+\b", RegexOptions.Compiled), "OCR", "1", SubtitleError.OCR_Error)
+
+            // ♪
+            ,new FindAndReplace(new Regex(@"^(?<OCR>Jj)$", RegexOptions.Compiled | RegexOptions.IgnoreCase), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"^(?<OCR>J['""&!]?|j['""&!]?)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\s(?<OCR>['""&!]?J|['""&!]?j)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"^(?<OCR>['""&!]?J|['""&!]?j)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\s(?<OCR>J['""&!]?|j['""&!]?)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+
+            // ♪ Text &
+            ,new FindAndReplace(new Regex(@"^[♪&].*?(?<OCR>&)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            // & Text ♪
+            ,new FindAndReplace(new Regex(@"^(?<OCR>&).*?[♪&]$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+
+            // Ordinal Numbers
+            ,new FindAndReplace(new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b\d*2(?<OCR>\s+)nd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b\d*3(?<OCR>\s+)rd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b\d*[4-9](?<OCR>\s+)th\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
+
+            // 1 => I
+            // 1 can
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), "OCR", "I", SubtitleError.OCR_Error)
+            // can 1
+            ,new FindAndReplace(new Regex(@"\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(?<OCR>1)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), "OCR", "I", SubtitleError.OCR_Error)
+        };
+
+        #endregion
+
         #region Find And Replace Rules
 
         public static readonly FindAndReplace[] FindAndReplaceRules =
@@ -1475,6 +1788,12 @@ namespace SubtitlesCL
             .Concat(HearingImpaired)
             .Concat(MissingSpaces)
             .Concat(TrimSpaces)
+            .Concat(OCRError_NonAnsiChars)
+            .Concat(OCRError_MangledLetters)
+            .Concat(OCRError_Contractions)
+            .Concat(OCRError_AccentLetters)
+            .Concat(OCRError_I_And_L)
+            .Concat(OCRError_Other)
             .ToArray();
 
         #endregion
@@ -1586,465 +1905,6 @@ namespace SubtitlesCL
         {
             return (line1.EndsWith("</i>") && line2.StartsWith("<i>"));
         }
-
-        #endregion
-
-        #region OCR Errors
-
-        private static string CleanSubtitleOCR(string line, bool isPrintOCR)
-        {
-            int ocrCounter = 0;
-
-            foreach (var rule in ocrRules)
-            {
-                if (rule.Find.IsMatch(line))
-                {
-                    bool isIgnore = IsIgnore(line, rule);
-                    if (isIgnore)
-                        continue;
-
-                    ocrCounter++;
-
-                    if (isPrintOCR)
-                    {
-                        Console.WriteLine(ocrCounter);
-                        Console.WriteLine("OCR:    " + rule);
-                        Console.WriteLine("Before: " + line);
-                    }
-
-                    Match match = rule.Find.Match(line);
-                    Group group = match.Groups[1];
-                    line = line.Remove(group.Index, group.Length).Insert(group.Index, rule.ReplaceBy).Trim();
-
-                    if (isPrintOCR)
-                    {
-                        Console.WriteLine("After:  " + line);
-                    }
-                }
-            }
-
-            if (isPrintOCR && ocrCounter > 0)
-                Console.WriteLine();
-
-            return line;
-        }
-
-        private static SubtitleError CheckSubtitleOCR(string line)
-        {
-            foreach (var rule in ocrRules)
-            {
-                if (rule.Find.IsMatch(line))
-                {
-                    bool isIgnore = IsIgnore(line, rule);
-                    if (isIgnore)
-                        continue;
-
-                    return SubtitleError.OCR_Error;
-                }
-            }
-
-            return SubtitleError.None;
-        }
-
-        private static bool IsIgnore(string line, OCRRule rule)
-        {
-            if (rule.IgnoreRules != null && rule.IgnoreRules.Count > 0)
-            {
-                foreach (var ignoreRule in rule.IgnoreRules)
-                {
-                    Match match = null;
-
-                    if (ignoreRule.IgnoreFind != null)
-                        match = ignoreRule.IgnoreFind.Match(line);
-                    else
-                        match = rule.Find.Match(line);
-
-                    if (match.Success)
-                    {
-                        string ignoreValue = match.Value;
-                        if (string.IsNullOrEmpty(ignoreValue) == false)
-                        {
-                            if (ignoreRule.Ignore != null)
-                            {
-                                if (ignoreRule.StringComparisonIgnoreCase)
-                                {
-                                    if (ignoreRule.Ignore.Any(x => string.Compare(x, ignoreValue, StringComparison.InvariantCultureIgnoreCase) == 0))
-                                        return true;
-                                }
-                                else
-                                {
-                                    if (ignoreRule.Ignore.Any(x => x == ignoreValue))
-                                        return true;
-                                }
-                            }
-
-                            if (ignoreRule.StartsWithIgnore != null)
-                            {
-                                if (ignoreRule.StringComparisonIgnoreCase)
-                                {
-                                    if (ignoreRule.StartsWithIgnore.Any(x => ignoreValue.StartsWith(x, StringComparison.InvariantCultureIgnoreCase)))
-                                        return true;
-                                }
-                                else
-                                {
-                                    if (ignoreRule.StartsWithIgnore.Any(x => ignoreValue.StartsWith(x)))
-                                        return true;
-
-                                }
-                            }
-
-                            if (ignoreRule.EndsWithIgnore != null)
-                            {
-                                if (ignoreRule.StringComparisonIgnoreCase)
-                                {
-                                    if (ignoreRule.EndsWithIgnore.Any(x => ignoreValue.EndsWith(x, StringComparison.InvariantCultureIgnoreCase)))
-                                        return true;
-                                }
-                                else
-                                {
-                                    if (ignoreRule.EndsWithIgnore.Any(x => ignoreValue.EndsWith(x)))
-                                        return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private static readonly OCRRule[] ocrRules = new OCRRule[] {
-			// Custom
-              new OCRRule() { Find = new Regex(@"(`e)", RegexOptions.Compiled), ReplaceBy = "é" }
-             ,new OCRRule() { Find = new Regex(@"(ﬁ)", RegexOptions.Compiled), ReplaceBy = "fi" }
-             ,new OCRRule() { Find = new Regex(@"(Α)", RegexOptions.Compiled), ReplaceBy = "A" } // 913 -> A
-             ,new OCRRule() { Find = new Regex(@"(Β)", RegexOptions.Compiled), ReplaceBy = "B" } // 914 -> B
-             ,new OCRRule() { Find = new Regex(@"(Ε)", RegexOptions.Compiled), ReplaceBy = "E" } // 917 -> E
-             ,new OCRRule() { Find = new Regex(@"(Ζ)", RegexOptions.Compiled), ReplaceBy = "Z" } // 918 -> Z
-             ,new OCRRule() { Find = new Regex(@"(Η)", RegexOptions.Compiled), ReplaceBy = "H" } // 919 -> H
-             ,new OCRRule() { Find = new Regex(@"(Ι)", RegexOptions.Compiled), ReplaceBy = "I" } // 921 -> I
-             ,new OCRRule() { Find = new Regex(@"(Κ)", RegexOptions.Compiled), ReplaceBy = "K" } // 922 -> K
-             ,new OCRRule() { Find = new Regex(@"(Μ)", RegexOptions.Compiled), ReplaceBy = "M" } // 924 -> M
-             ,new OCRRule() { Find = new Regex(@"(Ν)", RegexOptions.Compiled), ReplaceBy = "N" } // 925 -> N
-             ,new OCRRule() { Find = new Regex(@"(Ο)", RegexOptions.Compiled), ReplaceBy = "O" } // 927 -> O
-             ,new OCRRule() { Find = new Regex(@"(Ρ)", RegexOptions.Compiled), ReplaceBy = "P" } // 929 -> P
-             ,new OCRRule() { Find = new Regex(@"(Τ)", RegexOptions.Compiled), ReplaceBy = "T" } // 932 -> T
-             ,new OCRRule() { Find = new Regex(@"(Υ)", RegexOptions.Compiled), ReplaceBy = "Y" } // 933 -> Y
-             ,new OCRRule() { Find = new Regex(@"(Χ)", RegexOptions.Compiled), ReplaceBy = "X" } // 935 -> X
-             ,new OCRRule() { Find = new Regex(@"(ϲ)", RegexOptions.Compiled), ReplaceBy = "c" } // 1010 -> c
-             ,new OCRRule() { Find = new Regex(@"(ϳ)", RegexOptions.Compiled), ReplaceBy = "j" } // 1011 -> j
-             ,new OCRRule() { Find = new Regex(@"(Ϲ)", RegexOptions.Compiled), ReplaceBy = "C" } // 1017 -> C
-             ,new OCRRule() { Find = new Regex(@"(Ϻ)", RegexOptions.Compiled), ReplaceBy = "M" } // 1018 -> M
-             ,new OCRRule() { Find = new Regex(@"(Ѕ)", RegexOptions.Compiled), ReplaceBy = "S" } // 1029 -> S
-             ,new OCRRule() { Find = new Regex(@"(І)", RegexOptions.Compiled), ReplaceBy = "I" } // 1030 -> I
-             ,new OCRRule() { Find = new Regex(@"(Ј)", RegexOptions.Compiled), ReplaceBy = "J" } // 1032 -> J
-             ,new OCRRule() { Find = new Regex(@"(А)", RegexOptions.Compiled), ReplaceBy = "A" } // 1040 -> A
-             ,new OCRRule() { Find = new Regex(@"(В)", RegexOptions.Compiled), ReplaceBy = "B" } // 1042 -> B
-             ,new OCRRule() { Find = new Regex(@"(Е)", RegexOptions.Compiled), ReplaceBy = "E" } // 1045 -> E
-             ,new OCRRule() { Find = new Regex(@"(К)", RegexOptions.Compiled), ReplaceBy = "K" } // 1050 -> K
-             ,new OCRRule() { Find = new Regex(@"(М)", RegexOptions.Compiled), ReplaceBy = "M" } // 1052 -> M
-             ,new OCRRule() { Find = new Regex(@"(Н)", RegexOptions.Compiled), ReplaceBy = "H" } // 1053 -> H
-             ,new OCRRule() { Find = new Regex(@"(О)", RegexOptions.Compiled), ReplaceBy = "O" } // 1054 -> O
-             ,new OCRRule() { Find = new Regex(@"(Р)", RegexOptions.Compiled), ReplaceBy = "P" } // 1056 -> P
-             ,new OCRRule() { Find = new Regex(@"(С)", RegexOptions.Compiled), ReplaceBy = "C" } // 1057 -> C
-             ,new OCRRule() { Find = new Regex(@"(Т)", RegexOptions.Compiled), ReplaceBy = "T" } // 1058 -> T
-             ,new OCRRule() { Find = new Regex(@"(У)", RegexOptions.Compiled), ReplaceBy = "y" } // 1059 -> y
-             ,new OCRRule() { Find = new Regex(@"(Х)", RegexOptions.Compiled), ReplaceBy = "X" } // 1061 -> X
-             ,new OCRRule() { Find = new Regex(@"(а)", RegexOptions.Compiled), ReplaceBy = "a" } // 1072 -> a
-             ,new OCRRule() { Find = new Regex(@"(е)", RegexOptions.Compiled), ReplaceBy = "e" } // 1077 -> e
-             ,new OCRRule() { Find = new Regex(@"(о)", RegexOptions.Compiled), ReplaceBy = "o" } // 1086 -> o
-             ,new OCRRule() { Find = new Regex(@"(р)", RegexOptions.Compiled), ReplaceBy = "p" } // 1088 -> p
-             ,new OCRRule() { Find = new Regex(@"(с)", RegexOptions.Compiled), ReplaceBy = "c" } // 1089 -> c
-             ,new OCRRule() { Find = new Regex(@"(у)", RegexOptions.Compiled), ReplaceBy = "y" } // 1091 -> y
-             ,new OCRRule() { Find = new Regex(@"(х)", RegexOptions.Compiled), ReplaceBy = "x" } // 1093 -> x
-
-			// Custom
-            ,new OCRRule() { Find = new Regex(@"\b(I-l)", RegexOptions.Compiled), ReplaceBy = "H" }
-            ,new OCRRule() { Find = new Regex(@"\b(I- l)", RegexOptions.Compiled), ReplaceBy = "H" }
-            ,new OCRRule() { Find = new Regex(@"\b(L\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
-            ,new OCRRule() { Find = new Regex(@"\b(I\\/l)", RegexOptions.Compiled), ReplaceBy = "M" }
-
-            // Custom
-            // Contractions
-            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )d\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )m\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:I)(""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:a)ren(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:c)ouldn(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:d)on(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:h)e(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:h)e(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:i)sn(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:i)t(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:l)et(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:s)he(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:s)he(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:t)hat(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:t)here(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:t)here(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:t)hey(""|''|'’| ""|"" )re\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:w)e(""|''|'’| ""|"" )re\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:w)eren(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:w)hat(""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:w)ould(""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:w)ouldn(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:y)ou(""|''|'’| ""|"" )ll\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:y)ou(""|''|'’| ""|"" )re\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:y)ou(""|''|'’| ""|"" )ve\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:o)(""|''|'’| ""|"" )er\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            // 'tweren't
-            ,new OCRRule() { Find = new Regex(@"(?i:t)weren(""|''|'’| ""|"" )t\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            ,new OCRRule() { Find = new Regex(@"\s?(""|''|'’| ""|"" )(?i:t)weren't\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            // 'em
-            ,new OCRRule() { Find = new Regex(@"\b\s(""|''|'’| ""|"" )em\b", RegexOptions.Compiled), ReplaceBy = "'" }
-            // 's
-            ,new OCRRule() { Find = new Regex(@"[a-z](""|''|'’| ""|"" )s\b", RegexOptions.Compiled), ReplaceBy = "'" }
-
-
-            // The most common OCR error - I (uppercase i) and l (lowercase L) mistakes
-
-			// Roman numerals
-			,new OCRRule() { Find = new Regex(@"\b[VXLCDM]*(lll)\b", RegexOptions.Compiled), ReplaceBy = "III" }
-            ,new OCRRule() { Find = new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(ll)I{0,1}\b", RegexOptions.Compiled), ReplaceBy = "II" }
-            ,new OCRRule() { Find = new Regex(@"^(ll)\b", RegexOptions.Compiled), ReplaceBy = "II" }
-            ,new OCRRule() { Find = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b", RegexOptions.Compiled), ReplaceBy = "I",
-                IgnoreRules = new List<IgnoreRule>() {
-                    // Il y a, il y avait
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{4}", RegexOptions.Compiled), EndsWithIgnore = new string[] { " y a" } }
-                    // Il faut
-                    ,new IgnoreRule() { IgnoreFind = new Regex(@"\b[IVXLCDM]*(l)[IVX]*\b.{5}", RegexOptions.Compiled), EndsWithIgnore = new string[] { " faut" } }
-                }
-            }
-
-			// Replace "II" with "ll" at the end of a lowercase word
-			,new OCRRule() { Find = new Regex(@"[a-zá-ú](II)", RegexOptions.Compiled), ReplaceBy = "ll" }
-			// Replace "II" with "ll" at the beginning of a lowercase word
-			,new OCRRule() { Find = new Regex(@"(II)[a-zá-ú]", RegexOptions.Compiled), ReplaceBy = "ll" }
-			// Replace "I" with "l" in the middle of a lowercase word
-			,new OCRRule() { Find = new Regex(@"[a-zá-ú](I)[a-zá-ú]", RegexOptions.Compiled), ReplaceBy = "l" }
-			// Replace "I" with "l" at the end of a lowercase word
-			,new OCRRule() { Find = new Regex(@"[a-zá-ú](I)\b", RegexOptions.Compiled), ReplaceBy = "l" }
-			// Replace "l" with "I" in the middle of an uppercase word
-			,new OCRRule() { Find = new Regex(@"[A-ZÁ-Ú](l)[A-ZÁ-Ú]", RegexOptions.Compiled), ReplaceBy = "I" }
-			// Replace "l" with "I" at the end of an uppercase word
-			,new OCRRule() { Find = new Regex(@"[A-ZÁ-Ú]{2,}(l)", RegexOptions.Compiled), ReplaceBy = "I" }
-
-			// Replace a single "l" with "I"
-			,new OCRRule() { Find = new Regex(@"\b(l)\b", RegexOptions.Compiled), ReplaceBy = "I" }
-
-			// Custom
-            ,new OCRRule() { Find = new Regex(@"\b((?<!<|/)i(?!>))\b", RegexOptions.Compiled), ReplaceBy = "I" }
-
-			// Replace "I'II"/"you'II" etc. with "I'll"/"you'll" etc.
-			,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú]'(II)\b", RegexOptions.Compiled), ReplaceBy = "ll" }
-			// Replace "I 'II" with "I'll" or "I' II" with "I'll" - rare cases with a space before or after the apostrophe
-			,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú]('\sII|\s'II)\b", RegexOptions.Compiled), ReplaceBy = "'ll" }
-
-			// Custom
-            // Replace "AII" with "All"
-			,new OCRRule() { Find = new Regex(@"A(II)\b", RegexOptions.Compiled), ReplaceBy = "ll" }
-
-			// Custom
-			,new OCRRule() { Find = new Regex(@"^(Iive)\b", RegexOptions.Compiled), ReplaceBy = "Live" }
-            ,new OCRRule() { Find = new Regex(@"^(Iiving)\b", RegexOptions.Compiled), ReplaceBy = "Living" }
-            ,new OCRRule() { Find = new Regex(@"\b(Iive)\b", RegexOptions.Compiled), ReplaceBy = "live" }
-            ,new OCRRule() { Find = new Regex(@"\b(Iiving)\b", RegexOptions.Compiled), ReplaceBy = "living" }
-
-            // Custom
-			,new OCRRule() { Find = new Regex(@"\b(fianc'e)\b", RegexOptions.Compiled), ReplaceBy = "fiancé" }
-            ,new OCRRule() { Find = new Regex(@"\b(Fianc'e)\b", RegexOptions.Compiled), ReplaceBy = "Fiancé" }
-            ,new OCRRule() { Find = new Regex(@"\b(caf'e)\b", RegexOptions.Compiled), ReplaceBy = "café" }
-            ,new OCRRule() { Find = new Regex(@"\b(Caf'e)\b", RegexOptions.Compiled), ReplaceBy = "Café" }
-            
-            // "I" at the beginning of a word before lowercase vowels is most likely an "l"
-			,new OCRRule() { Find = new Regex(@"\b(I)[oaeiuyá-ú]", RegexOptions.Compiled), ReplaceBy = "l",
-                IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(I)[oaeiuyá-ú].{2}", RegexOptions.Compiled), Ignore = new string[] { "Iago" } }
-                }
-            }
-			// "I" after an uppercase letter at the beginning and before a lowercase letter is most likely an "l"
-			,new OCRRule() { Find = new Regex(@"\b[A-ZÁ-Ú](I)[a-zá-ú]", RegexOptions.Compiled), ReplaceBy = "l" }
-			// "l" at the beginning before a consonant different from "l" is most likely an "I"
-			,new OCRRule() { Find = new Regex(@"\b(l)[^aeiouyàá-úl]", RegexOptions.Compiled), ReplaceBy = "I",
-                IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(l)[^aeiouyàá-úl].{1}", RegexOptions.Compiled), Ignore = new string[] { "lbs" } }
-                }
-            }
-
-			// Fixes for "I" at the beginning of the word before lowercase vowels
-			// The name "Ian"
-			,new OCRRule() { Find = new Regex(@"\b(lan)\b", RegexOptions.Compiled), ReplaceBy = "Ian" }
-			// The name "Iowa"
-			,new OCRRule() { Find = new Regex(@"\b(lowa)\b", RegexOptions.Compiled), ReplaceBy = "Iowa" }
-			// The word "Ill"
-			,new OCRRule() { Find = new Regex(@"[.?!-]\s?(III)\b", RegexOptions.Compiled), ReplaceBy = "Ill" }
-            ,new OCRRule() { Find = new Regex(@"^(III)\b.", RegexOptions.Compiled), ReplaceBy = "Ill" }
-			// The word "Ion" and its derivatives
-			,new OCRRule() { Find = new Regex(@"\b(l)on\b.", RegexOptions.Compiled), ReplaceBy = "I" }
-            ,new OCRRule() { Find = new Regex(@"\b(l)oni", RegexOptions.Compiled), ReplaceBy = "I" }
-			// The word "Iodine" and its derivatives
-			,new OCRRule() { Find = new Regex(@"\b(l)odi", RegexOptions.Compiled), ReplaceBy = "I" }
-            ,new OCRRule() { Find = new Regex(@"\b(l)odo", RegexOptions.Compiled), ReplaceBy = "I" }
-
-			// Custom
-            ,new OCRRule() { Find = new Regex(@"\b(L)\b", RegexOptions.Compiled), ReplaceBy = "I",
-                IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@"-(L)[-.]", RegexOptions.Compiled), Ignore = new string[] { "-L-", "-L." } },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\.(L)\.", RegexOptions.Compiled), Ignore = new string[] { ".L." } },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)\.A\.", RegexOptions.Compiled), Ignore = new string[] { "L.A." } },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"\b(L)'chaim", RegexOptions.Compiled), Ignore = new string[] { "L'chaim" } }
-                }
-            }
-
-			// Custom
-            ,new OCRRule() { Find = new Regex(@"\b(L'm)\b", RegexOptions.Compiled), ReplaceBy = "I'm" }
-            ,new OCRRule() { Find = new Regex(@"\b(L'd)\b", RegexOptions.Compiled), ReplaceBy = "I'd" }
-            ,new OCRRule() { Find = new Regex(@"\b(Lt's)\b", RegexOptions.Compiled), ReplaceBy = "It's" }
-            ,new OCRRule() { Find = new Regex(@"\b(Ln)\b", RegexOptions.Compiled), ReplaceBy = "In" }
-            ,new OCRRule() { Find = new Regex(@"\b(Ls)\b", RegexOptions.Compiled), ReplaceBy = "Is" }
-            ,new OCRRule() { Find = new Regex(@"\b(Lf)\b", RegexOptions.Compiled), ReplaceBy = "If" }
-
-			// Custom
-            ,new OCRRule() { Find = new Regex(@"\s(o)\s", RegexOptions.Compiled), ReplaceBy = "a" }
-            ,new OCRRule() { Find = new Regex(@"\b(ofthe)\b", RegexOptions.Compiled), ReplaceBy = "of the" }
-            ,new OCRRule() { Find = new Regex(@"\b(onthe)\b", RegexOptions.Compiled), ReplaceBy = "on the" }
-            ,new OCRRule() { Find = new Regex(@"\b(fora)\b", RegexOptions.Compiled), ReplaceBy = "for a" }
-            ,new OCRRule() { Find = new Regex(@"\b(numberi)\b", RegexOptions.Compiled), ReplaceBy = "number one" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:time)(to)\b", RegexOptions.Compiled), ReplaceBy = " to" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:don't)(do)\b", RegexOptions.Compiled), ReplaceBy = " do" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:don't)(just)\b", RegexOptions.Compiled), ReplaceBy = " just" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:for)(just)\b", RegexOptions.Compiled), ReplaceBy = " just" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:after)(just)\b", RegexOptions.Compiled), ReplaceBy = " just" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:off)(too)\b", RegexOptions.Compiled), ReplaceBy = " too" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:off)(first)\b", RegexOptions.Compiled), ReplaceBy = " first" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(this)\b", RegexOptions.Compiled), ReplaceBy = " this" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(they)\b", RegexOptions.Compiled), ReplaceBy = " they" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(this)\b", RegexOptions.Compiled), ReplaceBy = " this" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:that)(jerk)\b", RegexOptions.Compiled), ReplaceBy = " jerk" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:this)(jerk)\b", RegexOptions.Compiled), ReplaceBy = " jerk" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(them)\b", RegexOptions.Compiled), ReplaceBy = " them" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(thing)\b", RegexOptions.Compiled), ReplaceBy = " thing" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(things)\b", RegexOptions.Compiled), ReplaceBy = " things" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:of)(too)\b", RegexOptions.Compiled), ReplaceBy = " too" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(we)\b", RegexOptions.Compiled), ReplaceBy = " we" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(the)\b", RegexOptions.Compiled), ReplaceBy = " the" }
-            ,new OCRRule() { Find = new Regex(@"\b(?i:if)(those)\b", RegexOptions.Compiled), ReplaceBy = " those" }
-
-            // Custom
-            ,new OCRRule() { Find = new Regex(@"\b(Morn)\b", RegexOptions.Compiled), ReplaceBy = "Mom" }
-            ,new OCRRule() { Find = new Regex(@"\b(morn)\b", RegexOptions.Compiled), ReplaceBy = "mom" }
-
-            // Custom
-			,new OCRRule() { Find = new Regex(@"\b(FBl)\b", RegexOptions.Compiled), ReplaceBy = "FBI" }
-            ,new OCRRule() { Find = new Regex(@"\b(F\.B\.l)\b", RegexOptions.Compiled), ReplaceBy = "F.B.I" }
-            ,new OCRRule() { Find = new Regex(@"\b(SHIEID)\b", RegexOptions.Compiled), ReplaceBy = "SHIELD" }
-            ,new OCRRule() { Find = new Regex(@"\b(S\.H\.I\.E\.I\.D)\b", RegexOptions.Compiled), ReplaceBy = "S.H.I.E.L.D" }
-            ,new OCRRule() { Find = new Regex(@"\b(I.A.)\b", RegexOptions.Compiled), ReplaceBy = "L.A." }
-
-            // Custom
-            ,new OCRRule() { Find = new Regex(@"\b(?:Mr|Mrs|Dr|St)(\s+)\b", RegexOptions.Compiled), ReplaceBy = ". " }
-
-
-			// Other OCR errors
-
-			// Fix zero and capital 'o' ripping mistakes
-			,new OCRRule() { Find = new Regex(@"[0-9](O)", RegexOptions.Compiled), ReplaceBy = "0" }
-            ,new OCRRule() { Find = new Regex(@"[0-9](\.O)", RegexOptions.Compiled), ReplaceBy = ".0" }
-            ,new OCRRule() { Find = new Regex(@"[0-9](,O)", RegexOptions.Compiled), ReplaceBy = ",0" }
-            ,new OCRRule() { Find = new Regex(@"[A-Z](0)", RegexOptions.Compiled), ReplaceBy = "O" }
-            ,new OCRRule() { Find = new Regex(@"\b(0)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = "O" }
-
-            // Spaces fixes
-
-			// Custom
-            // 9: 55
-			,new OCRRule() { Find = new Regex(@"[0-2]?\d(: )[0-5]\d", RegexOptions.Compiled), ReplaceBy = ":" }
-
-            // "1 :", "2 :" ... "n :" to "n:"
-			,new OCRRule() { Find = new Regex(@"\d( :)", RegexOptions.Compiled), ReplaceBy = ":" }
-
-            // Spaces after aphostrophes, eg. "I' d" to "I'd", "I' LL" to "I'LL", "Hasn 't" and "Hasn' t", etc.
-			,new OCRRule() { Find = new Regex(@"(?i)[A-ZÁ-Úa-zá-ú]('\s|\s')(ll|ve|s|m|d|t|re)\b", RegexOptions.Compiled), ReplaceBy = "'" }
-
-			// Gun Calibre
-            // Derringer.22
-            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\.)\d+\b", RegexOptions.Compiled), ReplaceBy = " ." }
-
-            // Smart space after dot(s)
-            // Add space after a single dot
-            ,new OCRRule() { Find = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), ReplaceBy = ". ",
-                IgnoreRules = new List<IgnoreRule>() {
-                    new IgnoreRule() { IgnoreFind = new Regex(@".{1}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), Ignore = new string[] { "Ph.D" } },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")].{1}", RegexOptions.Compiled), Ignore = new string[] { "a.m.", "p.m." }, StringComparisonIgnoreCase = true },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")].{2}", RegexOptions.Compiled), EndsWithIgnore = new string[] { ".com", "a.k.a" }, StringComparisonIgnoreCase = true },
-                    new IgnoreRule() { IgnoreFind = new Regex(@"w{2}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), StartsWithIgnore = new string[] { "www." }, StringComparisonIgnoreCase = true }
-                }
-            }
-
-			// Custom
-            ,new OCRRule() { Find = new Regex(@"(a\.\sm\.)", RegexOptions.Compiled), ReplaceBy = "a.m." }
-            ,new OCRRule() { Find = new Regex(@"(p\.\sm\.)", RegexOptions.Compiled), ReplaceBy = "p.m." }
-
-            // Add space after the last of two or more consecutive dots (e.g. "...")
-            //,new OCRRule() { Find = new Regex(@"(\.\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), ReplaceBy = ".. " }
-            // Remove space after two or more consecutive dots (e.g. "...") at the beginning of the line
-            ,new OCRRule() { Find = new Regex(@"^(?:<i>)?\.{2,}(\s+)", RegexOptions.Compiled), ReplaceBy = "" }
-            // Add space after comma
-            ,new OCRRule() { Find = new Regex(@"(\,)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = ", " }
-
-            
-            // Custom
-            // x ...
-            ,new OCRRule() { Find = new Regex(@"(\s+)\.{3}(?:</i>)?$", RegexOptions.Compiled), ReplaceBy = "" }
-             // a ... a
-            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\s+)\.{3}\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = "" }
-             // 1, 000
-            ,new OCRRule() { Find = new Regex(@"\b\d+(, | ,)0{3}\b", RegexOptions.Compiled), ReplaceBy = "," }
-
-            // /t -> It
-            ,new OCRRule() { Find = new Regex(@"(/t)", RegexOptions.Compiled), ReplaceBy = "It" }
-
-            // Text..
-            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\.{2})(?:\s|♪|</i>|$)", RegexOptions.Compiled), ReplaceBy = "..." }
-            // ..Text
-            ,new OCRRule() { Find = new Regex(@"(?:\s|♪|<i>|^)(\.{2})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = "..." }
-            
-            // I-I-I, I-I
-            //,new OCRRule() { Find = new Regex(@"(I-I-I)", RegexOptions.Compiled), ReplaceBy = "I... I... I..." }
-            //,new OCRRule() { Find = new Regex(@"(I-I)", RegexOptions.Compiled), ReplaceBy = "I... I..." }
-            
-            // Text . Next text
-            ,new OCRRule() { Find = new Regex(@"[A-ZÁ-Úa-zá-ú](\s\.)\s[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), ReplaceBy = ". " }
-
-            // I6 -> 16
-            ,new OCRRule() { Find = new Regex(@"\b(I)\d+\b", RegexOptions.Compiled), ReplaceBy = "1" }
-
-            // ♪
-            ,new OCRRule() { Find = new Regex(@"^(Jj)$", RegexOptions.Compiled | RegexOptions.IgnoreCase), ReplaceBy = "♪" }
-            ,new OCRRule() { Find = new Regex(@"^(J['""&!]?|j['""&!]?)\s", RegexOptions.Compiled), ReplaceBy = "♪" }
-            ,new OCRRule() { Find = new Regex(@"\s(['""&!]?J|['""&!]?j)$", RegexOptions.Compiled), ReplaceBy = "♪" }
-            ,new OCRRule() { Find = new Regex(@"^(['""&!]?J|['""&!]?j)\s", RegexOptions.Compiled), ReplaceBy = "♪" }
-            ,new OCRRule() { Find = new Regex(@"\s(J['""&!]?|j['""&!]?)$", RegexOptions.Compiled), ReplaceBy = "♪" }
-
-            // ♪ Text &
-            ,new OCRRule() { Find = new Regex(@"^[♪&].*?(&)$", RegexOptions.Compiled), ReplaceBy = "♪" }
-            // & Text ♪
-            ,new OCRRule() { Find = new Regex(@"^(&).*?[♪&]$", RegexOptions.Compiled), ReplaceBy = "♪" }
-
-            // Ordinal Numbers
-            ,new OCRRule() { Find = new Regex(@"\b\d*1(\s+)st\b", RegexOptions.Compiled), ReplaceBy = "" }
-            ,new OCRRule() { Find = new Regex(@"\b\d*2(\s+)nd\b", RegexOptions.Compiled), ReplaceBy = "" }
-            ,new OCRRule() { Find = new Regex(@"\b\d*3(\s+)rd\b", RegexOptions.Compiled), ReplaceBy = "" }
-            ,new OCRRule() { Find = new Regex(@"\b\d*[4-9](\s+)th\b", RegexOptions.Compiled), ReplaceBy = "" }
-
-            // 1 -> I
-            // 1 can/can't/did/didn't/do/don't/had/hadn't/am/ain't/will/won't/would/wouldn't
-            ,new OCRRule() { Find = new Regex(@"\b(1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), ReplaceBy = "I" }
-            // can/can't/did/didn't/do/don't/had/hadn't/am/ain't/will/won't/would/wouldn't 1
-            ,new OCRRule() { Find = new Regex(@"\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(1)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), ReplaceBy = "I" }
-        };
 
         #endregion
 
