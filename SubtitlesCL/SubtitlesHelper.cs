@@ -1563,8 +1563,11 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(?<OCR>ll)I{0,1}\b", RegexOptions.Compiled), "OCR", "II", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"^(?<OCR>ll)\b", RegexOptions.Compiled), "OCR", "II", SubtitleError.OCR_Error)
 
-            // Ignore: Il y avait, Il y a, Il faut
-            ,new FindAndReplace(new Regex(@"\b[IVXLCDM]*(?<OCR>l)[IVX]*\b(?!(?: y avait| y a| faut)\b)", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b[IVXLCDM]*(?<OCR>l)[IVX]*\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error,
+                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 8, IgnoreIfEqualsTo = "Il y avait" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il y a " }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il faut" }
+            )
 
 			// Replace "II" with "ll" at the end of a lowercase word
 			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>II)", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
@@ -1599,15 +1602,17 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\s+(?<OCR>I)(?:ive|iving)\b", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
 
             // "I" at the beginning of a word before lowercase vowels is most likely an "l"
-            // Ignore: Iago
-			,new FindAndReplace(new Regex(@"\b(?<OCR>I)[oaeiuyá-ú](?!go\b)", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>I)[oaeiuyá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error,
+                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfEqualsTo = "Iago" }
+            )
 
             // "I" after an uppercase letter at the beginning and before a lowercase letter is most likely an "l"
             ,new FindAndReplace(new Regex(@"\b[A-ZÁ-Ú](?<OCR>I)[a-zá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
 
             // "l" at the beginning before a consonant different from "l" is most likely an "I"
-            // Ignore: lbs
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)[^aeiouyàá-úl](?!s\b)", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)[^aeiouyàá-úl]", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error,
+                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "lbs" }
+            )
 
 			// Fixes for "I" at the beginning of the word before lowercase vowels
 			// The name "Ian"
@@ -1624,8 +1629,14 @@ namespace SubtitlesCL
 			,new FindAndReplace(new Regex(@"\b(?<OCR>l)odi", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>l)odo", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
 
-            // Ignore: -L-, -L., .L., L.A., L'chaim
-            ,new FindAndReplace(new Regex(@"(?<![-.])\b(?<OCR>L)\b(?!(?:[-.]|\.A\.|'chaim)\b)", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "-L-" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "-L." }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "-L." }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = ".L." }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "L.A." }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "L'chaim" }
+            )
 
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L)'m\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L)'d\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
@@ -1699,17 +1710,16 @@ namespace SubtitlesCL
             // Derringer.22
             ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.)\d+\b", RegexOptions.Compiled), "OCR", " .", SubtitleError.OCR_Error)
 
-            // debug
             // Smart space after dot(s)
             // Add space after a single dot
-            ,new FindAndReplace(new Regex(@"[a-zá-úñä-ü](?<OCR>\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
-            //    IgnoreRules = new List<IgnoreRule>() {
-            //        new IgnoreRule() { IgnoreFind = new Regex(@".{1}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), Ignore = new string[] { "Ph.D" } },
-            //        new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")].{1}", RegexOptions.Compiled), Ignore = new string[] { "a.m.", "p.m." }, StringComparisonIgnoreCase = true },
-            //        new IgnoreRule() { IgnoreFind = new Regex(@"[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")].{2}", RegexOptions.Compiled), EndsWithIgnore = new string[] { ".com", "a.k.a" }, StringComparisonIgnoreCase = true },
-            //        new IgnoreRule() { IgnoreFind = new Regex(@"w{2}[a-zá-úñä-ü](\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), StartsWithIgnore = new string[] { "www." }, StringComparisonIgnoreCase = true }
-            //    }
-            //}
+            ,new FindAndReplace(new Regex(@"[a-zá-úñä-ü](?<OCR>\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfEqualsTo = "Ph.D" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "a.m." }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "p.m." }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, IgnoreIfCaseInsensitiveStartsWith = "www." }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEndsWith = ".com" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEndsWith = "a.k.a" }
+            )
 
             // a.m., p.m.
             ,new FindAndReplace(new Regex(@"(?<OCR>a\.\sm\.)", RegexOptions.Compiled), "OCR", "a.m.", SubtitleError.OCR_Error)

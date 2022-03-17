@@ -1,47 +1,19 @@
 ﻿namespace System.Text.RegularExpressions
 {
+    public delegate bool IsMatchEvaluator(Match match);
+
     public static partial class RegexExtensions
     {
-        public static string ReplaceGroup(this Regex regex, string input, string groupName, string replacement)
+        public static string ReplaceGroup(this Regex regex, string input, string groupName, string replacement, IsMatchEvaluator evaluator = null)
         {
             return regex.Replace(
                 input,
                 match =>
                 {
-                    Group group = match.Groups[groupName];
-                    if (group.Success)
-                    {
-                        StringBuilder sb = new StringBuilder();
-
-                        int previousCaptureEnd = 0;
-                        foreach (Capture capture in group.Captures)
-                        {
-                            int currentCaptureEnd = capture.Index + capture.Length - match.Index;
-                            int currentCaptureLength = capture.Index - match.Index - previousCaptureEnd;
-                            sb.Append(match.Value.Substring(previousCaptureEnd, currentCaptureLength));
-                            sb.Append(replacement);
-                            previousCaptureEnd = currentCaptureEnd;
-                        }
-
-                        sb.Append(match.Value.Substring(previousCaptureEnd));
-
-                        return sb.ToString();
-                    }
-                    else
-                    {
+                    if (evaluator != null && evaluator(match) == false)
                         return match.Value;
-                    }
-                }
-            );
-        }
 
-        public static string ReplaceGroup(this Regex regex, string input, int groupNum, string replacement)
-        {
-            return regex.Replace(
-                input,
-                match =>
-                {
-                    Group group = match.Groups[groupNum];
+                    Group group = match.Groups[groupName];
                     if (group.Success)
                     {
                         StringBuilder sb = new StringBuilder();
