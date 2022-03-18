@@ -497,6 +497,7 @@ namespace SubtitlesCL
 
         public static readonly Regex regexMergedLines = new Regex(@"(?<Line1>^-[^-]+)(?<Line2><i>-.*?</i>$)");
         public static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
+        public static readonly Regex regexLowerLetter = new Regex(@"[a-zá-ú]", RegexOptions.Compiled);
         public static readonly Regex regexDialog = new Regex(@"^(?<Italic><i>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
         public static readonly Regex regexEndsWithLowerCaseLetter = new Regex(@"[a-zá-ú]$", RegexOptions.Compiled);
@@ -669,6 +670,9 @@ namespace SubtitlesCL
                     isStartsWithNote = line.StartsWith("♪"),
                     isEndsWithDots = line.EndsWith("..."),
                     isEndsWithComma = line.EndsWith(","),
+                    isEndsWithPeriod = line.EndsWith("."),
+                    isEndsWithQuestionMark = line.EndsWith("?"),
+                    isEndsWithExclamationMark = line.EndsWith("!"),
                     isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
                 }).ToArray();
 
@@ -791,8 +795,22 @@ namespace SubtitlesCL
                 else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
                     string firstCharFirstLine = (lines[0][0]).ToString();
+                    string firstCharSecondLine = (lines[1][0]).ToString();
 
-                    if (regexCapitalLetter.IsMatch(firstCharFirstLine))
+                    if (regexLowerLetter.IsMatch(firstCharFirstLine) && (
+                        resultsDialog[0].isEndsWithDots ||
+                        resultsDialog[0].isEndsWithPeriod ||
+                        resultsDialog[0].isEndsWithQuestionMark ||
+                        resultsDialog[0].isEndsWithExclamationMark
+                        ))
+                    {
+                        // line 1.
+                        // - Line 2
+                        lines[0] = "- " + lines[0];
+                        // - line 1.
+                        // - Line 2
+                    }
+                    else if (regexCapitalLetter.IsMatch(firstCharFirstLine))
                     {
                         // Line 1
                         // - Line 2
@@ -944,6 +962,9 @@ namespace SubtitlesCL
                     isStartsWithNote = line.StartsWith("♪"),
                     isEndsWithDots = line.EndsWith("..."),
                     isEndsWithComma = line.EndsWith(","),
+                    isEndsWithPeriod = line.EndsWith("."),
+                    isEndsWithQuestionMark = line.EndsWith("?"),
+                    isEndsWithExclamationMark = line.EndsWith("!"),
                     isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
                 }).ToArray();
 
@@ -1025,8 +1046,18 @@ namespace SubtitlesCL
                 else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
                     string firstCharFirstLine = (lines[0][0]).ToString();
+                    string firstCharSecondLine = (lines[1][0]).ToString();
 
-                    if (regexCapitalLetter.IsMatch(firstCharFirstLine))
+                    if (regexLowerLetter.IsMatch(firstCharFirstLine) && (
+                        resultsDialog[0].isEndsWithDots ||
+                        resultsDialog[0].isEndsWithPeriod ||
+                        resultsDialog[0].isEndsWithQuestionMark ||
+                        resultsDialog[0].isEndsWithExclamationMark
+                        ))
+                    {
+                        subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                    else if (regexCapitalLetter.IsMatch(firstCharFirstLine))
                     {
                         subtitleError |= SubtitleError.Dialog_Error;
                     }
