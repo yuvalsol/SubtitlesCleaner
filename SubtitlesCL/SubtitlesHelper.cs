@@ -352,42 +352,6 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        public static List<Subtitle> SetSubtitlesOrder(this List<Subtitle> subtitles)
-        {
-            if (subtitles == null)
-                return new List<Subtitle>();
-
-            if (subtitles.Count == 0)
-                return subtitles;
-
-            for (int k = subtitles.Count - 1; k >= 0; k--)
-            {
-                Subtitle subtitle = subtitles[k];
-
-                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
-                {
-                    string line = subtitle.Lines[i];
-
-                    if (IsEmptyLine(line))
-                    {
-                        subtitle.Lines.RemoveAt(i);
-                    }
-                    else if (IsNotSubtitle(line))
-                    {
-                        subtitle.Lines = null;
-                        break;
-                    }
-                }
-
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
-                    subtitles.RemoveAt(k);
-            }
-
-            subtitles.Sort();
-
-            return subtitles;
-        }
-
         public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
         {
             if (subtitles == null)
@@ -2203,6 +2167,46 @@ namespace SubtitlesCL
                 subtitle.Show = new DateTime(1900, 1, 1).AddMilliseconds((v1 * subtitle.Show.ToMilliseconds()) + v2);
                 subtitle.Hide = new DateTime(1900, 1, 1).AddMilliseconds((v1 * subtitle.Hide.ToMilliseconds()) + v2);
             }
+        }
+
+        #endregion
+
+        #region Order
+
+        public static List<Subtitle> SetSubtitlesOrder(this List<Subtitle> subtitles)
+        {
+            if (subtitles == null)
+                return new List<Subtitle>();
+
+            if (subtitles.Count == 0)
+                return subtitles;
+
+            for (int k = subtitles.Count - 1; k >= 0; k--)
+            {
+                Subtitle subtitle = subtitles[k];
+
+                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                {
+                    string line = subtitle.Lines[i];
+
+                    if (IsEmptyLine(line))
+                    {
+                        subtitle.Lines.RemoveAt(i);
+                    }
+                    else if (IsNotSubtitle(line))
+                    {
+                        subtitle.Lines = null;
+                        break;
+                    }
+                }
+
+                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
+                    subtitles.RemoveAt(k);
+            }
+
+            subtitles.Sort();
+
+            return subtitles;
         }
 
         #endregion
