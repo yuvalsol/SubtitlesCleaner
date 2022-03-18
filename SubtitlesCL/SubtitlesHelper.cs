@@ -238,11 +238,11 @@ namespace SubtitlesCL
                 {
                     string line = subtitle.Lines[i];
 
-                    if (IsEmptyLine(line, isPrint))
+                    if (IsEmptyLine(line))
                     {
                         subtitle.Lines.RemoveAt(i);
                     }
-                    else if (IsNotSubtitle(line, isPrint))
+                    else if (IsNotSubtitle(line))
                     {
                         subtitle.Lines = null;
                         break;
@@ -274,12 +274,12 @@ namespace SubtitlesCL
                 {
                     string line = subtitle.Lines[i];
 
-                    if (IsEmptyLine(line, isPrint))
+                    if (IsEmptyLine(line))
                     {
                         subtitle.Lines.RemoveAt(i);
                         subtitlesChanged = true;
                     }
-                    else if (IsNotSubtitle(line, isPrint))
+                    else if (IsNotSubtitle(line))
                     {
                         subtitle.Lines = null;
                         subtitlesChanged = true;
@@ -289,7 +289,7 @@ namespace SubtitlesCL
                     {
                         string cleanLine = (CleanSubtitleLine(line, cleanHICaseInsensitive, isPrint) ?? string.Empty).Trim();
 
-                        if (IsEmptyLine(cleanLine, isPrint))
+                        if (IsEmptyLine(cleanLine))
                         {
                             subtitle.Lines.RemoveAt(i);
                             subtitlesChanged = true;
@@ -340,7 +340,7 @@ namespace SubtitlesCL
                 {
                     string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i], isPrint) ?? string.Empty).Trim();
 
-                    if (IsEmptyLine(cleanLine, isPrint))
+                    if (IsEmptyLine(cleanLine))
                         subtitle.Lines.RemoveAt(i);
                     else
                         subtitle.Lines[i] = cleanLine;
@@ -368,11 +368,11 @@ namespace SubtitlesCL
                 {
                     string line = subtitle.Lines[i];
 
-                    if (IsEmptyLine(line, false))
+                    if (IsEmptyLine(line))
                     {
                         subtitle.Lines.RemoveAt(i);
                     }
-                    else if (IsNotSubtitle(line, false))
+                    else if (IsNotSubtitle(line))
                     {
                         subtitle.Lines = null;
                         break;
@@ -987,7 +987,7 @@ namespace SubtitlesCL
 
         private static string CleanSubtitleLinePost(string line, bool isPrint)
         {
-            if (IsEmptyLine(line, isPrint))
+            if (IsEmptyLine(line))
                 return null;
 
             return line;
@@ -995,7 +995,7 @@ namespace SubtitlesCL
 
         private static SubtitleError CheckSubtitleLinePost(string line, bool isPrint)
         {
-            if (IsEmptyLine(line, isPrint))
+            if (IsEmptyLine(line))
                 return SubtitleError.Empty_Line;
 
             SubtitleError subtitleError = SubtitleError.None;
@@ -1940,14 +1940,14 @@ namespace SubtitlesCL
 
         /************************************************************************/
 
-        private static bool IsEmptyLine(string line, bool isPrint)
+        private static bool IsEmptyLine(string line)
         {
-            return string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, isPrint));
+            return string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, false));
         }
 
-        private static bool IsNotSubtitle(string line, bool isPrint)
+        private static bool IsNotSubtitle(string line)
         {
-            return string.IsNullOrEmpty(CleanLine(line, NotSubtitle, false, isPrint));
+            return string.IsNullOrEmpty(CleanLine(line, NotSubtitle, false, false));
         }
 
         public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-Z]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
