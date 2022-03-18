@@ -495,6 +495,7 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines
 
+        public static readonly Regex regexMergedLines = new Regex(@"(?<Line1>^-[^-]+)(?<Line2><i>-.*?</i>$)");
         public static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÁ-Ú]", RegexOptions.Compiled);
         public static readonly Regex regexDialog = new Regex(@"^(?<Italic><i>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
@@ -504,6 +505,22 @@ namespace SubtitlesCL
         {
             if (lines == null || lines.Count == 0)
                 return null;
+
+            if (lines.Count == 1)
+            {
+                // - Line 1 <i>- Line 2</i>
+                //
+                // - Line 1
+                // <i>- Line 2</i>
+                if (regexMergedLines.IsMatch(lines[0]))
+                {
+                    Match match = regexMergedLines.Match(lines[0]);
+                    string line1 = match.Groups["Line1"].Value;
+                    string line2 = match.Groups["Line2"].Value;
+                    lines[0] = line1;
+                    lines.Add(line2);
+                }
+            }
 
             if (lines.Count > 1)
             {
@@ -842,6 +859,14 @@ namespace SubtitlesCL
                 return SubtitleError.None;
 
             SubtitleError subtitleError = SubtitleError.None;
+
+            if (lines.Count == 1)
+            {
+                if (regexMergedLines.IsMatch(lines[0]))
+                {
+                    subtitleError |= SubtitleError.Hearing_Impaired;
+                }
+            }
 
             if (lines.Count > 1)
             {
