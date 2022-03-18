@@ -249,7 +249,7 @@ namespace SubtitlesCL
                     }
                 }
 
-                subtitle.Lines = CleanSubtitleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
+                subtitle.Lines = CleanSubtitleMultipleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
 
                 if (subtitle.Lines == null || subtitle.Lines.Count == 0)
                     subtitles.RemoveAt(k);
@@ -303,7 +303,7 @@ namespace SubtitlesCL
                 }
 
                 List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
-                cleanLines = CleanSubtitleLines(cleanLines, cleanHICaseInsensitive);
+                cleanLines = CleanSubtitleMultipleLines(cleanLines, cleanHICaseInsensitive);
 
                 if (cleanLines == null || cleanLines.Count == 0)
                 {
@@ -346,7 +346,7 @@ namespace SubtitlesCL
                         subtitle.Lines[i] = cleanLine;
                 }
 
-                subtitle.Lines = CleanSubtitleLinesPost(subtitle.Lines);
+                subtitle.Lines = CleanSubtitleMultipleLinesPost(subtitle.Lines);
             }
 
             return subtitles;
@@ -410,9 +410,9 @@ namespace SubtitlesCL
                 subtitle.SubtitleError |= CheckSubtitleLinePost(line, isPrint);
             }
 
-            subtitle.SubtitleError |= CheckSubtitleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
-            subtitle.SubtitleError |= CheckSubtitleLines(subtitle.Lines, cleanHICaseInsensitive);
-            subtitle.SubtitleError |= CheckSubtitleLinesPost(subtitle.Lines);
+            subtitle.SubtitleError |= CheckSubtitleMultipleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
+            subtitle.SubtitleError |= CheckSubtitleMultipleLines(subtitle.Lines, cleanHICaseInsensitive);
+            subtitle.SubtitleError |= CheckSubtitleMultipleLinesPost(subtitle.Lines);
 
             if ((subtitle.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle)
                 subtitle.SubtitleError = SubtitleError.Not_Subtitle;
@@ -420,7 +420,7 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Pre
 
-        private static List<string> CleanSubtitleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
+        private static List<string> CleanSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return null;
@@ -450,7 +450,7 @@ namespace SubtitlesCL
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
+        private static SubtitleError CheckSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return SubtitleError.None;
@@ -500,7 +500,7 @@ namespace SubtitlesCL
         public static readonly Regex regexContainsDialog = new Regex(@" - [A-ZÁ-Ú]", RegexOptions.Compiled);
         public static readonly Regex regexEndsWithLowerCaseLetter = new Regex(@"[a-zá-ú]$", RegexOptions.Compiled);
 
-        private static List<string> CleanSubtitleLines(List<string> lines, bool cleanHICaseInsensitive)
+        private static List<string> CleanSubtitleMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return null;
@@ -794,7 +794,7 @@ namespace SubtitlesCL
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleLines(List<string> lines, bool cleanHICaseInsensitive)
+        private static SubtitleError CheckSubtitleMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return SubtitleError.None;
@@ -1007,7 +1007,7 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Post
 
-        private static List<string> CleanSubtitleLinesPost(List<string> lines)
+        private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines)
         {
             // Line 1 - Dialog
             bool isMatchDialog = regexDialog.IsMatch(lines[0]);
@@ -1078,7 +1078,7 @@ namespace SubtitlesCL
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleLinesPost(List<string> lines)
+        private static SubtitleError CheckSubtitleMultipleLinesPost(List<string> lines)
         {
             if (lines == null || lines.Count == 0)
                 return SubtitleError.None;
