@@ -1627,8 +1627,9 @@ namespace SubtitlesCL
 
             ,new FindAndReplace(new Regex(@"\b[IVXLCDM]*(?<OCR>l)[IVX]*\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error,
                 new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 8, IgnoreIfEqualsTo = "Il y avait" }
-                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il y a " }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "Il est" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il faut" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il y a " }
             )
 
 			// Replace "II" with "ll" at the end of a lowercase word
