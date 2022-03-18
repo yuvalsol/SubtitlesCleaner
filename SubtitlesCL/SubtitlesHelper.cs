@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -1830,9 +1831,9 @@ namespace SubtitlesCL
 
             foreach (var rule in rules)
             {
-                string newLine = rule.CleanLine(line, cleanHICaseInsensitive);
+                string cleanLine = rule.CleanLine(line, cleanHICaseInsensitive);
 
-                if (line != newLine)
+                if (line != cleanLine)
                 {
                     ruleCounter++;
 
@@ -1840,11 +1841,12 @@ namespace SubtitlesCL
                     {
                         Console.WriteLine(ruleCounter);
                         Console.WriteLine("OCR:    " + (cleanHICaseInsensitive ? rule.ToStringCI() : rule.ToString()));
-                        Console.WriteLine("Before: " + line);
-                        Console.WriteLine("After:  " + newLine);
+                        //Console.WriteLine("Before: " + line);
+                        //Console.WriteLine("After:  " + cleanLine);
+                        PrintColorfulLines(line, rule, cleanHICaseInsensitive);
                     }
 
-                    line = newLine;
+                    line = cleanLine;
                     subtitleError |= rule.SubtitleError;
 
                     if (subtitleError.HasFlag(SubtitleError.Empty_Line))
@@ -1870,6 +1872,70 @@ namespace SubtitlesCL
             }
 
             return line;
+        }
+
+        private static void PrintColorfulLines(string line, FindAndReplace rule, bool cleanHICaseInsensitive)
+        {
+            List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
+            Regex regex = (cleanHICaseInsensitive ? rule.RegexCI : rule.Regex);
+            var matches = regex.Matches(line);
+            foreach (Match match in matches)
+            {
+                if (match.Success)
+                {
+                    foreach (Group group in match.Groups.Cast<Group>().Skip(1))
+                    {
+                        if (group.Success)
+                        {
+                            foreach (Capture capture in group.Captures)
+                            {
+                                locations.Add(new Tuple<int, int>(capture.Index, capture.Length));
+                            }
+                        }
+                    }
+                }
+            }
+
+            locations = locations.Distinct().OrderBy(l => l.Item1).ToList();
+
+            Console.Write("Before: ");
+            PrintColorfulLines(line, locations);
+            Console.Write("After:  ");
+            PrintColorfulLines(line, locations, rule.Replacement);
+        }
+
+        private static void PrintColorfulLines(string line, List<Tuple<int, int>> locations, string replacement = null)
+        {
+            int index = 0;
+            foreach (var location in locations)
+            {
+                int length = location.Item1; // index
+                if (index + length >= line.Length)
+                    length = line.Length - index;
+                if (0 <= index && index < line.Length && length > 0)
+                {
+                    Console.Write(line.Substring(index, length));
+                }
+
+                index = location.Item1; // index
+                length = location.Item2; // length
+                if (index + length >= line.Length)
+                    length = line.Length - index;
+                if (0 <= index && index < line.Length && length > 0)
+                {
+                    if (string.IsNullOrEmpty(replacement))
+                        Colorful.Console.Write(line.Substring(index, length), Color.Red);
+                    else
+                        Colorful.Console.Write(replacement, Color.Red);
+                }
+
+                index = location.Item1 + location.Item2; // index + length
+            }
+
+            if (index < line.Length)
+                Console.Write(line.Substring(index));
+
+            Console.WriteLine();
         }
 
         /************************************************************************/
