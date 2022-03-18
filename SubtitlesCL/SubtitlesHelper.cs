@@ -1837,7 +1837,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b\d+(?<OCR>, | ,)0{3}\b", RegexOptions.Compiled), "OCR", ",", SubtitleError.OCR_Error)
 
             // /t => It
-            ,new FindAndReplace(new Regex(@"(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?:^|\s)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.OCR_Error)
 
             // I-I-I, I-I
             //,new FindAndReplace(new Regex(@"(?<OCR>I- I- I)", RegexOptions.Compiled), "OCR", "I... I... I", SubtitleError.OCR_Error)
