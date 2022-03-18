@@ -96,7 +96,7 @@ namespace SubtitlesCL
                 }
                 else
                 {
-                    IsMatchEvaluator IsMatch = match =>
+                    bool IsMatch(Match match)
                     {
                         foreach (var rule in IgnoreRules)
                         {
@@ -124,7 +124,7 @@ namespace SubtitlesCL
                         }
 
                         return true;
-                    };
+                    }
 
                     return regex.ReplaceGroup(line, GroupName, Replacement, IsMatch);
                 }

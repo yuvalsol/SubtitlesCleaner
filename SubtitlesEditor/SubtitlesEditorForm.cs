@@ -149,7 +149,7 @@ namespace SubtitlesEditor
             if (isSRT)
             {
                 subtitles = SubtitlesHelper.GetSubtitles(filePath);
-                subtitles.CheckSubtitles(cleanHICaseInsensitive);
+                subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
                 originalSubtitles = subtitles.Clone();
                 this.filePath = filePath;
                 SetSubtitlesToEditor(subtitles);
@@ -295,7 +295,7 @@ namespace SubtitlesEditor
                 return;
 
             var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -310,7 +310,7 @@ namespace SubtitlesEditor
                 return;
 
             var newSubtitles = originalSubtitles.Clone();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(false);
         }
@@ -542,20 +542,21 @@ namespace SubtitlesEditor
 
             if (saveAsFileDialog.ShowDialog(this) == DialogResult.OK)
             {
-                string message = string.Empty;
-
                 try
                 {
                     File.WriteAllLines(saveAsFileDialog.FileName, subtitles.ToLines(), Encoding.UTF8);
-                    message = Path.GetFileName(saveAsFileDialog.FileName) + " saved";
+                    MessageBox.Show(this,
+                        Path.GetFileName(saveAsFileDialog.FileName) + " saved",
+                        "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information
+                    );
                 }
                 catch (Exception ex)
                 {
-                    message = "Failed to save " + Path.GetFileName(saveAsFileDialog.FileName) + Environment.NewLine + ex.Message;
+                    MessageBox.Show(this,
+                        "Failed to save " + Path.GetFileName(saveAsFileDialog.FileName) + Environment.NewLine + ex.Message,
+                        "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information
+                    );
                 }
-
-                message = message.Trim();
-                MessageBox.Show(this, message, "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -810,8 +811,6 @@ namespace SubtitlesEditor
         {
             Subtitle subtitle = subtitles[index];
 
-            EditorRow editorRow = GetEditorRowAt(index);
-
             Regex regex = new Regex(
                 string.Format("{1}{0}{1}", Regex.Escape(find.Search), (find.MatchWholeWord ? "\\b" : string.Empty)),
                 (find.MatchCase == false ? RegexOptions.IgnoreCase : RegexOptions.None)
@@ -842,7 +841,7 @@ namespace SubtitlesEditor
             }
 
             if (isFound && isReplaced)
-                subtitle.CheckSubtitle(cleanHICaseInsensitive);
+                subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
         }
 
         #endregion
@@ -855,7 +854,7 @@ namespace SubtitlesEditor
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (e.Item2 ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            subtitle.CheckSubtitle(cleanHICaseInsensitive);
+            subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
 
             editorRow.Text = subtitle.ToStringWithPipe();
             editorRow.Lines = subtitle.ToString();
