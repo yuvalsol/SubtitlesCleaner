@@ -1834,6 +1834,8 @@ namespace SubtitlesCL
 
                 if (line != newLine)
                 {
+                    ruleCounter++;
+
                     if (isPrint)
                     {
                         Console.WriteLine(ruleCounter);
@@ -1862,7 +1864,10 @@ namespace SubtitlesCL
                 subtitleError = SubtitleError.Hearing_Impaired;
 
             if (isPrint && ruleCounter > 0)
+            {
+                Console.WriteLine("******************************************");
                 Console.WriteLine();
+            }
 
             return line;
         }
