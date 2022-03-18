@@ -2216,7 +2216,7 @@ namespace SubtitlesCL
 
         #region Errors
 
-        public static readonly Regex regexBrackets = new Regex(@"[\({\[~\]}\)]", RegexOptions.Compiled);
+        public static readonly Regex regexBrackets = new Regex(@"[\({\[~_\]}\)]", RegexOptions.Compiled);
         public static readonly Regex regexAngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
         public static readonly Regex regexAngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
         public static readonly Regex regexColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
