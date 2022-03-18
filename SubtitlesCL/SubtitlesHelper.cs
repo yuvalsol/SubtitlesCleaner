@@ -337,7 +337,7 @@ namespace SubtitlesCL
 
                 for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
                 {
-                    string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i], cleanHICaseInsensitive) ?? string.Empty).Trim();
+                    string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i]) ?? string.Empty).Trim();
 
                     if (IsEmptyLine(cleanLine))
                         subtitle.Lines.RemoveAt(i);
@@ -406,7 +406,7 @@ namespace SubtitlesCL
             foreach (string line in subtitle.Lines)
             {
                 subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive);
-                subtitle.SubtitleError |= CheckSubtitleLinePost(line, cleanHICaseInsensitive);
+                subtitle.SubtitleError |= CheckSubtitleLinePost(line);
             }
 
             subtitle.SubtitleError |= CheckSubtitleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
@@ -984,30 +984,20 @@ namespace SubtitlesCL
 
         #region Clean Single Line Post
 
-        private static string CleanSubtitleLinePost(string line, bool cleanHICaseInsensitive)
+        private static string CleanSubtitleLinePost(string line)
         {
             if (string.IsNullOrEmpty(line))
                 return line;
 
-            line = CleanDash(line);
-
-            line = CleanDots(line);
-
             return line;
         }
 
-        private static SubtitleError CheckSubtitleLinePost(string line, bool cleanHICaseInsensitive)
+        private static SubtitleError CheckSubtitleLinePost(string line)
         {
             if (IsEmptyLine(line))
                 return SubtitleError.Empty_Line;
 
             SubtitleError subtitleError = SubtitleError.None;
-
-            if (line != CleanDash(line))
-                subtitleError |= SubtitleError.Punctuation_Error;
-
-            if (line != CleanDots(line))
-                subtitleError |= SubtitleError.Punctuation_Error;
 
             return subtitleError;
         }
@@ -1725,8 +1715,6 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"(?<OCR>a\.\sm\.)", RegexOptions.Compiled), "OCR", "a.m.", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"(?<OCR>p\.\sm\.)", RegexOptions.Compiled), "OCR", "p.m.", SubtitleError.OCR_Error)
 
-            // Add space after the last of two or more consecutive dots (e.g. "...")
-            //,new FindAndReplace(new Regex(@"(?<OCR>\.\.)[^(\s\n\'\.\?\!<"")]", RegexOptions.Compiled), "OCR", ".. ", SubtitleError.OCR_Error)
             // Remove space after two or more consecutive dots (e.g. "...") at the beginning of the line
             ,new FindAndReplace(new Regex(@"^(?:<i>)?\.{2,}(?<OCR>\s+)", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
             // Add space after comma
@@ -1743,14 +1731,30 @@ namespace SubtitlesCL
             // /t => It
             ,new FindAndReplace(new Regex(@"(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.OCR_Error)
 
+            // I-I-I, I-I
+            //,new FindAndReplace(new Regex(@"(?<OCR>I- I- I)", RegexOptions.Compiled), "OCR", "I... I... I", SubtitleError.OCR_Error)
+            //,new FindAndReplace(new Regex(@"(?<OCR>I-I-I)", RegexOptions.Compiled), "OCR", "I... I... I", SubtitleError.OCR_Error)
+            //,new FindAndReplace(new Regex(@"(?<OCR>I- I)", RegexOptions.Compiled), "OCR", "I... I", SubtitleError.OCR_Error)
+            //,new FindAndReplace(new Regex(@"(?<OCR>I-I)", RegexOptions.Compiled), "OCR", "I... I", SubtitleError.OCR_Error)
+
+            // -</i> => ...</i>
+            ,new FindAndReplace(new Regex(@"(?<OCR>\s*-\s*)</i>$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            // Text - $ => Text...$
+            // doesn't match un-fuckin-$reasonable
+            ,new FindAndReplace(new Regex(@"(?<![A-ZÁ-Úa-zá-ú]+-[A-ZÁ-Úa-zá-ú]+)(?<OCR>\s*-\s*)$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            // text - text => text... text
+            ,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR> - )[a-zá-ú]", RegexOptions.Compiled), "OCR", "... ", SubtitleError.OCR_Error)
+
+            // text - text => text... text
+            ,new FindAndReplace(new Regex(@"[Ia-zá-ú](?<OCR>-)\s[A-ZÁ-Ú]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+
             // Text..
             ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.{2})(?:\s|♪|</i>|$)", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
             // ..Text
             ,new FindAndReplace(new Regex(@"(?:\s|♪|<i>|^)(?<OCR>\.{2})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
-            
-            // I-I-I, I-I
-            //,new FindAndReplace(new Regex(@"(?<OCR>I-I-I)", RegexOptions.Compiled), "OCR", "I... I... I...", SubtitleError.OCR_Error)
-            //,new FindAndReplace(new Regex(@"(?<OCR>I-I)", RegexOptions.Compiled), "OCR", "I... I...", SubtitleError.OCR_Error)
+
+            // from iterate post
+            //,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú0-9](?:(?<OCR>\.{2,})[A-ZÁ-Úa-zá-ú0-9])+", RegexOptions.Compiled), "OCR", "... ", SubtitleError.OCR_Error)
             
             // Text . Next text
             ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\s\.)\s[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
@@ -1889,26 +1893,6 @@ namespace SubtitlesCL
             return
                 IsHearingImpairedMultipleLines_RoundBrackets(line1, line2) ||
                 IsHearingImpairedMultipleLines_SquareBrackets(line1, line2);
-        }
-
-        public static readonly Regex regexDash1 = new Regex(@"\s*-\s*</i>$", RegexOptions.Compiled);
-        public static readonly Regex regexDash2 = new Regex(@"(?<![A-ZÁ-Úa-zá-ú]+-[A-ZÁ-Úa-zá-ú]+)\s*-\s*$", RegexOptions.Compiled); // doesn't match un-fuckin-$reasonable
-        public static readonly Regex regexDash3 = new Regex(@"[a-zá-ú](?<Dash> - )[a-zá-ú]", RegexOptions.Compiled);
-
-        private static string CleanDash(string line)
-        {
-            return line
-                .Replace(regexDash1, "...</i>")
-                .Replace(regexDash2, "...")
-                .Replace(regexDash3, "Dash", "... ");
-        }
-
-        public static readonly Regex regexDotsWithNoSpace = new Regex(@"[A-ZÁ-Úa-zá-ú0-9](?:(?<Dots>\.{2,})[A-ZÁ-Úa-zá-ú0-9])+", RegexOptions.Compiled);
-
-        private static string CleanDots(string line)
-        {
-            return line
-                .Replace(regexDotsWithNoSpace, "Dots", "... ");
         }
 
         private static bool IsRedundantItalics(string line1, string line2)
@@ -2055,7 +2039,7 @@ namespace SubtitlesCL
 
         public static readonly Regex regexDoubleQuateAndQuestionMark = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled);
 
-        public static readonly Regex regexSpeachStartsWithLowerLetter = new Regex(@"^-\s+[a-zá-ú]", RegexOptions.Compiled);
+        //public static readonly Regex regexSpeachStartsWithLowerLetter = new Regex(@"^-\s+[a-zá-ú]", RegexOptions.Compiled);
 
         public static readonly Regex regexDuplicateOpenItalic = new Regex(@"<i><i>", RegexOptions.Compiled);
         public static readonly Regex regexDuplicateCloseItalic = new Regex(@"</i></i>", RegexOptions.Compiled);
@@ -2080,7 +2064,7 @@ namespace SubtitlesCL
                 regexHIWithoutBracket.IsMatch(line) ||
                 (regexHIFullLineWithoutBrackets.IsMatch(line) && regexHIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
                 regexDoubleQuateAndQuestionMark.IsMatch(line) ||
-                regexSpeachStartsWithLowerLetter.IsMatch(line) ||
+                //regexSpeachStartsWithLowerLetter.IsMatch(line) ||
                 regexDuplicateOpenItalic.IsMatch(line) ||
                 regexDuplicateCloseItalic.IsMatch(line) ||
                 (line.EndsWith("'?") && line.EndsWith("in'?") == false);
