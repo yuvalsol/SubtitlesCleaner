@@ -1883,7 +1883,10 @@ namespace SubtitlesCL
             {
                 if (match.Success)
                 {
-                    foreach (Group group in match.Groups.Cast<Group>().Skip(1))
+                    var groups = match.Groups.Cast<Group>();
+                    if (match.Groups.Count > 1)
+                        groups = groups.Skip(1);
+                    foreach (Group group in groups)
                     {
                         if (group.Success)
                         {
