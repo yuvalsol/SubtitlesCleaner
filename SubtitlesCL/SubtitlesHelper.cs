@@ -510,6 +510,9 @@ namespace SubtitlesCL
                 string firstLine = lines[0];
                 string lastLine = lines[lines.Count - 1];
 
+                // first line starts with (
+                // last line ends with )
+                // lines between don't have ()
                 if (IsHearingImpairedMultipleLines_RoundBrackets(firstLine, lastLine))
                 {
                     if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("(") || line.Contains(")")) == false)
@@ -518,6 +521,9 @@ namespace SubtitlesCL
                     }
                 }
 
+                // first line starts with [
+                // last line ends with ]
+                // lines between don't have []
                 if (IsHearingImpairedMultipleLines_SquareBrackets(firstLine, lastLine))
                 {
                     if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("[") || line.Contains("]")) == false)
@@ -526,6 +532,7 @@ namespace SubtitlesCL
                     }
                 }
 
+                // consecutive lines have parentheses or brackets
                 for (int i = 1; i < lines.Count; i++)
                 {
                     string line1 = lines[i - 1];
@@ -544,25 +551,42 @@ namespace SubtitlesCL
             {
                 string line1 = lines[0];
                 string line2 = lines[1];
+                // Line 1: <i>-
+                // Line 2: - Text</i>
+                //
+                // Line 2: <i>- Text</i>
                 if (line1 == "<i>-" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
                 {
                     lines[1] = "<i>" + line2.Substring(2);
                     lines.RemoveAt(0);
                 }
+                // Line 1: <i>
+                // Line 2: Text</i>
+                //
+                // Line 2: <i>Text</i>
                 else if (line1 == "<i>" && line2.StartsWith("<i>") == false && line2.EndsWith("</i>"))
                 {
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
                 }
+                // Line 1: - <i>
+                // Line 2: - Text</i>
+                //
+                // Line 2: <i>Text</i>
                 else if (line1 == "- <i>" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
                 {
                     lines[1] = "<i>" + line2.Substring(2);
                     lines.RemoveAt(0);
                 }
+                // Line 1: <i>Text 1
+                // Line 2: </i>Text 2
+                //
+                // Line 1: <i>Text 1</i>
+                // Line 2: Text 2
                 else if (line1.StartsWith("<i>") && line1.IndexOf("</i>") == -1 && line2.StartsWith("</i>"))
                 {
                     lines[0] = lines[0] + "</i>";
-                    lines[1] = lines[1].Substring("</i>".Length);
+                    lines[1] = lines[1].Substring(4);
                 }
             }
 
@@ -625,6 +649,7 @@ namespace SubtitlesCL
                     isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
                     isStartsWithI = line.StartsWith("I "),
                     isStartsWithContractionI = line.StartsWith("I'"),
+                    isStartsWithNote = line.StartsWith("♪"),
                     isEndsWithDots = line.EndsWith("..."),
                     isEndsWithComma = line.EndsWith(","),
                     isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
@@ -636,6 +661,14 @@ namespace SubtitlesCL
                     // - Line 2
                     lines[0] = "- " + lines[0];
                     // - ...line 1
+                    // - Line 2
+                }
+                else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isMatchDialog))
+                {
+                    // ♪ Line 1
+                    // - Line 2
+                    lines[0] = "- " + lines[0];
+                    // - ♪ Line 1
                     // - Line 2
                 }
                 else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isMatchDialog))
@@ -654,6 +687,15 @@ namespace SubtitlesCL
                         lines[i] = "- " + lines[i];
                     // - Line 1
                     // - ...line 2
+                }
+                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
+                {
+                    // - Line 1
+                    // ♪ Line 2
+                    for (int i = 1; i < lines.Count; i++)
+                        lines[i] = "- " + lines[i];
+                    // - Line 1
+                    // - ♪ Line 2
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
@@ -874,6 +916,7 @@ namespace SubtitlesCL
                     isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
                     isStartsWithI = line.StartsWith("I "),
                     isStartsWithContractionI = line.StartsWith("I'"),
+                    isStartsWithNote = line.StartsWith("♪"),
                     isEndsWithDots = line.EndsWith("..."),
                     isEndsWithComma = line.EndsWith(","),
                     isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
@@ -883,11 +926,19 @@ namespace SubtitlesCL
                 {
                     subtitleError |= SubtitleError.Dialog_Error;
                 }
+                else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isMatchDialog))
+                {
+                    subtitleError |= SubtitleError.Dialog_Error;
+                }
                 else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
                     subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
+                {
+                    subtitleError |= SubtitleError.Dialog_Error;
+                }
+                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
                 {
                     subtitleError |= SubtitleError.Dialog_Error;
                 }
@@ -1029,7 +1080,7 @@ namespace SubtitlesCL
 
                     if (IsRedundantItalics(prevLine, line))
                     {
-                        lines[i - 1] = prevLine.Substring(0, prevLine.Length - "</i>".Length);
+                        lines[i - 1] = prevLine.Substring(0, prevLine.Length - 4);
                         lines[i] = line.Substring("<i>".Length);
                     }
                 }
