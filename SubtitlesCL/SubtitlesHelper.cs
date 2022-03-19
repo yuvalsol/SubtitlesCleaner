@@ -1346,7 +1346,8 @@ namespace SubtitlesCL
         #region OCR Error - Non-Ansi Chars
 
         public static readonly FindAndReplace[] OCRError_NonAnsiChars = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"ﬁ", RegexOptions.Compiled), "fi", SubtitleError.OCR_Error)
+            new FindAndReplace(new Regex(@" ", RegexOptions.Compiled), " ", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"ﬁ", RegexOptions.Compiled), "fi", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"Α", RegexOptions.Compiled), "A", SubtitleError.OCR_Error) // 913 -> A
             ,new FindAndReplace(new Regex(@"Β", RegexOptions.Compiled), "B", SubtitleError.OCR_Error) // 914 -> B
             ,new FindAndReplace(new Regex(@"Ε", RegexOptions.Compiled), "E", SubtitleError.OCR_Error) // 917 -> E
