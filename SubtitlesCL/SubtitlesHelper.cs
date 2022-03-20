@@ -399,8 +399,10 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Pre
 
+        public static readonly Regex regexNoteStart = new Regex(@"^(?:-\s*)?(?<Note>♪+)", RegexOptions.Compiled);
+        public static readonly Regex regexNoteEnd = new Regex(@"\s+(?<Note>♪+)$", RegexOptions.Compiled);
         public static readonly Regex regexQMStart = new Regex(@"^(?:-\s*)?(?<QM>\?+)", RegexOptions.Compiled);
-        public static readonly Regex regexQMEnd = new Regex(@"\?+$", RegexOptions.Compiled);
+        public static readonly Regex regexQMEnd = new Regex(@"\s+(?<QM>\?+)$", RegexOptions.Compiled);
 
         private static List<string> CleanSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
         {
@@ -413,6 +415,8 @@ namespace SubtitlesCL
                 {
                     line,
                     index,
+                    isStartsWithNote = regexNoteStart.IsMatch(line),
+                    isEndsWithNote = regexNoteEnd.IsMatch(line),
                     isStartsWithQM = regexQMStart.IsMatch(line),
                     isEndsWithQM = regexQMEnd.IsMatch(line),
                     isStartsWithDash = line.StartsWith("-"),
@@ -421,20 +425,22 @@ namespace SubtitlesCL
 
                 #region Lyrics Multiple Lines
 
-                // - ? start lyrics => ♪ start lyrics
+                // ? start lyrics => ♪ start lyrics
                 // between lyrics
                 // end lyrics ? => end lyrics ♪
-                var startItem = resultsHIPrefix.FirstOrDefault(item => item.isStartsWithQM && item.isEndsWithQM == false);
+                var startItem = resultsHIPrefix.FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
                 while (startItem != null)
                 {
-                    var endItem = resultsHIPrefix.Skip(startItem.index + 1).FirstOrDefault(item => item.isStartsWithQM == false && item.isEndsWithQM);
+                    var endItem = resultsHIPrefix.Skip(startItem.index + 1).FirstOrDefault(item => (item.isStartsWithNote == false && item.isStartsWithQM == false) && (item.isEndsWithNote || item.isEndsWithQM));
                     if (endItem != null)
                     {
                         var itemsBetween = resultsHIPrefix.Skip(startItem.index + 1).Take(endItem.index - startItem.index - 1);
-                        if (itemsBetween.All(item => item.isStartsWithQM == false && item.isEndsWithQM == false))
+                        if (itemsBetween.All(item => item.isStartsWithNote == false && item.isStartsWithQM == false && item.isEndsWithNote == false && item.isEndsWithQM == false))
                         {
-                            lines[startItem.index] = regexQMStart.ReplaceGroup(startItem.line, "QM", "♪");
-                            lines[endItem.index] = regexQMEnd.Replace(endItem.line, "♪");
+                            if (startItem.isStartsWithQM)
+                                lines[startItem.index] = regexQMStart.ReplaceGroup(startItem.line, "QM", "♪");
+                            if (endItem.isEndsWithQM)
+                                lines[endItem.index] = regexQMEnd.ReplaceGroup(endItem.line, "QM", "♪");
 
                             if (startItem.isStartsWithDash &&
                                 itemsBetween.All(item => item.isStartsWithDash == false) &&
@@ -443,8 +449,20 @@ namespace SubtitlesCL
                                 lines[startItem.index] = lines[startItem.index].TrimStart('-');
                             }
 
-                            startItem = resultsHIPrefix.Skip(endItem.index + 1).FirstOrDefault(item => item.isStartsWithQM && item.isEndsWithQM == false);
+                            startItem = resultsHIPrefix
+                                .Skip(endItem.index + 1)
+                                .FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
                         }
+                        else
+                        {
+                            startItem = resultsHIPrefix
+                                .Skip(endItem.index + 1)
+                                .FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
+                        }
+                    }
+                    else
+                    {
+                        startItem = null;
                     }
                 }
 
