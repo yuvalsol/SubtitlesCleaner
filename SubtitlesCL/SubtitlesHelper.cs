@@ -228,6 +228,7 @@ namespace SubtitlesCL
                 }
                 else if (subtitlesChanged && loopCount == loopThresh)
                 {
+                    Console.ReadKey(true);
                     throw new Exception("Infinite Loop");
                 }
             } while (subtitlesChanged);
