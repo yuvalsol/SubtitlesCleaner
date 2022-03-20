@@ -1337,8 +1337,12 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"'{2}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"""{2,}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(?:\s|\b|$)", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"^(?:-\s*)(?<QM>\?+)\s+", RegexOptions.Compiled), "QM", "♪", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\s+(?<QM>\?{2,})$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Punctuation_Error)
+            // - ? Lyrics ?
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?(?<QM>\?+)$"), "QM", "♪", SubtitleError.Missing_Spaces)
+            // - ♪ Lyrics ?
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?♪+\s+.*?(?<QM>\?+)$"), "QM", "♪", SubtitleError.Missing_Spaces)
+            // - ? Lyrics ♪
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?♪+$"), "QM", "♪", SubtitleError.Missing_Spaces)
             ,new FindAndReplace(new Regex(@"\s\?", RegexOptions.Compiled), "?", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s!", RegexOptions.Compiled), "!", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s:", RegexOptions.Compiled), ":", SubtitleError.Punctuation_Error)

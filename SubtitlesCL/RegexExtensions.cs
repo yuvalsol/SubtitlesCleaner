@@ -4,6 +4,7 @@
 
     public static partial class RegexExtensions
     {
+        // https://stackoverflow.com/questions/6005609/replace-only-some-groups-with-regex
         public static string ReplaceGroup(this Regex regex, string input, string groupName, string replacement, IsMatchEvaluator evaluator = null)
         {
             return regex.Replace(
