@@ -222,6 +222,8 @@ namespace SubtitlesCL
 
                 if (subtitlesChanged && loopCount == loopThresh - 1)
                 {
+                    Console.WriteLine("Infinite Loop");
+                    Console.WriteLine();
                     isPrint = true;
                 }
                 else if (subtitlesChanged && loopCount == loopThresh)
@@ -1252,62 +1254,62 @@ namespace SubtitlesCL
         #region Not Subtitle
 
         public static readonly FindAndReplace[] NotSubtitle = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"AllSubs\.org", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Best watched using", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioned by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning made possible by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning performed by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captioning sponsored by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions copyright", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions made possible by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions performed by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions sponsored by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Captions, Inc\.", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Closed Caption", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Closed-Caption", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Contain Strong Language", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Contains Strong Language", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Copyright Australian", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Corrected by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"DVDRIP by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH - PSDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH - SDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH - US - PSDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH - US - SDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH PSDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ENGLISH SDH", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Eng subs", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Eng subtitles", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ExplosiveSkull", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"HighCode", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"MKV Player", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"NETFLIX PRESENTS", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"OCR by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Open Subtitles", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"OpenSubtitles", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Proofread by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Rip by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Ripped by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"SUBTITLES EDITED BY", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"SharePirate\.com", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subs by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subscene", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitled By", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitles by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitles:", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitletools\.com", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Subtitling", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Sync by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synced & corrected", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synced and corrected", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synchronization by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Synchronized by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"ThePirateBay", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Translated by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Translation by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"Translations by", RegexOptions.Compiled | RegexOptions.IgnoreCase), "", SubtitleError.Not_Subtitle)
+            new FindAndReplace(new Regex(@"(?i)AllSubs\.org", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Best watched using", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captioned by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captioning by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captioning made possible by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captioning performed by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captioning sponsored by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captions by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captions copyright", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captions made possible by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captions performed by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captions sponsored by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Captions, Inc\.", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Closed Caption", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Closed-Caption", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Contain Strong Language", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Contains Strong Language", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Copyright Australian", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Corrected by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)DVDRIP by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ENGLISH - PSDH", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ENGLISH - SDH", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ENGLISH - US - PSDH", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ENGLISH - US - SDH", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ENGLISH PSDH", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ENGLISH SDH", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Eng subs", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Eng subtitles", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ExplosiveSkull", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)HighCode", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)MKV Player", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)NETFLIX PRESENTS", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)OCR by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Open Subtitles", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)OpenSubtitles", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Proofread by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Rip by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Ripped by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)SUBTITLES EDITED BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)SharePirate\.com", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Subs by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Subscene", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Subtitled By", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Subtitles by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Subtitles:", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Subtitletools\.com", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Subtitling", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Sync by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Synced & corrected", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Synced and corrected", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Synchronization by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Synchronized by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)ThePirateBay", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Translated by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Translation by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Translations by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
 
             ,new FindAndReplace(new Regex(@"DIRECTED BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"PRODUCED BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
@@ -1334,7 +1336,9 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"(\\x22)+", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"'{2}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"""{2,}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(\s|\b|$)", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(?:\s|\b|$)", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)(?<QM>\?+)\s+", RegexOptions.Compiled), "QM", "♪", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"\s+(?<QM>\?{2,})$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s\?", RegexOptions.Compiled), "?", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s!", RegexOptions.Compiled), "!", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s:", RegexOptions.Compiled), ":", SubtitleError.Punctuation_Error)
@@ -1413,6 +1417,8 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+            // morn -> mom
+            ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.OCR_Error)
         };
 
         #endregion
@@ -1730,11 +1736,9 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region OCR Error - Other
+        #region OCR Error - Merged Words
 
-        public static readonly FindAndReplace[] OCRError_Other = new FindAndReplace[] {
-
-			// Merged Words
+        public static readonly FindAndReplace[] OCRError_MergedWords = new FindAndReplace[] {
             new FindAndReplace(new Regex(@"\b(?<OCR>ofthe)\b", RegexOptions.Compiled), "OCR", "of the", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>onthe)\b", RegexOptions.Compiled), "OCR", "on the", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>fora)\b", RegexOptions.Compiled), "OCR", "for a", SubtitleError.OCR_Error)
@@ -1758,25 +1762,22 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>we)\b", RegexOptions.Compiled), "OCR", " we", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>the)\b", RegexOptions.Compiled), "OCR", " the", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>those)\b", RegexOptions.Compiled), "OCR", " those", SubtitleError.OCR_Error)
+        };
 
-            // rn => m
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>Morn)\b", RegexOptions.Compiled), "OCR", "Mom", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>morn)\b", RegexOptions.Compiled), "OCR", "mom", SubtitleError.OCR_Error)
+        #endregion
 
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>FBl)\b", RegexOptions.Compiled), "OCR", "FBI", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>F\.B\.l)\b", RegexOptions.Compiled), "OCR", "F.B.I", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>SHIEID)\b", RegexOptions.Compiled), "OCR", "SHIELD", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>S\.H\.I\.E\.I\.D)\b", RegexOptions.Compiled), "OCR", "S.H.I.E.L.D", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>I.A.)\b", RegexOptions.Compiled), "OCR", "L.A.", SubtitleError.OCR_Error)
+        #region OCR Error - Other
 
-            ,new FindAndReplace(new Regex(@"\b(?:Mr|Mrs|Dr|St)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
-
+        public static readonly FindAndReplace[] OCRError_Other = new FindAndReplace[] {
 			// Fix zero and capital 'o' ripping mistakes
-			,new FindAndReplace(new Regex(@"[0-9](?<OCR>O)", RegexOptions.Compiled), "OCR", "0", SubtitleError.OCR_Error)
+			new FindAndReplace(new Regex(@"[0-9](?<OCR>O)", RegexOptions.Compiled), "OCR", "0", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"[0-9](?<OCR>\.O)", RegexOptions.Compiled), "OCR", ".0", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"[0-9](?<OCR>,O)", RegexOptions.Compiled), "OCR", ",0", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"[A-Z](?<OCR>0)", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>0)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+
+            // Mr. Mrs. Dr. St.
+            ,new FindAndReplace(new Regex(@"\b(?:Mr|Mrs|Dr|St)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
 
             // 9: 55
 			,new FindAndReplace(new Regex(@"[0-2]?\d(?<OCR>: )[0-5]\d", RegexOptions.Compiled), "OCR", ":", SubtitleError.OCR_Error)
@@ -1854,7 +1855,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I)\d+\b", RegexOptions.Compiled), "OCR", "1", SubtitleError.OCR_Error)
 
             // ♪
-            ,new FindAndReplace(new Regex(@"^(?<OCR>Jj)$", RegexOptions.Compiled | RegexOptions.IgnoreCase), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>Jj)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"^(?<OCR>J['""&!]?|j['""&!]?)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\s(?<OCR>['""&!]?J|['""&!]?j)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"^(?<OCR>['""&!]?J|['""&!]?j)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
@@ -1865,7 +1866,7 @@ namespace SubtitlesCL
             // & Text ♪
             ,new FindAndReplace(new Regex(@"^(?<OCR>&).*?[♪&]$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
 
-            // Ordinal Numbers
+            // Ordinal Numbers: 1st, 2nd, 3rd, 4th
             ,new FindAndReplace(new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b\d*2(?<OCR>\s+)nd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b\d*3(?<OCR>\s+)rd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
@@ -1873,9 +1874,9 @@ namespace SubtitlesCL
 
             // 1 => I
             // 1 can
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?i)\b(?<OCR>1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
             // can 1
-            ,new FindAndReplace(new Regex(@"\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(?<OCR>1)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?i)\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(?<OCR>1)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
         };
 
         #endregion
@@ -1898,6 +1899,7 @@ namespace SubtitlesCL
             .Concat(OCRError_Contractions)
             .Concat(OCRError_AccentLetters)
             .Concat(OCRError_I_And_L)
+            .Concat(OCRError_MergedWords)
             .Concat(OCRError_Other)
             .ToArray();
 
