@@ -1689,6 +1689,8 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b\s(?<OCR>""|''|'’| ""|"" )em\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
             // 's
             ,new FindAndReplace(new Regex(@"[a-z](?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.OCR_Error)
+            // in ' => in' (sayin')
+            ,new FindAndReplace(new Regex(@"\win(?<OCR>\s)'", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
         };
 
         #endregion
