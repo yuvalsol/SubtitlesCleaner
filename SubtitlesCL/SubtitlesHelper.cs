@@ -399,6 +399,9 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Pre
 
+        public static readonly Regex regexQMStart = new Regex(@"^(?:-\s*)?(?<QM>\?+)", RegexOptions.Compiled);
+        public static readonly Regex regexQMEnd = new Regex(@"\?+$", RegexOptions.Compiled);
+
         private static List<string> CleanSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
@@ -410,8 +413,44 @@ namespace SubtitlesCL
                 {
                     line,
                     index,
+                    isStartsWithQM = regexQMStart.IsMatch(line),
+                    isEndsWithQM = regexQMEnd.IsMatch(line),
+                    isStartsWithDash = line.StartsWith("-"),
                     isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
                 }).ToArray();
+
+                #region Lyrics Multiple Lines
+
+                // - ? start lyrics => ♪ start lyrics
+                // between lyrics
+                // end lyrics ? => end lyrics ♪
+                var startItem = resultsHIPrefix.FirstOrDefault(item => item.isStartsWithQM && item.isEndsWithQM == false);
+                while (startItem != null)
+                {
+                    var endItem = resultsHIPrefix.Skip(startItem.index + 1).FirstOrDefault(item => item.isStartsWithQM == false && item.isEndsWithQM);
+                    if (endItem != null)
+                    {
+                        var itemsBetween = resultsHIPrefix.Skip(startItem.index + 1).Take(endItem.index - startItem.index - 1);
+                        if (itemsBetween.All(item => item.isStartsWithQM == false && item.isEndsWithQM == false))
+                        {
+                            lines[startItem.index] = regexQMStart.ReplaceGroup(startItem.line, "QM", "♪");
+                            lines[endItem.index] = regexQMEnd.Replace(endItem.line, "♪");
+
+                            if (startItem.isStartsWithDash &&
+                                itemsBetween.All(item => item.isStartsWithDash == false) &&
+                                endItem.isStartsWithDash == false)
+                            {
+                                lines[startItem.index] = lines[startItem.index].TrimStart('-');
+                            }
+
+                            startItem = resultsHIPrefix.Skip(endItem.index + 1).FirstOrDefault(item => item.isStartsWithQM && item.isEndsWithQM == false);
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region HI Prefix
 
                 if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
                 {
@@ -424,6 +463,8 @@ namespace SubtitlesCL
                         }
                     }
                 }
+
+                #endregion
             }
 
             return lines;
@@ -1339,11 +1380,11 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"""{2,}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(?:\s|\b|$)", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
             // - ? Lyrics ?
-            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?(?<QM>\?+)$"), "QM", "♪", SubtitleError.Missing_Spaces)
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?(?<QM>\?+)$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Missing_Spaces)
             // - ♪ Lyrics ?
-            ,new FindAndReplace(new Regex(@"^(?:-\s*)?♪+\s+.*?(?<QM>\?+)$"), "QM", "♪", SubtitleError.Missing_Spaces)
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?♪+\s+.*?(?<QM>\?+)$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Missing_Spaces)
             // - ? Lyrics ♪
-            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?♪+$"), "QM", "♪", SubtitleError.Missing_Spaces)
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?♪+$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Missing_Spaces)
             ,new FindAndReplace(new Regex(@"\s\?", RegexOptions.Compiled), "?", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s!", RegexOptions.Compiled), "!", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s:", RegexOptions.Compiled), ":", SubtitleError.Punctuation_Error)
