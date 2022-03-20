@@ -212,10 +212,22 @@ namespace SubtitlesCL
             subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isPrint);
 
             bool subtitlesChanged = false;
+            int loopCount = 0;
+            int loopThresh = 6;
             do
             {
                 subtitlesChanged = false;
                 subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, isPrint, ref subtitlesChanged);
+                loopCount++;
+
+                if (subtitlesChanged && loopCount == loopThresh - 1)
+                {
+                    isPrint = true;
+                }
+                else if (subtitlesChanged && loopCount == loopThresh)
+                {
+                    throw new Exception("Infinite Loop");
+                }
             } while (subtitlesChanged);
 
             subtitles = IterateSubtitlesPost(subtitles, isPrint);
