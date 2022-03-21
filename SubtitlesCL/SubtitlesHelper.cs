@@ -441,7 +441,7 @@ namespace SubtitlesCL
 
             if (lines.Count > 1)
             {
-                var resultsHIPrefix = lines.Select((line, index) => new
+                var results = lines.Select((line, index) => new
                 {
                     line,
                     index,
@@ -458,13 +458,13 @@ namespace SubtitlesCL
                 // ? start lyrics => ♪ start lyrics
                 // between lyrics
                 // end lyrics ? => end lyrics ♪
-                var startItem = resultsHIPrefix.FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
+                var startItem = results.FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
                 while (startItem != null)
                 {
-                    var endItem = resultsHIPrefix.Skip(startItem.index + 1).FirstOrDefault(item => (item.isStartsWithNote == false && item.isStartsWithQM == false) && (item.isEndsWithNote || item.isEndsWithQM));
+                    var endItem = results.Skip(startItem.index + 1).FirstOrDefault(item => (item.isStartsWithNote == false && item.isStartsWithQM == false) && (item.isEndsWithNote || item.isEndsWithQM));
                     if (endItem != null)
                     {
-                        var itemsBetween = resultsHIPrefix.Skip(startItem.index + 1).Take(endItem.index - startItem.index - 1);
+                        var itemsBetween = results.Skip(startItem.index + 1).Take(endItem.index - startItem.index - 1);
                         if (itemsBetween.All(item => item.isStartsWithNote == false && item.isStartsWithQM == false && item.isEndsWithNote == false && item.isEndsWithQM == false))
                         {
                             if (startItem.isStartsWithQM)
@@ -479,13 +479,13 @@ namespace SubtitlesCL
                                 lines[startItem.index] = lines[startItem.index].TrimStart('-');
                             }
 
-                            startItem = resultsHIPrefix
+                            startItem = results
                                 .Skip(endItem.index + 1)
                                 .FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
                         }
                         else
                         {
-                            startItem = resultsHIPrefix
+                            startItem = results
                                 .Skip(endItem.index + 1)
                                 .FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
                         }
@@ -500,9 +500,9 @@ namespace SubtitlesCL
 
                 #region HI Prefix
 
-                if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
+                if (results.Count(x => x.isMatchHIPrefix) > 1)
                 {
-                    foreach (var item in resultsHIPrefix)
+                    foreach (var item in results)
                     {
                         if (item.isMatchHIPrefix)
                         {
@@ -527,14 +527,14 @@ namespace SubtitlesCL
 
             if (lines.Count > 1)
             {
-                var resultsHIPrefix = lines.Select((line, index) => new
+                var results = lines.Select((line, index) => new
                 {
                     line,
                     index,
                     isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
                 }).ToArray();
 
-                if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
+                if (results.Count(x => x.isMatchHIPrefix) > 1)
                 {
                     subtitleError |= SubtitleError.Hearing_Impaired;
                 }
@@ -701,21 +701,21 @@ namespace SubtitlesCL
             }
             else if (lines.Count > 1)
             {
-                var resultsHIPrefix = lines.Select((line, index) => new
+                var results = lines.Select((line, index) => new
                 {
                     line,
                     index,
                     isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
                 }).ToArray();
 
-                if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
+                if (results[0].isMatchHIPrefix && results.Skip(1).All(x => x.isMatchHIPrefix == false))
                 {
                     Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     lines[0] = match.Groups["Subtitle"].Value;
                 }
-                else if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
+                else if (results.Count(x => x.isMatchHIPrefix) > 1)
                 {
-                    foreach (var item in resultsHIPrefix)
+                    foreach (var item in results)
                     {
                         if (item.isMatchHIPrefix)
                         {
@@ -988,22 +988,22 @@ namespace SubtitlesCL
             }
             else if (lines.Count > 1)
             {
-                var resultsHIPrefix = lines.Select((line, index) => new
+                var results = lines.Select((line, index) => new
                 {
                     line,
                     index,
                     isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
                 }).ToArray();
 
-                if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
+                if (results[0].isMatchHIPrefix && results.Skip(1).All(x => x.isMatchHIPrefix == false))
                 {
                     Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     if (lines[0] != match.Groups["Subtitle"].Value)
                         subtitleError |= SubtitleError.Hearing_Impaired;
                 }
-                else if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
+                else if (results.Count(x => x.isMatchHIPrefix) > 1)
                 {
-                    foreach (var item in resultsHIPrefix)
+                    foreach (var item in results)
                     {
                         if (item.isMatchHIPrefix)
                         {
