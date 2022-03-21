@@ -149,7 +149,7 @@ namespace SubtitlesEditor
             if (isSRT)
             {
                 subtitles = SubtitlesHelper.GetSubtitles(filePath);
-                subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+                subtitles.CheckSubtitles(cleanHICaseInsensitive);
                 originalSubtitles = subtitles.Clone();
                 this.filePath = filePath;
                 SetSubtitlesToEditor(subtitles);
@@ -295,7 +295,7 @@ namespace SubtitlesEditor
                 return;
 
             var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -310,7 +310,7 @@ namespace SubtitlesEditor
                 return;
 
             var newSubtitles = originalSubtitles.Clone();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(false);
         }
@@ -841,7 +841,7 @@ namespace SubtitlesEditor
             }
 
             if (isFound && isReplaced)
-                subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
+                subtitle.CheckSubtitle(cleanHICaseInsensitive);
         }
 
         #endregion
@@ -854,7 +854,7 @@ namespace SubtitlesEditor
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (e.Item2 ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
+            subtitle.CheckSubtitle(cleanHICaseInsensitive);
 
             editorRow.Text = subtitle.ToStringWithPipe();
             editorRow.Lines = subtitle.ToString();

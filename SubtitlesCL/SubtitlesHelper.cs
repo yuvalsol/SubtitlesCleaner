@@ -209,7 +209,7 @@ namespace SubtitlesCL
 
         public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
         {
-            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isPrint);
+            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive);
 
             bool subtitlesChanged = false;
             int loopCount = 0;
@@ -233,11 +233,11 @@ namespace SubtitlesCL
                 }
             } while (subtitlesChanged);
 
-            subtitles = IterateSubtitlesPost(subtitles, isPrint);
+            subtitles = IterateSubtitlesPost(subtitles);
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
+        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -339,7 +339,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool isPrint)
+        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -353,7 +353,7 @@ namespace SubtitlesCL
 
                 for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
                 {
-                    string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i], isPrint) ?? string.Empty).Trim();
+                    string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i]) ?? string.Empty).Trim();
 
                     if (IsEmptyLine(cleanLine))
                         subtitle.Lines.RemoveAt(i);
@@ -367,7 +367,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
+        public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive)
         {
             if (subtitles == null)
                 return;
@@ -376,17 +376,17 @@ namespace SubtitlesCL
                 return;
 
             foreach (Subtitle subtitle in subtitles)
-                CheckSubtitle(subtitle, cleanHICaseInsensitive, isPrint);
+                CheckSubtitle(subtitle, cleanHICaseInsensitive);
         }
 
-        public static void CheckSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isPrint)
+        public static void CheckSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive)
         {
             subtitle.SubtitleError = SubtitleError.None;
 
             foreach (string line in subtitle.Lines)
             {
-                subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive, isPrint);
-                subtitle.SubtitleError |= CheckSubtitleLinePost(line, isPrint);
+                subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive);
+                subtitle.SubtitleError |= CheckSubtitleLinePost(line);
             }
 
             subtitle.SubtitleError |= CheckSubtitleMultipleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
@@ -522,10 +522,10 @@ namespace SubtitlesCL
             return CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, isPrint);
         }
 
-        private static SubtitleError CheckSubtitleLine(string line, bool cleanHICaseInsensitive, bool isPrint)
+        private static SubtitleError CheckSubtitleLine(string line, bool cleanHICaseInsensitive)
         {
             SubtitleError subtitleError = SubtitleError.None;
-            CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, isPrint, ref subtitleError);
+            CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, false, ref subtitleError);
             return subtitleError;
         }
 
@@ -1130,7 +1130,7 @@ namespace SubtitlesCL
 
         #region Clean Single Line Post
 
-        private static string CleanSubtitleLinePost(string line, bool isPrint)
+        private static string CleanSubtitleLinePost(string line)
         {
             if (IsEmptyLine(line))
                 return null;
@@ -1138,7 +1138,7 @@ namespace SubtitlesCL
             return line;
         }
 
-        private static SubtitleError CheckSubtitleLinePost(string line, bool isPrint)
+        private static SubtitleError CheckSubtitleLinePost(string line)
         {
             if (IsEmptyLine(line))
                 return SubtitleError.Empty_Line;

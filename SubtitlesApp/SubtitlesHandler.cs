@@ -33,7 +33,6 @@ namespace SubtitlesApp
             ));
 
             bool isPrint = true;
-            bool isReport = false;
 
             if (isPrint)
             {
@@ -42,14 +41,6 @@ namespace SubtitlesApp
                     path = filePath,
                     print = true,
                     clean = true
-                });
-            }
-            else if (isReport)
-            {
-                HandleSubtitles(new Options()
-                {
-                    path = @"G:\Movies\Seen",
-                    report = true
                 });
             }
             else
@@ -104,7 +95,7 @@ namespace SubtitlesApp
 
         private void HandleSubtitles(Options options)
         {
-            if ((options.print || options.save || options.report) == false)
+            if ((options.print || options.save) == false)
                 return;
 
             if (string.IsNullOrEmpty(options.path))
@@ -113,7 +104,7 @@ namespace SubtitlesApp
             if (options.path.EndsWith(":\""))
                 options.path = options.path.Replace(":\"", ":");
 
-            bool isRecursive = options.report;
+            bool isRecursive = false;
             string[] filePaths = GetFiles(options.path, isRecursive);
 
             if (filePaths == null || filePaths.Length == 0)
@@ -123,22 +114,6 @@ namespace SubtitlesApp
             {
                 foreach (var filePath in filePaths)
                     SetSubtitlesOrder(options, filePath);
-            }
-            else if (options.report)
-            {
-                List<string> reportLines = new List<string>();
-
-                foreach (var filePath in filePaths)
-                    ReportSubtitles(reportLines, filePath);
-
-                if (reportLines.Count == 0)
-                {
-                    reportLines.Add("All files are clean");
-                    reportLines.Add(options.path);
-                }
-
-                string reportFile = @"E:\My Downloads\srt report.txt";
-                File.WriteAllLines(reportFile, reportLines, Encoding.UTF8);
             }
             else
             {
@@ -181,80 +156,6 @@ namespace SubtitlesApp
 
             if (options.print)
                 Print(subtitles);
-        }
-
-        private static readonly string[] reportExcludedFiles = new string[]
-        {
-            "אפס ביחסי אנוש.srt",
-            "גבעת חלפון אינה עונה.srt",
-            "חתונה מאוחרת.srt",
-            "ללכת על המים.srt"
-        };
-
-        private void ReportSubtitles(List<string> reportLines, string filePath)
-        {
-            string fileName = Path.GetFileName(filePath);
-
-            if (reportExcludedFiles.Contains(fileName))
-                return;
-
-            Console.WriteLine(fileName);
-
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
-            List<Subtitle> subtitlesCleaned = subtitles.Clone().CleanSubtitles(false, false);
-
-            List<string> lines = new List<string>();
-
-            if (subtitles.Count != subtitlesCleaned.Count)
-            {
-                lines.Add("Number of subtitles are not the same");
-                lines.Add("Original file: " + subtitles.Count + " subtitles");
-                lines.Add("Cleaned file: " + subtitlesCleaned.Count + " subtitles");
-            }
-            else
-            {
-                for (int i = 0; i < subtitles.Count; i++)
-                {
-                    string s = subtitles[i].ToString();
-                    string sc = subtitlesCleaned[i].ToString();
-                    if (s != sc)
-                    {
-                        int subtitleNumber = i + 1;
-                        lines.Add("Original file:");
-                        lines.Add(subtitleNumber.ToString());
-                        lines.Add(s);
-                        lines.Add(string.Empty);
-                        lines.Add("Cleaned file:");
-                        lines.Add(subtitleNumber.ToString());
-                        lines.Add(sc);
-                        lines.Add("---------------");
-                    }
-                }
-            }
-
-            string[] errors = GetSubtitlesErrors(subtitles);
-
-            if (errors != null && errors.Length > 0)
-            {
-                lines.Add(string.Empty);
-                lines.Add("Errors:");
-                lines.Add(fileName);
-                lines.Add(string.Empty);
-                lines.AddRange(errors);
-                lines.Add(string.Empty);
-            }
-
-            if (lines.Count > 0)
-            {
-                reportLines.Add(fileName);
-                reportLines.Add(string.Empty);
-
-                reportLines.AddRange(lines);
-
-                reportLines.Add(string.Empty);
-                reportLines.Add("***********************************");
-                reportLines.Add(string.Empty);
-            }
         }
 
         private string[] GetFiles(string path, bool isRecursive)

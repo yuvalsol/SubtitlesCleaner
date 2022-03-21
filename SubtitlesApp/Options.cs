@@ -29,9 +29,6 @@ namespace SubtitlesApp
         [Option("subtitlesOrder", Required = false, HelpText = "Set subtitles order")]
         public bool subtitlesOrder { get; set; }
 
-        [Option("report", Required = false, HelpText = "Report on subtitles files that need cleaning")]
-        public bool report { get; set; }
-
         [Option("shift", Required = false, HelpText = "Shift subtitles by shift time")]
         public bool shift { get; set; }
 
@@ -86,9 +83,6 @@ namespace SubtitlesApp
 
             if (subtitlesOrder)
                 cmd += " --subtitlesOrder";
-
-            if (report)
-                cmd += " --report";
 
             if (shift)
                 cmd += " --shift";
