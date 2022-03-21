@@ -267,13 +267,9 @@ namespace SubtitlesCL
                         string cleanLine = (CleanSubtitleLinePre(line, cleanHICaseInsensitive, isPrint) ?? string.Empty).Trim();
 
                         if (IsEmptyLine(cleanLine))
-                        {
                             subtitle.Lines.RemoveAt(i);
-                        }
                         else
-                        {
                             subtitle.Lines[i] = cleanLine;
-                        }
                     }
                 }
 
