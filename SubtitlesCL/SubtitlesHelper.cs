@@ -209,7 +209,7 @@ namespace SubtitlesCL
 
         public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
         {
-            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive);
+            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isPrint);
 
             bool subtitlesChanged = false;
             int loopCount = 0;
@@ -237,7 +237,7 @@ namespace SubtitlesCL
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
+        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -261,6 +261,19 @@ namespace SubtitlesCL
                     {
                         subtitle.Lines = null;
                         break;
+                    }
+                    else
+                    {
+                        string cleanLine = (CleanSubtitleLinePre(line, cleanHICaseInsensitive, isPrint) ?? string.Empty).Trim();
+
+                        if (IsEmptyLine(cleanLine))
+                        {
+                            subtitle.Lines.RemoveAt(i);
+                        }
+                        else
+                        {
+                            subtitle.Lines[i] = cleanLine;
+                        }
                     }
                 }
 
@@ -385,6 +398,7 @@ namespace SubtitlesCL
 
             foreach (string line in subtitle.Lines)
             {
+                subtitle.SubtitleError |= CheckSubtitleLinePre(line, cleanHICaseInsensitive);
                 subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive);
                 subtitle.SubtitleError |= CheckSubtitleLinePost(line);
             }
@@ -396,6 +410,22 @@ namespace SubtitlesCL
             if ((subtitle.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle)
                 subtitle.SubtitleError = SubtitleError.Not_Subtitle;
         }
+
+        #region Clean Single Line Pre
+
+        private static string CleanSubtitleLinePre(string line, bool cleanHICaseInsensitive, bool isPrint)
+        {
+            return CleanLine(line, FindAndReplaceRulesPre, cleanHICaseInsensitive, isPrint);
+        }
+
+        private static SubtitleError CheckSubtitleLinePre(string line, bool cleanHICaseInsensitive)
+        {
+            SubtitleError subtitleError = SubtitleError.None;
+            CleanLine(line, FindAndReplaceRulesPre, cleanHICaseInsensitive, false, ref subtitleError);
+            return subtitleError;
+        }
+
+        #endregion
 
         #region Clean Multiple Lines Pre
 
@@ -1949,11 +1979,15 @@ namespace SubtitlesCL
 
         #region Find And Replace Rules
 
+        public static readonly FindAndReplace[] FindAndReplaceRulesPre =
+            EmptyLine
+            .Concat(OCRError_NonAnsiChars)
+            .ToArray();
+
         public static readonly FindAndReplace[] FindAndReplaceRules =
             EmptyLine
             .Concat(NotSubtitle)
             .Concat(Punctuations)
-            .Concat(OCRError_NonAnsiChars)
             .Concat(OCRError_MangledLetters)
             .Concat(RedundantItalics)
             .Concat(HearingImpairedFullLine)
