@@ -1980,14 +1980,11 @@ namespace SubtitlesCL
         #region Find And Replace Rules
 
         public static readonly FindAndReplace[] FindAndReplaceRulesPre =
-            EmptyLine
-            .Concat(OCRError_NonAnsiChars)
+            OCRError_NonAnsiChars
             .ToArray();
 
         public static readonly FindAndReplace[] FindAndReplaceRules =
-            EmptyLine
-            .Concat(NotSubtitle)
-            .Concat(Punctuations)
+            Punctuations
             .Concat(OCRError_MangledLetters)
             .Concat(RedundantItalics)
             .Concat(HearingImpairedFullLine)
