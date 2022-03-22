@@ -1434,6 +1434,8 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\s:", RegexOptions.Compiled), ":", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"[‐=]", RegexOptions.Compiled), "-", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"-\s-", RegexOptions.Compiled), "-", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"^[—–―‒]", RegexOptions.Compiled), "-", SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"^<i>(?<Dash>[—–―‒])</i>", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"[…—–―‒]", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\.\s\.\.", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\.\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
@@ -1498,9 +1500,9 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region OCR Error - Mangled Letters
+        #region OCR Error - Malformed Letters
 
-        public static readonly FindAndReplace[] OCRError_MangledLetters = new FindAndReplace[] {
+        public static readonly FindAndReplace[] OCRError_MalformedLetters = new FindAndReplace[] {
             new FindAndReplace(new Regex(@"\b(?<OCR>I-l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I- l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
@@ -1984,7 +1986,7 @@ namespace SubtitlesCL
 
         public static readonly FindAndReplace[] FindAndReplaceRules =
             Punctuations
-            .Concat(OCRError_MangledLetters)
+            .Concat(OCRError_MalformedLetters)
             .Concat(RedundantItalics)
             .Concat(HearingImpairedFullLine)
             .Concat(ScreenPosition)
