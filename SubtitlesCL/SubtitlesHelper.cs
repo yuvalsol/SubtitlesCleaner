@@ -1623,18 +1623,20 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
+            // (?!\d\d) prevents cleaning time, like 13:00, in CI mode
+
             // MAN [laughting]: Text => Text
             ,new FindAndReplace(new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled))
+                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:(?!\d\d)\s*", RegexOptions.Compiled))
 
             // - MAN [laughting]: Text => - Text
             ,new FindAndReplace(new Regex(@"^-\s*[" + HI_CHARS + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "- ", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^-\s*[" + HI_CHARS_CI + @"]+\[.*?\]:\s*", RegexOptions.Compiled))
+                    .SetRegexCI(new Regex(@"^-\s*[" + HI_CHARS_CI + @"]+\[.*?\]:(?!\d\d)\s*", RegexOptions.Compiled))
 
             // <i>- MAN LAUGHTING: Text => <i>- Text
             // - <i>MAN LAUGHTING: Text => - <i>Text
             ,new FindAndReplace(new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-Z]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-Z]+[" + HI_CHARS_CI + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled))
+                    .SetRegexCI(new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-Z]+[" + HI_CHARS_CI + @"]*:(?!\d\d)\s*(?<Subtitle>.*?)$", RegexOptions.Compiled))
 
             // <i>- : Text => Text
             ,new FindAndReplace(new Regex(@"^(?:\s*<i>)?\s*-\s*:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
@@ -2139,7 +2141,7 @@ namespace SubtitlesCL
         }
 
         public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-Z]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        public static readonly Regex regexHIPrefixCI = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-Z]+[" + HI_CHARS_CI + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefixCI = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-Z]+[" + HI_CHARS_CI + @"]*:(?!\d\d)\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
         public static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
         public static readonly Regex regexHIPrefixWithoutDialogDashCI = new Regex(regexHIPrefixCI.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
 
