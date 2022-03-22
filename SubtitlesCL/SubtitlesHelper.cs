@@ -1451,70 +1451,6 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region OCR Error - Non-Ansi Chars
-
-        public static readonly FindAndReplace[] OCRError_NonAnsiChars = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@" ", RegexOptions.Compiled), " ", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"ﬁ", RegexOptions.Compiled), "fi", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"Α", RegexOptions.Compiled), "A", SubtitleError.OCR_Error) // 913 -> A
-            ,new FindAndReplace(new Regex(@"Β", RegexOptions.Compiled), "B", SubtitleError.OCR_Error) // 914 -> B
-            ,new FindAndReplace(new Regex(@"Ε", RegexOptions.Compiled), "E", SubtitleError.OCR_Error) // 917 -> E
-            ,new FindAndReplace(new Regex(@"Ζ", RegexOptions.Compiled), "Z", SubtitleError.OCR_Error) // 918 -> Z
-            ,new FindAndReplace(new Regex(@"Η", RegexOptions.Compiled), "H", SubtitleError.OCR_Error) // 919 -> H
-            ,new FindAndReplace(new Regex(@"Ι", RegexOptions.Compiled), "I", SubtitleError.OCR_Error) // 921 -> I
-            ,new FindAndReplace(new Regex(@"Κ", RegexOptions.Compiled), "K", SubtitleError.OCR_Error) // 922 -> K
-            ,new FindAndReplace(new Regex(@"Μ", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 924 -> M
-            ,new FindAndReplace(new Regex(@"Ν", RegexOptions.Compiled), "N", SubtitleError.OCR_Error) // 925 -> N
-            ,new FindAndReplace(new Regex(@"Ο", RegexOptions.Compiled), "O", SubtitleError.OCR_Error) // 927 -> O
-            ,new FindAndReplace(new Regex(@"Ρ", RegexOptions.Compiled), "P", SubtitleError.OCR_Error) // 929 -> P
-            ,new FindAndReplace(new Regex(@"Τ", RegexOptions.Compiled), "T", SubtitleError.OCR_Error) // 932 -> T
-            ,new FindAndReplace(new Regex(@"Υ", RegexOptions.Compiled), "Y", SubtitleError.OCR_Error) // 933 -> Y
-            ,new FindAndReplace(new Regex(@"Χ", RegexOptions.Compiled), "X", SubtitleError.OCR_Error) // 935 -> X
-            ,new FindAndReplace(new Regex(@"ϲ", RegexOptions.Compiled), "c", SubtitleError.OCR_Error) // 1010 -> c
-            ,new FindAndReplace(new Regex(@"ϳ", RegexOptions.Compiled), "j", SubtitleError.OCR_Error) // 1011 -> j
-            ,new FindAndReplace(new Regex(@"Ϲ", RegexOptions.Compiled), "C", SubtitleError.OCR_Error) // 1017 -> C
-            ,new FindAndReplace(new Regex(@"Ϻ", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 1018 -> M
-            ,new FindAndReplace(new Regex(@"Ѕ", RegexOptions.Compiled), "S", SubtitleError.OCR_Error) // 1029 -> S
-            ,new FindAndReplace(new Regex(@"І", RegexOptions.Compiled), "I", SubtitleError.OCR_Error) // 1030 -> I
-            ,new FindAndReplace(new Regex(@"Ј", RegexOptions.Compiled), "J", SubtitleError.OCR_Error) // 1032 -> J
-            ,new FindAndReplace(new Regex(@"А", RegexOptions.Compiled), "A", SubtitleError.OCR_Error) // 1040 -> A
-            ,new FindAndReplace(new Regex(@"В", RegexOptions.Compiled), "B", SubtitleError.OCR_Error) // 1042 -> B
-            ,new FindAndReplace(new Regex(@"Е", RegexOptions.Compiled), "E", SubtitleError.OCR_Error) // 1045 -> E
-            ,new FindAndReplace(new Regex(@"К", RegexOptions.Compiled), "K", SubtitleError.OCR_Error) // 1050 -> K
-            ,new FindAndReplace(new Regex(@"М", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 1052 -> M
-            ,new FindAndReplace(new Regex(@"Н", RegexOptions.Compiled), "H", SubtitleError.OCR_Error) // 1053 -> H
-            ,new FindAndReplace(new Regex(@"О", RegexOptions.Compiled), "O", SubtitleError.OCR_Error) // 1054 -> O
-            ,new FindAndReplace(new Regex(@"Р", RegexOptions.Compiled), "P", SubtitleError.OCR_Error) // 1056 -> P
-            ,new FindAndReplace(new Regex(@"С", RegexOptions.Compiled), "C", SubtitleError.OCR_Error) // 1057 -> C
-            ,new FindAndReplace(new Regex(@"Т", RegexOptions.Compiled), "T", SubtitleError.OCR_Error) // 1058 -> T
-            ,new FindAndReplace(new Regex(@"У", RegexOptions.Compiled), "y", SubtitleError.OCR_Error) // 1059 -> y
-            ,new FindAndReplace(new Regex(@"Х", RegexOptions.Compiled), "X", SubtitleError.OCR_Error) // 1061 -> X
-            ,new FindAndReplace(new Regex(@"а", RegexOptions.Compiled), "a", SubtitleError.OCR_Error) // 1072 -> a
-            ,new FindAndReplace(new Regex(@"е", RegexOptions.Compiled), "e", SubtitleError.OCR_Error) // 1077 -> e
-            ,new FindAndReplace(new Regex(@"о", RegexOptions.Compiled), "o", SubtitleError.OCR_Error) // 1086 -> o
-            ,new FindAndReplace(new Regex(@"р", RegexOptions.Compiled), "p", SubtitleError.OCR_Error) // 1088 -> p
-            ,new FindAndReplace(new Regex(@"с", RegexOptions.Compiled), "c", SubtitleError.OCR_Error) // 1089 -> c
-            ,new FindAndReplace(new Regex(@"у", RegexOptions.Compiled), "y", SubtitleError.OCR_Error) // 1091 -> y
-            ,new FindAndReplace(new Regex(@"х", RegexOptions.Compiled), "x", SubtitleError.OCR_Error) // 1093 -> x
-        };
-
-        #endregion
-
-        #region OCR Error - Malformed Letters
-
-        public static readonly FindAndReplace[] OCRError_MalformedLetters = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"\b(?<OCR>I-l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>I- l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>L\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
-            // morn -> mom
-            ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.OCR_Error)
-        };
-
-        #endregion
-
         #region Redundant Italics
 
         public static readonly FindAndReplace[] RedundantItalics = new FindAndReplace[] {
@@ -1679,6 +1615,70 @@ namespace SubtitlesCL
             new FindAndReplace(new Regex(@"\s{2,}", RegexOptions.Compiled), " ", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"^\s+", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"\s+$", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
+        };
+
+        #endregion
+
+        #region OCR Error - Non-Ansi Chars
+
+        public static readonly FindAndReplace[] OCRError_NonAnsiChars = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@" ", RegexOptions.Compiled), " ", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"ﬁ", RegexOptions.Compiled), "fi", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"Α", RegexOptions.Compiled), "A", SubtitleError.OCR_Error) // 913 -> A
+            ,new FindAndReplace(new Regex(@"Β", RegexOptions.Compiled), "B", SubtitleError.OCR_Error) // 914 -> B
+            ,new FindAndReplace(new Regex(@"Ε", RegexOptions.Compiled), "E", SubtitleError.OCR_Error) // 917 -> E
+            ,new FindAndReplace(new Regex(@"Ζ", RegexOptions.Compiled), "Z", SubtitleError.OCR_Error) // 918 -> Z
+            ,new FindAndReplace(new Regex(@"Η", RegexOptions.Compiled), "H", SubtitleError.OCR_Error) // 919 -> H
+            ,new FindAndReplace(new Regex(@"Ι", RegexOptions.Compiled), "I", SubtitleError.OCR_Error) // 921 -> I
+            ,new FindAndReplace(new Regex(@"Κ", RegexOptions.Compiled), "K", SubtitleError.OCR_Error) // 922 -> K
+            ,new FindAndReplace(new Regex(@"Μ", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 924 -> M
+            ,new FindAndReplace(new Regex(@"Ν", RegexOptions.Compiled), "N", SubtitleError.OCR_Error) // 925 -> N
+            ,new FindAndReplace(new Regex(@"Ο", RegexOptions.Compiled), "O", SubtitleError.OCR_Error) // 927 -> O
+            ,new FindAndReplace(new Regex(@"Ρ", RegexOptions.Compiled), "P", SubtitleError.OCR_Error) // 929 -> P
+            ,new FindAndReplace(new Regex(@"Τ", RegexOptions.Compiled), "T", SubtitleError.OCR_Error) // 932 -> T
+            ,new FindAndReplace(new Regex(@"Υ", RegexOptions.Compiled), "Y", SubtitleError.OCR_Error) // 933 -> Y
+            ,new FindAndReplace(new Regex(@"Χ", RegexOptions.Compiled), "X", SubtitleError.OCR_Error) // 935 -> X
+            ,new FindAndReplace(new Regex(@"ϲ", RegexOptions.Compiled), "c", SubtitleError.OCR_Error) // 1010 -> c
+            ,new FindAndReplace(new Regex(@"ϳ", RegexOptions.Compiled), "j", SubtitleError.OCR_Error) // 1011 -> j
+            ,new FindAndReplace(new Regex(@"Ϲ", RegexOptions.Compiled), "C", SubtitleError.OCR_Error) // 1017 -> C
+            ,new FindAndReplace(new Regex(@"Ϻ", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 1018 -> M
+            ,new FindAndReplace(new Regex(@"Ѕ", RegexOptions.Compiled), "S", SubtitleError.OCR_Error) // 1029 -> S
+            ,new FindAndReplace(new Regex(@"І", RegexOptions.Compiled), "I", SubtitleError.OCR_Error) // 1030 -> I
+            ,new FindAndReplace(new Regex(@"Ј", RegexOptions.Compiled), "J", SubtitleError.OCR_Error) // 1032 -> J
+            ,new FindAndReplace(new Regex(@"А", RegexOptions.Compiled), "A", SubtitleError.OCR_Error) // 1040 -> A
+            ,new FindAndReplace(new Regex(@"В", RegexOptions.Compiled), "B", SubtitleError.OCR_Error) // 1042 -> B
+            ,new FindAndReplace(new Regex(@"Е", RegexOptions.Compiled), "E", SubtitleError.OCR_Error) // 1045 -> E
+            ,new FindAndReplace(new Regex(@"К", RegexOptions.Compiled), "K", SubtitleError.OCR_Error) // 1050 -> K
+            ,new FindAndReplace(new Regex(@"М", RegexOptions.Compiled), "M", SubtitleError.OCR_Error) // 1052 -> M
+            ,new FindAndReplace(new Regex(@"Н", RegexOptions.Compiled), "H", SubtitleError.OCR_Error) // 1053 -> H
+            ,new FindAndReplace(new Regex(@"О", RegexOptions.Compiled), "O", SubtitleError.OCR_Error) // 1054 -> O
+            ,new FindAndReplace(new Regex(@"Р", RegexOptions.Compiled), "P", SubtitleError.OCR_Error) // 1056 -> P
+            ,new FindAndReplace(new Regex(@"С", RegexOptions.Compiled), "C", SubtitleError.OCR_Error) // 1057 -> C
+            ,new FindAndReplace(new Regex(@"Т", RegexOptions.Compiled), "T", SubtitleError.OCR_Error) // 1058 -> T
+            ,new FindAndReplace(new Regex(@"У", RegexOptions.Compiled), "y", SubtitleError.OCR_Error) // 1059 -> y
+            ,new FindAndReplace(new Regex(@"Х", RegexOptions.Compiled), "X", SubtitleError.OCR_Error) // 1061 -> X
+            ,new FindAndReplace(new Regex(@"а", RegexOptions.Compiled), "a", SubtitleError.OCR_Error) // 1072 -> a
+            ,new FindAndReplace(new Regex(@"е", RegexOptions.Compiled), "e", SubtitleError.OCR_Error) // 1077 -> e
+            ,new FindAndReplace(new Regex(@"о", RegexOptions.Compiled), "o", SubtitleError.OCR_Error) // 1086 -> o
+            ,new FindAndReplace(new Regex(@"р", RegexOptions.Compiled), "p", SubtitleError.OCR_Error) // 1088 -> p
+            ,new FindAndReplace(new Regex(@"с", RegexOptions.Compiled), "c", SubtitleError.OCR_Error) // 1089 -> c
+            ,new FindAndReplace(new Regex(@"у", RegexOptions.Compiled), "y", SubtitleError.OCR_Error) // 1091 -> y
+            ,new FindAndReplace(new Regex(@"х", RegexOptions.Compiled), "x", SubtitleError.OCR_Error) // 1093 -> x
+        };
+
+        #endregion
+
+        #region OCR Error - Malformed Letters
+
+        public static readonly FindAndReplace[] OCRError_MalformedLetters = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"\b(?<OCR>I-l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>I- l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+            // morn -> mom
+            ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.OCR_Error)
         };
 
         #endregion
