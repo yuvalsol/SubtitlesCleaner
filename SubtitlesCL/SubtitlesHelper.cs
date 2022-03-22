@@ -2027,7 +2027,7 @@ namespace SubtitlesCL
                     if (isPrint)
                     {
                         Console.WriteLine(ruleCounter);
-                        Console.WriteLine("OCR:    " + (cleanHICaseInsensitive ? rule.ToStringCI() : rule.ToString()));
+                        Console.WriteLine("Regex:  " + (cleanHICaseInsensitive ? rule.ToStringCI() : rule.ToString()));
                         //Console.WriteLine("Before: " + line);
                         //Console.WriteLine("After:  " + cleanLine);
                         PrintColorfulLines(line, rule, cleanHICaseInsensitive);
