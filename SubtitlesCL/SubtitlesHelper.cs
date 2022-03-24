@@ -1390,6 +1390,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"(?i)Sync by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synced & corrected", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synced and corrected", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Synced:", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synchronization by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synchronized by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)ThePirateBay", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
@@ -1404,9 +1405,9 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\\fad", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"\\move", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
 
-            ,new FindAndReplace(new Regex(@"<font color=", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"^-?\s*<font>.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"^-?\s*<font\s+.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)<font color=", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)^-?\s*<font>.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)^-?\s*<font\s+.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
         };
 
         #endregion
