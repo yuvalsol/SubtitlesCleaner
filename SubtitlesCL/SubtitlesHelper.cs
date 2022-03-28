@@ -1892,12 +1892,16 @@ namespace SubtitlesCL
             // Derringer.22
             ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.)\d+\b", RegexOptions.Compiled), "OCR", " .", SubtitleError.OCR_Error)
 
+            // l.U. => L.U.
+            ,new FindAndReplace(new Regex(@"[a-zá-úñä-ü]\.[A-ZÁ-Ú]\.", RegexOptions.Compiled), m => m.ToString().ToUpper(), SubtitleError.OCR_Error)
+
             // Smart space after dot(s)
             // Add space after a single dot
             ,new FindAndReplace(new Regex(@"[a-zá-úñä-ü](?<OCR>\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfEqualsTo = "Ph.D" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "a.m." }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "p.m." }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "o.d." }
                 , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, IgnoreIfCaseInsensitiveStartsWith = "www." }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEndsWith = ".com" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEndsWith = "a.k.a" }
