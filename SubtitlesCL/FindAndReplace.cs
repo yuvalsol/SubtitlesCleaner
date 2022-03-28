@@ -8,21 +8,30 @@ namespace SubtitlesCL
         public Regex Regex { get; private set; }
         public string GroupName { get; private set; }
         public string Replacement { get; private set; }
+        public MatchEvaluator Evaluator { get; private set; }
         public SubtitleError SubtitleError { get; private set; }
         public IgnoreRule[] IgnoreRules { get; private set; }
 
         #region Constructors
 
         public FindAndReplace(Regex regex, string replacement, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
-            : this(regex, null, replacement, subtitleError, ignoreRules)
-        {
-        }
+            : this(regex, null, replacement, null, subtitleError, ignoreRules)
+        { }
+
+        public FindAndReplace(Regex regex, MatchEvaluator evaluator, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
+            : this(regex, null, null, evaluator, subtitleError, ignoreRules)
+        { }
 
         public FindAndReplace(Regex regex, string groupName, string replacement, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
+            : this(regex, groupName, replacement, null, subtitleError, ignoreRules)
+        { }
+
+        public FindAndReplace(Regex regex, string groupName, string replacement, MatchEvaluator evaluator, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
         {
             Regex = regex;
             GroupName = groupName;
-            Replacement = replacement;
+            Replacement = replacement ?? string.Empty;
+            Evaluator = evaluator;
             SubtitleError = subtitleError;
             IgnoreRules = ignoreRules;
         }
@@ -86,7 +95,10 @@ namespace SubtitlesCL
 
             if (string.IsNullOrEmpty(GroupName))
             {
-                return regex.Replace(line, Replacement);
+                if (Evaluator != null)
+                    return regex.Replace(line, Evaluator);
+                else
+                    return regex.Replace(line, Replacement);
             }
             else
             {
