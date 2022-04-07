@@ -1481,6 +1481,8 @@ namespace SubtitlesCL
                     .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"\[\]]+:\s*$", RegexOptions.Compiled))
             ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"]+\[.*?\]:\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"]+\[.*?\]:\s*$", RegexOptions.Compiled))
+            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"]+\(.*?\):\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"]+\(.*?\):\s*$", RegexOptions.Compiled))
         };
 
         #endregion
