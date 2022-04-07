@@ -1541,10 +1541,6 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-ZÁ-Ú]*\s*\(.*?\)(:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-ZÁ-Ú]*\s*\[.*?\](:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
 
-            // debug
-            // this doesn't match
-            // - MAN (laughting): Text
-
             // <i>MAN (laughting): => <i>
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\(.*?\):$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\[.*?\]:$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
@@ -1567,11 +1563,15 @@ namespace SubtitlesCL
 
             // (?!\d\d) prevents cleaning time, like 13:00, in CI mode
 
-            // MAN [laughting]: Text => Text
+            // MAN (laughting): Text => Text
+            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\(.*?\):\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\(.*?\):(?!\d\d)\s*", RegexOptions.Compiled))
             ,new FindAndReplace(new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:(?!\d\d)\s*", RegexOptions.Compiled))
 
-            // - MAN [laughting]: Text => - Text
+            // - MAN (laughting): Text => - Text
+            ,new FindAndReplace(new Regex(@"^-\s*[" + HI_CHARS + @"]+\(.*?\):\s*", RegexOptions.Compiled), "- ", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^-\s*[" + HI_CHARS_CI + @"]+\(.*?\):(?!\d\d)\s*", RegexOptions.Compiled))
             ,new FindAndReplace(new Regex(@"^-\s*[" + HI_CHARS + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "- ", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^-\s*[" + HI_CHARS_CI + @"]+\[.*?\]:(?!\d\d)\s*", RegexOptions.Compiled))
 
