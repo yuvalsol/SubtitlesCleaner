@@ -2363,7 +2363,7 @@ namespace SubtitlesCL
 
         public static readonly Regex regexDoubleQuateAndQuestionMark = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled);
 
-        //public static readonly Regex regexSpeachStartsWithLowerLetter = new Regex(@"^-\s+[a-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexLowerLetterBeforeCapitalLetter = new Regex(@"[a-zá-ú][A-ZÁ-Ú]", RegexOptions.Compiled);
 
         public static readonly Regex regexDuplicateOpenItalic = new Regex(@"<i><i>", RegexOptions.Compiled);
         public static readonly Regex regexDuplicateCloseItalic = new Regex(@"</i></i>", RegexOptions.Compiled);
@@ -2388,7 +2388,7 @@ namespace SubtitlesCL
                 regexHIWithoutBracket.IsMatch(line) ||
                 (regexHIFullLineWithoutBrackets.IsMatch(line) && regexHIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
                 regexDoubleQuateAndQuestionMark.IsMatch(line) ||
-                //regexSpeachStartsWithLowerLetter.IsMatch(line) ||
+                regexLowerLetterBeforeCapitalLetter.IsMatch(line) ||
                 regexDuplicateOpenItalic.IsMatch(line) ||
                 regexDuplicateCloseItalic.IsMatch(line) ||
                 (line.EndsWith("'?") && line.EndsWith("in'?") == false);
