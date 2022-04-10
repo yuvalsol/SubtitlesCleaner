@@ -2299,7 +2299,7 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Order
+        #region Subtitles Order
 
         public static List<Subtitle> SetSubtitlesOrder(this List<Subtitle> subtitles)
         {
@@ -2333,6 +2333,58 @@ namespace SubtitlesCL
             }
 
             subtitles.Sort();
+
+            return subtitles;
+        }
+
+        #endregion
+
+        #region Lines Balance
+
+        private const int SINGLE_LINE_MAX_LENGTH = 43;
+
+        public static List<Subtitle> SetLinesBalance(this List<Subtitle> subtitles)
+        {
+            if (subtitles == null)
+                return new List<Subtitle>();
+
+            if (subtitles.Count == 0)
+                return subtitles;
+
+            for (int k = 0; k < subtitles.Count; k++)
+            {
+                Subtitle subtitle = subtitles[k];
+
+                if (subtitle.Lines.Count > 1)
+                {
+                    var results = subtitle.Lines.Select(line => new
+                    {
+                        charLength = line.Replace("<i>", string.Empty).Replace("</i>", string.Empty).Replace("<u>", string.Empty).Replace("</u>", string.Empty).Length,
+                        isMatchDialog = regexDialog.IsMatch(line),
+                        ContainsItalicsStart = line.Contains("<i>"),
+                        ContainsItalicsEnd = line.Contains("</i>"),
+                        EndsWithPunctuation = line.EndsWith(".") || line.EndsWith("?") || line.EndsWith("!")
+                    }).ToArray();
+
+                    for (int i = 1; i < subtitle.Lines.Count; i++)
+                    {
+                        var results1 = results[i - 1];
+                        var results2 = results[i];
+
+                        if (results1.isMatchDialog == false &&
+                            results2.isMatchDialog == false &&
+                            results1.ContainsItalicsStart == false && results1.ContainsItalicsEnd == false &&
+                            results2.ContainsItalicsStart == false && results2.ContainsItalicsEnd == false &&
+                            results1.EndsWithPunctuation == false &&
+                            results1.charLength + results2.charLength + 1 <= SINGLE_LINE_MAX_LENGTH)
+                        {
+                            subtitle.Lines[i - 1] = subtitle.Lines[i - 1] + " " + subtitle.Lines[i];
+                            subtitle.Lines.RemoveAt(i);
+                            i--;
+                        }
+                    }
+                }
+            }
 
             return subtitles;
         }

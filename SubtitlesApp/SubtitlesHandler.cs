@@ -115,6 +115,11 @@ namespace SubtitlesApp
                 foreach (var filePath in filePaths)
                     SetSubtitlesOrder(options, filePath);
             }
+            else if (options.linesBalance)
+            {
+                foreach (var filePath in filePaths)
+                    SetLinesBalance(options, filePath);
+            }
             else
             {
                 foreach (var filePath in filePaths)
@@ -153,6 +158,19 @@ namespace SubtitlesApp
 
             if (options.save)
                 Save(subtitles, filePath, isDisableBackupFile: true);
+
+            if (options.print)
+                Print(subtitles);
+        }
+
+        private void SetLinesBalance(Options options, string filePath)
+        {
+            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
+
+            subtitles = subtitles.SetLinesBalance();
+
+            if (options.save)
+                Save(subtitles, filePath);
 
             if (options.print)
                 Print(subtitles);

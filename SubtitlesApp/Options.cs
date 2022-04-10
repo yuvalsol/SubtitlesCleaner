@@ -29,6 +29,9 @@ namespace SubtitlesApp
         [Option("subtitlesOrder", Required = false, HelpText = "Set subtitles order")]
         public bool subtitlesOrder { get; set; }
 
+        [Option("linesBalance", Required = false, HelpText = "Balance lines in subtitles")]
+        public bool linesBalance { get; set; }
+
         [Option("shift", Required = false, HelpText = "Shift subtitles by shift time")]
         public bool shift { get; set; }
 
@@ -83,6 +86,9 @@ namespace SubtitlesApp
 
             if (subtitlesOrder)
                 cmd += " --subtitlesOrder";
+
+            if (linesBalance)
+                cmd += " --linesBalance";
 
             if (shift)
                 cmd += " --shift";
