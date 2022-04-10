@@ -2343,6 +2343,15 @@ namespace SubtitlesCL
 
         private const int SINGLE_LINE_MAX_LENGTH = 43;
 
+        private class LineBalance
+        {
+            public int CharLength;
+            public bool IsMatchDialog;
+            public bool ContainsItalicsStart;
+            public bool ContainsItalicsEnd;
+            public bool EndsWithPunctuation;
+        }
+
         public static List<Subtitle> SetLinesBalance(this List<Subtitle> subtitles)
         {
             if (subtitles == null)
@@ -2357,29 +2366,32 @@ namespace SubtitlesCL
 
                 if (subtitle.Lines.Count > 1)
                 {
-                    var results = subtitle.Lines.Select(line => new
+                    var results = subtitle.Lines.Select(line => new LineBalance()
                     {
-                        charLength = line.Replace("<i>", string.Empty).Replace("</i>", string.Empty).Replace("<u>", string.Empty).Replace("</u>", string.Empty).Length,
-                        isMatchDialog = regexDialog.IsMatch(line),
+                        CharLength = line.Replace("<i>", string.Empty).Replace("</i>", string.Empty).Replace("<u>", string.Empty).Replace("</u>", string.Empty).Length,
+                        IsMatchDialog = regexDialog.IsMatch(line),
                         ContainsItalicsStart = line.Contains("<i>"),
                         ContainsItalicsEnd = line.Contains("</i>"),
-                        EndsWithPunctuation = line.EndsWith(".") || line.EndsWith("?") || line.EndsWith("!")
-                    }).ToArray();
+                        EndsWithPunctuation = line.EndsWith(".") || line.EndsWith("?") || line.EndsWith("!") || line.EndsWith("-")
+                    }).ToList();
 
                     for (int i = 1; i < subtitle.Lines.Count; i++)
                     {
-                        var results1 = results[i - 1];
-                        var results2 = results[i];
+                        LineBalance results1 = results[i - 1];
+                        LineBalance results2 = results[i];
 
-                        if (results1.isMatchDialog == false &&
-                            results2.isMatchDialog == false &&
+                        if (
+                            results2.IsMatchDialog == false &&
                             results1.ContainsItalicsStart == false && results1.ContainsItalicsEnd == false &&
                             results2.ContainsItalicsStart == false && results2.ContainsItalicsEnd == false &&
                             results1.EndsWithPunctuation == false &&
-                            results1.charLength + results2.charLength + 1 <= SINGLE_LINE_MAX_LENGTH)
+                            results1.CharLength + results2.CharLength + 1 <= SINGLE_LINE_MAX_LENGTH)
                         {
                             subtitle.Lines[i - 1] = subtitle.Lines[i - 1] + " " + subtitle.Lines[i];
+                            results[i - 1].CharLength = results[i - 1].CharLength + results[i].CharLength + 1;
+                            results[i - 1].EndsWithPunctuation = results[i].EndsWithPunctuation;
                             subtitle.Lines.RemoveAt(i);
+                            results.RemoveAt(i);
                             i--;
                         }
                     }
