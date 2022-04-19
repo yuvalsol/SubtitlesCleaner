@@ -1457,6 +1457,9 @@ namespace SubtitlesCL
         public static readonly FindAndReplace[] RedundantItalics = new FindAndReplace[] {
             new FindAndReplace(new Regex(@"<i>\.</i>", RegexOptions.Compiled), ".", SubtitleError.Redundant_Italics)
             ,new FindAndReplace(new Regex(@"<i>\.{2,}</i>", RegexOptions.Compiled), "...", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"<i></i>", RegexOptions.Compiled), "", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"<i>\s+</i>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"</i>\s+<i>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Italics)
         };
 
         #endregion
@@ -1505,11 +1508,11 @@ namespace SubtitlesCL
         public static readonly FindAndReplace[] RedundantSpaces = new FindAndReplace[] {
             new FindAndReplace(new Regex(@"<i/>", RegexOptions.Compiled), "</i>", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"</ i>", RegexOptions.Compiled), "</i>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"<i>\s*</i>", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
 
             ,new FindAndReplace(new Regex(@"<u/>", RegexOptions.Compiled), "</u>", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"</ u>", RegexOptions.Compiled), "</u>", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"<u>\s*</u>", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"<u></u>", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"<u>\s+</u>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Spaces)
 
             ,new FindAndReplace(new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)", RegexOptions.Compiled), "${Italic}${Space}${Dash}", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"<i>-\s+</i>", RegexOptions.Compiled), "- ", SubtitleError.Redundant_Spaces)
