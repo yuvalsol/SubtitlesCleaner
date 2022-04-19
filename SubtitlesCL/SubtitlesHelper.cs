@@ -2104,12 +2104,12 @@ namespace SubtitlesCL
             locations = locations.Distinct().OrderBy(l => l.Item1).ToList();
 
             Console.Write("Before: ");
-            PrintColorfulLines(line, locations);
+            PrintColorfulLines(line, locations, false);
             Console.Write("After:  ");
-            PrintColorfulLines(line, locations, rule.Replacement);
+            PrintColorfulLines(line, locations, true, rule.Replacement);
         }
 
-        private static void PrintColorfulLines(string line, List<Tuple<int, int>> locations, string replacement = null)
+        private static void PrintColorfulLines(string line, List<Tuple<int, int>> locations, bool withReplacement, string replacement = null)
         {
             int index = 0;
             foreach (var location in locations)
@@ -2128,10 +2128,10 @@ namespace SubtitlesCL
                     length = line.Length - index;
                 if (0 <= index && index < line.Length && length > 0)
                 {
-                    if (string.IsNullOrEmpty(replacement))
-                        Colorful.Console.Write(line.Substring(index, length), Color.Red);
-                    else
+                    if (withReplacement)
                         Colorful.Console.Write(replacement, Color.Red);
+                    else
+                        Colorful.Console.Write(line.Substring(index, length), Color.Red);
                 }
 
                 index = location.Item1 + location.Item2; // index + length
