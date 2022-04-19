@@ -1212,6 +1212,8 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Post
 
+        public static readonly Regex regexLineWithSingleWord = new Regex(@"^\w+,?$");
+
         private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines)
         {
             // Line 1 - Dialog
@@ -1236,6 +1238,13 @@ namespace SubtitlesCL
                     {
                         lines[i - 1] = prevLine.Substring(0, prevLine.Length - 4);
                         lines[i] = line.Substring("<i>".Length);
+                    }
+
+                    if (IsMergeShortLineWithLongLine(prevLine, line))
+                    {
+                        lines[i - 1] = lines[i - 1] + " " + line;
+                        lines.RemoveAt(i);
+                        i--;
                     }
                 }
 
@@ -2220,7 +2229,12 @@ namespace SubtitlesCL
 
         private static bool IsRedundantItalics(string line1, string line2)
         {
-            return (line1.EndsWith("</i>") && line2.StartsWith("<i>"));
+            return line1.EndsWith("</i>") && line2.StartsWith("<i>");
+        }
+
+        private static bool IsMergeShortLineWithLongLine(string line1, string line2)
+        {
+            return regexLineWithSingleWord.IsMatch(line1) && line2.StartsWith("-") == false;
         }
 
         #endregion
