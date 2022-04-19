@@ -1317,6 +1317,12 @@ namespace SubtitlesCL
                         subtitleError |= SubtitleError.Redundant_Italics;
                         break;
                     }
+
+                    if (IsMergeShortLineWithLongLine(prevLine, line))
+                    {
+                        subtitleError |= SubtitleError.OCR_Error;
+                        break;
+                    }
                 }
 
                 string line0 = lines[0];
