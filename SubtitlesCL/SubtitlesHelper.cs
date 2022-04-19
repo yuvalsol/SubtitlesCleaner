@@ -425,6 +425,7 @@ namespace SubtitlesCL
 
         #region Clean Multiple Lines Pre
 
+        public static readonly Regex regexMissingNewLine = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
         public static readonly Regex regexNoteStart = new Regex(@"^(?:-\s*)?(?<Note>♪+)", RegexOptions.Compiled);
         public static readonly Regex regexNoteEnd = new Regex(@"\s+(?<Note>♪+)$", RegexOptions.Compiled);
         public static readonly Regex regexQMStart = new Regex(@"^(?:-\s*)?(?<QM>\?+)", RegexOptions.Compiled);
@@ -434,6 +435,39 @@ namespace SubtitlesCL
         {
             if (lines == null || lines.Count == 0)
                 return null;
+
+            #region Missing New Line
+
+            for (int i = lines.Count - 1; i >= 0; i--)
+            {
+                string line = lines[i];
+                if (regexMissingNewLine.IsMatch(line))
+                {
+                    int[] splitIndexes = regexMissingNewLine.Matches(line)
+                        .Cast<Match>()
+                        .Select(m => m.Index)
+                        .Distinct()
+                        .OrderByDescending(x => x)
+                        .ToArray();
+
+                    List<string> splitLines = new List<string>();
+                    foreach (int splitIndex in splitIndexes)
+                    {
+                        splitLines.Insert(0, "- " + line.Substring(splitIndex + 1));
+                        line = line.Substring(0, splitIndex + 1);
+                    }
+
+                    if (line.StartsWith("-") || line.StartsWith("<i>-"))
+                        splitLines.Insert(0, line);
+                    else
+                        splitLines.Insert(0, "- " + line);
+
+                    lines.RemoveAt(i);
+                    lines.InsertRange(i, splitLines);
+                }
+            }
+
+            #endregion
 
             if (lines.Count > 1)
             {
@@ -2410,20 +2444,27 @@ namespace SubtitlesCL
 
         public static readonly Regex regexErrors_Brackets = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled);
         public static readonly Regex regexErrors_Punctuations = new Regex(@"[~_]", RegexOptions.Compiled);
+
         public static readonly Regex regexErrors_AngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
         public static readonly Regex regexErrors_AngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
+
         public static readonly Regex regexErrors_ColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
         // ^10:30
         public static readonly Regex regexErrors_ColonStartLineExclude = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled);
+
         public static readonly Regex regexErrors_Colon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
+
         // Course 1 can
         public static readonly Regex regexErrors_OneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+
         // a/b
         public static readonly Regex regexErrors_Slash = new Regex(@"[A-ZÁ-Úa-zá-ú]/[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+
         // " / " -> " I "
         public static readonly Regex regexErrors_SlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled);
+
         // replace with new line
-        public static readonly Regex regexErrors_MissingSpace = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        public static readonly Regex regexErrors_MissingNewLine = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
 
         public static readonly Regex regexErrors_HIWithoutBracket = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled);
 
@@ -2457,7 +2498,7 @@ namespace SubtitlesCL
                 regexErrors_OneInsteadOfI.IsMatch(line) ||
                 regexErrors_Slash.IsMatch(line) ||
                 regexErrors_SlashInsteadOfI.IsMatch(line) ||
-                regexErrors_MissingSpace.IsMatch(line) ||
+                regexErrors_MissingNewLine.IsMatch(line) ||
                 regexErrors_HIWithoutBracket.IsMatch(line) ||
                 (regexErrors_HIFullLineWithoutBrackets.IsMatch(line) && regexErrors_HIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
                 regexErrors_DoubleQuateAndQuestionMark.IsMatch(line) ||
