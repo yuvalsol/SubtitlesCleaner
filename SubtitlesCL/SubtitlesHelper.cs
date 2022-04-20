@@ -1915,8 +1915,6 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>this)\b", RegexOptions.Compiled), "OCR", " this", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>they)\b", RegexOptions.Compiled), "OCR", " they", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>this)\b", RegexOptions.Compiled), "OCR", " this", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:that)(?<OCR>jerk)\b", RegexOptions.Compiled), "OCR", " jerk", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:this)(?<OCR>jerk)\b", RegexOptions.Compiled), "OCR", " jerk", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>them)\b", RegexOptions.Compiled), "OCR", " them", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>thing)\b", RegexOptions.Compiled), "OCR", " thing", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>things)\b", RegexOptions.Compiled), "OCR", " things", SubtitleError.OCR_Error)
@@ -1924,6 +1922,8 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>we)\b", RegexOptions.Compiled), "OCR", " we", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>the)\b", RegexOptions.Compiled), "OCR", " the", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>those)\b", RegexOptions.Compiled), "OCR", " those", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:that)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
         };
 
         #endregion
