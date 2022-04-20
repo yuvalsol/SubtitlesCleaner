@@ -1723,6 +1723,16 @@ namespace SubtitlesCL
 
         #endregion
 
+        #region OCR Error - HTML Decode
+
+        public static readonly FindAndReplace[] OCRError_HTMLDecode = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"&amp;", RegexOptions.Compiled), "&", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"&lt;", RegexOptions.Compiled), "<", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"&gt;", RegexOptions.Compiled), ">", SubtitleError.OCR_Error)
+        };
+
+        #endregion
+
         #region OCR Error - Malformed Letters
 
         public static readonly FindAndReplace[] OCRError_MalformedLetters = new FindAndReplace[] {
@@ -2039,11 +2049,16 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Find And Replace Rules
+        #region Find And Replace Rules Pre
 
         public static readonly FindAndReplace[] FindAndReplaceRulesPre =
             OCRError_NonAnsiChars
+            .Concat(OCRError_HTMLDecode)
             .ToArray();
+
+        #endregion
+
+        #region Find And Replace Rules
 
         public static readonly FindAndReplace[] FindAndReplaceRules =
             Punctuations
