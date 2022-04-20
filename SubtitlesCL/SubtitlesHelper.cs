@@ -1924,6 +1924,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>those)\b", RegexOptions.Compiled), "OCR", " those", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:that)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
         };
 
         #endregion
