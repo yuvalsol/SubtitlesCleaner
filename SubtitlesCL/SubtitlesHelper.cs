@@ -2510,7 +2510,8 @@ namespace SubtitlesCL
 
         public static readonly Regex regexErrors_DoubleQuateAndQuestionMark = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled);
 
-        public static readonly Regex regexErrors_LowerLetterBeforeCapitalLetter = new Regex(@"((?<!M)c|[a-bd-zá-ú])[A-ZÁ-Ú]", RegexOptions.Compiled);
+        // ignore Mc, PhD
+        public static readonly Regex regexErrors_LowerLetterBeforeCapitalLetter = new Regex(@"((?<!M)c|(?<!P)h|[a-bd-gi-zá-ú])[A-ZÁ-Ú]", RegexOptions.Compiled);
 
         public static readonly Regex regexErrors_DuplicateOpenItalic = new Regex(@"<i><i>", RegexOptions.Compiled);
         public static readonly Regex regexErrors_DuplicateCloseItalic = new Regex(@"</i></i>", RegexOptions.Compiled);
