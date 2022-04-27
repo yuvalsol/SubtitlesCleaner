@@ -1503,18 +1503,6 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Redundant Italics
-
-        public static readonly FindAndReplace[] RedundantItalics = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"<i>\.</i>", RegexOptions.Compiled), ".", SubtitleError.Redundant_Italics)
-            ,new FindAndReplace(new Regex(@"<i>\.{2,}</i>", RegexOptions.Compiled), "...", SubtitleError.Redundant_Italics)
-            ,new FindAndReplace(new Regex(@"<i></i>", RegexOptions.Compiled), "", SubtitleError.Redundant_Italics)
-            ,new FindAndReplace(new Regex(@"<i>\s+</i>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Italics)
-            ,new FindAndReplace(new Regex(@"</i>\s+<i>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Italics)
-        };
-
-        #endregion
-
         #region Hearing Impaired Full Line
 
         public static readonly FindAndReplace[] HearingImpairedFullLine = new FindAndReplace[] {
@@ -1651,6 +1639,18 @@ namespace SubtitlesCL
             // {MAN} {MAN) {MAN] (MAN} [MAN}
             ,new FindAndReplace(new Regex(@"\{[^\{\[\(\)\]\}]+[\)\]\}]", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"[\{\[\(][^\{\[\(\)\]\}]+\}", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+        };
+
+        #endregion
+
+        #region Redundant Italics
+
+        public static readonly FindAndReplace[] RedundantItalics = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"<i>\.</i>", RegexOptions.Compiled), ".", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"<i>\.{2,}</i>", RegexOptions.Compiled), "...", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"<i></i>", RegexOptions.Compiled), "", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"<i>\s+</i>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Italics)
+            ,new FindAndReplace(new Regex(@"</i>\s+<i>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Italics)
         };
 
         #endregion
@@ -1942,9 +1942,9 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region OCR Error - Other
+        #region OCR Error - Other OCRs
 
-        public static readonly FindAndReplace[] OCRError_Other = new FindAndReplace[] {
+        public static readonly FindAndReplace[] OCRError_OtherOCRs = new FindAndReplace[] {
 			// Fix zero and capital 'o' ripping mistakes
 			new FindAndReplace(new Regex(@"[0-9](?<OCR>O)", RegexOptions.Compiled), "OCR", "0", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"[0-9](?<OCR>\.O)", RegexOptions.Compiled), "OCR", ".0", SubtitleError.OCR_Error)
@@ -2088,7 +2088,7 @@ namespace SubtitlesCL
             .Concat(OCRError_AccentLetters)
             .Concat(OCRError_I_And_L)
             .Concat(OCRError_MergedWords)
-            .Concat(OCRError_Other)
+            .Concat(OCRError_OtherOCRs)
             .ToArray();
 
         #endregion
