@@ -1845,6 +1845,9 @@ namespace SubtitlesCL
             // All
             ,new FindAndReplace(new Regex(@"\bA(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
 
+            // iing => ing
+            ,new FindAndReplace(new Regex(@"(?<OCR>ii)(?:ng|n')", RegexOptions.Compiled), "OCR", "i", SubtitleError.OCR_Error)
+
             // Live, Living
             ,new FindAndReplace(new Regex(@"^(?<OCR>I)(?:ive|iving)\b", RegexOptions.Compiled), "OCR", "L", SubtitleError.OCR_Error)
             // live, living
