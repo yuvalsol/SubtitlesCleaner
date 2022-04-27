@@ -663,10 +663,72 @@ namespace SubtitlesCL
                 }
             }
 
+            if (lines.Count == 3)
+            {
+                string line1 = lines[0];
+                string line2 = lines[1];
+                string line3 = lines[2];
+
+                // Line 1: <i>-
+                // Line 2: Text 2
+                // Line 3: - Text 3</i>
+                //
+                // Line 2: <i>- Text 2
+                // Line 3: - Text 3</i>
+                if (line1 == "<i>-" &&
+                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("- ") && line3.EndsWith("</i>"))
+                {
+                    lines[1] = "<i>- " + line2;
+                    lines.RemoveAt(0);
+                }
+                // Line 1: <i>
+                // Line 2: Text 2
+                // Line 3: Text 3</i>
+                //
+                // Line 2: <i>Text 2
+                // Line 3: Text 3</i>
+                else if (line1 == "<i>" &&
+                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("<i>") == false && line3.EndsWith("</i>"))
+                {
+                    lines[1] = "<i>" + line2;
+                    lines.RemoveAt(0);
+                }
+                // Line 1: - <i>
+                // Line 2: - Text 2
+                // Line 3: - Text 3</i>
+                //
+                // Line 2: <i>- Text 2
+                // Line 3: - Text 3</i>
+                else if (line1 == "- <i>" &&
+                    line2.StartsWith("- ") && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("- ") && line3.EndsWith("</i>"))
+                {
+                    lines[1] = "<i>" + line2;
+                    lines.RemoveAt(0);
+                }
+                // Line 1: <i>Text 1
+                // Line 2: Text 2
+                // Line 3: </i>Text 3
+                //
+                // Line 1: <i>Text 1
+                // Line 2: Text 2</i>
+                // Line 3: Text 3
+                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false &&
+                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("</i>"))
+                {
+                    lines[1] = lines[1] + "</i>";
+                    lines[2] = lines[2].Substring(4);
+                }
+            }
+
             if (lines.Count == 2)
             {
                 string line1 = lines[0];
                 string line2 = lines[1];
+
                 // Line 1: <i>-
                 // Line 2: - Text</i>
                 //
@@ -699,7 +761,7 @@ namespace SubtitlesCL
                 //
                 // Line 1: <i>Text 1</i>
                 // Line 2: Text 2
-                else if (line1.StartsWith("<i>") && line1.IndexOf("</i>") == -1 && line2.StartsWith("</i>"))
+                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2.StartsWith("</i>"))
                 {
                     lines[0] = lines[0] + "</i>";
                     lines[1] = lines[1].Substring(4);
@@ -986,6 +1048,25 @@ namespace SubtitlesCL
 
             if (lines.Count > 1)
             {
+                string firstLine = lines[0];
+                string lastLine = lines[lines.Count - 1];
+
+                if (IsHearingImpairedMultipleLines_RoundBrackets(firstLine, lastLine))
+                {
+                    if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("(") || line.Contains(")")) == false)
+                    {
+                        subtitleError |= SubtitleError.Hearing_Impaired;
+                    }
+                }
+
+                if (IsHearingImpairedMultipleLines_SquareBrackets(firstLine, lastLine))
+                {
+                    if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("[") || line.Contains("]")) == false)
+                    {
+                        subtitleError |= SubtitleError.Hearing_Impaired;
+                    }
+                }
+
                 for (int i = 1; i < lines.Count; i++)
                 {
                     string line1 = lines[i - 1];
@@ -996,6 +1077,61 @@ namespace SubtitlesCL
                         subtitleError |= SubtitleError.Hearing_Impaired;
                         break;
                     }
+                }
+            }
+
+            if (lines.Count == 3)
+            {
+                string line1 = lines[0];
+                string line2 = lines[1];
+                string line3 = lines[2];
+
+                if (line1 == "<i>-" &&
+                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("- ") && line3.EndsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+                else if (line1 == "<i>" &&
+                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("<i>") == false && line3.EndsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+                else if (line1 == "- <i>" &&
+                    line2.StartsWith("- ") && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("- ") && line3.EndsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false &&
+                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
+                    line3.StartsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+            }
+
+            if (lines.Count == 2)
+            {
+                string line1 = lines[0];
+                string line2 = lines[1];
+
+                if (line1 == "<i>-" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+                else if (line1 == "<i>" && line2.StartsWith("<i>") == false && line2.EndsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+                else if (line1 == "- <i>" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2.StartsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
                 }
             }
 
@@ -1521,10 +1657,16 @@ namespace SubtitlesCL
 
             ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"\[\]]+:\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"\[\]]+:\s*$", RegexOptions.Compiled))
-            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"]+\[.*?\]:\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"]+\[.*?\]:\s*$", RegexOptions.Compiled))
-            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"]+\(.*?\):\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"]+\(.*?\):\s*$", RegexOptions.Compiled))
+
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)?[" + HI_CHARS + @"]+\[.*?\]:\s*$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^(?<Prefix><i>)?[" + HI_CHARS_CI + @"]+\[.*?\]:\s*$", RegexOptions.Compiled))
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)?[" + HI_CHARS + @"]+\(.*?\):\s*$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^(?<Prefix><i>)?[" + HI_CHARS_CI + @"]+\(.*?\):\s*$", RegexOptions.Compiled))
+
+            ,new FindAndReplace(new Regex(@"^<i>[" + HI_CHARS + @"]+\[.*?\]:\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^<i>[" + HI_CHARS_CI + @"]+\[.*?\]:\s*</i>$", RegexOptions.Compiled))
+            ,new FindAndReplace(new Regex(@"^<i>[" + HI_CHARS + @"]+\(.*?\):\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"^<i>[" + HI_CHARS_CI + @"]+\(.*?\):\s*</i>$", RegexOptions.Compiled))
         };
 
         #endregion
