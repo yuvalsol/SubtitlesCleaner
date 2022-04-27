@@ -1599,6 +1599,14 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\(.*?\):$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\[.*?\]:$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
 
+            // <i>- (laughting)</i> =>
+            ,new FindAndReplace(new Regex(@"<i>-\s*\(.*?\)</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"<i>-\s*\[.*?\]</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+
+            // <i>- (laughting) => <i>
+            ,new FindAndReplace(new Regex(@"^<i>-\s*\(.*?\)$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^<i>-\s*\[.*?\]$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
+
             // Text (laughting) => Text
             ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
@@ -2069,11 +2077,11 @@ namespace SubtitlesCL
         public static readonly FindAndReplace[] FindAndReplaceRules =
             Punctuations
             .Concat(OCRError_MalformedLetters)
-            .Concat(RedundantItalics)
             .Concat(HearingImpairedFullLine)
             .Concat(ScreenPosition)
             .Concat(RedundantSpaces)
             .Concat(HearingImpaired)
+            .Concat(RedundantItalics)
             .Concat(MissingSpaces)
             .Concat(TrimSpaces)
             .Concat(OCRError_Contractions)
