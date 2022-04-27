@@ -491,7 +491,11 @@ namespace SubtitlesCL
                 var startItem = results.FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
                 while (startItem != null)
                 {
-                    var endItem = results.Skip(startItem.index + 1).FirstOrDefault(item => (item.isStartsWithNote == false && item.isStartsWithQM == false) && (item.isEndsWithNote || item.isEndsWithQM));
+                    bool isStartItemStartsWithDash = startItem.isStartsWithDash;
+                    var endItem = results.Skip(startItem.index + 1).FirstOrDefault(item => 
+                        (item.isStartsWithNote == false && item.isStartsWithQM == false) && 
+                        (item.isEndsWithNote || item.isEndsWithQM) && 
+                        item.isStartsWithDash == isStartItemStartsWithDash);
                     if (endItem != null)
                     {
                         var itemsBetween = results.Skip(startItem.index + 1).Take(endItem.index - startItem.index - 1);
