@@ -2085,6 +2085,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>we)\b", RegexOptions.Compiled), "OCR", " we", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>the)\b", RegexOptions.Compiled), "OCR", " the", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>those)\b", RegexOptions.Compiled), "OCR", " those", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:you)(?<OCR>have)\b", RegexOptions.Compiled), "OCR", " have", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:that)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.OCR_Error)
