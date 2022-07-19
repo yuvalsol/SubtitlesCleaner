@@ -1520,8 +1520,8 @@ namespace SubtitlesCL
         #region Empty Line
 
         public static readonly FindAndReplace[] EmptyLine = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"^[-!?:_#.*♪♫¶ ]*$", RegexOptions.Compiled), "", SubtitleError.Empty_Line)
-            ,new FindAndReplace(new Regex(@"^<i>[-!?:_#.*♪♫¶ ]*</i>$", RegexOptions.Compiled), "", SubtitleError.Empty_Line)
+            new FindAndReplace(new Regex(@"^[-!?:_@#.*♪♫¶ ]*$", RegexOptions.Compiled), "", SubtitleError.Empty_Line)
+            ,new FindAndReplace(new Regex(@"^<i>[-!?:_@#.*♪♫¶ ]*</i>$", RegexOptions.Compiled), "", SubtitleError.Empty_Line)
         };
 
         #endregion
