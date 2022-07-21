@@ -2190,10 +2190,10 @@ namespace SubtitlesCL
 
             // ♪
             ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>Jj)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"^(?<OCR>J['""&!]?|j['""&!]?)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\s(?<OCR>['""&!]?J|['""&!]?j)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"^(?<OCR>['""&!]?J|['""&!]?j)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\s(?<OCR>J['""&!]?|j['""&!]?)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"^(?<OCR>(J['""&!]?|j['""&!]?)+)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\s(?<OCR>(['""&!]?J|['""&!]?j)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"^(?<OCR>(['""&!]?J|['""&!]?j)+)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"\s(?<OCR>(J['""&!]?|j['""&!]?)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
 
             // ♪ Text &
             ,new FindAndReplace(new Regex(@"^[♪&].*?(?<OCR>&)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
