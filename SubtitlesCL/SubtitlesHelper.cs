@@ -2644,7 +2644,7 @@ namespace SubtitlesCL
         #region Errors
 
         public static readonly Regex regexErrors_Brackets = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled);
-        public static readonly Regex regexErrors_Punctuations = new Regex(@"[~_]", RegexOptions.Compiled);
+        public static readonly Regex regexErrors_Punctuations = new Regex(@"[~_#]", RegexOptions.Compiled);
 
         public static readonly Regex regexErrors_AngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
         public static readonly Regex regexErrors_AngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
