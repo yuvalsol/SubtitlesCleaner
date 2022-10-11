@@ -492,9 +492,9 @@ namespace SubtitlesCL
                 while (startItem != null)
                 {
                     bool isStartItemStartsWithDash = startItem.isStartsWithDash;
-                    var endItem = results.Skip(startItem.index + 1).FirstOrDefault(item => 
-                        (item.isStartsWithNote == false && item.isStartsWithQM == false) && 
-                        (item.isEndsWithNote || item.isEndsWithQM) && 
+                    var endItem = results.Skip(startItem.index + 1).FirstOrDefault(item =>
+                        (item.isStartsWithNote == false && item.isStartsWithQM == false) &&
+                        (item.isEndsWithNote || item.isEndsWithQM) &&
                         item.isStartsWithDash == isStartItemStartsWithDash);
                     if (endItem != null)
                     {
@@ -2422,7 +2422,10 @@ namespace SubtitlesCL
 
         private static bool IsMergeShortLineWithLongLine(string line1, string line2)
         {
-            return regexLineWithSingleWord.IsMatch(line1) && line2.StartsWith("-") == false;
+            return
+                regexLineWithSingleWord.IsMatch(line1) &&
+                line2.StartsWith("-") == false &&
+                line1.Length + line2.Length + 1 <= SINGLE_LINE_MAX_LENGTH;
         }
 
         #endregion
