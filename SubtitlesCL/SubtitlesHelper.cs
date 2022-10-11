@@ -1902,6 +1902,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?<OCR>n/v)", RegexOptions.Compiled), "OCR", "rw", SubtitleError.OCR_Error)
             // morn -> mom
             ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.OCR_Error)
         };
