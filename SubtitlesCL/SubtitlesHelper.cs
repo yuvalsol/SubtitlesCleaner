@@ -1664,6 +1664,11 @@ namespace SubtitlesCL
             new FindAndReplace(new Regex(@"^\s*-?\s*\(.*?\)\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^\s*-?\s*\[.*?\]\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
+            // ^<i>- ♪$
+            ,new FindAndReplace(new Regex(@"^\s*<i>\s*-\s*♪+\s*$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
+            // ^- ♪</i>$
+            ,new FindAndReplace(new Regex(@"^\s*-\s*♪+\s*</i>\s*$", RegexOptions.Compiled), "</i>", SubtitleError.Hearing_Impaired)
+
             // ^<i>(HI)</i>$
             // ^- <i>(HI)</i>$
             // ^<i>- (HI)</i>$
