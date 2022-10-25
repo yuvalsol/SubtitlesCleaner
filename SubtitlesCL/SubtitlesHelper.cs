@@ -761,6 +761,15 @@ namespace SubtitlesCL
                     lines.RemoveAt(0);
                 }
                 // Line 1: <i>Text 1
+                // Line 2: </i>
+                //
+                // Line 1: <i>Text 1</i>
+                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2 == "</i>")
+                {
+                    lines[0] = lines[0] + "</i>";
+                    lines.RemoveAt(1);
+                }
+                // Line 1: <i>Text 1
                 // Line 2: </i>Text 2
                 //
                 // Line 1: <i>Text 1</i>
@@ -884,7 +893,7 @@ namespace SubtitlesCL
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
-                    string firstCharSecondLine = (lines[1][0]).ToString();
+                    string firstCharSecondLine = (lines[1].Length > 0 ? (lines[1][0]).ToString() : string.Empty);
 
                     if (regexCapitalLetter.IsMatch(firstCharSecondLine))
                     {
@@ -958,8 +967,8 @@ namespace SubtitlesCL
                 }
                 else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    string firstCharFirstLine = (lines[0][0]).ToString();
-                    string firstCharSecondLine = (lines[1][0]).ToString();
+                    string firstCharFirstLine = (lines[0].Length > 0 ? (lines[0][0]).ToString() : string.Empty);
+                    string firstCharSecondLine = (lines[1].Length > 0 ? (lines[1][0]).ToString() : string.Empty);
 
                     if (regexLowerLetter.IsMatch(firstCharFirstLine) && (
                         resultsDialog[0].isEndsWithDots ||
@@ -1130,6 +1139,10 @@ namespace SubtitlesCL
                     subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 else if (line1 == "- <i>" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
+                {
+                    subtitleError |= SubtitleError.Redundant_Spaces;
+                }
+                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2 == "</i>")
                 {
                     subtitleError |= SubtitleError.Redundant_Spaces;
                 }
@@ -1699,6 +1712,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"<u></u>", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"<u>\s+</u>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Spaces)
 
+            ,new FindAndReplace(new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)$", RegexOptions.Compiled), "${Italic}", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"^(?<Dash>-)(?<Space>\s*)(?<Italic></i>)", RegexOptions.Compiled), "${Italic}${Space}${Dash}", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"<i>-\s+</i>", RegexOptions.Compiled), "- ", SubtitleError.Redundant_Spaces)
 
@@ -1721,8 +1735,20 @@ namespace SubtitlesCL
         #region Hearing Impaired
 
         public static readonly FindAndReplace[] HearingImpaired = new FindAndReplace[] {
+            // <i>- (laughting)</i> =>
+            new FindAndReplace(new Regex(@"<i>-\s*\(.*?\)</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"<i>-\s*\[.*?\]</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+
+            // <i>- (laughting) => <i>
+            ,new FindAndReplace(new Regex(@"^<i>-\s*\(.*?\)$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^<i>-\s*\[.*?\]$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
+
+            // - (laughting)</i> => </i>
+            ,new FindAndReplace(new Regex(@"^-\s*\(.*?\)</i>$", RegexOptions.Compiled), "</i>", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^-\s*\[.*?\]</i>$", RegexOptions.Compiled), "</i>", SubtitleError.Hearing_Impaired)
+
             // - (MAN): Text => - Text
-            new FindAndReplace(new Regex(@"^(?<Prefix>- )?\(.*?\)(:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\(.*?\)(:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\[.*?\](:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // <i>- MAN (laughting): Text</i> => <i>- Text</i>
@@ -1732,14 +1758,6 @@ namespace SubtitlesCL
             // <i>MAN (laughting): => <i>
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\(.*?\):$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\[.*?\]:$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
-
-            // <i>- (laughting)</i> =>
-            ,new FindAndReplace(new Regex(@"<i>-\s*\(.*?\)</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"<i>-\s*\[.*?\]</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-
-            // <i>- (laughting) => <i>
-            ,new FindAndReplace(new Regex(@"^<i>-\s*\(.*?\)$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^<i>-\s*\[.*?\]$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
 
             // Text (laughting) => Text
             ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
