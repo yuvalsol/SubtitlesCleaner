@@ -1759,6 +1759,10 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\(.*?\):$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÁ-Ú]*\s*\[.*?\]:$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
 
+            // <i>(laughting) Text => <i>Text
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)\s*\(.*?\)\s*(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)\s*\[.*?\]\s*(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+
             // Text (laughting) => Text
             ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
