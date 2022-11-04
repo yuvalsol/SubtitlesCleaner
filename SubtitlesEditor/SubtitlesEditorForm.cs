@@ -103,6 +103,8 @@ namespace SubtitlesEditor
                     Num = index + 1,
                     ShowValue = subtitle.Show,
                     Show = subtitle.ShowToString(),
+                    Hide = subtitle.HideToString(),
+                    Duration = subtitle.DurationToString(),
                     Text = subtitle.ToStringWithPipe(),
                     Lines = subtitle.ToString(),
                     SubtitleError = subtitle.SubtitleError

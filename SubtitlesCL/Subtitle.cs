@@ -44,10 +44,19 @@ namespace SubtitlesCL
             return string.Format(timeFormat, Hide.Hour, Hide.Minute, Hide.Second, Hide.Millisecond);
         }
 
+        private const string durationFormat1 = "{0:##}.{1:D3}";
+        private const string durationFormat2 = "{0:##}:{1:D2}.{2:D3}";
+        private const string durationFormat3 = "{0:##}:{1:D2}:{2:D2}.{3:D3}";
+
         public string DurationToString()
         {
             TimeSpan duration = Duration;
-            return string.Format(timeFormat, duration.Hours, duration.Minutes, duration.Seconds, duration.Milliseconds);
+            if (duration.Hours > 0)
+                return string.Format(durationFormat3, duration.Hours, duration.Minutes, duration.Seconds, duration.Milliseconds);
+            else if (duration.Minutes > 0)
+                return string.Format(durationFormat2, duration.Minutes, duration.Seconds, duration.Milliseconds);
+            else
+                return string.Format(durationFormat1, duration.Seconds, duration.Milliseconds);
         }
 
         public string TimeToString()
