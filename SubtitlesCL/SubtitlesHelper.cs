@@ -2036,7 +2036,9 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"\bA(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
 
             // iing => ing
-            ,new FindAndReplace(new Regex(@"(?<OCR>ii)(?:ng|n')", RegexOptions.Compiled), "OCR", "i", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?<OCR>ii)(?:ng|n')", RegexOptions.Compiled), "OCR", "i", SubtitleError.OCR_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, IgnoreIfCaseInsensitiveStartsWith = "Taxiin" } // Taxiing
+            )
 
             // Live, Living
             ,new FindAndReplace(new Regex(@"^(?<OCR>I)(?:ive|iving)\b", RegexOptions.Compiled), "OCR", "L", SubtitleError.OCR_Error)
