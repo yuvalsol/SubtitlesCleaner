@@ -2010,7 +2010,9 @@ namespace SubtitlesCL
 			// Replace "II" with "ll" at the beginning of a lowercase word
 			,new FindAndReplace(new Regex(@"(?<OCR>II)[a-zá-ú]", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
 			// Replace "I" with "l" in the middle of a lowercase word
-			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>I)[a-zá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
+			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>I)[a-zá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error, 
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfStartsWith = "McI" } // ignore names McIntyre
+            )
 			// Replace "I" with "l" at the end of a lowercase word
 			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>I)\b", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error)
 			// Replace "l" with "I" in the middle of an uppercase word
