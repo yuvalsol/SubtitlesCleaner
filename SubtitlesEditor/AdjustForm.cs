@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using SubtitlesCL;
 
@@ -39,7 +40,8 @@ namespace SubtitlesEditor
                     bool isSRT = string.Compare(extension, ".srt", true) == 0;
                     if (isSRT)
                     {
-                        List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
+                        Encoding encoding = Encoding.UTF8;
+                        List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
 
                         if (subtitles != null && subtitles.Count > 0)
                         {

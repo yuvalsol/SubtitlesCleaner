@@ -129,7 +129,13 @@ namespace SubtitlesApp
 
         private void CleanSubtitles(Options options, string filePath)
         {
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, options.firstSubtitlesCount ?? FirstSubtitlesCount);
+            Encoding encoding = Encoding.UTF8;
+
+            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
+                filePath,
+                ref encoding,
+                options.firstSubtitlesCount ?? FirstSubtitlesCount
+            );
 
             if (options.clean)
                 subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrint);
@@ -144,7 +150,7 @@ namespace SubtitlesApp
                 subtitles.Adjust(options.showStart, options.showEnd);
 
             if (options.save)
-                Save(subtitles, filePath, options.outFile, options.outPath);
+                Save(subtitles, encoding, filePath, options.outFile, options.outPath);
 
             if (options.print)
                 Print(subtitles);
@@ -152,12 +158,13 @@ namespace SubtitlesApp
 
         private void SetSubtitlesOrder(Options options, string filePath)
         {
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
+            Encoding encoding = Encoding.UTF8;
+            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
 
             subtitles = subtitles.SetSubtitlesOrder();
 
             if (options.save)
-                Save(subtitles, filePath, isDisableBackupFile: true);
+                Save(subtitles, encoding, filePath, isDisableBackupFile: true);
 
             if (options.print)
                 Print(subtitles);
@@ -165,12 +172,13 @@ namespace SubtitlesApp
 
         private void SetLinesBalance(Options options, string filePath)
         {
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath);
+            Encoding encoding = Encoding.UTF8;
+            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
 
             subtitles = subtitles.SetLinesBalance();
 
             if (options.save)
-                Save(subtitles, filePath);
+                Save(subtitles, encoding, filePath);
 
             if (options.print)
                 Print(subtitles);
@@ -204,6 +212,7 @@ namespace SubtitlesApp
 
         private void Save(
             List<Subtitle> subtitles,
+            Encoding encoding,
             string filePath,
             string outputFileName = null,
             string outputPath = null,
@@ -228,7 +237,7 @@ namespace SubtitlesApp
                     File.Copy(filePath, filePath.Replace(".srt", ".bak.srt"), true);
             }
 
-            File.WriteAllLines(outputFilePath, subtitles.ToLines(), Encoding.UTF8);
+            File.WriteAllLines(outputFilePath, subtitles.ToLines(), encoding);
 
             if (isDisableBackupFile == false)
             {
@@ -237,7 +246,7 @@ namespace SubtitlesApp
                 if (errors != null && errors.Length > 0)
                 {
                     string errorFile = filePath.Replace(".srt", ".error.srt");
-                    File.WriteAllLines(errorFile, errors, Encoding.UTF8);
+                    File.WriteAllLines(errorFile, errors, encoding);
                 }
             }
         }

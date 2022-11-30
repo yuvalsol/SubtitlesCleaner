@@ -88,6 +88,7 @@ namespace SubtitlesEditor
         private List<Subtitle> subtitles;
         private List<Subtitle> originalSubtitles;
         private string filePath;
+        private Encoding encoding = Encoding.UTF8;
 
         private void SetSubtitlesToEditor(List<Subtitle> subtitles)
         {
@@ -150,7 +151,8 @@ namespace SubtitlesEditor
             bool isSRT = string.Compare(extension, ".srt", true) == 0;
             if (isSRT)
             {
-                subtitles = SubtitlesHelper.GetSubtitles(filePath);
+                encoding = Encoding.UTF8;
+                subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
                 subtitles.CheckSubtitles(cleanHICaseInsensitive);
                 originalSubtitles = subtitles.Clone();
                 this.filePath = filePath;
@@ -503,7 +505,7 @@ namespace SubtitlesEditor
 
                 try
                 {
-                    File.WriteAllLines(backPath, originalSubtitles.ToLines(), Encoding.UTF8);
+                    File.WriteAllLines(backPath, originalSubtitles.ToLines(), encoding);
                     message = Path.GetFileName(backPath) + " saved" + Environment.NewLine;
                 }
                 catch (Exception ex)
@@ -514,7 +516,7 @@ namespace SubtitlesEditor
 
             try
             {
-                File.WriteAllLines(filePath, subtitles.ToLines(), Encoding.UTF8);
+                File.WriteAllLines(filePath, subtitles.ToLines(), encoding);
                 SetFormTitle(false);
                 message += Path.GetFileName(filePath) + " saved";
             }
@@ -546,7 +548,7 @@ namespace SubtitlesEditor
             {
                 try
                 {
-                    File.WriteAllLines(saveAsFileDialog.FileName, subtitles.ToLines(), Encoding.UTF8);
+                    File.WriteAllLines(saveAsFileDialog.FileName, subtitles.ToLines(), encoding);
                     MessageBox.Show(this,
                         Path.GetFileName(saveAsFileDialog.FileName) + " saved",
                         "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information

@@ -94,19 +94,30 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Get
+        #region File Encoding
 
-        /*public static readonly Encoding Windows1252 = Encoding.GetEncoding("Windows-1252");
-        public static readonly Regex regexAccentedCharacters = new Regex(@"[á-úÁ-Ú]", RegexOptions.Compiled);
+        public static readonly Encoding ISO_8859_1 = Encoding.GetEncoding("ISO-8859-1");
+        public static readonly Regex regexAccentedCharacters = new Regex(@"[Á-Úá-ú]", RegexOptions.Compiled);
 
         public static bool HasAccentedCharacters(string filePath)
         {
-            return regexAccentedCharacters.IsMatch(File.ReadAllText(filePath, Windows1252));
-        }*/
+            return regexAccentedCharacters.IsMatch(File.ReadAllText(filePath, ISO_8859_1));
+        }
 
-        public static List<Subtitle> GetSubtitles(string filePath, int? firstSubtitlesCount = null)
+        public static Encoding GetFileEncoding(string filePath)
         {
-            List<string> lines = new List<string>(File.ReadAllLines(filePath, Encoding.UTF8));
+            return HasAccentedCharacters(filePath) ? ISO_8859_1 : Encoding.UTF8;
+        }
+
+        #endregion
+
+        #region Get
+
+        public static List<Subtitle> GetSubtitles(string filePath, ref Encoding encoding, int? firstSubtitlesCount = null)
+        {
+            encoding = GetFileEncoding(filePath);
+            //encoding = Encoding.UTF8;
+            List<string> lines = new List<string>(File.ReadAllLines(filePath, encoding));
 
             for (int i = 0; i < lines.Count; i++)
                 lines[i] = (lines[i] ?? string.Empty).Trim();
@@ -2012,7 +2023,7 @@ namespace SubtitlesCL
 			// Replace "II" with "ll" at the beginning of a lowercase word
 			,new FindAndReplace(new Regex(@"(?<OCR>II)[a-zá-ú]", RegexOptions.Compiled), "OCR", "ll", SubtitleError.OCR_Error)
 			// Replace "I" with "l" in the middle of a lowercase word
-			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>I)[a-zá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error, 
+			,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>I)[a-zá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfStartsWith = "McI" } // ignore names McIntyre
             )
 			// Replace "I" with "l" at the end of a lowercase word
