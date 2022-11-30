@@ -2050,6 +2050,7 @@ namespace SubtitlesCL
             // iing => ing
             ,new FindAndReplace(new Regex(@"(?<OCR>ii)(?:ng|n')", RegexOptions.Compiled), "OCR", "i", SubtitleError.OCR_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, IgnoreIfCaseInsensitiveStartsWith = "Taxiin" } // Taxiing
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, IgnoreIfCaseInsensitiveStartsWith = "Skiin" } // Skiing
             )
 
             // Live, Living
