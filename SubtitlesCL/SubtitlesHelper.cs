@@ -1636,6 +1636,7 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"'{2}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"""{2,}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(?:\s|\b|$)", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
+            ,new FindAndReplace(new Regex(@"(\w|\s)(?<Dot>\.)[?!:]", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
             // - ? Lyrics ?
             ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?(?<QM>\?+)$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Missing_Spaces)
             // - ♪ Lyrics ?
