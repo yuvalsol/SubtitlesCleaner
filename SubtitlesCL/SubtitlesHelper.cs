@@ -1588,8 +1588,9 @@ namespace SubtitlesCL
             ,new FindAndReplace(new Regex(@"(?i)Open Subtitles", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)OpenSubtitles", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Proofread by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"(?i)Rip by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"(?i)Ripped by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            // not: gripped by
+            ,new FindAndReplace(new Regex(@"(?<!g|G)(?i)Rip by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?<!g|G)(?i)Ripped by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)SUBTITLES EDITED BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)SharePirate\.com", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Subs by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
