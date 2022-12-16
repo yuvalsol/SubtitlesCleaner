@@ -96,17 +96,28 @@ namespace SubtitlesCL
 
         #region File Encoding
 
-        public static readonly Encoding ISO_8859_1 = Encoding.GetEncoding("ISO-8859-1");
-        public static readonly Regex regexAccentedCharacters = new Regex(@"[Á-Úá-ú]", RegexOptions.Compiled);
-
-        public static bool HasAccentedCharacters(string filePath)
+        // https://stackoverflow.com/questions/3825390/effective-way-to-find-any-files-encoding
+        public static Encoding GetEncoding(string filePath)
         {
-            return regexAccentedCharacters.IsMatch(File.ReadAllText(filePath, ISO_8859_1));
+            using (var reader = new StreamReader(filePath, Encoding.UTF8 /* defaultEncodingIfNoBom*/, true))
+            {
+                reader.Peek();
+                return reader.CurrentEncoding;
+            }
         }
+
+        //public static readonly Encoding ISO_8859_1 = Encoding.GetEncoding("ISO-8859-1");
+        //public static readonly Regex regexAccentedCharacters = new Regex(@"[Á-Úá-ú]", RegexOptions.Compiled);
+
+        //public static bool HasAccentedCharacters(string filePath)
+        //{
+        //    return regexAccentedCharacters.IsMatch(File.ReadAllText(filePath, ISO_8859_1));
+        //}
 
         public static Encoding GetFileEncoding(string filePath)
         {
-            return HasAccentedCharacters(filePath) ? ISO_8859_1 : Encoding.UTF8;
+            return GetEncoding(filePath);
+            //return HasAccentedCharacters(filePath) ? ISO_8859_1 : Encoding.UTF8;
         }
 
         #endregion
