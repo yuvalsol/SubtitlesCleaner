@@ -90,6 +90,12 @@
     <Compile Include="TextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TimeCalculatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeCalculatorForm.Designer.cs">
+      <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimePicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -113,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SubtitlesEditorForm.resx">
       <DependentUpon>SubtitlesEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeCalculatorForm.resx">
+      <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TimePicker.resx">
       <DependentUpon>TimePicker.cs</DependentUpon>

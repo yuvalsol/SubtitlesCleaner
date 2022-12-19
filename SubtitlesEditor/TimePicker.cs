@@ -18,6 +18,45 @@ namespace SubtitlesEditor
             InitializeComponent();
         }
 
+        private bool readOnly;
+        [Description("Read Only"), Category("Behavoir"), DefaultValue(false)]
+        public bool ReadOnly
+        {
+            get
+            {
+                return readOnly;
+            }
+
+            set
+            {
+                readOnly = value;
+
+                if (readOnly)
+                {
+                    lblSign.Click -= lblSign_Click;
+                    lblSign.Cursor = Cursors.Default;
+                    toolTip.SetToolTip(lblSign, null);
+                }
+                else
+                {
+                    lblSign.Click -= lblSign_Click;
+                    lblSign.Click += lblSign_Click;
+                    lblSign.Cursor = Cursors.Hand;
+                    toolTip.SetToolTip(lblSign, "Change Sign");
+                }
+
+                numericUpDownHH.ReadOnly = readOnly;
+                numericUpDownMM.ReadOnly = readOnly;
+                numericUpDownSS.ReadOnly = readOnly;
+                numericUpDownMS.ReadOnly = readOnly;
+
+                btnPlus.Visible = !readOnly;
+                btnMinus.Visible = !readOnly;
+                btnReset.Visible = !readOnly;
+                btnPaste.Visible = !readOnly;
+            }
+        }
+
         [Description("Show Sign"), Category("Data"), DefaultValue(false)]
         public bool ShowSign
         {
@@ -230,13 +269,32 @@ namespace SubtitlesEditor
                 {
                     TimeSpan span = SubtitlesHelper.ParseDiffTime(Clipboard.GetText());
                     if (span != TimeSpan.Zero)
+                    {
                         this.DiffValue = span;
+                    }
+                    else
+                    {
+                        DateTime time = SubtitlesHelper.ParseShowTime(Clipboard.GetText());
+                        if (time != DateTime.MinValue)
+                            this.Value = time;
+                    }
                 }
                 else
                 {
                     DateTime time = SubtitlesHelper.ParseShowTime(Clipboard.GetText());
                     if (time != DateTime.MinValue)
+                    {
                         this.Value = time;
+                    }
+                    else
+                    {
+                        TimeSpan span = SubtitlesHelper.ParseDiffTime(Clipboard.GetText());
+                        if (span != TimeSpan.Zero)
+                        {
+                            if (span >= TimeSpan.Zero)
+                                this.DiffValue = span;
+                        }
+                    }
                 }
             }
             catch

@@ -40,9 +40,9 @@
             this.numericUpDownMS = new SubtitlesEditor.CustomNumericUpDown();
             this.btnPlus = new SubtitlesEditor.RepeatButton();
             this.btnMinus = new SubtitlesEditor.RepeatButton();
+            this.btnReset = new SubtitlesEditor.RepeatButton();
             this.btnCopy = new SubtitlesEditor.RepeatButton();
             this.btnPaste = new SubtitlesEditor.RepeatButton();
-            this.btnReset = new SubtitlesEditor.RepeatButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHH)).BeginInit();
@@ -76,6 +76,7 @@
             // lblSign
             // 
             this.lblSign.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSign.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.lblSign.Location = new System.Drawing.Point(0, 3);
             this.lblSign.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.lblSign.Name = "lblSign";
@@ -243,6 +244,21 @@
             this.btnMinus.UseVisualStyleBackColor = true;
             this.btnMinus.Depressed += new System.EventHandler(this.btnMinus_Depressed);
             // 
+            // btnReset
+            // 
+            this.btnReset.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnReset.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.btnReset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
+            this.btnReset.Interval = 80;
+            this.btnReset.Location = new System.Drawing.Point(275, 3);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(20, 20);
+            this.btnReset.TabIndex = 8;
+            this.btnReset.Text = "R";
+            this.toolTip.SetToolTip(this.btnReset, "Reset Time");
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // btnCopy
             // 
             this.btnCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -272,21 +288,6 @@
             this.toolTip.SetToolTip(this.btnPaste, "Paste Time");
             this.btnPaste.UseVisualStyleBackColor = true;
             this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
-            // 
-            // btnReset
-            // 
-            this.btnReset.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnReset.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.btnReset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
-            this.btnReset.Interval = 80;
-            this.btnReset.Location = new System.Drawing.Point(275, 3);
-            this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(20, 20);
-            this.btnReset.TabIndex = 8;
-            this.btnReset.Text = "R";
-            this.toolTip.SetToolTip(this.btnReset, "Reset Time");
-            this.btnReset.UseVisualStyleBackColor = true;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // TimePicker
             // 

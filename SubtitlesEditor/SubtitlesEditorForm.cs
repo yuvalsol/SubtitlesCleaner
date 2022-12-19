@@ -898,5 +898,23 @@ namespace SubtitlesEditor
         }
 
         #endregion
+
+        #region Time Calculator
+
+        private void btnTimeCalculator_Click(object sender, EventArgs e)
+        {
+            var dialog = new TimeCalculatorForm();
+            dialog.Load += (object sender1, EventArgs e1) =>
+            {
+                EditorRow editorRow = GetSelectedEditorRow();
+                if (editorRow == null)
+                    return;
+
+                dialog.DiffValue1 = editorRow.ShowValue;
+            };
+            dialog.Show(this);
+        }
+
+        #endregion
     }
 }
