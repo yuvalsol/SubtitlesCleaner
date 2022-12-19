@@ -1494,7 +1494,7 @@ namespace SubtitlesCL
 
                     if (IsMergeShortLineWithLongLine(prevLine, line))
                     {
-                        subtitleError |= SubtitleError.OCR_Error;
+                        subtitleError |= SubtitleError.Merge_Lines;
                         break;
                     }
                 }

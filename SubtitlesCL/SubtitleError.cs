@@ -14,32 +14,35 @@ namespace SubtitlesCL
         [ErrorColor(207, 207, 207)]
         Not_Subtitle = (1 << 1),
 
+        [ErrorColor(108, 170, 35, 255, 255, 255)]
+        Merge_Lines = (1 << 2),
+
         [ErrorColor(240, 255, 225)]
-        Redundant_Italics = (1 << 2),
+        Redundant_Italics = (1 << 3),
 
         [ErrorColor(198, 255, 209)]
-        Missing_Spaces = (1 << 3),
+        Missing_Spaces = (1 << 4),
 
         [ErrorColor(198, 230, 209)]
-        Missing_Dash = (1 << 4),
+        Missing_Dash = (1 << 5),
 
         [ErrorColor(198, 255, 245)]
-        Redundant_Spaces = (1 << 5),
+        Redundant_Spaces = (1 << 6),
 
         [ErrorColor(232, 221, 248)]
-        Screen_Position = (1 << 6),
+        Screen_Position = (1 << 7),
 
         [ErrorColor(172, 201, 230)]
-        Punctuation_Error = (1 << 7),
+        Punctuation_Error = (1 << 8),
 
         [ErrorColor(255, 229, 204)]
-        Dialog_Error = (1 << 8),
+        Dialog_Error = (1 << 9),
 
         [ErrorColor(255, 0, 0, 255, 255, 255)]
-        OCR_Error = (1 << 9),
+        OCR_Error = (1 << 10),
 
         [ErrorColor(255, 255, 0)]
-        Hearing_Impaired = (1 << 10)
+        Hearing_Impaired = (1 << 11)
     }
 
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
