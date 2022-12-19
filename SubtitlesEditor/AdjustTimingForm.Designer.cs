@@ -45,7 +45,7 @@
             this.btnClose.AutoSize = true;
             this.btnClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(640, 107);
+            this.btnClose.Location = new System.Drawing.Point(676, 107);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(45, 24);
             this.btnClose.TabIndex = 7;
@@ -55,7 +55,7 @@
             // lblArrow1
             // 
             this.lblArrow1.AutoSize = true;
-            this.lblArrow1.Location = new System.Drawing.Point(334, 21);
+            this.lblArrow1.Location = new System.Drawing.Point(352, 18);
             this.lblArrow1.Name = "lblArrow1";
             this.lblArrow1.Size = new System.Drawing.Size(27, 14);
             this.lblArrow1.TabIndex = 5;
@@ -64,7 +64,7 @@
             // lblArrow2
             // 
             this.lblArrow2.AutoSize = true;
-            this.lblArrow2.Location = new System.Drawing.Point(334, 68);
+            this.lblArrow2.Location = new System.Drawing.Point(352, 65);
             this.lblArrow2.Name = "lblArrow2";
             this.lblArrow2.Size = new System.Drawing.Size(27, 14);
             this.lblArrow2.TabIndex = 6;
@@ -86,14 +86,15 @@
             // 
             this.timePickerY2.AutoSize = true;
             this.timePickerY2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.timePickerY2.DiffValue = System.TimeSpan.Parse("00:00:00");
             this.timePickerY2.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.timePickerY2.HH = 0;
-            this.timePickerY2.Location = new System.Drawing.Point(369, 60);
+            this.timePickerY2.Location = new System.Drawing.Point(379, 60);
             this.timePickerY2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.timePickerY2.MM = 0;
             this.timePickerY2.MS = 0;
             this.timePickerY2.Name = "timePickerY2";
-            this.timePickerY2.Size = new System.Drawing.Size(316, 31);
+            this.timePickerY2.Size = new System.Drawing.Size(342, 31);
             this.timePickerY2.SS = 0;
             this.timePickerY2.TabIndex = 4;
             this.timePickerY2.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -102,6 +103,7 @@
             // 
             this.timePickerY1.AutoSize = true;
             this.timePickerY1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.timePickerY1.DiffValue = System.TimeSpan.Parse("00:00:00");
             this.timePickerY1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.timePickerY1.HH = 0;
             this.timePickerY1.Location = new System.Drawing.Point(10, 60);
@@ -109,7 +111,7 @@
             this.timePickerY1.MM = 0;
             this.timePickerY1.MS = 0;
             this.timePickerY1.Name = "timePickerY1";
-            this.timePickerY1.Size = new System.Drawing.Size(316, 31);
+            this.timePickerY1.Size = new System.Drawing.Size(342, 31);
             this.timePickerY1.SS = 0;
             this.timePickerY1.TabIndex = 3;
             this.timePickerY1.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -118,14 +120,15 @@
             // 
             this.timePickerX2.AutoSize = true;
             this.timePickerX2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.timePickerX2.DiffValue = System.TimeSpan.Parse("00:00:00");
             this.timePickerX2.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.timePickerX2.HH = 0;
-            this.timePickerX2.Location = new System.Drawing.Point(369, 13);
+            this.timePickerX2.Location = new System.Drawing.Point(379, 13);
             this.timePickerX2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.timePickerX2.MM = 0;
             this.timePickerX2.MS = 0;
             this.timePickerX2.Name = "timePickerX2";
-            this.timePickerX2.Size = new System.Drawing.Size(316, 31);
+            this.timePickerX2.Size = new System.Drawing.Size(342, 31);
             this.timePickerX2.SS = 0;
             this.timePickerX2.TabIndex = 2;
             this.timePickerX2.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -134,6 +137,7 @@
             // 
             this.timePickerX1.AutoSize = true;
             this.timePickerX1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.timePickerX1.DiffValue = System.TimeSpan.Parse("00:00:00");
             this.timePickerX1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.timePickerX1.HH = 0;
             this.timePickerX1.Location = new System.Drawing.Point(10, 13);
@@ -141,7 +145,7 @@
             this.timePickerX1.MM = 0;
             this.timePickerX1.MS = 0;
             this.timePickerX1.Name = "timePickerX1";
-            this.timePickerX1.Size = new System.Drawing.Size(316, 31);
+            this.timePickerX1.Size = new System.Drawing.Size(342, 31);
             this.timePickerX1.SS = 0;
             this.timePickerX1.TabIndex = 1;
             this.timePickerX1.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -168,7 +172,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(695, 142);
+            this.ClientSize = new System.Drawing.Size(729, 142);
             this.Controls.Add(this.btnLoadFromFile);
             this.Controls.Add(this.btnAdjust);
             this.Controls.Add(this.lblArrow2);

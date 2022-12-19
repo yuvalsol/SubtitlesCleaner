@@ -566,7 +566,7 @@ namespace SubtitlesEditor
 
         #endregion
 
-        #region Set Show Time and Add Time
+        #region Set Show Time
 
         private void btnSetShowTime_Click(object sender, EventArgs e)
         {
@@ -587,10 +587,38 @@ namespace SubtitlesEditor
                 if (editorRow == null)
                     return;
 
-                subtitles.AddTime(TimeSpan.FromMilliseconds(ms), editorRow.Num);
+                try
+                {
+                    subtitles.AddTime(TimeSpan.FromMilliseconds(ms), editorRow.Num);
+                }
+                catch { }
+
                 SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
                 SetFormTitle(true);
             }
+        }
+
+        #endregion
+        
+        #region Add Time
+
+        private void btnAddTime_Click(object sender, EventArgs e)
+        {
+            EditorRow editorRow = GetSelectedEditorRow();
+            if (editorRow == null)
+                return;
+
+            try
+            {
+                subtitles.AddTime(diffTimePicker.DiffValue, editorRow.Num);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Add Time Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
+            SetFormTitle(true);
         }
 
         #endregion

@@ -2488,6 +2488,9 @@ namespace SubtitlesCL
 
         #region AddTime
 
+        public static readonly DateTime DateTimeZero = new DateTime(1900, 1, 1);
+        private static readonly Exception addTimeError = new Exception("Add time failed.\nResult less than 00:00:00,000.");
+
         public static void AddTime(this List<Subtitle> subtitles, string diffTime, int? subtitleNumber = null)
         {
             subtitles.AddTime(ParseDiffTime(diffTime), subtitleNumber);
@@ -2503,20 +2506,44 @@ namespace SubtitlesCL
 
             if (subtitleNumber != null && subtitleNumber.Value >= 1)
             {
-                foreach (var subtitle in subtitles.Skip(subtitleNumber.Value - 1))
+                Subtitle firstSubtitle = subtitles.Skip(subtitleNumber.Value - 1).FirstOrDefault();
+                if (VerifyAddTime(firstSubtitle, span))
                 {
-                    subtitle.Show += span;
-                    subtitle.Hide += span;
+                    foreach (var subtitle in subtitles.Skip(subtitleNumber.Value - 1))
+                    {
+                        subtitle.Show += span;
+                        subtitle.Hide += span;
+                    }
+                }
+                else
+                {
+                    throw addTimeError;
                 }
             }
             else
             {
-                foreach (var subtitle in subtitles)
+                Subtitle firstSubtitle = subtitles.FirstOrDefault();
+                if (VerifyAddTime(firstSubtitle, span))
                 {
-                    subtitle.Show += span;
-                    subtitle.Hide += span;
+                    foreach (var subtitle in subtitles)
+                    {
+                        subtitle.Show += span;
+                        subtitle.Hide += span;
+                    }
+                }
+                else
+                {
+                    throw addTimeError;
                 }
             }
+        }
+
+        private static bool VerifyAddTime(Subtitle subtitle, TimeSpan span)
+        {
+            return (
+                subtitle != null &&
+                subtitle.Show + span < DateTimeZero
+            ) == false;
         }
 
         #endregion
@@ -2540,10 +2567,18 @@ namespace SubtitlesCL
             if (0 <= index && index <= subtitles.Count - 1)
             {
                 TimeSpan span = show - subtitles[index].Show;
-                foreach (var subtitle in subtitles.Skip(index))
+                Subtitle firstSubtitle = subtitles.Skip(index).FirstOrDefault();
+                if (VerifyAddTime(firstSubtitle, span))
                 {
-                    subtitle.Show += span;
-                    subtitle.Hide += span;
+                    foreach (var subtitle in subtitles.Skip(index))
+                    {
+                        subtitle.Show += span;
+                        subtitle.Hide += span;
+                    }
+                }
+                else
+                {
+                    throw addTimeError;
                 }
             }
         }
@@ -2590,8 +2625,8 @@ namespace SubtitlesCL
 
             foreach (Subtitle subtitle in subtitles)
             {
-                subtitle.Show = new DateTime(1900, 1, 1).AddMilliseconds((v1 * subtitle.Show.ToMilliseconds()) + v2);
-                subtitle.Hide = new DateTime(1900, 1, 1).AddMilliseconds((v1 * subtitle.Hide.ToMilliseconds()) + v2);
+                subtitle.Show = DateTimeZero.AddMilliseconds((v1 * subtitle.Show.ToMilliseconds()) + v2);
+                subtitle.Hide = DateTimeZero.AddMilliseconds((v1 * subtitle.Hide.ToMilliseconds()) + v2);
             }
         }
 
