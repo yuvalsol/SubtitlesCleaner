@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.numericUpDownHH = new SubtitlesEditor.CustomNumericUpDown();
             this.lblSeperator1 = new System.Windows.Forms.Label();
@@ -40,6 +41,7 @@
             this.btnMinus = new SubtitlesEditor.RepeatButton();
             this.btnCopy = new SubtitlesEditor.RepeatButton();
             this.btnPaste = new SubtitlesEditor.RepeatButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHH)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMM)).BeginInit();
@@ -86,6 +88,7 @@
             this.numericUpDownHH.Size = new System.Drawing.Size(40, 22);
             this.numericUpDownHH.TabIndex = 0;
             this.numericUpDownHH.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip.SetToolTip(this.numericUpDownHH, "Hours");
             this.numericUpDownHH.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
             this.numericUpDownHH.Enter += new System.EventHandler(this.numericUpDown_Enter);
             this.numericUpDownHH.MouseDown += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseDown);
@@ -119,6 +122,7 @@
             this.numericUpDownMM.Size = new System.Drawing.Size(40, 22);
             this.numericUpDownMM.TabIndex = 1;
             this.numericUpDownMM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip.SetToolTip(this.numericUpDownMM, "Minutes");
             this.numericUpDownMM.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
             this.numericUpDownMM.Enter += new System.EventHandler(this.numericUpDown_Enter);
             this.numericUpDownMM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseDown);
@@ -152,6 +156,7 @@
             this.numericUpDownSS.Size = new System.Drawing.Size(40, 22);
             this.numericUpDownSS.TabIndex = 2;
             this.numericUpDownSS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip.SetToolTip(this.numericUpDownSS, "Seconds");
             this.numericUpDownSS.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
             this.numericUpDownSS.Enter += new System.EventHandler(this.numericUpDown_Enter);
             this.numericUpDownSS.MouseDown += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseDown);
@@ -185,6 +190,7 @@
             this.numericUpDownMS.Size = new System.Drawing.Size(50, 22);
             this.numericUpDownMS.TabIndex = 3;
             this.numericUpDownMS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip.SetToolTip(this.numericUpDownMS, "Milliseconds");
             this.numericUpDownMS.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
             this.numericUpDownMS.Enter += new System.EventHandler(this.numericUpDown_Enter);
             this.numericUpDownMS.MouseDown += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseDown);
@@ -200,6 +206,7 @@
             this.btnPlus.Size = new System.Drawing.Size(20, 20);
             this.btnPlus.TabIndex = 4;
             this.btnPlus.Text = "+";
+            this.toolTip.SetToolTip(this.btnPlus, "+50 ms");
             this.btnPlus.UseVisualStyleBackColor = true;
             this.btnPlus.Depressed += new System.EventHandler(this.btnPlus_Depressed);
             // 
@@ -214,6 +221,7 @@
             this.btnMinus.Size = new System.Drawing.Size(20, 20);
             this.btnMinus.TabIndex = 5;
             this.btnMinus.Text = "-";
+            this.toolTip.SetToolTip(this.btnMinus, "-50 ms");
             this.btnMinus.UseVisualStyleBackColor = true;
             this.btnMinus.Depressed += new System.EventHandler(this.btnMinus_Depressed);
             // 
@@ -228,6 +236,7 @@
             this.btnCopy.Size = new System.Drawing.Size(20, 20);
             this.btnCopy.TabIndex = 6;
             this.btnCopy.Text = "C";
+            this.toolTip.SetToolTip(this.btnCopy, "Copy Time");
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
@@ -242,6 +251,7 @@
             this.btnPaste.Size = new System.Drawing.Size(20, 20);
             this.btnPaste.TabIndex = 7;
             this.btnPaste.Text = "P";
+            this.toolTip.SetToolTip(this.btnPaste, "Paste Time");
             this.btnPaste.UseVisualStyleBackColor = true;
             this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
             // 
@@ -280,6 +290,6 @@
         private RepeatButton btnMinus;
         private RepeatButton btnCopy;
         private RepeatButton btnPaste;
-
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
