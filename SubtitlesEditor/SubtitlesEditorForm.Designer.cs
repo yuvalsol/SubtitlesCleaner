@@ -28,25 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lstErrors = new System.Windows.Forms.DataGridView();
             this.ColumnNum1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnError1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.lstEditor = new System.Windows.Forms.DataGridView();
+            this.ColumnNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnShow = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnHide = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.txtSubtitle = new SubtitlesEditor.TextBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnClean = new System.Windows.Forms.Button();
             this.btnSearchAndReplace = new System.Windows.Forms.Button();
-            this.btnAdjust = new System.Windows.Forms.Button();
+            this.btnAdjustTiming = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnSaveAs = new System.Windows.Forms.Button();
             this.chkBackupSRT = new System.Windows.Forms.CheckBox();
@@ -55,16 +60,11 @@
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnMoveTo = new System.Windows.Forms.Button();
+            this.btnSetShowTime = new System.Windows.Forms.Button();
             this.timePicker = new SubtitlesEditor.TimePicker();
-            this.chkShift = new System.Windows.Forms.CheckBox();
+            this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.ColumnNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnShow = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnHide = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -125,8 +125,8 @@
             // ColumnNum1
             // 
             this.ColumnNum1.DataPropertyName = "Num";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle15;
             this.ColumnNum1.HeaderText = "#";
             this.ColumnNum1.Name = "ColumnNum1";
             this.ColumnNum1.ReadOnly = true;
@@ -137,8 +137,8 @@
             // 
             this.ColumnError1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnError1.DataPropertyName = "Error";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle16;
             this.ColumnError1.HeaderText = "Error";
             this.ColumnError1.Name = "ColumnError1";
             this.ColumnError1.ReadOnly = true;
@@ -172,14 +172,14 @@
             this.lstEditor.AllowUserToResizeColumns = false;
             this.lstEditor.AllowUserToResizeRows = false;
             this.lstEditor.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.lstEditor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lstEditor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNum,
@@ -201,6 +201,61 @@
             this.lstEditor.SelectionChanged += new System.EventHandler(this.lstEditor_SelectionChanged);
             this.lstEditor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstEditor_KeyDown);
             // 
+            // ColumnNum
+            // 
+            this.ColumnNum.DataPropertyName = "Num";
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle10;
+            this.ColumnNum.HeaderText = "#";
+            this.ColumnNum.Name = "ColumnNum";
+            this.ColumnNum.ReadOnly = true;
+            this.ColumnNum.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnNum.Width = 50;
+            // 
+            // ColumnShow
+            // 
+            this.ColumnShow.DataPropertyName = "Show";
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle11;
+            this.ColumnShow.HeaderText = "Show";
+            this.ColumnShow.Name = "ColumnShow";
+            this.ColumnShow.ReadOnly = true;
+            this.ColumnShow.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnShow.Width = 90;
+            // 
+            // ColumnHide
+            // 
+            this.ColumnHide.DataPropertyName = "Hide";
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle12;
+            this.ColumnHide.HeaderText = "Hide";
+            this.ColumnHide.Name = "ColumnHide";
+            this.ColumnHide.ReadOnly = true;
+            this.ColumnHide.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnHide.Width = 90;
+            // 
+            // ColumnDuration
+            // 
+            this.ColumnDuration.DataPropertyName = "Duration";
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle13;
+            this.ColumnDuration.HeaderText = "Duration";
+            this.ColumnDuration.Name = "ColumnDuration";
+            this.ColumnDuration.ReadOnly = true;
+            this.ColumnDuration.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnDuration.Width = 70;
+            // 
+            // ColumnText
+            // 
+            this.ColumnText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColumnText.DataPropertyName = "Text";
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle14;
+            this.ColumnText.HeaderText = "Text";
+            this.ColumnText.Name = "ColumnText";
+            this.ColumnText.ReadOnly = true;
+            this.ColumnText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
             // txtSubtitle
             // 
             this.txtSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -221,7 +276,7 @@
             this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel2.Controls.Add(this.btnClean);
             this.flowLayoutPanel2.Controls.Add(this.btnSearchAndReplace);
-            this.flowLayoutPanel2.Controls.Add(this.btnAdjust);
+            this.flowLayoutPanel2.Controls.Add(this.btnAdjustTiming);
             this.flowLayoutPanel2.Controls.Add(this.btnSave);
             this.flowLayoutPanel2.Controls.Add(this.btnSaveAs);
             this.flowLayoutPanel2.Controls.Add(this.chkBackupSRT);
@@ -263,27 +318,27 @@
             this.btnSearchAndReplace.UseVisualStyleBackColor = true;
             this.btnSearchAndReplace.Click += new System.EventHandler(this.btnSearchAndReplace_Click);
             // 
-            // btnAdjust
+            // btnAdjustTiming
             // 
-            this.btnAdjust.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdjust.AutoSize = true;
-            this.btnAdjust.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnAdjust.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnAdjust.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdjust.Location = new System.Drawing.Point(115, 3);
-            this.btnAdjust.Name = "btnAdjust";
-            this.btnAdjust.Size = new System.Drawing.Size(52, 24);
-            this.btnAdjust.TabIndex = 3;
-            this.btnAdjust.Text = "Adjust";
-            this.btnAdjust.UseVisualStyleBackColor = true;
-            this.btnAdjust.Click += new System.EventHandler(this.btnAdjust_Click);
+            this.btnAdjustTiming.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAdjustTiming.AutoSize = true;
+            this.btnAdjustTiming.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAdjustTiming.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnAdjustTiming.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAdjustTiming.Location = new System.Drawing.Point(115, 3);
+            this.btnAdjustTiming.Name = "btnAdjustTiming";
+            this.btnAdjustTiming.Size = new System.Drawing.Size(92, 24);
+            this.btnAdjustTiming.TabIndex = 3;
+            this.btnAdjustTiming.Text = "Adjust Timing";
+            this.btnAdjustTiming.UseVisualStyleBackColor = true;
+            this.btnAdjustTiming.Click += new System.EventHandler(this.btnAdjustTiming_Click);
             // 
             // btnSave
             // 
             this.btnSave.AutoSize = true;
             this.btnSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnSave.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.Location = new System.Drawing.Point(173, 3);
+            this.btnSave.Location = new System.Drawing.Point(213, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(43, 24);
             this.btnSave.TabIndex = 4;
@@ -296,7 +351,7 @@
             this.btnSaveAs.AutoSize = true;
             this.btnSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnSaveAs.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaveAs.Location = new System.Drawing.Point(222, 3);
+            this.btnSaveAs.Location = new System.Drawing.Point(262, 3);
             this.btnSaveAs.Name = "btnSaveAs";
             this.btnSaveAs.Size = new System.Drawing.Size(72, 24);
             this.btnSaveAs.TabIndex = 5;
@@ -308,7 +363,7 @@
             // 
             this.chkBackupSRT.AutoSize = true;
             this.chkBackupSRT.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkBackupSRT.Location = new System.Drawing.Point(300, 3);
+            this.chkBackupSRT.Location = new System.Drawing.Point(340, 3);
             this.chkBackupSRT.Name = "chkBackupSRT";
             this.chkBackupSRT.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.chkBackupSRT.Size = new System.Drawing.Size(91, 22);
@@ -321,7 +376,7 @@
             this.btnOriginalSubtitles.AutoSize = true;
             this.btnOriginalSubtitles.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnOriginalSubtitles.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOriginalSubtitles.Location = new System.Drawing.Point(397, 3);
+            this.btnOriginalSubtitles.Location = new System.Drawing.Point(437, 3);
             this.btnOriginalSubtitles.Name = "btnOriginalSubtitles";
             this.btnOriginalSubtitles.Size = new System.Drawing.Size(107, 24);
             this.btnOriginalSubtitles.TabIndex = 7;
@@ -335,7 +390,7 @@
             this.btnClear.AutoSize = true;
             this.btnClear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnClear.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(510, 3);
+            this.btnClear.Location = new System.Drawing.Point(550, 3);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(43, 24);
             this.btnClear.TabIndex = 8;
@@ -348,7 +403,7 @@
             this.btnOpen.AutoSize = true;
             this.btnOpen.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnOpen.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOpen.Location = new System.Drawing.Point(559, 3);
+            this.btnOpen.Location = new System.Drawing.Point(599, 3);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(47, 24);
             this.btnOpen.TabIndex = 9;
@@ -363,7 +418,7 @@
             this.btnClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(612, 3);
+            this.btnClose.Location = new System.Drawing.Point(652, 3);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(45, 24);
             this.btnClose.TabIndex = 10;
@@ -373,27 +428,27 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.btnMoveTo);
+            this.flowLayoutPanel1.Controls.Add(this.btnSetShowTime);
             this.flowLayoutPanel1.Controls.Add(this.timePicker);
-            this.flowLayoutPanel1.Controls.Add(this.chkShift);
+            this.flowLayoutPanel1.Controls.Add(this.chkInteractiveRetiming);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(732, 34);
             this.flowLayoutPanel1.TabIndex = 5;
             // 
-            // btnMoveTo
+            // btnSetShowTime
             // 
-            this.btnMoveTo.AutoSize = true;
-            this.btnMoveTo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnMoveTo.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMoveTo.Location = new System.Drawing.Point(3, 3);
-            this.btnMoveTo.Name = "btnMoveTo";
-            this.btnMoveTo.Size = new System.Drawing.Size(65, 24);
-            this.btnMoveTo.TabIndex = 1;
-            this.btnMoveTo.Text = "Move To";
-            this.btnMoveTo.UseVisualStyleBackColor = true;
-            this.btnMoveTo.Click += new System.EventHandler(this.btnMoveTo_Click);
+            this.btnSetShowTime.AutoSize = true;
+            this.btnSetShowTime.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSetShowTime.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSetShowTime.Location = new System.Drawing.Point(3, 3);
+            this.btnSetShowTime.Name = "btnSetShowTime";
+            this.btnSetShowTime.Size = new System.Drawing.Size(102, 24);
+            this.btnSetShowTime.TabIndex = 1;
+            this.btnSetShowTime.Text = "Set Show Time";
+            this.btnSetShowTime.UseVisualStyleBackColor = true;
+            this.btnSetShowTime.Click += new System.EventHandler(this.btnSetShowTime_Click);
             // 
             // timePicker
             // 
@@ -401,7 +456,7 @@
             this.timePicker.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.timePicker.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.timePicker.HH = 0;
-            this.timePicker.Location = new System.Drawing.Point(71, 3);
+            this.timePicker.Location = new System.Drawing.Point(108, 3);
             this.timePicker.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.timePicker.MM = 0;
             this.timePicker.MS = 0;
@@ -412,16 +467,17 @@
             this.timePicker.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.timePicker.MillisecondsAdded += new System.EventHandler<int>(this.timePicker_MillisecondsAdded);
             // 
-            // chkShift
+            // chkInteractiveRetiming
             // 
-            this.chkShift.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkShift.Location = new System.Drawing.Point(390, 3);
-            this.chkShift.Name = "chkShift";
-            this.chkShift.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.chkShift.Size = new System.Drawing.Size(51, 24);
-            this.chkShift.TabIndex = 3;
-            this.chkShift.Text = "Shift";
-            this.chkShift.UseVisualStyleBackColor = true;
+            this.chkInteractiveRetiming.AutoSize = true;
+            this.chkInteractiveRetiming.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkInteractiveRetiming.Location = new System.Drawing.Point(427, 3);
+            this.chkInteractiveRetiming.Name = "chkInteractiveRetiming";
+            this.chkInteractiveRetiming.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.chkInteractiveRetiming.Size = new System.Drawing.Size(136, 22);
+            this.chkInteractiveRetiming.TabIndex = 3;
+            this.chkInteractiveRetiming.Text = "Interactive Retiming";
+            this.chkInteractiveRetiming.UseVisualStyleBackColor = true;
             // 
             // openFileDialog
             // 
@@ -431,61 +487,6 @@
             // 
             this.saveAsFileDialog.DefaultExt = "srt";
             this.saveAsFileDialog.Filter = "SubRip Subtitle|*.srt";
-            // 
-            // ColumnNum
-            // 
-            this.ColumnNum.DataPropertyName = "Num";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle4;
-            this.ColumnNum.HeaderText = "#";
-            this.ColumnNum.Name = "ColumnNum";
-            this.ColumnNum.ReadOnly = true;
-            this.ColumnNum.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnNum.Width = 50;
-            // 
-            // ColumnShow
-            // 
-            this.ColumnShow.DataPropertyName = "Show";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle5;
-            this.ColumnShow.HeaderText = "Show";
-            this.ColumnShow.Name = "ColumnShow";
-            this.ColumnShow.ReadOnly = true;
-            this.ColumnShow.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnShow.Width = 90;
-            // 
-            // ColumnHide
-            // 
-            this.ColumnHide.DataPropertyName = "Hide";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle6;
-            this.ColumnHide.HeaderText = "Hide";
-            this.ColumnHide.Name = "ColumnHide";
-            this.ColumnHide.ReadOnly = true;
-            this.ColumnHide.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnHide.Width = 90;
-            // 
-            // ColumnDuration
-            // 
-            this.ColumnDuration.DataPropertyName = "Duration";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle7;
-            this.ColumnDuration.HeaderText = "Duration";
-            this.ColumnDuration.Name = "ColumnDuration";
-            this.ColumnDuration.ReadOnly = true;
-            this.ColumnDuration.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnDuration.Width = 70;
-            // 
-            // ColumnText
-            // 
-            this.ColumnText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColumnText.DataPropertyName = "Text";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle8;
-            this.ColumnText.HeaderText = "Text";
-            this.ColumnText.Name = "ColumnText";
-            this.ColumnText.ReadOnly = true;
-            this.ColumnText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
             // SubtitlesEditorForm
             // 
@@ -539,12 +540,12 @@
         private TimePicker timePicker;
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.Button btnMoveTo;
-        private System.Windows.Forms.CheckBox chkShift;
+        private System.Windows.Forms.Button btnSetShowTime;
+        private System.Windows.Forms.CheckBox chkInteractiveRetiming;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.DataGridView lstErrors;
         private System.Windows.Forms.Button btnSearchAndReplace;
-        private System.Windows.Forms.Button btnAdjust;
+        private System.Windows.Forms.Button btnAdjustTiming;
         private System.Windows.Forms.Button btnSaveAs;
         private System.Windows.Forms.SaveFileDialog saveAsFileDialog;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnNum1;

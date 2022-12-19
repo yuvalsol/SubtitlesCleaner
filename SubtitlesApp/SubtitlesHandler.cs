@@ -48,10 +48,6 @@ namespace SubtitlesApp
                 string outputFileName = null;
                 string outputPath = null;
 
-                //outputFileName = "template.srt";
-                //outputPath = @"E:\My Downloads";
-                //outputPath = @"D:\yuvals\files";
-
                 HandleSubtitles(new Options()
                 {
                     path = filePath,
@@ -61,34 +57,34 @@ namespace SubtitlesApp
                     outPath = outputPath
                 });
 
-                // shift
+                // addTime
                 //HandleSubtitles(new Options()
                 //{
                 //    path = filePath,
                 //    save = true,
-                //    shift = true,
-                //    shiftTime = "+00:00:00,000",
+                //    addTime = true,
+                //    timeAdded = "+00:00:00,000",
                 //    subtitleNumber = 1
                 //});
 
-                // showTime
+                // setShowTime
                 //HandleSubtitles(new Options()
                 //{
                 //    path = filePath,
                 //    save = true,
-                //    move = true,
+                //    setShowTime = true,
                 //    showTime = "00:00:00,000",
                 //    subtitleNumber = 1
                 //});
 
-                // adjust
+                // adjustTiming
                 //HandleSubtitles(new Options()
                 //{
                 //    path = filePath,
                 //    save = true,
-                //    adjust = true,
-                //    showStart = "00:00:00,000",
-                //    showEnd = "00:00:00,000"
+                //    adjustTiming = true,
+                //    showTime = "00:00:00,000",
+                //    hideTime = "00:00:00,000"
                 //});
             }
         }
@@ -140,14 +136,14 @@ namespace SubtitlesApp
             if (options.clean)
                 subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrint);
 
-            if (options.shift)
-                subtitles.Shift(options.shiftTime, options.subtitleNumber);
+            if (options.addTime)
+                subtitles.AddTime(options.timeAdded, options.subtitleNumber);
 
-            if (options.move)
-                subtitles.MoveTo(options.showTime, options.subtitleNumber);
+            if (options.setShowTime)
+                subtitles.SetShowTime(options.showTime, options.subtitleNumber);
 
-            if (options.adjust)
-                subtitles.Adjust(options.showStart, options.showEnd);
+            if (options.adjustTiming)
+                subtitles.AdjustTiming(options.showTime, options.hideTime);
 
             if (options.save)
                 Save(subtitles, encoding, filePath, options.outFile, options.outPath);

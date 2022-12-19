@@ -1,6 +1,6 @@
 ﻿namespace SubtitlesEditor
 {
-    partial class AdjustForm
+    partial class AdjustTimingForm
     {
         /// <summary>
         /// Required designer variable.
@@ -162,7 +162,7 @@
             // 
             this.openFileDialog.Filter = "SubRip files (*.srt)|*.srt";
             // 
-            // AdjustForm
+            // AdjustTimingForm
             // 
             this.AcceptButton = this.btnAdjust;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -182,9 +182,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AdjustForm";
+            this.Name = "AdjustTimingForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Adjust";
+            this.Text = "Adjust Timing";
             this.Load += new System.EventHandler(this.AdjustForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

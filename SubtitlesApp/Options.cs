@@ -32,29 +32,26 @@ namespace SubtitlesApp
         [Option("linesBalance", Required = false, HelpText = "Balance lines in subtitles")]
         public bool linesBalance { get; set; }
 
-        [Option("shift", Required = false, HelpText = "Shift subtitles by shift time")]
-        public bool shift { get; set; }
+        [Option("addTime", Required = false, HelpText = "Add time to subtitles")]
+        public bool addTime { get; set; }
 
-        [Option("shiftTime", Required = false, HelpText = "Shift time")]
-        public string shiftTime { get; set; }
+        [Option("timeAdded", Required = false, HelpText = "Added time to subtitles")]
+        public string timeAdded { get; set; }
 
-        [Option("move", Required = false, HelpText = "Move subtitles to show time")]
-        public bool move { get; set; }
+        [Option("setShowTime", Required = false, HelpText = "Move subtitles to show time")]
+        public bool setShowTime { get; set; }
+
+        [Option("subtitleNumber", Required = false, HelpText = "Add time or set show time starting from subtitle number")]
+        public int? subtitleNumber { get; set; }
+
+        [Option("adjustTiming", Required = false, HelpText = "Adjust subtitles timing by 2 sync points")]
+        public bool adjustTiming { get; set; }
 
         [Option("showTime", Required = false, HelpText = "Show time")]
         public string showTime { get; set; }
 
-        [Option("subtitleNumber", Required = false, HelpText = "Shift/Move from subtitle number")]
-        public int? subtitleNumber { get; set; }
-
-        [Option("adjust", Required = false, HelpText = "Adjust subtitles timings")]
-        public bool adjust { get; set; }
-
-        [Option("showStart", Required = false, HelpText = "Show Start")]
-        public string showStart { get; set; }
-
-        [Option("showEnd", Required = false, HelpText = "Show end")]
-        public string showEnd { get; set; }
+        [Option("hideTime", Required = false, HelpText = "Hide time")]
+        public string hideTime { get; set; }
 
         [Option("path", Required = false, HelpText = "Path to file or folder")]
         public string path { get; set; }
@@ -90,29 +87,26 @@ namespace SubtitlesApp
             if (linesBalance)
                 cmd += " --linesBalance";
 
-            if (shift)
-                cmd += " --shift";
+            if (addTime)
+                cmd += " --addTime";
 
-            if (string.IsNullOrEmpty(shiftTime) == false)
-                cmd += " --shiftTime \"" + shiftTime + "\"";
+            if (string.IsNullOrEmpty(timeAdded) == false)
+                cmd += " --timeAdded \"" + timeAdded + "\"";
 
-            if (move)
-                cmd += " --move";
-
-            if (string.IsNullOrEmpty(showTime) == false)
-                cmd += " --showTime \"" + showTime + "\"";
+            if (setShowTime)
+                cmd += " --setShowTime";
 
             if (subtitleNumber != null)
                 cmd += " --subtitleNumber " + subtitleNumber.Value;
 
-            if (adjust)
-                cmd += " --adjust";
+            if (adjustTiming)
+                cmd += " --adjustTiming";
 
-            if (string.IsNullOrEmpty(showStart) == false)
-                cmd += " --showStart \"" + showStart + "\"";
+            if (string.IsNullOrEmpty(showTime) == false)
+                cmd += " --showTime \"" + showTime + "\"";
 
-            if (string.IsNullOrEmpty(showEnd) == false)
-                cmd += " --showEnd \"" + showEnd + "\"";
+            if (string.IsNullOrEmpty(hideTime) == false)
+                cmd += " --hideTime \"" + hideTime + "\"";
 
             if (string.IsNullOrEmpty(path) == false)
                 cmd += " --path \"" + path + "\"";

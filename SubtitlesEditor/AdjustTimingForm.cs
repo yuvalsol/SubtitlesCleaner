@@ -7,9 +7,9 @@ using SubtitlesCL;
 
 namespace SubtitlesEditor
 {
-    public partial class AdjustForm : Form
+    public partial class AdjustTimingForm : Form
     {
-        public AdjustForm(string initialDirectory, DateTime firstShow, DateTime lastShow)
+        public AdjustTimingForm(string initialDirectory, DateTime firstShow, DateTime lastShow)
         {
             InitializeComponent();
 

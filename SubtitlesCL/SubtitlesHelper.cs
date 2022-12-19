@@ -2487,14 +2487,14 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Shift
+        #region AddTime
 
-        public static void Shift(this List<Subtitle> subtitles, string shiftTime, int? subtitleNumber = null)
+        public static void AddTime(this List<Subtitle> subtitles, string shiftTime, int? subtitleNumber = null)
         {
-            subtitles.Shift(ParseShiftTime(shiftTime), subtitleNumber);
+            subtitles.AddTime(ParseShiftTime(shiftTime), subtitleNumber);
         }
 
-        public static void Shift(this List<Subtitle> subtitles, TimeSpan span, int? subtitleNumber = null)
+        public static void AddTime(this List<Subtitle> subtitles, TimeSpan span, int? subtitleNumber = null)
         {
             if (subtitles == null || subtitles.Count == 0)
                 return;
@@ -2522,14 +2522,14 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region MoveTo
+        #region SetShowTime
 
-        public static void MoveTo(this List<Subtitle> subtitles, string showTime, int? subtitleNumber = 1)
+        public static void SetShowTime(this List<Subtitle> subtitles, string showTime, int? subtitleNumber = 1)
         {
-            subtitles.MoveTo(ParseShowTime(showTime), subtitleNumber);
+            subtitles.SetShowTime(ParseShowTime(showTime), subtitleNumber);
         }
 
-        public static void MoveTo(this List<Subtitle> subtitles, DateTime show, int? subtitleNumber = 1)
+        public static void SetShowTime(this List<Subtitle> subtitles, DateTime show, int? subtitleNumber = 1)
         {
             if (subtitles == null || subtitles.Count == 0)
                 return;
@@ -2551,16 +2551,16 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Adjust
+        #region AdjustTiming
 
-        public static void Adjust(this List<Subtitle> subtitles, string showStart, string showEnd)
+        public static void AdjustTiming(this List<Subtitle> subtitles, string showStart, string showEnd)
         {
-            subtitles.Adjust(ParseShowTime(showStart), ParseShowTime(showEnd));
+            subtitles.AdjustTiming(ParseShowTime(showStart), ParseShowTime(showEnd));
         }
 
-        public static void Adjust(this List<Subtitle> subtitles, DateTime showStart, DateTime showEnd)
+        public static void AdjustTiming(this List<Subtitle> subtitles, DateTime showStart, DateTime showEnd)
         {
-            subtitles.Adjust(
+            subtitles.AdjustTiming(
                 subtitles[0].Show,
                 showStart,
                 subtitles[subtitles.Count - 1].Show,
@@ -2568,7 +2568,7 @@ namespace SubtitlesCL
             );
         }
 
-        public static void Adjust(this List<Subtitle> subtitles, DateTime x1Show, DateTime x2Show, DateTime y1Show, DateTime y2Show)
+        public static void AdjustTiming(this List<Subtitle> subtitles, DateTime x1Show, DateTime x2Show, DateTime y1Show, DateTime y2Show)
         {
             if (subtitles == null || subtitles.Count == 0)
                 return;

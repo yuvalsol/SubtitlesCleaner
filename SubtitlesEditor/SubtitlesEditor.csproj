@@ -52,11 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdjustForm.cs">
+    <Compile Include="AdjustTimingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AdjustForm.Designer.cs">
-      <DependentUpon>AdjustForm.cs</DependentUpon>
+    <Compile Include="AdjustTimingForm.Designer.cs">
+      <DependentUpon>AdjustTimingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomNumericUpDown.cs">
       <SubType>Component</SubType>
@@ -96,8 +96,8 @@
     <Compile Include="TimePicker.Designer.cs">
       <DependentUpon>TimePicker.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AdjustForm.resx">
-      <DependentUpon>AdjustForm.cs</DependentUpon>
+    <EmbeddedResource Include="AdjustTimingForm.resx">
+      <DependentUpon>AdjustTimingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

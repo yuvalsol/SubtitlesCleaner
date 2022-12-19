@@ -566,28 +566,28 @@ namespace SubtitlesEditor
 
         #endregion
 
-        #region Move and Shift
+        #region Set Show Time and Add Time
 
-        private void btnMoveTo_Click(object sender, EventArgs e)
+        private void btnSetShowTime_Click(object sender, EventArgs e)
         {
             EditorRow editorRow = GetSelectedEditorRow();
             if (editorRow == null)
                 return;
 
-            subtitles.MoveTo(timePicker.Value, editorRow.Num);
+            subtitles.SetShowTime(timePicker.Value, editorRow.Num);
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
             SetFormTitle(true);
         }
 
         private void timePicker_MillisecondsAdded(object sender, int ms)
         {
-            if (chkShift.Checked)
+            if (chkInteractiveRetiming.Checked)
             {
                 EditorRow editorRow = GetSelectedEditorRow();
                 if (editorRow == null)
                     return;
 
-                subtitles.Shift(TimeSpan.FromMilliseconds(ms), editorRow.Num);
+                subtitles.AddTime(TimeSpan.FromMilliseconds(ms), editorRow.Num);
                 SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
                 SetFormTitle(true);
             }
@@ -595,9 +595,9 @@ namespace SubtitlesEditor
 
         #endregion
 
-        #region Adjust
+        #region Adjust Timing
 
-        private void btnAdjust_Click(object sender, EventArgs e)
+        private void btnAdjustTiming_Click(object sender, EventArgs e)
         {
             if (subtitles == null || subtitles.Count == 0)
                 return;
@@ -606,11 +606,11 @@ namespace SubtitlesEditor
             DateTime firstShow = subtitles[0].Show;
             DateTime lastShow = subtitles[subtitles.Count - 1].Show;
 
-            var dialog = new AdjustForm(initialDirectory, firstShow, lastShow);
+            var dialog = new AdjustTimingForm(initialDirectory, firstShow, lastShow);
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                subtitles.Adjust(dialog.X1, dialog.X2, dialog.Y1, dialog.Y2);
+                subtitles.AdjustTiming(dialog.X1, dialog.X2, dialog.Y1, dialog.Y2);
                 SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
                 SetFormTitle(true);
             }
