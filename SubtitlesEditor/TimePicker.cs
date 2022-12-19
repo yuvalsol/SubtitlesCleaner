@@ -18,6 +18,27 @@ namespace SubtitlesEditor
             InitializeComponent();
         }
 
+        [Description("Show Sign"), Category("Data"), DefaultValue(false)]
+        public bool ShowSign
+        {
+            get { return lblSign.Visible; }
+            set { lblSign.Visible = value; }
+        }
+
+        public string Sign
+        {
+            get { return ShowSign ? lblSign.Text : string.Empty; }
+            private set { if (ShowSign) lblSign.Text = value; }
+        }
+
+        public bool IsNegativeTime { get { return ShowSign && Sign == "-"; } }
+
+        public void SwitchSign()
+        {
+            if (ShowSign)
+                Sign = (IsNegativeTime ? "+" : "-");
+        }
+
         public int HH { get { return decimal.ToInt32(numericUpDownHH.Value); } set { numericUpDownHH.Value = value; } }
         public int MM { get { return decimal.ToInt32(numericUpDownMM.Value); } set { numericUpDownMM.Value = value; } }
         public int SS { get { return decimal.ToInt32(numericUpDownSS.Value); } set { numericUpDownSS.Value = value; } }
@@ -25,11 +46,12 @@ namespace SubtitlesEditor
 
         public override string ToString()
         {
-            return string.Format("{0:D2}:{1:D2}:{2:D2},{3:D3}", HH, MM, SS, MS);
+            return string.Format("{0}{1:D2}:{2:D2}:{3:D2},{4:D3}", Sign, HH, MM, SS, MS);
         }
 
         public void Reset()
         {
+            Sign = "+";
             HH = 0;
             MM = 0;
             SS = 0;
@@ -52,6 +74,39 @@ namespace SubtitlesEditor
             }
         }
 
+        public TimeSpan DiffValue
+        {
+            get
+            {
+                var span = new TimeSpan(0, HH, MM, SS, MS);
+                if (IsNegativeTime)
+                    return span.Negate();
+                else
+                    return span;
+            }
+
+            set
+            {
+                bool isNegative = value < TimeSpan.Zero;
+                Sign = (isNegative ? "-" : "+");
+                HH = (isNegative ? -value.Hours : value.Hours);
+                MM = (isNegative ? -value.Minutes : value.Minutes);
+                SS = (isNegative ? -value.Seconds : value.Seconds);
+                MS = (isNegative ? -value.Milliseconds : value.Milliseconds);
+            }
+        }
+
+        public event EventHandler ValueChanged;
+
+        private void lblSign_Click(object sender, EventArgs e)
+        {
+            SwitchSign();
+
+            var handler = this.ValueChanged;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
         public static TimePicker operator +(TimePicker timePicker, int milliseconds)
         {
             timePicker.Value = timePicker.Value.AddMilliseconds(milliseconds);
@@ -63,8 +118,6 @@ namespace SubtitlesEditor
             timePicker.Value = timePicker.Value.AddMilliseconds(-milliseconds);
             return timePicker;
         }
-
-        public event EventHandler ValueChanged;
 
         private void numericUpDown_ValueChanged(object sender, EventArgs e)
         {
@@ -173,13 +226,27 @@ namespace SubtitlesEditor
         {
             try
             {
-                DateTime time = SubtitlesHelper.ParseShowTime(Clipboard.GetText());
-                if (time != DateTime.MinValue)
-                    this.Value = time;
+                if (ShowSign)
+                {
+                    TimeSpan span = SubtitlesHelper.ParseDiffTime(Clipboard.GetText());
+                    if (span != TimeSpan.Zero)
+                        this.DiffValue = span;
+                }
+                else
+                {
+                    DateTime time = SubtitlesHelper.ParseShowTime(Clipboard.GetText());
+                    if (time != DateTime.MinValue)
+                        this.Value = time;
+                }
             }
             catch
             {
             }
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            Reset();
         }
     }
 }

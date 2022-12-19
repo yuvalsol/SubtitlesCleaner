@@ -14,16 +14,15 @@ namespace SubtitlesCL
 
         private const string showTimeFormat = @"(?<Show_HH>\d{2}):(?<Show_MM>\d{2}):(?<Show_SS>\d{2}),(?<Show_MS>\d{3})";
         private const string hideTimeFormat = @"(?<Hide_HH>\d{2}):(?<Hide_MM>\d{2}):(?<Hide_SS>\d{2}),(?<Hide_MS>\d{3})";
-        private const string fullTimeFormat = showTimeFormat + " --> " + hideTimeFormat;
-
-        public static readonly Regex regexTime = new Regex(@"^" + fullTimeFormat + "$", RegexOptions.Compiled);
-        public static readonly Regex regexSubtitleNumber = new Regex(@"^\d+$", RegexOptions.Compiled);
-
-        public static readonly Regex regexShowTime = new Regex(@"^" + showTimeFormat + "$", RegexOptions.Compiled);
-        public static readonly Regex regexShiftTime = new Regex(@"^(?<Shift_Sign>-|\+)?(?:(?:(?:(?<Shift_HH>\d{1,2}):)?(?<Shift_MM>\d{1,2}):)?(?<Shift_SS>\d{1,2})(?:,|:|\.))?(?<Shift_MS>\d{1,3})$", RegexOptions.Compiled);
-
         private const string showTimeFormatAlternate = @"(?:(?<Show_HH>\d{2}):)?(?<Show_MM>\d{2}):(?<Show_SS>\d{2})(?:[.,](?<Show_MS>\d{3}))?";
+        private const string fullTimeFormat = showTimeFormat + " --> " + hideTimeFormat;
+        private const string diffTimeFormat = @"(?<Diff_Sign>-|\+)?(?:(?:(?:(?<Diff_HH>\d{1,2}):)?(?<Diff_MM>\d{1,2}):)?(?<Diff_SS>\d{1,2})(?:,|:|\.))?(?<Diff_MS>\d{1,3})";
+
+        public static readonly Regex regexSubtitleNumber = new Regex(@"^\d+$", RegexOptions.Compiled);
+        public static readonly Regex regexShowTime = new Regex(@"^" + showTimeFormat + "$", RegexOptions.Compiled);
         public static readonly Regex regexShowTimeAlternate = new Regex(@"^" + showTimeFormatAlternate + "$", RegexOptions.Compiled);
+        public static readonly Regex regexTime = new Regex(@"^" + fullTimeFormat + "$", RegexOptions.Compiled);
+        public static readonly Regex regexDiffTime = new Regex(@"^" + diffTimeFormat + "$", RegexOptions.Compiled);
 
         public static DateTime ParseShowTime(string showTime)
         {
@@ -65,23 +64,23 @@ namespace SubtitlesCL
             }
         }
 
-        public static TimeSpan ParseShiftTime(string shiftTime)
+        public static TimeSpan ParseDiffTime(string diffTime)
         {
-            if (string.IsNullOrEmpty(shiftTime))
+            if (string.IsNullOrEmpty(diffTime))
                 return TimeSpan.Zero;
 
-            if (regexShiftTime.IsMatch(shiftTime))
+            if (regexDiffTime.IsMatch(diffTime))
             {
-                Match match = regexShiftTime.Match(shiftTime);
+                Match match = regexDiffTime.Match(diffTime);
                 var span = new TimeSpan(
                     0,
-                    match.Groups["Shift_HH"].Success ? int.Parse(match.Groups["Shift_HH"].Value) : 0,
-                    match.Groups["Shift_MM"].Success ? int.Parse(match.Groups["Shift_MM"].Value) : 0,
-                    match.Groups["Shift_SS"].Success ? int.Parse(match.Groups["Shift_SS"].Value) : 0,
-                    match.Groups["Shift_MS"].Success ? int.Parse(match.Groups["Shift_MS"].Value) : 0
+                    match.Groups["Diff_HH"].Success ? int.Parse(match.Groups["Diff_HH"].Value) : 0,
+                    match.Groups["Diff_MM"].Success ? int.Parse(match.Groups["Diff_MM"].Value) : 0,
+                    match.Groups["Diff_SS"].Success ? int.Parse(match.Groups["Diff_SS"].Value) : 0,
+                    match.Groups["Diff_MS"].Success ? int.Parse(match.Groups["Diff_MS"].Value) : 0
                 );
 
-                if (match.Groups["Shift_Sign"].Success && match.Groups["Shift_Sign"].Value == "-")
+                if (match.Groups["Diff_Sign"].Success && match.Groups["Diff_Sign"].Value == "-")
                     return span.Negate();
                 else
                     return span;
@@ -2489,9 +2488,9 @@ namespace SubtitlesCL
 
         #region AddTime
 
-        public static void AddTime(this List<Subtitle> subtitles, string shiftTime, int? subtitleNumber = null)
+        public static void AddTime(this List<Subtitle> subtitles, string diffTime, int? subtitleNumber = null)
         {
-            subtitles.AddTime(ParseShiftTime(shiftTime), subtitleNumber);
+            subtitles.AddTime(ParseDiffTime(diffTime), subtitleNumber);
         }
 
         public static void AddTime(this List<Subtitle> subtitles, TimeSpan span, int? subtitleNumber = null)
