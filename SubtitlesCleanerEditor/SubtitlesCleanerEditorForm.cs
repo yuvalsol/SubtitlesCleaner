@@ -66,7 +66,7 @@ namespace SubtitlesCleanerEditor
 
         private readonly bool isLoadTest = false;
 
-        private void SubtitlesEditorForm_Load(object sender, EventArgs e)
+        private void SubtitlesCleanerEditorForm_Load(object sender, EventArgs e)
         {
             if (isLoadTest)
             {
@@ -185,13 +185,13 @@ namespace SubtitlesCleanerEditor
                 LoadFile(openFileDialog.FileName);
         }
 
-        private void SubtitlesEditorForm_DragEnter(object sender, DragEventArgs e)
+        private void SubtitlesCleanerEditorForm_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effect = DragDropEffects.Copy;
         }
 
-        private void SubtitlesEditorForm_DragDrop(object sender, DragEventArgs e)
+        private void SubtitlesCleanerEditorForm_DragDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -661,7 +661,7 @@ namespace SubtitlesCleanerEditor
 
         #region Search and Replace
 
-        private void SubtitlesEditorForm_KeyDown(object sender, KeyEventArgs e)
+        private void SubtitlesCleanerEditorForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Modifiers == Keys.Control && (e.KeyCode == Keys.F || e.KeyCode == Keys.H))
             {

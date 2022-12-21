@@ -142,7 +142,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SubtitlesCL\SubtitlesCleanerLibrary.csproj">
+    <ProjectReference Include="..\SubtitlesCleanerLibrary\SubtitlesCleanerLibrary.csproj">
       <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
       <Name>SubtitlesCleanerLibrary</Name>
     </ProjectReference>

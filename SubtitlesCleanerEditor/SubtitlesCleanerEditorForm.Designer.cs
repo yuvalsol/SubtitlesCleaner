@@ -566,10 +566,10 @@
             this.Name = "SubtitlesCleanerEditorForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Subtitles Cleaner Editor";
-            this.Load += new System.EventHandler(this.SubtitlesEditorForm_Load);
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SubtitlesEditorForm_DragDrop);
-            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SubtitlesEditorForm_DragEnter);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubtitlesEditorForm_KeyDown);
+            this.Load += new System.EventHandler(this.SubtitlesCleanerEditorForm_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SubtitlesCleanerEditorForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SubtitlesCleanerEditorForm_DragEnter);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubtitlesCleanerEditorForm_KeyDown);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
