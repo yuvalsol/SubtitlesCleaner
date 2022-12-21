@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SubtitlesCL
+namespace SubtitlesCleanerLibrary
 {
     public class Subtitle : ICloneable, IComparable, IComparable<Subtitle>, IComparer, IComparer<Subtitle>, IEquatable<Subtitle>, IEqualityComparer<Subtitle>
     {

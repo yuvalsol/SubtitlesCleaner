@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{445E239A-DA9D-4864-A1B5-01B299AE12DF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SubtitlesEditor</RootNamespace>
-    <AssemblyName>SubtitlesEditor</AssemblyName>
+    <RootNamespace>SubtitlesCleanerEditor</RootNamespace>
+    <AssemblyName>SubtitlesCleanerEditor</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>SubtitlesEditor.Program</StartupObject>
+    <StartupObject>SubtitlesCleanerEditor.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Solution Items\SolutionAssemblyInfo.cs">
+      <Link>Properties\SolutionAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AdjustTimingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,11 +84,11 @@
     <Compile Include="SearchAndReplaceForm.Designer.cs">
       <DependentUpon>SearchAndReplaceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SubtitlesEditorForm.cs">
+    <Compile Include="SubtitlesCleanerEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SubtitlesEditorForm.Designer.cs">
-      <DependentUpon>SubtitlesEditorForm.cs</DependentUpon>
+    <Compile Include="SubtitlesCleanerEditorForm.Designer.cs">
+      <DependentUpon>SubtitlesCleanerEditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TextBox.cs">
       <SubType>Component</SubType>
@@ -113,12 +116,13 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="SearchAndReplaceForm.resx">
       <DependentUpon>SearchAndReplaceForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SubtitlesEditorForm.resx">
-      <DependentUpon>SubtitlesEditorForm.cs</DependentUpon>
+    <EmbeddedResource Include="SubtitlesCleanerEditorForm.resx">
+      <DependentUpon>SubtitlesCleanerEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TimeCalculatorForm.resx">
       <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
@@ -138,9 +142,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SubtitlesCL\SubtitlesCL.csproj">
+    <ProjectReference Include="..\SubtitlesCL\SubtitlesCleanerLibrary.csproj">
       <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
-      <Name>SubtitlesCL</Name>
+      <Name>SubtitlesCleanerLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

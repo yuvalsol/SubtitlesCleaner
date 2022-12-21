@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Drawing;
 
-namespace SubtitlesCL
+namespace SubtitlesCleanerLibrary
 {
     [Flags]
     public enum SubtitleError
     {
         None = 0,
 
-        [ErrorColor(128, 128, 128)]
+        [ErrorColor(128, 128, 128, 255, 255, 255)]
         Empty_Line = (1 << 0),
 
         [ErrorColor(207, 207, 207)]

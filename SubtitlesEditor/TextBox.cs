@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace SubtitlesEditor
+namespace SubtitlesCleanerEditor
 {
     public class TextBox : System.Windows.Forms.TextBox
     {

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CommandLine;
-using SubtitlesCL;
+using SubtitlesCleanerLibrary;
 
-namespace SubtitlesApp
+namespace SubtitlesCleanerCommand
 {
     class SubtitlesHandler
     {

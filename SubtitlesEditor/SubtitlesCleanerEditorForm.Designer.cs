@@ -1,6 +1,6 @@
-﻿namespace SubtitlesEditor
+﻿namespace SubtitlesCleanerEditor
 {
-    partial class SubtitlesEditorForm
+    partial class SubtitlesCleanerEditorForm
     {
         /// <summary>
         /// Required designer variable.
@@ -50,8 +50,8 @@
             this.btnTimeCalculator = new System.Windows.Forms.Button();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAddTime = new System.Windows.Forms.Button();
-            this.diffTimePicker = new SubtitlesEditor.TimePicker();
-            this.txtSubtitle = new SubtitlesEditor.TextBox();
+            this.diffTimePicker = new SubtitlesCleanerEditor.TimePicker();
+            this.txtSubtitle = new SubtitlesCleanerEditor.TextBox();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnClean = new System.Windows.Forms.Button();
             this.btnSearchAndReplace = new System.Windows.Forms.Button();
@@ -65,7 +65,7 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSetShowTime = new System.Windows.Forms.Button();
-            this.timePicker = new SubtitlesEditor.TimePicker();
+            this.timePicker = new SubtitlesCleanerEditor.TimePicker();
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -332,7 +332,7 @@
             this.txtSubtitle.Size = new System.Drawing.Size(726, 54);
             this.txtSubtitle.TabIndex = 4;
             this.txtSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
+            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesCleanerEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
             // 
             // flowLayoutPanel3
             // 
@@ -553,7 +553,7 @@
             this.saveAsFileDialog.DefaultExt = "srt";
             this.saveAsFileDialog.Filter = "SubRip Subtitle|*.srt";
             // 
-            // SubtitlesEditorForm
+            // SubtitlesCleanerEditorForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -563,9 +563,9 @@
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
-            this.Name = "SubtitlesEditorForm";
+            this.Name = "SubtitlesCleanerEditorForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Subtitles Editor";
+            this.Text = "Subtitles Cleaner Editor";
             this.Load += new System.EventHandler(this.SubtitlesEditorForm_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SubtitlesEditorForm_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SubtitlesEditorForm_DragEnter);
@@ -598,7 +598,7 @@
         private System.Windows.Forms.Button btnClean;
         private System.Windows.Forms.Button btnOriginalSubtitles;
         private System.Windows.Forms.Button btnClear;
-        private SubtitlesEditor.TextBox txtSubtitle;
+        private SubtitlesCleanerEditor.TextBox txtSubtitle;
         private System.Windows.Forms.DataGridView lstEditor;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button btnSave;

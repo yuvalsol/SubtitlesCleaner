@@ -1,4 +1,4 @@
-﻿namespace SubtitlesEditor
+﻿namespace SubtitlesCleanerEditor
 {
     partial class SearchAndReplaceForm
     {

@@ -8,17 +8,19 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using SubtitlesCL;
+using SubtitlesCleanerLibrary;
 
-namespace SubtitlesEditor
+namespace SubtitlesCleanerEditor
 {
-    public partial class SubtitlesEditorForm : Form
+    public partial class SubtitlesCleanerEditorForm : Form
     {
         #region Form
 
-        public SubtitlesEditorForm(string[] args)
+        public SubtitlesCleanerEditorForm(string[] args)
         {
             InitializeComponent();
+
+            ResetFormTitle();
 
             lstEditor.AutoGenerateColumns = false;
             lstErrors.AutoGenerateColumns = false;
@@ -161,9 +163,20 @@ namespace SubtitlesEditor
             }
         }
 
+        private void ResetFormTitle()
+        {
+            this.Text = 
+                "Subtitles Cleaner Editor" + " " + 
+                Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+        }
+
         private void SetFormTitle(bool isDirty)
         {
-            this.Text = Path.GetFileName(this.filePath) + (isDirty ? " *" : string.Empty);
+            ResetFormTitle();
+
+            this.Text = 
+                Path.GetFileName(this.filePath) + (isDirty ? " *" : string.Empty) +
+                " - " + this.Text;
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -321,7 +334,7 @@ namespace SubtitlesEditor
 
         #endregion
 
-        #region Clear Subtitles Editor
+        #region Clear Subtitles Cleaner Editor
 
         private void btnClear_Click(object sender, EventArgs e)
         {
@@ -330,7 +343,7 @@ namespace SubtitlesEditor
             filePath = null;
             txtSubtitle.Text = string.Empty;
             timePicker.Reset();
-            this.Text = "Subtitles Editor";
+            ResetFormTitle();
         }
 
         #endregion
@@ -364,7 +377,7 @@ namespace SubtitlesEditor
 
         #endregion
 
-        #region Subtitles Editor Selection Changed
+        #region Subtitles Cleaner Editor Selection Changed
 
         private void lstEditor_SelectionChanged(object sender, EventArgs e)
         {

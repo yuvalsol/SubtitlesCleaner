@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SubtitlesApp</RootNamespace>
-    <AssemblyName>SubtitlesApp</AssemblyName>
+    <RootNamespace>SubtitlesCleanerCommand</RootNamespace>
+    <AssemblyName>SubtitlesCleanerCommand</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>SubtitlesApp.Program</StartupObject>
+    <StartupObject>SubtitlesCleanerCommand.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine, Version=2.8.0.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Solution Items\SolutionAssemblyInfo.cs">
+      <Link>Properties\SolutionAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,9 +64,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SubtitlesCL\SubtitlesCL.csproj">
+    <ProjectReference Include="..\SubtitlesCL\SubtitlesCleanerLibrary.csproj">
       <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
-      <Name>SubtitlesCL</Name>
+      <Name>SubtitlesCleanerLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,22 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows.Forms;
 
-namespace SubtitlesEditor
+namespace SubtitlesCleanerEditor
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SubtitlesEditorForm(args));
+            try
+            {
+                // UI exceptions
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
+                // Non-UI exceptions
+                AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledException((Exception)e.ExceptionObject);
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new SubtitlesCleanerEditorForm(args));
+            }
+            catch (Exception ex)
+            {
+                UnhandledException(ex);
+            }
+        }
+
+        private static void UnhandledException(Exception ex)
+        {
+            try
+            {
+                MessageBox.Show(string.Format("An unhandled error occurred.{0}The application will terminate now.{0}{0}{1}{0}{0}{2}",
+                    "\n",
+                    ex.Message,
+                    ex.StackTrace.Split('\n')[0]
+                ), string.Format("Unhandled Error - {0} {1}",
+                    Assembly.GetExecutingAssembly().GetName().Name,
+                    Assembly.GetExecutingAssembly().GetName().Version.ToString(3)
+                ), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch
+            {
+            }
+
+            Application.Exit();
         }
     }
 }

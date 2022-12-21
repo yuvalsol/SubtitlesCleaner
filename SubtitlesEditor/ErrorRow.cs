@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SubtitlesEditor
+namespace SubtitlesCleanerEditor
 {
     public class ErrorRow
     {

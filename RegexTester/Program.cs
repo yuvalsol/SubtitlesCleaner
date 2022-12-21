@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using SubtitlesCL;
+using SubtitlesCleanerLibrary;
 
 namespace RegexTester
 {
@@ -11,22 +11,27 @@ namespace RegexTester
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            FindAndReplace far = 
-                new FindAndReplace(new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$"), "${Lyrics} ${Suffix}", SubtitleError.Missing_Spaces);
+            FindAndReplace far = new FindAndReplace(
+                new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$"), 
+                "${Lyrics} ${Suffix}", 
+                SubtitleError.Missing_Spaces
+            );
 
-            string line = @"Lyrics♪</i>";
-            RegexHelper.PrintInput(line);
+            string input = @"Lyrics♪</i>";
+            Console.WriteLine("Input:");
+            RegexHelper.PrintInput(input);
 
-            RegexHelper.PrintIsMatch(line, far.Regex);
+            Console.WriteLine("Is Match With Regex:");
+            RegexHelper.PrintIsMatch(input, far.Regex);
 
-            Console.WriteLine(far.CleanLine(line));
-        }
-
-        private static void PrintHasErrors(string input)
-        {
+            Console.WriteLine("Has Errors:");
             bool hasErrors = SubtitlesHelper.HasErrors(input);
             Console.WriteLine(hasErrors ? "Has Errors" : "No Errors");
             Console.WriteLine();
+
+            Console.WriteLine("Clean Input:");
+            string cleanInput = far.CleanLine(input);
+            Console.WriteLine(cleanInput);
         }
     }
 }

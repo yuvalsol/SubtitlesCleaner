@@ -1,4 +1,4 @@
-﻿namespace SubtitlesEditor
+﻿namespace SubtitlesCleanerEditor
 {
     partial class TimePicker
     {
@@ -31,18 +31,18 @@
             this.components = new System.ComponentModel.Container();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSign = new System.Windows.Forms.Label();
-            this.numericUpDownHH = new SubtitlesEditor.CustomNumericUpDown();
+            this.numericUpDownHH = new SubtitlesCleanerEditor.CustomNumericUpDown();
             this.lblSeperator1 = new System.Windows.Forms.Label();
-            this.numericUpDownMM = new SubtitlesEditor.CustomNumericUpDown();
+            this.numericUpDownMM = new SubtitlesCleanerEditor.CustomNumericUpDown();
             this.lblSeperator2 = new System.Windows.Forms.Label();
-            this.numericUpDownSS = new SubtitlesEditor.CustomNumericUpDown();
+            this.numericUpDownSS = new SubtitlesCleanerEditor.CustomNumericUpDown();
             this.lblSeperator3 = new System.Windows.Forms.Label();
-            this.numericUpDownMS = new SubtitlesEditor.CustomNumericUpDown();
-            this.btnPlus = new SubtitlesEditor.RepeatButton();
-            this.btnMinus = new SubtitlesEditor.RepeatButton();
-            this.btnReset = new SubtitlesEditor.RepeatButton();
-            this.btnCopy = new SubtitlesEditor.RepeatButton();
-            this.btnPaste = new SubtitlesEditor.RepeatButton();
+            this.numericUpDownMS = new SubtitlesCleanerEditor.CustomNumericUpDown();
+            this.btnPlus = new SubtitlesCleanerEditor.RepeatButton();
+            this.btnMinus = new SubtitlesCleanerEditor.RepeatButton();
+            this.btnReset = new SubtitlesCleanerEditor.RepeatButton();
+            this.btnCopy = new SubtitlesCleanerEditor.RepeatButton();
+            this.btnPaste = new SubtitlesCleanerEditor.RepeatButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHH)).BeginInit();

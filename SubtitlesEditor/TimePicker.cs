@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SubtitlesCL;
+using SubtitlesCleanerLibrary;
 
-namespace SubtitlesEditor
+namespace SubtitlesCleanerEditor
 {
     public partial class TimePicker : UserControl
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SubtitlesCL
+namespace SubtitlesCleanerLibrary
 {
     public static class SubtitlesHelper
     {
@@ -121,7 +121,7 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region Get
+        #region Get Subtitles
 
         public static List<Subtitle> GetSubtitles(string filePath, ref Encoding encoding, int? firstSubtitlesCount = null)
         {
@@ -199,7 +199,7 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region ToLines
+        #region To Lines
 
         public static string[] ToLines(this List<Subtitle> subtitles)
         {
@@ -2486,7 +2486,7 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region AddTime
+        #region Add Time
 
         public static readonly DateTime DateTimeZero = new DateTime(1900, 1, 1);
         private static readonly Exception addTimeError = new Exception("Add time failed.\nResult less than 00:00:00,000.");
@@ -2548,7 +2548,7 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region SetShowTime
+        #region Set Show Time
 
         public static void SetShowTime(this List<Subtitle> subtitles, string showTime, int? subtitleNumber = 1)
         {
@@ -2585,7 +2585,7 @@ namespace SubtitlesCL
 
         #endregion
 
-        #region AdjustTiming
+        #region Adjust Timing
 
         public static void AdjustTiming(this List<Subtitle> subtitles, string showStart, string showEnd)
         {

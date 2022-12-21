@@ -3,17 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesApp", "SubtitlesApp\SubtitlesApp.csproj", "{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerCommand", "SubtitlesApp\SubtitlesCleanerCommand.csproj", "{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegexTester", "RegexTester\RegexTester.csproj", "{4FBA507D-75DE-4C93-A401-06C3874252EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCL", "SubtitlesCL\SubtitlesCL.csproj", "{FA664445-F006-42D6-A94C-DDDF82ED7167}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerLibrary", "SubtitlesCL\SubtitlesCleanerLibrary.csproj", "{FA664445-F006-42D6-A94C-DDDF82ED7167}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesEditor", "SubtitlesEditor\SubtitlesEditor.csproj", "{445E239A-DA9D-4864-A1B5-01B299AE12DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerEditor", "SubtitlesEditor\SubtitlesCleanerEditor.csproj", "{445E239A-DA9D-4864-A1B5-01B299AE12DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Subtitles", "Subtitles", "{E1704D77-E9D2-462A-8810-2CB1E3043C2D}"
 	ProjectSection(SolutionItems) = preProject
 		Subtitles\Test.srt = Subtitles\Test.srt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5437171-53C9-40D6-8606-7F61E3DF0A52}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\SolutionAssemblyInfo.cs = Solution Items\SolutionAssemblyInfo.cs
 	EndProjectSection
 EndProject
 Global

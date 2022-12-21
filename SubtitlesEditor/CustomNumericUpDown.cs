@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SubtitlesEditor
+namespace SubtitlesCleanerEditor
 {
     public partial class CustomNumericUpDown : NumericUpDown
     {

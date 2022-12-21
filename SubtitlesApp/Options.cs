@@ -1,7 +1,7 @@
 ﻿using System;
 using CommandLine;
 
-namespace SubtitlesApp
+namespace SubtitlesCleanerCommand
 {
     class Options
     {
@@ -58,7 +58,7 @@ namespace SubtitlesApp
 
         public override string ToString()
         {
-            string cmd = "SubtitlesApp.exe";
+            string cmd = "SubtitlesCleanerCommand.exe";
 
             if (print)
                 cmd += " --print";

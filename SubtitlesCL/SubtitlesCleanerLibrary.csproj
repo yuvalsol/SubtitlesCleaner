@@ -7,8 +7,8 @@
     <ProjectGuid>{FA664445-F006-42D6-A94C-DDDF82ED7167}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SubtitlesCL</RootNamespace>
-    <AssemblyName>SubtitlesCL</AssemblyName>
+    <RootNamespace>SubtitlesCleanerLibrary</RootNamespace>
+    <AssemblyName>SubtitlesCleanerLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Solution Items\SolutionAssemblyInfo.cs">
+      <Link>Properties\SolutionAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="FindAndReplace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using SubtitlesCL;
+using SubtitlesCleanerLibrary;
 
-namespace SubtitlesEditor
+namespace SubtitlesCleanerEditor
 {
     public class EditorRow
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace SubtitlesApp
+namespace SubtitlesCleanerCommand
 {
     class Program
     {
