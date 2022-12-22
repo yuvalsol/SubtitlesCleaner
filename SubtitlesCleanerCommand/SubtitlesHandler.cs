@@ -4,183 +4,189 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CommandLine;
 using SubtitlesCleanerLibrary;
 
 namespace SubtitlesCleanerCommand
 {
-    class SubtitlesHandler
+    static class SubtitlesHandler
     {
-        private static readonly bool IsProduction = true;
+        public static readonly bool IsProduction = true;
+        private static readonly bool IsPrintCleaning = false;
         private static readonly bool CleanHICaseInsensitive = false;
-        private static readonly bool IsPrint = false;
         private static readonly int? FirstSubtitlesCount = null;
 
-        public void Run(string[] args)
+        public static void Debug()
         {
-            if (IsProduction)
-                Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(HandleSubtitles);
-            else
-                Debug();
+            Clean(new CleanOptions()
+            {
+                path = Path.GetFullPath(Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "..", "..", "..", "Subtitles",
+                    "Test.srt"
+                )),
+                cleanHICaseInsensitive = CleanHICaseInsensitive,
+                firstSubtitlesCount = FirstSubtitlesCount,
+                print = true
+            });
         }
 
-        private void Debug()
+        public static void Clean(CleanOptions options)
         {
-            string filePath = Path.GetFullPath(Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "..", "..", "..", "Subtitles",
-                "Test.srt"
-            ));
-
-            bool isPrint = true;
-
-            if (isPrint)
-            {
-                HandleSubtitles(new Options()
-                {
-                    path = filePath,
-                    print = true,
-                    clean = true
-                });
-            }
-            else
-            {
-                string outputFileName = null;
-                string outputPath = null;
-
-                HandleSubtitles(new Options()
-                {
-                    path = filePath,
-                    save = true,
-                    clean = true,
-                    outFile = outputFileName,
-                    outPath = outputPath
-                });
-
-                // addTime
-                //HandleSubtitles(new Options()
-                //{
-                //    path = filePath,
-                //    save = true,
-                //    addTime = true,
-                //    timeAdded = "+00:00:00,000",
-                //    subtitleNumber = 1
-                //});
-
-                // setShowTime
-                //HandleSubtitles(new Options()
-                //{
-                //    path = filePath,
-                //    save = true,
-                //    setShowTime = true,
-                //    showTime = "00:00:00,000",
-                //    subtitleNumber = 1
-                //});
-
-                // adjustTiming
-                //HandleSubtitles(new Options()
-                //{
-                //    path = filePath,
-                //    save = true,
-                //    adjustTiming = true,
-                //    showTime = "00:00:00,000",
-                //    hideTime = "00:00:00,000"
-                //});
-            }
-        }
-
-        private void HandleSubtitles(Options options)
-        {
-            if ((options.print || options.save) == false)
-                return;
-
-            if (string.IsNullOrEmpty(options.path))
-                return;
-
-            if (options.path.EndsWith(":\""))
-                options.path = options.path.Replace(":\"", ":");
-
-            bool isRecursive = false;
-            string[] filePaths = GetFiles(options.path, isRecursive);
-
+            string[] filePaths = GetFilePaths(options.path);
             if (filePaths == null || filePaths.Length == 0)
                 return;
 
-            if (options.subtitlesOrder)
+            foreach (var filePath in filePaths)
             {
-                foreach (var filePath in filePaths)
-                    SetSubtitlesOrder(options, filePath);
-            }
-            else if (options.linesBalance)
-            {
-                foreach (var filePath in filePaths)
-                    SetLinesBalance(options, filePath);
-            }
-            else
-            {
-                foreach (var filePath in filePaths)
-                    CleanSubtitles(options, filePath);
+                Encoding encoding = Encoding.UTF8;
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
+                    filePath,
+                    ref encoding,
+                    options.firstSubtitlesCount ?? FirstSubtitlesCount
+                );
+
+                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrintCleaning);
+
+                if (options.save)
+                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
+
+                if (options.print)
+                    Print(subtitles);
             }
         }
 
-        private void CleanSubtitles(Options options, string filePath)
+        public static void AddTime(AddTimeOptions options)
         {
-            Encoding encoding = Encoding.UTF8;
+            string[] filePaths = GetFilePaths(options.path);
+            if (filePaths == null || filePaths.Length == 0)
+                return;
 
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                filePath,
-                ref encoding,
-                options.firstSubtitlesCount ?? FirstSubtitlesCount
-            );
+            foreach (var filePath in filePaths)
+            {
+                Encoding encoding = Encoding.UTF8;
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
+                    filePath,
+                    ref encoding,
+                    options.firstSubtitlesCount ?? FirstSubtitlesCount
+                );
 
-            if (options.clean)
-                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrint);
-
-            if (options.addTime)
                 subtitles.AddTime(options.timeAdded, options.subtitleNumber);
 
-            if (options.setShowTime)
+                if (options.save)
+                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
+
+                if (options.print)
+                    Print(subtitles);
+            }
+        }
+
+        public static void SetShowTime(SetShowTimeOptions options)
+        {
+            string[] filePaths = GetFilePaths(options.path);
+            if (filePaths == null || filePaths.Length == 0)
+                return;
+
+            foreach (var filePath in filePaths)
+            {
+                Encoding encoding = Encoding.UTF8;
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
+                    filePath,
+                    ref encoding,
+                    options.firstSubtitlesCount ?? FirstSubtitlesCount
+                );
+
                 subtitles.SetShowTime(options.showTime, options.subtitleNumber);
 
-            if (options.adjustTiming)
-                subtitles.AdjustTiming(options.showTime, options.hideTime);
+                if (options.save)
+                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
 
-            if (options.save)
-                Save(subtitles, encoding, filePath, options.outFile, options.outPath);
-
-            if (options.print)
-                Print(subtitles);
+                if (options.print)
+                    Print(subtitles);
+            }
         }
 
-        private void SetSubtitlesOrder(Options options, string filePath)
+        public static void AdjustTiming(AdjustTimingOptions options)
         {
-            Encoding encoding = Encoding.UTF8;
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
+            string[] filePaths = GetFilePaths(options.path);
+            if (filePaths == null || filePaths.Length == 0)
+                return;
 
-            subtitles = subtitles.SetSubtitlesOrder();
+            foreach (var filePath in filePaths)
+            {
+                Encoding encoding = Encoding.UTF8;
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
+                    filePath,
+                    ref encoding,
+                    options.firstSubtitlesCount ?? FirstSubtitlesCount
+                );
 
-            if (options.save)
-                Save(subtitles, encoding, filePath, isDisableBackupFile: true);
+                subtitles.AdjustTiming(options.firstShowTime, options.lastShowTime);
 
-            if (options.print)
-                Print(subtitles);
+                if (options.save)
+                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
+
+                if (options.print)
+                    Print(subtitles);
+            }
         }
 
-        private void SetLinesBalance(Options options, string filePath)
+        public static void Reorder(ReorderOptions options)
         {
-            Encoding encoding = Encoding.UTF8;
-            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
+            string[] filePaths = GetFilePaths(options.path);
+            if (filePaths == null || filePaths.Length == 0)
+                return;
 
-            subtitles = subtitles.SetLinesBalance();
+            foreach (var filePath in filePaths)
+            {
+                Encoding encoding = Encoding.UTF8;
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
 
-            if (options.save)
-                Save(subtitles, encoding, filePath);
+                subtitles = subtitles.Reorder();
 
-            if (options.print)
-                Print(subtitles);
+                if (options.save)
+                    Save(subtitles, encoding, filePath, isDisableBackupFile: true);
+
+                if (options.print)
+                    Print(subtitles);
+            }
         }
 
-        private string[] GetFiles(string path, bool isRecursive)
+        public static void BalanceLines(BalanceLinesOptions options)
+        {
+            string[] filePaths = GetFilePaths(options.path);
+            if (filePaths == null || filePaths.Length == 0)
+                return;
+
+            foreach (var filePath in filePaths)
+            {
+                Encoding encoding = Encoding.UTF8;
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
+
+                subtitles = subtitles.BalanceLines();
+
+                if (options.save)
+                    Save(subtitles, encoding, filePath);
+
+                if (options.print)
+                    Print(subtitles);
+            }
+        }
+
+        private static string[] GetFilePaths(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return null;
+
+            if (path.EndsWith(":\""))
+                path = path.Replace(":\"", ":");
+
+            bool isRecursive = false;
+            string[] filePaths = GetFiles(path, isRecursive);
+
+            return filePaths;
+        }
+
+        private static string[] GetFiles(string path, bool isRecursive)
         {
             string[] filePaths = null;
 
@@ -206,7 +212,7 @@ namespace SubtitlesCleanerCommand
             return filePaths;
         }
 
-        private void Save(
+        private static void Save(
             List<Subtitle> subtitles,
             Encoding encoding,
             string filePath,
@@ -247,7 +253,7 @@ namespace SubtitlesCleanerCommand
             }
         }
 
-        private string[] GetSubtitlesErrors(List<Subtitle> subtitles)
+        private static string[] GetSubtitlesErrors(List<Subtitle> subtitles)
         {
             return subtitles.Select((subtitle, index) =>
                 new
@@ -262,7 +268,7 @@ namespace SubtitlesCleanerCommand
             .ToArray();
         }
 
-        private void Print(List<Subtitle> subtitles)
+        private static void Print(List<Subtitle> subtitles)
         {
             foreach (var line in subtitles.ToLines())
                 Console.WriteLine(line);

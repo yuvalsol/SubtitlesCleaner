@@ -1,14 +1,16 @@
-﻿using System;
-using CommandLine;
+﻿using CommandLine;
 
 namespace SubtitlesCleanerCommand
 {
-    class Options
+    class ReadAndWriteOptions
     {
-        [Option("print", Required = false, HelpText = "Print to console")]
+        [Option("path", Required = true, HelpText = "Path to subtitle file or folder")]
+        public string path { get; set; }
+
+        [Option("print", Required = false, HelpText = "Print to console", Group = "Output")]
         public bool print { get; set; }
 
-        [Option("save", Required = false, HelpText = "Save to file")]
+        [Option("save", Required = false, HelpText = "Save to file", Group = "Output")]
         public bool save { get; set; }
 
         [Option("outFile", Required = false, HelpText = "Output file name when saving to file")]
@@ -16,102 +18,64 @@ namespace SubtitlesCleanerCommand
 
         [Option("outPath", Required = false, HelpText = "Output path when saving to file")]
         public string outPath { get; set; }
+    }
 
-        [Option("clean", Required = false, HelpText = "Clean the subtitles")]
-        public bool clean { get; set; }
-
-        [Option("firstSubtitlesCount", Required = false, HelpText = "Get the first number of subtitles")]
-        public int? firstSubtitlesCount { get; set; }
-
+    [Verb("clean", HelpText = "Clean subtitles")]
+    class CleanOptions : ReadAndWriteOptions
+    {
         [Option("cleanHICaseInsensitive", Required = false, HelpText = "Clean HI case-insensitive")]
         public bool cleanHICaseInsensitive { get; set; }
 
-        [Option("subtitlesOrder", Required = false, HelpText = "Set subtitles order")]
-        public bool subtitlesOrder { get; set; }
+        [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
+        public int? firstSubtitlesCount { get; set; }
+    }
 
-        [Option("linesBalance", Required = false, HelpText = "Balance lines in subtitles")]
-        public bool linesBalance { get; set; }
-
-        [Option("addTime", Required = false, HelpText = "Add time to subtitles")]
-        public bool addTime { get; set; }
-
-        [Option("timeAdded", Required = false, HelpText = "Added time to subtitles")]
+    [Verb("addTime", HelpText = "Add time to subtitles")]
+    class AddTimeOptions : ReadAndWriteOptions
+    {
+        [Option("timeAdded", Required = true, HelpText = "Added time to subtitles")]
         public string timeAdded { get; set; }
 
-        [Option("setShowTime", Required = false, HelpText = "Move subtitles to show time")]
-        public bool setShowTime { get; set; }
-
-        [Option("subtitleNumber", Required = false, HelpText = "Add time or set show time starting from subtitle number")]
+        [Option("subtitleNumber", Required = false, HelpText = "Start operation from specified subtitle. If omitted, starts with first subtitle")]
         public int? subtitleNumber { get; set; }
 
-        [Option("adjustTiming", Required = false, HelpText = "Adjust subtitles timing by 2 sync points")]
-        public bool adjustTiming { get; set; }
+        [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
+        public int? firstSubtitlesCount { get; set; }
+    }
 
+    [Verb("setShowTime", HelpText = "Move subtitles to show time")]
+    class SetShowTimeOptions : ReadAndWriteOptions
+    {
         [Option("showTime", Required = false, HelpText = "Show time")]
         public string showTime { get; set; }
 
-        [Option("hideTime", Required = false, HelpText = "Hide time")]
-        public string hideTime { get; set; }
+        [Option("subtitleNumber", Required = false, HelpText = "Start operation from specified subtitle. If omitted, starts with first subtitle")]
+        public int? subtitleNumber { get; set; }
 
-        [Option("path", Required = false, HelpText = "Path to file or folder")]
-        public string path { get; set; }
+        [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
+        public int? firstSubtitlesCount { get; set; }
+    }
 
-        public override string ToString()
-        {
-            string cmd = "SubtitlesCleanerCommand.exe";
+    [Verb("adjustTiming", HelpText = "Adjust subtitles timing by 2 sync points")]
+    class AdjustTimingOptions : ReadAndWriteOptions
+    {
+        [Option("firstShowTime", Required = true, HelpText = "First subtitle's show time")]
+        public string firstShowTime { get; set; }
 
-            if (print)
-                cmd += " --print";
+        [Option("lastShowTime", Required = true, HelpText = "Last subtitle's show time")]
+        public string lastShowTime { get; set; }
 
-            if (save)
-                cmd += " --save";
+        [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
+        public int? firstSubtitlesCount { get; set; }
+    }
 
-            if (string.IsNullOrEmpty(outFile) == false)
-                cmd += " --outFile \"" + outFile + "\"";
+    [Verb("reorder", HelpText = "Reorder subtitles based on their show time")]
+    class ReorderOptions : ReadAndWriteOptions
+    {
+    }
 
-            if (string.IsNullOrEmpty(outPath) == false)
-                cmd += " --outPath \"" + outPath + "\"";
-
-            if (clean)
-                cmd += " --clean";
-
-            if (firstSubtitlesCount != null)
-                cmd += " --firstSubtitlesCount " + firstSubtitlesCount.Value;
-
-            if (cleanHICaseInsensitive)
-                cmd += " --cleanHICaseInsensitive";
-
-            if (subtitlesOrder)
-                cmd += " --subtitlesOrder";
-
-            if (linesBalance)
-                cmd += " --linesBalance";
-
-            if (addTime)
-                cmd += " --addTime";
-
-            if (string.IsNullOrEmpty(timeAdded) == false)
-                cmd += " --timeAdded \"" + timeAdded + "\"";
-
-            if (setShowTime)
-                cmd += " --setShowTime";
-
-            if (subtitleNumber != null)
-                cmd += " --subtitleNumber " + subtitleNumber.Value;
-
-            if (adjustTiming)
-                cmd += " --adjustTiming";
-
-            if (string.IsNullOrEmpty(showTime) == false)
-                cmd += " --showTime \"" + showTime + "\"";
-
-            if (string.IsNullOrEmpty(hideTime) == false)
-                cmd += " --hideTime \"" + hideTime + "\"";
-
-            if (string.IsNullOrEmpty(path) == false)
-                cmd += " --path \"" + path + "\"";
-
-            return cmd.Trim();
-        }
+    [Verb("balanceLines", HelpText = "Merge short line with preceding long line")]
+    class BalanceLinesOptions : ReadAndWriteOptions
+    {
     }
 }

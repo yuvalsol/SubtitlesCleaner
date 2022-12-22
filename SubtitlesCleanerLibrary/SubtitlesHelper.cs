@@ -228,9 +228,9 @@ namespace SubtitlesCleanerLibrary
 
         #region Clean & Check
 
-        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
+        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
-            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isPrint);
+            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isPrintCleaning);
 
             bool subtitlesChanged = false;
             int loopCount = 0;
@@ -238,14 +238,14 @@ namespace SubtitlesCleanerLibrary
             do
             {
                 subtitlesChanged = false;
-                subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, isPrint, ref subtitlesChanged);
+                subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, isPrintCleaning, ref subtitlesChanged);
                 loopCount++;
 
                 if (subtitlesChanged && loopCount == loopThresh - 1)
                 {
                     Console.WriteLine("Infinite Loop");
                     Console.WriteLine();
-                    isPrint = true;
+                    isPrintCleaning = true;
                 }
                 else if (subtitlesChanged && loopCount == loopThresh)
                 {
@@ -258,7 +258,7 @@ namespace SubtitlesCleanerLibrary
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint)
+        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -285,7 +285,7 @@ namespace SubtitlesCleanerLibrary
                     }
                     else
                     {
-                        string cleanLine = (CleanSubtitleLinePre(line, cleanHICaseInsensitive, isPrint) ?? string.Empty).Trim();
+                        string cleanLine = (CleanSubtitleLinePre(line, cleanHICaseInsensitive, isPrintCleaning) ?? string.Empty).Trim();
 
                         if (IsEmptyLine(cleanLine))
                             subtitle.Lines.RemoveAt(i);
@@ -303,7 +303,7 @@ namespace SubtitlesCleanerLibrary
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrint, ref bool subtitlesChanged)
+        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning, ref bool subtitlesChanged)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -332,7 +332,7 @@ namespace SubtitlesCleanerLibrary
                     }
                     else
                     {
-                        string cleanLine = (CleanSubtitleLine(line, cleanHICaseInsensitive, isPrint) ?? string.Empty).Trim();
+                        string cleanLine = (CleanSubtitleLine(line, cleanHICaseInsensitive, isPrintCleaning) ?? string.Empty).Trim();
 
                         if (IsEmptyLine(cleanLine))
                         {
@@ -430,9 +430,9 @@ namespace SubtitlesCleanerLibrary
 
         #region Clean Single Line Pre
 
-        private static string CleanSubtitleLinePre(string line, bool cleanHICaseInsensitive, bool isPrint)
+        private static string CleanSubtitleLinePre(string line, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
-            return CleanLine(line, FindAndReplaceRulesPre, cleanHICaseInsensitive, isPrint);
+            return CleanLine(line, FindAndReplaceRulesPre, cleanHICaseInsensitive, isPrintCleaning);
         }
 
         private static SubtitleError CheckSubtitleLinePre(string line, bool cleanHICaseInsensitive)
@@ -602,9 +602,9 @@ namespace SubtitlesCleanerLibrary
 
         #region Clean Single Line
 
-        private static string CleanSubtitleLine(string line, bool cleanHICaseInsensitive, bool isPrint)
+        private static string CleanSubtitleLine(string line, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
-            return CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, isPrint);
+            return CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, isPrintCleaning);
         }
 
         private static SubtitleError CheckSubtitleLine(string line, bool cleanHICaseInsensitive)
@@ -2302,13 +2302,13 @@ namespace SubtitlesCleanerLibrary
 
         #endregion
 
-        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, bool isPrint)
+        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
             SubtitleError subtitleError = SubtitleError.None;
-            return CleanLine(line, rules, cleanHICaseInsensitive, isPrint, ref subtitleError);
+            return CleanLine(line, rules, cleanHICaseInsensitive, isPrintCleaning, ref subtitleError);
         }
 
-        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, bool isPrint, ref SubtitleError subtitleError)
+        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, bool isPrintCleaning, ref SubtitleError subtitleError)
         {
             if (string.IsNullOrEmpty(line))
             {
@@ -2326,7 +2326,7 @@ namespace SubtitlesCleanerLibrary
                 {
                     ruleCounter++;
 
-                    if (isPrint)
+                    if (isPrintCleaning)
                     {
                         Console.WriteLine(ruleCounter);
                         Console.WriteLine("Regex:  " + (cleanHICaseInsensitive ? rule.ToStringCI() : rule.ToString()));
@@ -2354,7 +2354,7 @@ namespace SubtitlesCleanerLibrary
             if (subtitleError.HasFlag(SubtitleError.Hearing_Impaired))
                 subtitleError = SubtitleError.Hearing_Impaired;
 
-            if (isPrint && ruleCounter > 0)
+            if (isPrintCleaning && ruleCounter > 0)
             {
                 Console.WriteLine("******************************************");
                 Console.WriteLine();
@@ -2587,18 +2587,18 @@ namespace SubtitlesCleanerLibrary
 
         #region Adjust Timing
 
-        public static void AdjustTiming(this List<Subtitle> subtitles, string showStart, string showEnd)
+        public static void AdjustTiming(this List<Subtitle> subtitles, string firstShowTime, string lastShowTime)
         {
-            subtitles.AdjustTiming(ParseShowTime(showStart), ParseShowTime(showEnd));
+            subtitles.AdjustTiming(ParseShowTime(firstShowTime), ParseShowTime(lastShowTime));
         }
 
-        public static void AdjustTiming(this List<Subtitle> subtitles, DateTime showStart, DateTime showEnd)
+        public static void AdjustTiming(this List<Subtitle> subtitles, DateTime firstShowTime, DateTime lastShowTime)
         {
             subtitles.AdjustTiming(
-                subtitles[0].Show,
-                showStart,
-                subtitles[subtitles.Count - 1].Show,
-                showEnd
+                subtitles[0].Show, // first subtitle's show time
+                firstShowTime, // new first subtitle's show time
+                subtitles[subtitles.Count - 1].Show, // last subtitle's show time
+                lastShowTime // new last subtitle's show time
             );
         }
 
@@ -2632,9 +2632,9 @@ namespace SubtitlesCleanerLibrary
 
         #endregion
 
-        #region Subtitles Order
+        #region Reorder
 
-        public static List<Subtitle> SetSubtitlesOrder(this List<Subtitle> subtitles)
+        public static List<Subtitle> Reorder(this List<Subtitle> subtitles)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
@@ -2672,7 +2672,7 @@ namespace SubtitlesCleanerLibrary
 
         #endregion
 
-        #region Lines Balance
+        #region Balance Lines
 
         private const int SINGLE_LINE_MAX_LENGTH = 43;
 
@@ -2685,7 +2685,7 @@ namespace SubtitlesCleanerLibrary
             public bool EndsWithPunctuation;
         }
 
-        public static List<Subtitle> SetLinesBalance(this List<Subtitle> subtitles)
+        public static List<Subtitle> BalanceLines(this List<Subtitle> subtitles)
         {
             if (subtitles == null)
                 return new List<Subtitle>();
