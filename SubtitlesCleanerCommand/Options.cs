@@ -78,4 +78,26 @@ namespace SubtitlesCleanerCommand
     class BalanceLinesOptions : ReadAndWriteOptions
     {
     }
+
+    [Verb("usage", HelpText = "Command usage")]
+    class UsageOptions
+    {
+        [Option("clean", Required = false, HelpText = "Print usage for clean")]
+        public bool clean { get; set; }
+
+        [Option("addTime", Required = false, HelpText = "Print usage for addTime")]
+        public bool addTime { get; set; }
+
+        [Option("setShowTime", Required = false, HelpText = "Print usage for setShowTime")]
+        public bool setShowTime { get; set; }
+
+        [Option("adjustTiming", Required = false, HelpText = "Print usage for adjustTiming")]
+        public bool adjustTiming { get; set; }
+
+        [Option("reorder", Required = false, HelpText = "Print usage for reorder")]
+        public bool reorder { get; set; }
+
+        [Option("balanceLines", Required = false, HelpText = "Print usage for balanceLines")]
+        public bool balanceLines { get; set; }
+    }
 }
