@@ -165,8 +165,8 @@ namespace SubtitlesCleanerEditor
 
         private void ResetFormTitle()
         {
-            this.Text = 
-                "Subtitles Cleaner Editor" + " " + 
+            this.Text =
+                "Subtitles Cleaner Editor" + " " +
                 Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
         }
 
@@ -174,7 +174,7 @@ namespace SubtitlesCleanerEditor
         {
             ResetFormTitle();
 
-            this.Text = 
+            this.Text =
                 Path.GetFileName(this.filePath) + (isDirty ? " *" : string.Empty) +
                 " - " + this.Text;
         }
@@ -312,6 +312,36 @@ namespace SubtitlesCleanerEditor
                 return;
 
             var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
+            SetFormTitle(true);
+        }
+
+        #endregion
+
+        #region Reorder
+
+        private void btnReorder_Click(object sender, EventArgs e)
+        {
+            if (subtitles == null)
+                return;
+
+            var newSubtitles = subtitles.Reorder();
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
+            SetFormTitle(true);
+        }
+
+        #endregion
+
+        #region Balance Lines
+
+        private void btnBalanceLines_Click(object sender, EventArgs e)
+        {
+            if (subtitles == null)
+                return;
+
+            var newSubtitles = subtitles.BalanceLines();
             newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
@@ -612,7 +642,7 @@ namespace SubtitlesCleanerEditor
         }
 
         #endregion
-        
+
         #region Add Time
 
         private void btnAddTime_Click(object sender, EventArgs e)
@@ -625,7 +655,7 @@ namespace SubtitlesCleanerEditor
             {
                 subtitles.AddTime(diffTimePicker.DiffValue, editorRow.Num);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Add Time Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

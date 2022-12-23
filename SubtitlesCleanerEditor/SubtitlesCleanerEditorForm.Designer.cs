@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle95 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle96 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle89 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle90 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle91 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle92 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle93 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle94 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lstErrors = new System.Windows.Forms.DataGridView();
             this.ColumnNum1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,23 +47,26 @@
             this.ColumnHide = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnClean = new System.Windows.Forms.Button();
+            this.btnAdjustTiming = new System.Windows.Forms.Button();
+            this.btnReorder = new System.Windows.Forms.Button();
+            this.btnBalanceLines = new System.Windows.Forms.Button();
+            this.btnSearchAndReplace = new System.Windows.Forms.Button();
+            this.btnOriginalSubtitles = new System.Windows.Forms.Button();
             this.btnTimeCalculator = new System.Windows.Forms.Button();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAddTime = new System.Windows.Forms.Button();
             this.diffTimePicker = new SubtitlesCleanerEditor.TimePicker();
             this.txtSubtitle = new SubtitlesCleanerEditor.TextBox();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnClean = new System.Windows.Forms.Button();
-            this.btnSearchAndReplace = new System.Windows.Forms.Button();
-            this.btnAdjustTiming = new System.Windows.Forms.Button();
+            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnOpen = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnSaveAs = new System.Windows.Forms.Button();
             this.chkBackupSRT = new System.Windows.Forms.CheckBox();
-            this.btnOriginalSubtitles = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.btnOpen = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSetShowTime = new System.Windows.Forms.Button();
             this.timePicker = new SubtitlesCleanerEditor.TimePicker();
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
@@ -79,9 +82,10 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).BeginInit();
-            this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
+            this.flowLayoutPanel4.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -99,7 +103,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(927, 362);
+            this.splitContainer1.Size = new System.Drawing.Size(927, 494);
             this.splitContainer1.SplitterDistance = 190;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 0;
@@ -122,7 +126,7 @@
             this.lstErrors.ReadOnly = true;
             this.lstErrors.RowHeadersVisible = false;
             this.lstErrors.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.lstErrors.Size = new System.Drawing.Size(190, 362);
+            this.lstErrors.Size = new System.Drawing.Size(190, 494);
             this.lstErrors.TabIndex = 0;
             this.lstErrors.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_CellMouseDoubleClick);
             this.lstErrors.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_ColumnHeaderMouseClick);
@@ -130,8 +134,8 @@
             // ColumnNum1
             // 
             this.ColumnNum1.DataPropertyName = "Num";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle95.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle95;
             this.ColumnNum1.HeaderText = "#";
             this.ColumnNum1.Name = "ColumnNum1";
             this.ColumnNum1.ReadOnly = true;
@@ -142,8 +146,8 @@
             // 
             this.ColumnError1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnError1.DataPropertyName = "Error";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle96.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle96;
             this.ColumnError1.HeaderText = "Error";
             this.ColumnError1.Name = "ColumnError1";
             this.ColumnError1.ReadOnly = true;
@@ -164,13 +168,13 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.btnTimeCalculator);
-            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel2);
-            this.splitContainer2.Panel2.Controls.Add(this.txtSubtitle);
-            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel3);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel1);
-            this.splitContainer2.Size = new System.Drawing.Size(732, 362);
-            this.splitContainer2.SplitterDistance = 198;
+            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel3);
+            this.splitContainer2.Panel2.Controls.Add(this.txtSubtitle);
+            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel4);
+            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel2);
+            this.splitContainer2.Size = new System.Drawing.Size(732, 494);
+            this.splitContainer2.SplitterDistance = 238;
             this.splitContainer2.TabIndex = 2;
             // 
             // lstEditor
@@ -179,14 +183,14 @@
             this.lstEditor.AllowUserToResizeColumns = false;
             this.lstEditor.AllowUserToResizeRows = false;
             this.lstEditor.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle89.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle89.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle89.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle89.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle89.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle89.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle89.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle89;
             this.lstEditor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lstEditor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNum,
@@ -201,7 +205,7 @@
             this.lstEditor.ReadOnly = true;
             this.lstEditor.RowHeadersVisible = false;
             this.lstEditor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.lstEditor.Size = new System.Drawing.Size(732, 198);
+            this.lstEditor.Size = new System.Drawing.Size(732, 238);
             this.lstEditor.TabIndex = 1;
             this.lstEditor.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstEditor_CellMouseDoubleClick);
             this.lstEditor.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.lstEditor_DataBindingComplete);
@@ -211,8 +215,8 @@
             // ColumnNum
             // 
             this.ColumnNum.DataPropertyName = "Num";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle90.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle90;
             this.ColumnNum.HeaderText = "#";
             this.ColumnNum.Name = "ColumnNum";
             this.ColumnNum.ReadOnly = true;
@@ -222,8 +226,8 @@
             // ColumnShow
             // 
             this.ColumnShow.DataPropertyName = "Show";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle91.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle91;
             this.ColumnShow.HeaderText = "Show";
             this.ColumnShow.Name = "ColumnShow";
             this.ColumnShow.ReadOnly = true;
@@ -233,8 +237,8 @@
             // ColumnHide
             // 
             this.ColumnHide.DataPropertyName = "Hide";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle92.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle92;
             this.ColumnHide.HeaderText = "Hide";
             this.ColumnHide.Name = "ColumnHide";
             this.ColumnHide.ReadOnly = true;
@@ -244,8 +248,8 @@
             // ColumnDuration
             // 
             this.ColumnDuration.DataPropertyName = "Duration";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle93.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle93;
             this.ColumnDuration.HeaderText = "Duration";
             this.ColumnDuration.Name = "ColumnDuration";
             this.ColumnDuration.ReadOnly = true;
@@ -256,12 +260,114 @@
             // 
             this.ColumnText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnText.DataPropertyName = "Text";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle94.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle94;
             this.ColumnText.HeaderText = "Text";
             this.ColumnText.Name = "ColumnText";
             this.ColumnText.ReadOnly = true;
             this.ColumnText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel1.Controls.Add(this.btnClean);
+            this.flowLayoutPanel1.Controls.Add(this.btnAdjustTiming);
+            this.flowLayoutPanel1.Controls.Add(this.btnReorder);
+            this.flowLayoutPanel1.Controls.Add(this.btnBalanceLines);
+            this.flowLayoutPanel1.Controls.Add(this.btnSearchAndReplace);
+            this.flowLayoutPanel1.Controls.Add(this.btnOriginalSubtitles);
+            this.flowLayoutPanel1.Controls.Add(this.btnTimeCalculator);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 6);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(590, 30);
+            this.flowLayoutPanel1.TabIndex = 1;
+            // 
+            // btnClean
+            // 
+            this.btnClean.AutoSize = true;
+            this.btnClean.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnClean.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClean.Location = new System.Drawing.Point(3, 3);
+            this.btnClean.Name = "btnClean";
+            this.btnClean.Size = new System.Drawing.Size(46, 24);
+            this.btnClean.TabIndex = 1;
+            this.btnClean.Text = "Clean";
+            this.btnClean.UseVisualStyleBackColor = true;
+            this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
+            // 
+            // btnAdjustTiming
+            // 
+            this.btnAdjustTiming.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAdjustTiming.AutoSize = true;
+            this.btnAdjustTiming.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAdjustTiming.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnAdjustTiming.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAdjustTiming.Location = new System.Drawing.Point(55, 3);
+            this.btnAdjustTiming.Name = "btnAdjustTiming";
+            this.btnAdjustTiming.Size = new System.Drawing.Size(92, 24);
+            this.btnAdjustTiming.TabIndex = 2;
+            this.btnAdjustTiming.Text = "Adjust Timing";
+            this.btnAdjustTiming.UseVisualStyleBackColor = true;
+            this.btnAdjustTiming.Click += new System.EventHandler(this.btnAdjustTiming_Click);
+            // 
+            // btnReorder
+            // 
+            this.btnReorder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnReorder.AutoSize = true;
+            this.btnReorder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnReorder.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnReorder.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReorder.Location = new System.Drawing.Point(153, 3);
+            this.btnReorder.Name = "btnReorder";
+            this.btnReorder.Size = new System.Drawing.Size(60, 24);
+            this.btnReorder.TabIndex = 3;
+            this.btnReorder.Text = "Reorder";
+            this.btnReorder.UseVisualStyleBackColor = true;
+            this.btnReorder.Click += new System.EventHandler(this.btnReorder_Click);
+            // 
+            // btnBalanceLines
+            // 
+            this.btnBalanceLines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnBalanceLines.AutoSize = true;
+            this.btnBalanceLines.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnBalanceLines.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnBalanceLines.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBalanceLines.Location = new System.Drawing.Point(219, 3);
+            this.btnBalanceLines.Name = "btnBalanceLines";
+            this.btnBalanceLines.Size = new System.Drawing.Size(89, 24);
+            this.btnBalanceLines.TabIndex = 4;
+            this.btnBalanceLines.Text = "Balance Lines";
+            this.btnBalanceLines.UseVisualStyleBackColor = true;
+            this.btnBalanceLines.Click += new System.EventHandler(this.btnBalanceLines_Click);
+            // 
+            // btnSearchAndReplace
+            // 
+            this.btnSearchAndReplace.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSearchAndReplace.AutoSize = true;
+            this.btnSearchAndReplace.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSearchAndReplace.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnSearchAndReplace.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSearchAndReplace.Location = new System.Drawing.Point(314, 3);
+            this.btnSearchAndReplace.Name = "btnSearchAndReplace";
+            this.btnSearchAndReplace.Size = new System.Drawing.Size(54, 24);
+            this.btnSearchAndReplace.TabIndex = 5;
+            this.btnSearchAndReplace.Text = "Search";
+            this.btnSearchAndReplace.UseVisualStyleBackColor = true;
+            this.btnSearchAndReplace.Click += new System.EventHandler(this.btnSearchAndReplace_Click);
+            // 
+            // btnOriginalSubtitles
+            // 
+            this.btnOriginalSubtitles.AutoSize = true;
+            this.btnOriginalSubtitles.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnOriginalSubtitles.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOriginalSubtitles.Location = new System.Drawing.Point(374, 3);
+            this.btnOriginalSubtitles.Name = "btnOriginalSubtitles";
+            this.btnOriginalSubtitles.Size = new System.Drawing.Size(107, 24);
+            this.btnOriginalSubtitles.TabIndex = 6;
+            this.btnOriginalSubtitles.Text = "Original Subtitles";
+            this.btnOriginalSubtitles.UseVisualStyleBackColor = true;
+            this.btnOriginalSubtitles.Click += new System.EventHandler(this.btnOriginalSubtitles_Click);
             // 
             // btnTimeCalculator
             // 
@@ -269,24 +375,24 @@
             this.btnTimeCalculator.AutoSize = true;
             this.btnTimeCalculator.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnTimeCalculator.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTimeCalculator.Location = new System.Drawing.Point(629, 3);
+            this.btnTimeCalculator.Location = new System.Drawing.Point(487, 3);
             this.btnTimeCalculator.Name = "btnTimeCalculator";
             this.btnTimeCalculator.Size = new System.Drawing.Size(100, 24);
-            this.btnTimeCalculator.TabIndex = 8;
+            this.btnTimeCalculator.TabIndex = 7;
             this.btnTimeCalculator.Text = "Time Calculator";
             this.btnTimeCalculator.UseVisualStyleBackColor = true;
             this.btnTimeCalculator.Click += new System.EventHandler(this.btnTimeCalculator_Click);
             // 
-            // flowLayoutPanel2
+            // flowLayoutPanel3
             // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel2.Controls.Add(this.btnAddTime);
-            this.flowLayoutPanel2.Controls.Add(this.diffTimePicker);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 37);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(429, 37);
-            this.flowLayoutPanel2.TabIndex = 7;
+            this.flowLayoutPanel3.AutoSize = true;
+            this.flowLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel3.Controls.Add(this.btnAddTime);
+            this.flowLayoutPanel3.Controls.Add(this.diffTimePicker);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 161);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(429, 37);
+            this.flowLayoutPanel3.TabIndex = 4;
             // 
             // btnAddTime
             // 
@@ -325,127 +431,29 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSubtitle.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtSubtitle.Location = new System.Drawing.Point(3, 74);
+            this.txtSubtitle.Location = new System.Drawing.Point(3, 44);
             this.txtSubtitle.Multiline = true;
             this.txtSubtitle.Name = "txtSubtitle";
             this.txtSubtitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSubtitle.Size = new System.Drawing.Size(726, 54);
-            this.txtSubtitle.TabIndex = 4;
+            this.txtSubtitle.Size = new System.Drawing.Size(714, 72);
+            this.txtSubtitle.TabIndex = 2;
             this.txtSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesCleanerEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
             // 
-            // flowLayoutPanel3
+            // flowLayoutPanel4
             // 
-            this.flowLayoutPanel3.AutoSize = true;
-            this.flowLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel3.Controls.Add(this.btnClean);
-            this.flowLayoutPanel3.Controls.Add(this.btnSearchAndReplace);
-            this.flowLayoutPanel3.Controls.Add(this.btnAdjustTiming);
-            this.flowLayoutPanel3.Controls.Add(this.btnSave);
-            this.flowLayoutPanel3.Controls.Add(this.btnSaveAs);
-            this.flowLayoutPanel3.Controls.Add(this.chkBackupSRT);
-            this.flowLayoutPanel3.Controls.Add(this.btnOriginalSubtitles);
-            this.flowLayoutPanel3.Controls.Add(this.btnClear);
-            this.flowLayoutPanel3.Controls.Add(this.btnOpen);
-            this.flowLayoutPanel3.Controls.Add(this.btnClose);
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 128);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(700, 30);
-            this.flowLayoutPanel3.TabIndex = 6;
-            // 
-            // btnClean
-            // 
-            this.btnClean.AutoSize = true;
-            this.btnClean.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnClean.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClean.Location = new System.Drawing.Point(3, 3);
-            this.btnClean.Name = "btnClean";
-            this.btnClean.Size = new System.Drawing.Size(46, 24);
-            this.btnClean.TabIndex = 1;
-            this.btnClean.Text = "Clean";
-            this.btnClean.UseVisualStyleBackColor = true;
-            this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
-            // 
-            // btnSearchAndReplace
-            // 
-            this.btnSearchAndReplace.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSearchAndReplace.AutoSize = true;
-            this.btnSearchAndReplace.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnSearchAndReplace.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnSearchAndReplace.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSearchAndReplace.Location = new System.Drawing.Point(55, 3);
-            this.btnSearchAndReplace.Name = "btnSearchAndReplace";
-            this.btnSearchAndReplace.Size = new System.Drawing.Size(54, 24);
-            this.btnSearchAndReplace.TabIndex = 2;
-            this.btnSearchAndReplace.Text = "Search";
-            this.btnSearchAndReplace.UseVisualStyleBackColor = true;
-            this.btnSearchAndReplace.Click += new System.EventHandler(this.btnSearchAndReplace_Click);
-            // 
-            // btnAdjustTiming
-            // 
-            this.btnAdjustTiming.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdjustTiming.AutoSize = true;
-            this.btnAdjustTiming.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnAdjustTiming.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnAdjustTiming.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdjustTiming.Location = new System.Drawing.Point(115, 3);
-            this.btnAdjustTiming.Name = "btnAdjustTiming";
-            this.btnAdjustTiming.Size = new System.Drawing.Size(92, 24);
-            this.btnAdjustTiming.TabIndex = 3;
-            this.btnAdjustTiming.Text = "Adjust Timing";
-            this.btnAdjustTiming.UseVisualStyleBackColor = true;
-            this.btnAdjustTiming.Click += new System.EventHandler(this.btnAdjustTiming_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.AutoSize = true;
-            this.btnSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.Location = new System.Drawing.Point(213, 3);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(43, 24);
-            this.btnSave.TabIndex = 4;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnSaveAs
-            // 
-            this.btnSaveAs.AutoSize = true;
-            this.btnSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnSaveAs.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaveAs.Location = new System.Drawing.Point(262, 3);
-            this.btnSaveAs.Name = "btnSaveAs";
-            this.btnSaveAs.Size = new System.Drawing.Size(72, 24);
-            this.btnSaveAs.TabIndex = 5;
-            this.btnSaveAs.Text = "Save As...";
-            this.btnSaveAs.UseVisualStyleBackColor = true;
-            this.btnSaveAs.Click += new System.EventHandler(this.btnSaveAs_Click);
-            // 
-            // chkBackupSRT
-            // 
-            this.chkBackupSRT.AutoSize = true;
-            this.chkBackupSRT.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkBackupSRT.Location = new System.Drawing.Point(340, 3);
-            this.chkBackupSRT.Name = "chkBackupSRT";
-            this.chkBackupSRT.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.chkBackupSRT.Size = new System.Drawing.Size(91, 22);
-            this.chkBackupSRT.TabIndex = 6;
-            this.chkBackupSRT.Text = "Backup SRT";
-            this.chkBackupSRT.UseVisualStyleBackColor = true;
-            // 
-            // btnOriginalSubtitles
-            // 
-            this.btnOriginalSubtitles.AutoSize = true;
-            this.btnOriginalSubtitles.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnOriginalSubtitles.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOriginalSubtitles.Location = new System.Drawing.Point(437, 3);
-            this.btnOriginalSubtitles.Name = "btnOriginalSubtitles";
-            this.btnOriginalSubtitles.Size = new System.Drawing.Size(107, 24);
-            this.btnOriginalSubtitles.TabIndex = 7;
-            this.btnOriginalSubtitles.Text = "Original Subtitles";
-            this.btnOriginalSubtitles.UseVisualStyleBackColor = true;
-            this.btnOriginalSubtitles.Click += new System.EventHandler(this.btnOriginalSubtitles_Click);
+            this.flowLayoutPanel4.AutoSize = true;
+            this.flowLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel4.Controls.Add(this.btnClear);
+            this.flowLayoutPanel4.Controls.Add(this.btnOpen);
+            this.flowLayoutPanel4.Controls.Add(this.btnSave);
+            this.flowLayoutPanel4.Controls.Add(this.btnSaveAs);
+            this.flowLayoutPanel4.Controls.Add(this.chkBackupSRT);
+            this.flowLayoutPanel4.Controls.Add(this.btnClose);
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(3, 214);
+            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(377, 30);
+            this.flowLayoutPanel4.TabIndex = 5;
             // 
             // btnClear
             // 
@@ -453,10 +461,10 @@
             this.btnClear.AutoSize = true;
             this.btnClear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnClear.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(550, 3);
+            this.btnClear.Location = new System.Drawing.Point(3, 3);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(43, 24);
-            this.btnClear.TabIndex = 8;
+            this.btnClear.TabIndex = 1;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
@@ -466,13 +474,51 @@
             this.btnOpen.AutoSize = true;
             this.btnOpen.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnOpen.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOpen.Location = new System.Drawing.Point(599, 3);
+            this.btnOpen.Location = new System.Drawing.Point(52, 3);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(47, 24);
-            this.btnOpen.TabIndex = 9;
+            this.btnOpen.TabIndex = 2;
             this.btnOpen.Text = "Open";
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.AutoSize = true;
+            this.btnSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.Location = new System.Drawing.Point(105, 3);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(43, 24);
+            this.btnSave.TabIndex = 3;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnSaveAs
+            // 
+            this.btnSaveAs.AutoSize = true;
+            this.btnSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSaveAs.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSaveAs.Location = new System.Drawing.Point(154, 3);
+            this.btnSaveAs.Name = "btnSaveAs";
+            this.btnSaveAs.Size = new System.Drawing.Size(72, 24);
+            this.btnSaveAs.TabIndex = 4;
+            this.btnSaveAs.Text = "Save As...";
+            this.btnSaveAs.UseVisualStyleBackColor = true;
+            this.btnSaveAs.Click += new System.EventHandler(this.btnSaveAs_Click);
+            // 
+            // chkBackupSRT
+            // 
+            this.chkBackupSRT.AutoSize = true;
+            this.chkBackupSRT.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkBackupSRT.Location = new System.Drawing.Point(232, 3);
+            this.chkBackupSRT.Name = "chkBackupSRT";
+            this.chkBackupSRT.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.chkBackupSRT.Size = new System.Drawing.Size(91, 22);
+            this.chkBackupSRT.TabIndex = 5;
+            this.chkBackupSRT.Text = "Backup SRT";
+            this.chkBackupSRT.UseVisualStyleBackColor = true;
             // 
             // btnClose
             // 
@@ -481,25 +527,25 @@
             this.btnClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(652, 3);
+            this.btnClose.Location = new System.Drawing.Point(329, 3);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(45, 24);
-            this.btnClose.TabIndex = 10;
+            this.btnClose.TabIndex = 6;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // flowLayoutPanel1
+            // flowLayoutPanel2
             // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.btnSetShowTime);
-            this.flowLayoutPanel1.Controls.Add(this.timePicker);
-            this.flowLayoutPanel1.Controls.Add(this.chkInteractiveRetiming);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(592, 37);
-            this.flowLayoutPanel1.TabIndex = 5;
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel2.Controls.Add(this.btnSetShowTime);
+            this.flowLayoutPanel2.Controls.Add(this.timePicker);
+            this.flowLayoutPanel2.Controls.Add(this.chkInteractiveRetiming);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 124);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(592, 37);
+            this.flowLayoutPanel2.TabIndex = 3;
             // 
             // btnSetShowTime
             // 
@@ -559,7 +605,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(927, 362);
+            this.ClientSize = new System.Drawing.Size(927, 494);
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
@@ -581,12 +627,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).EndInit();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
+            this.flowLayoutPanel4.ResumeLayout(false);
+            this.flowLayoutPanel4.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -603,13 +651,13 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.CheckBox chkBackupSRT;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private TimePicker timePicker;
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.Button btnSetShowTime;
         private System.Windows.Forms.CheckBox chkInteractiveRetiming;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.DataGridView lstErrors;
         private System.Windows.Forms.Button btnSearchAndReplace;
         private System.Windows.Forms.Button btnAdjustTiming;
@@ -622,10 +670,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnHide;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDuration;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnText;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.Button btnAddTime;
         private TimePicker diffTimePicker;
         private System.Windows.Forms.Button btnTimeCalculator;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button btnReorder;
+        private System.Windows.Forms.Button btnBalanceLines;
     }
 }
 
