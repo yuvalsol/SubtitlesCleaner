@@ -48,7 +48,7 @@ namespace SubtitlesCleanerCommand
                 subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrintCleaning);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
+                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressErrorFile);
 
                 if (options.print)
                     Print(subtitles);
@@ -73,7 +73,7 @@ namespace SubtitlesCleanerCommand
                 subtitles.AddTime(options.timeAdded, options.subtitleNumber);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
+                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
                     Print(subtitles);
@@ -98,7 +98,7 @@ namespace SubtitlesCleanerCommand
                 subtitles.SetShowTime(options.showTime, options.subtitleNumber);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
+                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
                     Print(subtitles);
@@ -123,7 +123,7 @@ namespace SubtitlesCleanerCommand
                 subtitles.AdjustTiming(options.firstShowTime, options.lastShowTime);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outFile, options.outPath);
+                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
                     Print(subtitles);
@@ -144,7 +144,7 @@ namespace SubtitlesCleanerCommand
                 subtitles = subtitles.Reorder();
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, isDisableBackupFile: true);
+                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
                     Print(subtitles);
@@ -165,7 +165,7 @@ namespace SubtitlesCleanerCommand
                 subtitles = subtitles.BalanceLines();
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath);
+                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
                     Print(subtitles);
@@ -216,40 +216,85 @@ namespace SubtitlesCleanerCommand
             List<Subtitle> subtitles,
             Encoding encoding,
             string filePath,
-            string outputFileName = null,
-            string outputPath = null,
-            bool isDisableBackupFile = false)
+            string outputFile,
+            string outputFolder,
+            bool suppressBackupFile,
+            bool suppressErrorFile)
         {
-            string outputFilePath = filePath;
+            string outputFilePath = GetOutputFilePath(filePath, outputFile, outputFolder);
 
-            if (string.IsNullOrEmpty(outputFileName) == false || string.IsNullOrEmpty(outputPath) == false)
+            CreateOutputFolder(outputFilePath);
+
+            if (suppressBackupFile == false)
             {
-                if (string.IsNullOrEmpty(outputFileName))
-                    outputFileName = Path.GetFileName(filePath);
+                string backupFile = outputFilePath.Replace(".srt", ".bak.srt");
 
-                if (string.IsNullOrEmpty(outputPath))
-                    outputPath = Path.GetDirectoryName(filePath);
-
-                outputFilePath = Path.GetFullPath(Path.Combine(outputPath, outputFileName));
+                try
+                {
+                    File.Copy(filePath, backupFile, true);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to save backup file " + backupFile, ex);
+                }
             }
 
-            if (isDisableBackupFile == false)
+            try
             {
-                if (outputFilePath == filePath)
-                    File.Copy(filePath, filePath.Replace(".srt", ".bak.srt"), true);
+                File.WriteAllLines(outputFilePath, subtitles.ToLines(), encoding);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to save subtitles file " + outputFilePath, ex);
             }
 
-            File.WriteAllLines(outputFilePath, subtitles.ToLines(), encoding);
-
-            if (isDisableBackupFile == false)
+            if (suppressErrorFile == false)
             {
                 string[] errors = GetSubtitlesErrors(subtitles);
 
                 if (errors != null && errors.Length > 0)
                 {
-                    string errorFile = filePath.Replace(".srt", ".error.srt");
-                    File.WriteAllLines(errorFile, errors, encoding);
+                    string errorFile = outputFilePath.Replace(".srt", ".error.srt");
+
+                    try
+                    {
+                        File.WriteAllLines(errorFile, errors, encoding);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Failed to save error file" + errorFile, ex);
+                    }
                 }
+            }
+        }
+
+        private static string GetOutputFilePath(string filePath, string outputFile, string outputFolder)
+        {
+            if (string.IsNullOrEmpty(outputFile) && string.IsNullOrEmpty(outputFolder))
+                return filePath;
+
+            if (string.IsNullOrEmpty(outputFile))
+                outputFile = Path.GetFileName(filePath);
+
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = Path.GetDirectoryName(filePath);
+
+            return Path.GetFullPath(Path.Combine(outputFolder, outputFile));
+        }
+
+        private static void CreateOutputFolder(string outputFilePath)
+        {
+            string folder = Path.GetDirectoryName(outputFilePath);
+            if (Directory.Exists(folder))
+                return;
+
+            try
+            {
+                Directory.CreateDirectory(folder);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to create folder " + folder, ex);
             }
         }
 

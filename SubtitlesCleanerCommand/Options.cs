@@ -2,7 +2,7 @@
 
 namespace SubtitlesCleanerCommand
 {
-    class ReadAndWriteOptions
+    class SharedOptions
     {
         [Option("path", Required = true, HelpText = "Path to subtitle file or folder")]
         public string path { get; set; }
@@ -13,25 +13,31 @@ namespace SubtitlesCleanerCommand
         [Option("save", Required = false, HelpText = "Save to file", Group = "Output")]
         public bool save { get; set; }
 
-        [Option("outFile", Required = false, HelpText = "Output file name when saving to file")]
-        public string outFile { get; set; }
+        [Option("outputFile", Required = false, HelpText = "Output file. If omitted, the program outputs on the original file")]
+        public string outputFile { get; set; }
 
-        [Option("outPath", Required = false, HelpText = "Output path when saving to file")]
-        public string outPath { get; set; }
+        [Option("outputFolder", Required = false, HelpText = "Output folder. If omitted, the program outputs in the original folder")]
+        public string outputFolder { get; set; }
+
+        [Option("suppressBackupFile", Required = false, HelpText = "Do not create backup file with the original subtitles")]
+        public bool suppressBackupFile { get; set; }
     }
 
     [Verb("clean", HelpText = "Clean subtitles")]
-    class CleanOptions : ReadAndWriteOptions
+    class CleanOptions : SharedOptions
     {
         [Option("cleanHICaseInsensitive", Required = false, HelpText = "Clean HI case-insensitive")]
         public bool cleanHICaseInsensitive { get; set; }
 
         [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
+
+        [Option("suppressErrorFile", Required = false, HelpText = "Do not create error file with possible errors that the program couldn't handled")]
+        public bool suppressErrorFile { get; set; }
     }
 
     [Verb("addTime", HelpText = "Add time to subtitles")]
-    class AddTimeOptions : ReadAndWriteOptions
+    class AddTimeOptions : SharedOptions
     {
         [Option("timeAdded", Required = true, HelpText = "Added time to subtitles")]
         public string timeAdded { get; set; }
@@ -44,7 +50,7 @@ namespace SubtitlesCleanerCommand
     }
 
     [Verb("setShowTime", HelpText = "Move subtitles to show time")]
-    class SetShowTimeOptions : ReadAndWriteOptions
+    class SetShowTimeOptions : SharedOptions
     {
         [Option("showTime", Required = false, HelpText = "Show time")]
         public string showTime { get; set; }
@@ -57,7 +63,7 @@ namespace SubtitlesCleanerCommand
     }
 
     [Verb("adjustTiming", HelpText = "Adjust subtitles timing by 2 sync points")]
-    class AdjustTimingOptions : ReadAndWriteOptions
+    class AdjustTimingOptions : SharedOptions
     {
         [Option("firstShowTime", Required = true, HelpText = "First subtitle's show time")]
         public string firstShowTime { get; set; }
@@ -70,12 +76,12 @@ namespace SubtitlesCleanerCommand
     }
 
     [Verb("reorder", HelpText = "Reorder subtitles based on their show time")]
-    class ReorderOptions : ReadAndWriteOptions
+    class ReorderOptions : SharedOptions
     {
     }
 
     [Verb("balanceLines", HelpText = "Merge short line with preceding long line")]
-    class BalanceLinesOptions : ReadAndWriteOptions
+    class BalanceLinesOptions : SharedOptions
     {
     }
 
