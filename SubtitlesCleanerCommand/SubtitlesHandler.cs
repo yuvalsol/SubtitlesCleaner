@@ -250,7 +250,7 @@ namespace SubtitlesCleanerCommand
 
             if (suppressErrorFile == false)
             {
-                string[] errors = GetSubtitlesErrors(subtitles);
+                string[] errors = SubtitlesHelper.GetSubtitlesErrors(subtitles);
 
                 if (errors != null && errors.Length > 0)
                 {
@@ -296,21 +296,6 @@ namespace SubtitlesCleanerCommand
             {
                 throw new Exception("Failed to create folder " + folder, ex);
             }
-        }
-
-        private static string[] GetSubtitlesErrors(List<Subtitle> subtitles)
-        {
-            return subtitles.Select((subtitle, index) =>
-                new
-                {
-                    subtitle,
-                    index,
-                    HasErrors = subtitle.HasErrors()
-                }
-            )
-            .Where(x => x.HasErrors)
-            .SelectMany(x => x.subtitle.ToLines(x.index))
-            .ToArray();
         }
 
         private static void Print(List<Subtitle> subtitles)

@@ -2738,45 +2738,151 @@ namespace SubtitlesCleanerLibrary
 
         #region Errors
 
-        public static readonly Regex regexErrors_Brackets = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled);
-        public static readonly Regex regexErrors_Punctuations = new Regex(@"[~_#]", RegexOptions.Compiled);
+        public interface IError
+        {
+            string Description { get; }
+            bool HasError(string line);
+            string GetErrors(string line);
+        }
 
-        public static readonly Regex regexErrors_AngleBracketLeft = new Regex(@"<(?!/?i>)", RegexOptions.Compiled);
-        public static readonly Regex regexErrors_AngleBracketRight = new Regex(@"(?<!</?i)>", RegexOptions.Compiled);
+        private class Error : IError
+        {
+            public virtual Regex Regex { get; set; }
+            public virtual string Description { get; set; }
 
-        public static readonly Regex regexErrors_ColonStartLine = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled);
-        // ^10:30
-        public static readonly Regex regexErrors_ColonStartLineExclude = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled);
+            public virtual bool HasError(string line)
+            {
+                return Regex.IsMatch(line);
+            }
 
-        public static readonly Regex regexErrors_Colon = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled);
+            public virtual string GetErrors(string line)
+            {
+                return string.Join(" | ", Regex.Matches(line).Cast<Match>().Select(m => m.Value));
+            }
+        }
 
-        // Course 1 can
-        public static readonly Regex regexErrors_OneInsteadOfI = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        private class ComplexError : Error
+        {
+            public Regex ExcludeRegex { get; set; }
 
-        // a/b
-        public static readonly Regex regexErrors_Slash = new Regex(@"[A-ZÁ-Úa-zá-ú]/[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+            public override bool HasError(string line)
+            {
+                return base.HasError(line) && ExcludeRegex.IsMatch(line) == false;
+            }
+        }
 
-        // " / " -> " I "
-        public static readonly Regex regexErrors_SlashInsteadOfI = new Regex(@"\s+/\s+", RegexOptions.Compiled);
+        public static readonly IError[] ErrorList = new IError[]
+        {
+            new Error() {
+                Regex = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled),
+                Description = "Brackets"
+            }
+            , new Error() {
+                Regex = new Regex(@"[~_#]", RegexOptions.Compiled),
+                Description = "Special characters"
+            }
+            , new Error() {
+                Regex = new Regex(@"<(?!/?i>)", RegexOptions.Compiled),
+                Description = "Italic with space: < i> or < /i> or <i > or </i >"
+            }
+            , new Error() {
+                Regex = new Regex(@"(?<!</?i)>", RegexOptions.Compiled),
+                Description = "Italic with space: < i> or < /i> or <i > or </i >"
+            }
+            , new ComplexError()
+            {
+                Regex = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled),
+                // not time
+                ExcludeRegex = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled),
+                Description = "Possible hearing-impaired"
+            }
+            , new Error() {
+                Regex = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled),
+                Description = "Colon"
+            }
+            , new Error() {
+                // Of course 1 can
+                Regex = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled),
+                Description = "1 instead of I"
+            }
+            , new Error() {
+                // a/b
+                Regex = new Regex(@"[A-ZÁ-Úa-zá-ú]/[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled),
+                Description = "Slash"
+            }
+            , new Error() {
+                // " / " -> " I "
+                Regex = new Regex(@"\s+/\s+", RegexOptions.Compiled),
+                Description = "Slash instead of I"
+            }
+            , new Error() {
+                // replace with new line
+                Regex = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled),
+                Description = "Missing new line"
+            }
+            , new Error() {
+                Regex = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled),
+                Description = "Hearing-impaired without brackets"
+            }
+            , new ComplexError() {
+                Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
+                // A... I... OK. 100. 123.45.
+                ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+)\.*$", RegexOptions.Compiled),
+                Description = "Hearing-impaired without brackets"
+            }
+            , new Error() {
+                Regex = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled),
+                Description = "Double quate and question mark"
+            }
+            , new Error() {
+                // ignore Mc, PhD
+                Regex = new Regex(@"((?<!M)c|(?<!P)h|[a-bd-gi-zá-ú])[A-ZÁ-Ú]", RegexOptions.Compiled),
+                Description = "Lower letter before capital letter"
+            }
+            , new Error() {
+                Regex = new Regex(@"<i><i>", RegexOptions.Compiled),
+                Description = "Consecutive open italic"
+            }
+            , new Error() {
+                Regex = new Regex(@"</i></i>", RegexOptions.Compiled),
+                Description = "Consecutive closing italic"
+            }
+            , new Error() {
+                Regex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
+                Description = "Ends with comma and question mark"
+            }
+        };
 
-        // replace with new line
-        public static readonly Regex regexErrors_MissingNewLine = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled);
+        public static string[] GetSubtitlesErrors(List<Subtitle> subtitles)
+        {
+            List<string> errorLines = new List<string>();
 
-        public static readonly Regex regexErrors_HIWithoutBracket = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled);
+            foreach (var subtitle in subtitles)
+            {
+                bool hasError = false;
 
-        public static readonly Regex regexErrors_HIFullLineWithoutBrackets = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled);
-        // A... I... OK. 100. 123.45.
-        public static readonly Regex regexErrors_HIFullLineWithoutBracketsExclude = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+)\.*$", RegexOptions.Compiled);
+                foreach (var error in ErrorList)
+                {
+                    foreach (string line in subtitle.Lines)
+                    {
+                        if (error.HasError(line))
+                        {
+                            errorLines.Add(error.Description);
+                            //errorLines.Add(error.GetErrors(line));
+                            hasError = true;
+                        }
+                    }
+                }
 
-        public static readonly Regex regexErrors_DoubleQuateAndQuestionMark = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled);
+                if (hasError)
+                {
+                    int index = subtitles.IndexOf(subtitle);
+                    errorLines.AddRange(subtitle.ToLines(index));
+                }
+            }
 
-        // ignore Mc, PhD
-        public static readonly Regex regexErrors_LowerLetterBeforeCapitalLetter = new Regex(@"((?<!M)c|(?<!P)h|[a-bd-gi-zá-ú])[A-ZÁ-Ú]", RegexOptions.Compiled);
-
-        public static readonly Regex regexErrors_DuplicateOpenItalic = new Regex(@"<i><i>", RegexOptions.Compiled);
-        public static readonly Regex regexErrors_DuplicateCloseItalic = new Regex(@"</i></i>", RegexOptions.Compiled);
-
-        public static readonly Regex regexErrors_EndsWithCommaAndQM = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled);
+            return errorLines.ToArray();
+        }
 
         public static bool HasErrors(this Subtitle subtitle)
         {
@@ -2785,24 +2891,7 @@ namespace SubtitlesCleanerLibrary
 
         public static bool HasErrors(string line)
         {
-            return
-                regexErrors_Brackets.IsMatch(line) ||
-                regexErrors_Punctuations.IsMatch(line) ||
-                regexErrors_AngleBracketLeft.IsMatch(line) ||
-                regexErrors_AngleBracketRight.IsMatch(line) ||
-                (regexErrors_ColonStartLine.IsMatch(line) && regexErrors_ColonStartLineExclude.IsMatch(line) == false) ||
-                regexErrors_Colon.IsMatch(line) ||
-                regexErrors_OneInsteadOfI.IsMatch(line) ||
-                regexErrors_Slash.IsMatch(line) ||
-                regexErrors_SlashInsteadOfI.IsMatch(line) ||
-                regexErrors_MissingNewLine.IsMatch(line) ||
-                regexErrors_HIWithoutBracket.IsMatch(line) ||
-                (regexErrors_HIFullLineWithoutBrackets.IsMatch(line) && regexErrors_HIFullLineWithoutBracketsExclude.IsMatch(line) == false) ||
-                regexErrors_DoubleQuateAndQuestionMark.IsMatch(line) ||
-                regexErrors_LowerLetterBeforeCapitalLetter.IsMatch(line) ||
-                regexErrors_DuplicateOpenItalic.IsMatch(line) ||
-                regexErrors_DuplicateCloseItalic.IsMatch(line) ||
-                regexErrors_EndsWithCommaAndQM.IsMatch(line);
+            return ErrorList.Any(err => err.HasError(line));
         }
 
         #endregion
