@@ -370,6 +370,7 @@ namespace SubtitlesCleanerEditor
             originalSubtitles = null;
             filePath = null;
             txtSubtitle.Text = string.Empty;
+            lblLineLength1.Text = lblLineLength2.Text = lblLineLength3.Text = lblLineLength4.Text = string.Empty;
             timePicker.Reset();
             ResetFormTitle();
         }
@@ -395,7 +396,10 @@ namespace SubtitlesCleanerEditor
                 }
 
                 if (lstEditor.Rows.Count == 1)
+                {
                     txtSubtitle.Text = string.Empty;
+                    lblLineLength1.Text = lblLineLength2.Text = lblLineLength3.Text = lblLineLength4.Text = string.Empty;
+                }
 
                 SetSubtitlesErrors();
 
@@ -414,6 +418,11 @@ namespace SubtitlesCleanerEditor
                 return;
 
             txtSubtitle.Text = editorRow.Lines;
+            lblLineLength1.Text = (txtSubtitle.Lines.Length >= 1 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[0]).ToString() : string.Empty);
+            lblLineLength2.Text = (txtSubtitle.Lines.Length >= 2 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[1]).ToString() : string.Empty);
+            lblLineLength3.Text = (txtSubtitle.Lines.Length >= 3 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[2]).ToString() : string.Empty);
+            lblLineLength4.Text = (txtSubtitle.Lines.Length >= 4 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[3]).ToString() : string.Empty);
+
             timePicker.Value = editorRow.ShowValue;
 
             isIncludeSelectedRowInSearch = true;

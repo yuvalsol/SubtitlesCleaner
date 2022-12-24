@@ -2678,11 +2678,21 @@ namespace SubtitlesCleanerLibrary
 
         private class LineBalance
         {
-            public int CharLength;
+            public int DisplayCharCount;
             public bool IsMatchDialog;
             public bool ContainsItalicsStart;
             public bool ContainsItalicsEnd;
             public bool EndsWithPunctuation;
+        }
+
+        public static int GetDisplayCharCount(string line)
+        {
+            return
+                line
+                .Replace("<i>", string.Empty).Replace("</i>", string.Empty).Replace("</ i>", string.Empty)
+                .Replace("<u>", string.Empty).Replace("</u>", string.Empty).Replace("</ u>", string.Empty)
+                .Replace("<b>", string.Empty).Replace("</b>", string.Empty).Replace("</ b>", string.Empty)
+                .Length;
         }
 
         public static List<Subtitle> BalanceLines(this List<Subtitle> subtitles)
@@ -2701,10 +2711,10 @@ namespace SubtitlesCleanerLibrary
                 {
                     var results = subtitle.Lines.Select(line => new LineBalance()
                     {
-                        CharLength = line.Replace("<i>", string.Empty).Replace("</i>", string.Empty).Replace("<u>", string.Empty).Replace("</u>", string.Empty).Length,
+                        DisplayCharCount = GetDisplayCharCount(line),
                         IsMatchDialog = regexDialog.IsMatch(line),
                         ContainsItalicsStart = line.Contains("<i>"),
-                        ContainsItalicsEnd = line.Contains("</i>"),
+                        ContainsItalicsEnd = line.Contains("</i>") || line.Contains("</ i>"),
                         EndsWithPunctuation = line.EndsWith(".") || line.EndsWith("?") || line.EndsWith("!") || line.EndsWith("-")
                     }).ToList();
 
@@ -2718,10 +2728,10 @@ namespace SubtitlesCleanerLibrary
                             results1.ContainsItalicsStart == false && results1.ContainsItalicsEnd == false &&
                             results2.ContainsItalicsStart == false && results2.ContainsItalicsEnd == false &&
                             results1.EndsWithPunctuation == false &&
-                            results1.CharLength + results2.CharLength + 1 <= SINGLE_LINE_MAX_LENGTH)
+                            results1.DisplayCharCount + results2.DisplayCharCount + 1 <= SINGLE_LINE_MAX_LENGTH)
                         {
                             subtitle.Lines[i - 1] = subtitle.Lines[i - 1] + " " + subtitle.Lines[i];
-                            results[i - 1].CharLength = results[i - 1].CharLength + results[i].CharLength + 1;
+                            results[i - 1].DisplayCharCount = results[i - 1].DisplayCharCount + results[i].DisplayCharCount + 1;
                             results[i - 1].EndsWithPunctuation = results[i].EndsWithPunctuation;
                             subtitle.Lines.RemoveAt(i);
                             results.RemoveAt(i);
