@@ -89,6 +89,7 @@ namespace SubtitlesCleanerEditor
 
         private List<Subtitle> subtitles;
         private List<Subtitle> originalSubtitles;
+        private bool cleanHICaseInsensitive;
         private string filePath;
         private Encoding encoding = Encoding.UTF8;
 
@@ -100,7 +101,6 @@ namespace SubtitlesCleanerEditor
 
             if (subtitles != null)
             {
-
                 lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) => new EditorRow()
                 {
                     Num = index + 1,
@@ -144,8 +144,6 @@ namespace SubtitlesCleanerEditor
         #endregion
 
         #region Load Subtitles File
-
-        private static readonly bool cleanHICaseInsensitive = false;
 
         private void LoadFile(string filePath)
         {
@@ -521,6 +519,32 @@ namespace SubtitlesCleanerEditor
                     break;
                 }
             }
+        }
+
+        #endregion
+
+        #region HI Case Changed
+
+        private void rdbHICase_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdbHIUpperCaseOnly.Checked)
+                cleanHICaseInsensitive = false;
+            else if (rdbHIUpperLowerCases.Checked)
+                cleanHICaseInsensitive = true;
+
+            foreach (DataGridViewRow row in lstEditor.Rows)
+            {
+                EditorRow editorRow = row.DataBoundItem as EditorRow;
+                Subtitle subtitle = subtitles[editorRow.Num - 1];
+
+                subtitle.CheckSubtitle(cleanHICaseInsensitive);
+
+                editorRow.SubtitleError = subtitle.SubtitleError;
+            }
+
+            SetSubtitlesErrors();
+
+            SetFormTitle(true);
         }
 
         #endregion

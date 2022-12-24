@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle95 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle96 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle89 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle90 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle91 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle92 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle93 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle94 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lstErrors = new System.Windows.Forms.DataGridView();
             this.ColumnNum1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,6 +47,10 @@
             this.ColumnHide = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblHearingImpairedDetection = new System.Windows.Forms.Label();
+            this.rdbHIUpperCaseOnly = new System.Windows.Forms.RadioButton();
+            this.rdbHIUpperLowerCases = new System.Windows.Forms.RadioButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnClean = new System.Windows.Forms.Button();
             this.btnAdjustTiming = new System.Windows.Forms.Button();
@@ -55,18 +59,18 @@
             this.btnSearchAndReplace = new System.Windows.Forms.Button();
             this.btnOriginalSubtitles = new System.Windows.Forms.Button();
             this.btnTimeCalculator = new System.Windows.Forms.Button();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAddTime = new System.Windows.Forms.Button();
             this.diffTimePicker = new SubtitlesCleanerEditor.TimePicker();
             this.txtSubtitle = new SubtitlesCleanerEditor.TextBox();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnSaveAs = new System.Windows.Forms.Button();
             this.chkBackupSRT = new System.Windows.Forms.CheckBox();
             this.btnClose = new System.Windows.Forms.Button();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSetShowTime = new System.Windows.Forms.Button();
             this.timePicker = new SubtitlesCleanerEditor.TimePicker();
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
@@ -82,10 +86,11 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).BeginInit();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
-            this.flowLayoutPanel4.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel4.SuspendLayout();
+            this.flowLayoutPanel5.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -134,8 +139,8 @@
             // ColumnNum1
             // 
             this.ColumnNum1.DataPropertyName = "Num";
-            dataGridViewCellStyle95.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle95;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle1;
             this.ColumnNum1.HeaderText = "#";
             this.ColumnNum1.Name = "ColumnNum1";
             this.ColumnNum1.ReadOnly = true;
@@ -146,8 +151,8 @@
             // 
             this.ColumnError1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnError1.DataPropertyName = "Error";
-            dataGridViewCellStyle96.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle96;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle2;
             this.ColumnError1.HeaderText = "Error";
             this.ColumnError1.Name = "ColumnError1";
             this.ColumnError1.ReadOnly = true;
@@ -168,11 +173,12 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel1);
-            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel3);
-            this.splitContainer2.Panel2.Controls.Add(this.txtSubtitle);
-            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel4);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel2);
+            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel1);
+            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel4);
+            this.splitContainer2.Panel2.Controls.Add(this.txtSubtitle);
+            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel5);
+            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel3);
             this.splitContainer2.Size = new System.Drawing.Size(732, 494);
             this.splitContainer2.SplitterDistance = 238;
             this.splitContainer2.TabIndex = 2;
@@ -183,14 +189,14 @@
             this.lstEditor.AllowUserToResizeColumns = false;
             this.lstEditor.AllowUserToResizeRows = false;
             this.lstEditor.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle89.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle89.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle89.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle89.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle89.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle89.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle89.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle89;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.lstEditor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lstEditor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNum,
@@ -215,8 +221,8 @@
             // ColumnNum
             // 
             this.ColumnNum.DataPropertyName = "Num";
-            dataGridViewCellStyle90.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle90;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle4;
             this.ColumnNum.HeaderText = "#";
             this.ColumnNum.Name = "ColumnNum";
             this.ColumnNum.ReadOnly = true;
@@ -226,8 +232,8 @@
             // ColumnShow
             // 
             this.ColumnShow.DataPropertyName = "Show";
-            dataGridViewCellStyle91.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle91;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle5;
             this.ColumnShow.HeaderText = "Show";
             this.ColumnShow.Name = "ColumnShow";
             this.ColumnShow.ReadOnly = true;
@@ -237,8 +243,8 @@
             // ColumnHide
             // 
             this.ColumnHide.DataPropertyName = "Hide";
-            dataGridViewCellStyle92.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle92;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle6;
             this.ColumnHide.HeaderText = "Hide";
             this.ColumnHide.Name = "ColumnHide";
             this.ColumnHide.ReadOnly = true;
@@ -248,8 +254,8 @@
             // ColumnDuration
             // 
             this.ColumnDuration.DataPropertyName = "Duration";
-            dataGridViewCellStyle93.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle93;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle7;
             this.ColumnDuration.HeaderText = "Duration";
             this.ColumnDuration.Name = "ColumnDuration";
             this.ColumnDuration.ReadOnly = true;
@@ -260,12 +266,58 @@
             // 
             this.ColumnText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnText.DataPropertyName = "Text";
-            dataGridViewCellStyle94.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle94;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle8;
             this.ColumnText.HeaderText = "Text";
             this.ColumnText.Name = "ColumnText";
             this.ColumnText.ReadOnly = true;
             this.ColumnText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel2.Controls.Add(this.lblHearingImpairedDetection);
+            this.flowLayoutPanel2.Controls.Add(this.rdbHIUpperCaseOnly);
+            this.flowLayoutPanel2.Controls.Add(this.rdbHIUpperLowerCases);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 36);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(436, 24);
+            this.flowLayoutPanel2.TabIndex = 2;
+            // 
+            // lblHearingImpairedDetection
+            // 
+            this.lblHearingImpairedDetection.AutoSize = true;
+            this.lblHearingImpairedDetection.Location = new System.Drawing.Point(3, 4);
+            this.lblHearingImpairedDetection.Margin = new System.Windows.Forms.Padding(3, 4, 3, 0);
+            this.lblHearingImpairedDetection.Name = "lblHearingImpairedDetection";
+            this.lblHearingImpairedDetection.Size = new System.Drawing.Size(161, 14);
+            this.lblHearingImpairedDetection.TabIndex = 0;
+            this.lblHearingImpairedDetection.Text = "Hearing-Impaired Detection:";
+            // 
+            // rdbHIUpperCaseOnly
+            // 
+            this.rdbHIUpperCaseOnly.AutoSize = true;
+            this.rdbHIUpperCaseOnly.Checked = true;
+            this.rdbHIUpperCaseOnly.Location = new System.Drawing.Point(170, 3);
+            this.rdbHIUpperCaseOnly.Name = "rdbHIUpperCaseOnly";
+            this.rdbHIUpperCaseOnly.Size = new System.Drawing.Size(115, 18);
+            this.rdbHIUpperCaseOnly.TabIndex = 1;
+            this.rdbHIUpperCaseOnly.TabStop = true;
+            this.rdbHIUpperCaseOnly.Text = "Upper Case Only";
+            this.rdbHIUpperCaseOnly.UseVisualStyleBackColor = true;
+            this.rdbHIUpperCaseOnly.CheckedChanged += new System.EventHandler(this.rdbHICase_CheckedChanged);
+            // 
+            // rdbHIUpperLowerCases
+            // 
+            this.rdbHIUpperLowerCases.AutoSize = true;
+            this.rdbHIUpperLowerCases.Location = new System.Drawing.Point(291, 3);
+            this.rdbHIUpperLowerCases.Name = "rdbHIUpperLowerCases";
+            this.rdbHIUpperLowerCases.Size = new System.Drawing.Size(142, 18);
+            this.rdbHIUpperLowerCases.TabIndex = 2;
+            this.rdbHIUpperLowerCases.Text = "Upper && Lower Cases";
+            this.rdbHIUpperLowerCases.UseVisualStyleBackColor = true;
+            this.rdbHIUpperLowerCases.CheckedChanged += new System.EventHandler(this.rdbHICase_CheckedChanged);
             // 
             // flowLayoutPanel1
             // 
@@ -383,16 +435,16 @@
             this.btnTimeCalculator.UseVisualStyleBackColor = true;
             this.btnTimeCalculator.Click += new System.EventHandler(this.btnTimeCalculator_Click);
             // 
-            // flowLayoutPanel3
+            // flowLayoutPanel4
             // 
-            this.flowLayoutPanel3.AutoSize = true;
-            this.flowLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel3.Controls.Add(this.btnAddTime);
-            this.flowLayoutPanel3.Controls.Add(this.diffTimePicker);
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 161);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(429, 37);
-            this.flowLayoutPanel3.TabIndex = 4;
+            this.flowLayoutPanel4.AutoSize = true;
+            this.flowLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel4.Controls.Add(this.btnAddTime);
+            this.flowLayoutPanel4.Controls.Add(this.diffTimePicker);
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(3, 175);
+            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(429, 37);
+            this.flowLayoutPanel4.TabIndex = 5;
             // 
             // btnAddTime
             // 
@@ -431,29 +483,29 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSubtitle.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtSubtitle.Location = new System.Drawing.Point(3, 44);
+            this.txtSubtitle.Location = new System.Drawing.Point(3, 66);
             this.txtSubtitle.Multiline = true;
             this.txtSubtitle.Name = "txtSubtitle";
             this.txtSubtitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSubtitle.Size = new System.Drawing.Size(714, 72);
-            this.txtSubtitle.TabIndex = 2;
+            this.txtSubtitle.TabIndex = 3;
             this.txtSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesCleanerEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
             // 
-            // flowLayoutPanel4
+            // flowLayoutPanel5
             // 
-            this.flowLayoutPanel4.AutoSize = true;
-            this.flowLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel4.Controls.Add(this.btnClear);
-            this.flowLayoutPanel4.Controls.Add(this.btnOpen);
-            this.flowLayoutPanel4.Controls.Add(this.btnSave);
-            this.flowLayoutPanel4.Controls.Add(this.btnSaveAs);
-            this.flowLayoutPanel4.Controls.Add(this.chkBackupSRT);
-            this.flowLayoutPanel4.Controls.Add(this.btnClose);
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(3, 214);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(377, 30);
-            this.flowLayoutPanel4.TabIndex = 5;
+            this.flowLayoutPanel5.AutoSize = true;
+            this.flowLayoutPanel5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel5.Controls.Add(this.btnClear);
+            this.flowLayoutPanel5.Controls.Add(this.btnOpen);
+            this.flowLayoutPanel5.Controls.Add(this.btnSave);
+            this.flowLayoutPanel5.Controls.Add(this.btnSaveAs);
+            this.flowLayoutPanel5.Controls.Add(this.chkBackupSRT);
+            this.flowLayoutPanel5.Controls.Add(this.btnClose);
+            this.flowLayoutPanel5.Location = new System.Drawing.Point(3, 216);
+            this.flowLayoutPanel5.Name = "flowLayoutPanel5";
+            this.flowLayoutPanel5.Size = new System.Drawing.Size(377, 30);
+            this.flowLayoutPanel5.TabIndex = 6;
             // 
             // btnClear
             // 
@@ -535,17 +587,17 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // flowLayoutPanel2
+            // flowLayoutPanel3
             // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel2.Controls.Add(this.btnSetShowTime);
-            this.flowLayoutPanel2.Controls.Add(this.timePicker);
-            this.flowLayoutPanel2.Controls.Add(this.chkInteractiveRetiming);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 124);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(592, 37);
-            this.flowLayoutPanel2.TabIndex = 3;
+            this.flowLayoutPanel3.AutoSize = true;
+            this.flowLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel3.Controls.Add(this.btnSetShowTime);
+            this.flowLayoutPanel3.Controls.Add(this.timePicker);
+            this.flowLayoutPanel3.Controls.Add(this.chkInteractiveRetiming);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 138);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(592, 37);
+            this.flowLayoutPanel3.TabIndex = 4;
             // 
             // btnSetShowTime
             // 
@@ -609,6 +661,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
+            this.MinimumSize = new System.Drawing.Size(943, 532);
             this.Name = "SubtitlesCleanerEditorForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Subtitles Cleaner Editor";
@@ -627,14 +680,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).EndInit();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
-            this.flowLayoutPanel4.ResumeLayout(false);
-            this.flowLayoutPanel4.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel4.ResumeLayout(false);
+            this.flowLayoutPanel4.PerformLayout();
+            this.flowLayoutPanel5.ResumeLayout(false);
+            this.flowLayoutPanel5.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -651,13 +706,13 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.CheckBox chkBackupSRT;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private TimePicker timePicker;
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.Button btnSetShowTime;
         private System.Windows.Forms.CheckBox chkInteractiveRetiming;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
         private System.Windows.Forms.DataGridView lstErrors;
         private System.Windows.Forms.Button btnSearchAndReplace;
         private System.Windows.Forms.Button btnAdjustTiming;
@@ -670,13 +725,17 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnHide;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDuration;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnText;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.Button btnAddTime;
         private TimePicker diffTimePicker;
         private System.Windows.Forms.Button btnTimeCalculator;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnReorder;
         private System.Windows.Forms.Button btnBalanceLines;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.Label lblHearingImpairedDetection;
+        private System.Windows.Forms.RadioButton rdbHIUpperCaseOnly;
+        private System.Windows.Forms.RadioButton rdbHIUpperLowerCases;
     }
 }
 
