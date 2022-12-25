@@ -2877,8 +2877,12 @@ namespace SubtitlesCleanerLibrary
                     {
                         if (error.HasError(line))
                         {
-                            errorLines.Add(error.Description);
-                            //errorLines.Add(error.GetErrors(line));
+                            if (errorLines.Contains(error.Description) == false)
+                            {
+                                errorLines.Add(error.Description);
+                                //errorLines.Add(error.GetErrors(line));
+                            }
+
                             hasError = true;
                         }
                     }
