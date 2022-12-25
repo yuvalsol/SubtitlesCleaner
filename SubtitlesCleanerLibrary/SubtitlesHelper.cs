@@ -2792,23 +2792,12 @@ namespace SubtitlesCleanerLibrary
                 Description = "Special characters"
             }
             , new Error() {
-                Regex = new Regex(@"<(?!/?i>)", RegexOptions.Compiled),
-                Description = "Italic with space: < i> or < /i> or <i > or </i >"
-            }
-            , new Error() {
-                Regex = new Regex(@"(?<!</?i)>", RegexOptions.Compiled),
-                Description = "Italic with space: < i> or < /i> or <i > or </i >"
-            }
-            , new ComplexError()
-            {
-                Regex = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled),
-                // not time
-                ExcludeRegex = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled),
-                Description = "Possible hearing-impaired"
-            }
-            , new Error() {
                 Regex = new Regex(@"[A-ZÁ-Úa-zá-ú0-9#\-'.]+:\s", RegexOptions.Compiled),
                 Description = "Colon"
+            }
+            , new Error() {
+                Regex = new Regex(@"<(?!/?i>)|(?<!</?i)>", RegexOptions.Compiled),
+                Description = "Italic with space"
             }
             , new Error() {
                 // Of course 1 can
@@ -2828,21 +2817,31 @@ namespace SubtitlesCleanerLibrary
             , new Error() {
                 // replace with new line
                 Regex = new Regex(@"[!?][A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled),
-                Description = "Missing new line"
+                Description = "Possible missing new line after punctuation"
+            }
+            , new ComplexError() {
+                Regex = new Regex(@"^[A-ZÁ-Úa-zá-ú0-9#\-'.]+:", RegexOptions.Compiled),
+                // not time
+                ExcludeRegex = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled),
+                Description = "Possible hearing-impaired"
             }
             , new Error() {
                 Regex = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled),
-                Description = "Hearing-impaired without brackets"
+                Description = "Possible hearing-impaired"
             }
             , new ComplexError() {
                 Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
                 // A... I... OK. 100. 123.45.
                 ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+)\.*$", RegexOptions.Compiled),
-                Description = "Hearing-impaired without brackets"
+                Description = "Possible hearing-impaired"
             }
             , new Error() {
-                Regex = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""\?)(\s|$)", RegexOptions.Compiled),
-                Description = "Double quate and question mark"
+                Regex = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""[!?])(\s|$)", RegexOptions.Compiled),
+                Description = "Punctuation outside of quotation marks"
+            }
+            , new Error() {
+                Regex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
+                Description = "Sentence ends with comma and question mark"
             }
             , new Error() {
                 // ignore Mc, PhD
@@ -2851,15 +2850,11 @@ namespace SubtitlesCleanerLibrary
             }
             , new Error() {
                 Regex = new Regex(@"<i><i>", RegexOptions.Compiled),
-                Description = "Consecutive open italic"
+                Description = "Consecutive opening italic"
             }
             , new Error() {
                 Regex = new Regex(@"</i></i>", RegexOptions.Compiled),
                 Description = "Consecutive closing italic"
-            }
-            , new Error() {
-                Regex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
-                Description = "Ends with comma and question mark"
             }
         };
 
