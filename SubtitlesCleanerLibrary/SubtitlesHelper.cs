@@ -2833,7 +2833,7 @@ namespace SubtitlesCleanerLibrary
                 Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
                 // A... I... OK. 100. 123.45.
                 ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+)\.*$", RegexOptions.Compiled),
-                Description = "Possible hearing-impaired"
+                Description = "Possible miswritten line"
             }
             , new Error() {
                 Regex = new Regex(@"(?<!""[A-ZÁ-Úa-zá-ú0-9 #\-'.]+)(""[!?])(\s|$)", RegexOptions.Compiled),
@@ -2865,6 +2865,7 @@ namespace SubtitlesCleanerLibrary
             foreach (var subtitle in subtitles)
             {
                 bool hasError = false;
+                List<string> errorDescriptions = new List<string>();
 
                 foreach (var error in ErrorList)
                 {
@@ -2872,10 +2873,11 @@ namespace SubtitlesCleanerLibrary
                     {
                         if (error.HasError(line))
                         {
-                            if (errorLines.Contains(error.Description) == false)
+                            if (errorDescriptions.Contains(error.Description) == false)
                             {
-                                errorLines.Add(error.Description);
+                                errorLines.Add("/* " + error.Description + " */");
                                 //errorLines.Add(error.GetErrors(line));
+                                errorDescriptions.Add(error.Description);
                             }
 
                             hasError = true;
