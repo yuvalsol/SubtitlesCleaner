@@ -28,14 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lstErrors = new System.Windows.Forms.DataGridView();
             this.ColumnNum1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,6 +48,10 @@
             this.ColumnHide = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnCleanText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnCopyCleanTextAndAdvance = new System.Windows.Forms.Button();
+            this.btnCopyCleanText = new System.Windows.Forms.Button();
+            this.txtCleanSubtitle = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLineLength1 = new System.Windows.Forms.Label();
             this.lblLineLength2 = new System.Windows.Forms.Label();
@@ -114,7 +119,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(927, 494);
+            this.splitContainer1.Size = new System.Drawing.Size(1184, 494);
             this.splitContainer1.SplitterDistance = 190;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 0;
@@ -145,8 +150,8 @@
             // ColumnNum1
             // 
             this.ColumnNum1.DataPropertyName = "Num";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle1;
             this.ColumnNum1.HeaderText = "#";
             this.ColumnNum1.Name = "ColumnNum1";
             this.ColumnNum1.ReadOnly = true;
@@ -157,8 +162,8 @@
             // 
             this.ColumnError1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnError1.DataPropertyName = "Error";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle2;
             this.ColumnError1.HeaderText = "Error";
             this.ColumnError1.Name = "ColumnError1";
             this.ColumnError1.ReadOnly = true;
@@ -179,6 +184,9 @@
             // 
             // splitContainer2.Panel2
             // 
+            this.splitContainer2.Panel2.Controls.Add(this.btnCopyCleanTextAndAdvance);
+            this.splitContainer2.Panel2.Controls.Add(this.btnCopyCleanText);
+            this.splitContainer2.Panel2.Controls.Add(this.txtCleanSubtitle);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel6);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel2);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel1);
@@ -186,7 +194,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.txtSubtitle);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel5);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel3);
-            this.splitContainer2.Size = new System.Drawing.Size(732, 494);
+            this.splitContainer2.Size = new System.Drawing.Size(989, 494);
             this.splitContainer2.SplitterDistance = 238;
             this.splitContainer2.TabIndex = 2;
             // 
@@ -196,21 +204,22 @@
             this.lstEditor.AllowUserToResizeColumns = false;
             this.lstEditor.AllowUserToResizeRows = false;
             this.lstEditor.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.lstEditor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lstEditor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNum,
             this.ColumnShow,
             this.ColumnHide,
             this.ColumnDuration,
-            this.ColumnText});
+            this.ColumnText,
+            this.ColumnCleanText});
             this.lstEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstEditor.Location = new System.Drawing.Point(0, 0);
             this.lstEditor.MultiSelect = false;
@@ -218,7 +227,7 @@
             this.lstEditor.ReadOnly = true;
             this.lstEditor.RowHeadersVisible = false;
             this.lstEditor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.lstEditor.Size = new System.Drawing.Size(732, 238);
+            this.lstEditor.Size = new System.Drawing.Size(989, 238);
             this.lstEditor.TabIndex = 1;
             this.lstEditor.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstEditor_CellMouseDoubleClick);
             this.lstEditor.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.lstEditor_DataBindingComplete);
@@ -228,8 +237,8 @@
             // ColumnNum
             // 
             this.ColumnNum.DataPropertyName = "Num";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle4;
             this.ColumnNum.HeaderText = "#";
             this.ColumnNum.Name = "ColumnNum";
             this.ColumnNum.ReadOnly = true;
@@ -239,8 +248,8 @@
             // ColumnShow
             // 
             this.ColumnShow.DataPropertyName = "Show";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle5;
             this.ColumnShow.HeaderText = "Show";
             this.ColumnShow.Name = "ColumnShow";
             this.ColumnShow.ReadOnly = true;
@@ -250,8 +259,8 @@
             // ColumnHide
             // 
             this.ColumnHide.DataPropertyName = "Hide";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle6;
             this.ColumnHide.HeaderText = "Hide";
             this.ColumnHide.Name = "ColumnHide";
             this.ColumnHide.ReadOnly = true;
@@ -261,8 +270,8 @@
             // ColumnDuration
             // 
             this.ColumnDuration.DataPropertyName = "Duration";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle7;
             this.ColumnDuration.HeaderText = "Duration";
             this.ColumnDuration.Name = "ColumnDuration";
             this.ColumnDuration.ReadOnly = true;
@@ -273,16 +282,64 @@
             // 
             this.ColumnText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnText.DataPropertyName = "Text";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle8;
             this.ColumnText.HeaderText = "Text";
             this.ColumnText.Name = "ColumnText";
             this.ColumnText.ReadOnly = true;
             this.ColumnText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
+            // ColumnCleanText
+            // 
+            this.ColumnCleanText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColumnCleanText.DataPropertyName = "CleanText";
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnCleanText.DefaultCellStyle = dataGridViewCellStyle9;
+            this.ColumnCleanText.HeaderText = "Clean Text";
+            this.ColumnCleanText.Name = "ColumnCleanText";
+            this.ColumnCleanText.ReadOnly = true;
+            this.ColumnCleanText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // btnCopyCleanTextAndAdvance
+            // 
+            this.btnCopyCleanTextAndAdvance.AutoSize = true;
+            this.btnCopyCleanTextAndAdvance.Location = new System.Drawing.Point(450, 76);
+            this.btnCopyCleanTextAndAdvance.Name = "btnCopyCleanTextAndAdvance";
+            this.btnCopyCleanTextAndAdvance.Size = new System.Drawing.Size(129, 24);
+            this.btnCopyCleanTextAndAdvance.TabIndex = 9;
+            this.btnCopyCleanTextAndAdvance.Text = "<= Copy && Advance";
+            this.btnCopyCleanTextAndAdvance.UseVisualStyleBackColor = true;
+            this.btnCopyCleanTextAndAdvance.Click += new System.EventHandler(this.btnCopyCleanTextAndAdvance_Click);
+            // 
+            // btnCopyCleanText
+            // 
+            this.btnCopyCleanText.AutoSize = true;
+            this.btnCopyCleanText.Location = new System.Drawing.Point(477, 106);
+            this.btnCopyCleanText.Name = "btnCopyCleanText";
+            this.btnCopyCleanText.Size = new System.Drawing.Size(75, 24);
+            this.btnCopyCleanText.TabIndex = 8;
+            this.btnCopyCleanText.Text = "<= Copy";
+            this.btnCopyCleanText.UseVisualStyleBackColor = true;
+            this.btnCopyCleanText.Click += new System.EventHandler(this.btnCopyCleanText_Click);
+            // 
+            // txtCleanSubtitle
+            // 
+            this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
+            this.txtCleanSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCleanSubtitle.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
+            this.txtCleanSubtitle.Location = new System.Drawing.Point(587, 66);
+            this.txtCleanSubtitle.Multiline = true;
+            this.txtCleanSubtitle.Name = "txtCleanSubtitle";
+            this.txtCleanSubtitle.ReadOnly = true;
+            this.txtCleanSubtitle.Size = new System.Drawing.Size(390, 72);
+            this.txtCleanSubtitle.TabIndex = 7;
+            this.txtCleanSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // flowLayoutPanel6
             // 
-            this.flowLayoutPanel6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel6.AutoSize = true;
             this.flowLayoutPanel6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel6.Controls.Add(this.lblLineLength1);
@@ -290,7 +347,7 @@
             this.flowLayoutPanel6.Controls.Add(this.lblLineLength3);
             this.flowLayoutPanel6.Controls.Add(this.lblLineLength4);
             this.flowLayoutPanel6.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel6.Location = new System.Drawing.Point(679, 66);
+            this.flowLayoutPanel6.Location = new System.Drawing.Point(3, 66);
             this.flowLayoutPanel6.Name = "flowLayoutPanel6";
             this.flowLayoutPanel6.Size = new System.Drawing.Size(41, 68);
             this.flowLayoutPanel6.TabIndex = 0;
@@ -537,15 +594,14 @@
             // 
             // txtSubtitle
             // 
-            this.txtSubtitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSubtitle.BackColor = System.Drawing.Color.White;
             this.txtSubtitle.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtSubtitle.Location = new System.Drawing.Point(3, 66);
+            this.txtSubtitle.Location = new System.Drawing.Point(52, 66);
             this.txtSubtitle.Multiline = true;
             this.txtSubtitle.Name = "txtSubtitle";
             this.txtSubtitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSubtitle.Size = new System.Drawing.Size(670, 72);
+            this.txtSubtitle.Size = new System.Drawing.Size(390, 72);
             this.txtSubtitle.TabIndex = 3;
             this.txtSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesCleanerEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
@@ -715,11 +771,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(927, 494);
+            this.ClientSize = new System.Drawing.Size(1184, 494);
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(943, 532);
+            this.MinimumSize = new System.Drawing.Size(1200, 532);
             this.Name = "SubtitlesCleanerEditorForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Subtitles Cleaner Editor";
@@ -779,11 +835,6 @@
         private System.Windows.Forms.SaveFileDialog saveAsFileDialog;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnNum1;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnError1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnNum;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnShow;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnHide;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDuration;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnText;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.Button btnAddTime;
         private TimePicker diffTimePicker;
@@ -800,6 +851,15 @@
         private System.Windows.Forms.Label lblLineLength2;
         private System.Windows.Forms.Label lblLineLength3;
         private System.Windows.Forms.Label lblLineLength4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnNum;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnShow;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnHide;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDuration;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnText;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnCleanText;
+        private System.Windows.Forms.TextBox txtCleanSubtitle;
+        private System.Windows.Forms.Button btnCopyCleanTextAndAdvance;
+        private System.Windows.Forms.Button btnCopyCleanText;
     }
 }
 

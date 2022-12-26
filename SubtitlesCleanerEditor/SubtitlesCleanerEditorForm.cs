@@ -101,16 +101,23 @@ namespace SubtitlesCleanerEditor
 
             if (subtitles != null)
             {
-                lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) => new EditorRow()
+                lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) =>
                 {
-                    Num = index + 1,
-                    ShowValue = subtitle.Show,
-                    Show = subtitle.ShowToString(),
-                    Hide = subtitle.HideToString(),
-                    Duration = subtitle.DurationToString(),
-                    Text = subtitle.ToStringWithPipe(),
-                    Lines = subtitle.ToString(),
-                    SubtitleError = subtitle.SubtitleError
+                    Subtitle cleanSubtitle = SubtitlesHelper.CleanSubtitles(subtitle.Clone() as Subtitle, cleanHICaseInsensitive, false);
+
+                    return new EditorRow()
+                    {
+                        Num = index + 1,
+                        ShowValue = subtitle.Show,
+                        Show = subtitle.ShowToString(),
+                        Hide = subtitle.HideToString(),
+                        Duration = subtitle.DurationToString(),
+                        Text = subtitle.ToStringWithPipe(),
+                        Lines = subtitle.ToString(),
+                        CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty),
+                        CleanLines = (cleanSubtitle != null ? cleanSubtitle.ToString() : string.Empty),
+                        SubtitleError = subtitle.SubtitleError
+                    };
                 }).ToList());
             }
             else
@@ -370,7 +377,8 @@ namespace SubtitlesCleanerEditor
             originalSubtitles = null;
             filePath = null;
             txtSubtitle.Text = string.Empty;
-            lblLineLength1.Text = lblLineLength2.Text = lblLineLength3.Text = lblLineLength4.Text = string.Empty;
+            txtCleanSubtitle.Text = string.Empty;
+            ResetLineLengths();
             timePicker.Reset();
             ResetFormTitle();
         }
@@ -398,7 +406,8 @@ namespace SubtitlesCleanerEditor
                 if (lstEditor.Rows.Count == 1)
                 {
                     txtSubtitle.Text = string.Empty;
-                    lblLineLength1.Text = lblLineLength2.Text = lblLineLength3.Text = lblLineLength4.Text = string.Empty;
+                    txtCleanSubtitle.Text = string.Empty;
+                    ResetLineLengths();
                 }
 
                 SetSubtitlesErrors();
@@ -418,14 +427,28 @@ namespace SubtitlesCleanerEditor
                 return;
 
             txtSubtitle.Text = editorRow.Lines;
-            lblLineLength1.Text = (txtSubtitle.Lines.Length >= 1 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[0]).ToString() : string.Empty);
-            lblLineLength2.Text = (txtSubtitle.Lines.Length >= 2 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[1]).ToString() : string.Empty);
-            lblLineLength3.Text = (txtSubtitle.Lines.Length >= 3 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[2]).ToString() : string.Empty);
-            lblLineLength4.Text = (txtSubtitle.Lines.Length >= 4 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[3]).ToString() : string.Empty);
+            txtCleanSubtitle.Text = editorRow.CleanLines;
+            SetLineLengths();
 
             timePicker.Value = editorRow.ShowValue;
 
             isIncludeSelectedRowInSearch = true;
+        }
+
+        private void SetLineLengths()
+        {
+            lblLineLength1.Text = (txtSubtitle.Lines.Length >= 1 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[0]).ToString() : string.Empty);
+            lblLineLength2.Text = (txtSubtitle.Lines.Length >= 2 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[1]).ToString() : string.Empty);
+            lblLineLength3.Text = (txtSubtitle.Lines.Length >= 3 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[2]).ToString() : string.Empty);
+            lblLineLength4.Text = (txtSubtitle.Lines.Length >= 4 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[3]).ToString() : string.Empty);
+        }
+
+        private void ResetLineLengths()
+        {
+            lblLineLength1.Text =
+            lblLineLength2.Text =
+            lblLineLength3.Text =
+            lblLineLength4.Text = string.Empty;
         }
 
         #endregion
@@ -958,19 +981,52 @@ namespace SubtitlesCleanerEditor
 
         private void txtSubtitle_LeaveWithChangedText(object sender, Tuple<EditorRow, string> e)
         {
-            EditorRow editorRow = e.Item1;
+            txtSubtitleTextChanged(e.Item1, e.Item2);
+        }
+
+        private void txtSubtitleTextChanged(EditorRow editorRow, string text)
+        {
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
-            subtitle.Lines = (e.Item2 ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
             subtitle.CheckSubtitle(cleanHICaseInsensitive);
 
             editorRow.Text = subtitle.ToStringWithPipe();
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
 
+            SetLineLengths();
+
             SetSubtitlesErrors();
 
             SetFormTitle(true);
+        }
+
+        private int CopyCleanText()
+        {
+            EditorRow editorRow = GetSelectedEditorRow();
+            if (editorRow == null)
+                return -1;
+
+            txtSubtitle.Text = txtCleanSubtitle.Text;
+            txtSubtitleTextChanged(editorRow, txtCleanSubtitle.Text);
+            return editorRow.Num;
+        }
+
+        private void btnCopyCleanText_Click(object sender, EventArgs e)
+        {
+            int num = CopyCleanText();
+            int index = num - 1;
+            if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                SelectRow(index);
+        }
+
+        private void btnCopyCleanTextAndAdvance_Click(object sender, EventArgs e)
+        {
+            int num = CopyCleanText();
+            int index = num; // index + 1 = (num - 1) + 1 = num
+            if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                SelectRow(index);
         }
 
         #endregion

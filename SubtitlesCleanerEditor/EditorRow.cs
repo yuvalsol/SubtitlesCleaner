@@ -13,6 +13,8 @@ namespace SubtitlesCleanerEditor
         public string Duration { get; set; }
         public string Text { get; set; }
         public string Lines { get; set; }
+        public string CleanText { get; set; }
+        public string CleanLines { get; set; }
         public SubtitleError SubtitleError { get; set; }
     }
 }

@@ -228,6 +228,11 @@ namespace SubtitlesCleanerLibrary
 
         #region Clean & Check
 
+        public static Subtitle CleanSubtitles(this Subtitle subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        {
+            return new List<Subtitle>() { subtitles }.CleanSubtitles(cleanHICaseInsensitive, isPrintCleaning).FirstOrDefault();
+        }
+
         public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
             subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isPrintCleaning);
