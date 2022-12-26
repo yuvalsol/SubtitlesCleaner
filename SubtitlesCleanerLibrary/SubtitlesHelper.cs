@@ -420,17 +420,41 @@ namespace SubtitlesCleanerLibrary
 
             foreach (string line in subtitle.Lines)
             {
-                subtitle.SubtitleError |= CheckSubtitleLinePre(line, cleanHICaseInsensitive);
-                subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive);
-                subtitle.SubtitleError |= CheckSubtitleLinePost(line);
+                if (IsNotSubtitle(line))
+                {
+                    subtitle.SubtitleError |= SubtitleError.Not_Subtitle;
+                }
+                else if (IsEmptyLine(line))
+                {
+                    subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                }
+                else
+                {
+                    subtitle.SubtitleError |= CheckSubtitleLinePre(line, cleanHICaseInsensitive);
+                    subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive);
+                    subtitle.SubtitleError |= CheckSubtitleLinePost(line);
+                }
             }
 
-            subtitle.SubtitleError |= CheckSubtitleMultipleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
-            subtitle.SubtitleError |= CheckSubtitleMultipleLines(subtitle.Lines, cleanHICaseInsensitive);
-            subtitle.SubtitleError |= CheckSubtitleMultipleLinesPost(subtitle.Lines);
-
             if ((subtitle.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle)
+            {
                 subtitle.SubtitleError = SubtitleError.Not_Subtitle;
+            }
+            else if ((subtitle.SubtitleError & SubtitleError.Empty_Line) == SubtitleError.Empty_Line)
+            {
+                subtitle.SubtitleError = SubtitleError.Empty_Line;
+            }
+            else
+            {
+                subtitle.SubtitleError |= CheckSubtitleMultipleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
+                subtitle.SubtitleError |= CheckSubtitleMultipleLines(subtitle.Lines, cleanHICaseInsensitive);
+                subtitle.SubtitleError |= CheckSubtitleMultipleLinesPost(subtitle.Lines);
+
+                if ((subtitle.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle)
+                    subtitle.SubtitleError = SubtitleError.Not_Subtitle;
+                else if ((subtitle.SubtitleError & SubtitleError.Empty_Line) == SubtitleError.Empty_Line)
+                    subtitle.SubtitleError = SubtitleError.Empty_Line;
+            }
         }
 
         #region Clean Single Line Pre
