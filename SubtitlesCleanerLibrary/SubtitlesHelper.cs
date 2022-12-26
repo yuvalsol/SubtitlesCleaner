@@ -418,6 +418,12 @@ namespace SubtitlesCleanerLibrary
         {
             subtitle.SubtitleError = SubtitleError.None;
 
+            if (subtitle.Lines == null || subtitle.Lines.Count == 0)
+            {
+                subtitle.SubtitleError = SubtitleError.Empty_Line;
+                return;
+            }
+
             foreach (string line in subtitle.Lines)
             {
                 if (IsNotSubtitle(line))
@@ -605,7 +611,7 @@ namespace SubtitlesCleanerLibrary
         private static SubtitleError CheckSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
-                return SubtitleError.None;
+                return SubtitleError.Empty_Line;
 
             SubtitleError subtitleError = SubtitleError.None;
 
@@ -1097,7 +1103,7 @@ namespace SubtitlesCleanerLibrary
         private static SubtitleError CheckSubtitleMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
-                return SubtitleError.None;
+                return SubtitleError.Empty_Line;
 
             SubtitleError subtitleError = SubtitleError.None;
 
@@ -1498,7 +1504,7 @@ namespace SubtitlesCleanerLibrary
         private static SubtitleError CheckSubtitleMultipleLinesPost(List<string> lines)
         {
             if (lines == null || lines.Count == 0)
-                return SubtitleError.None;
+                return SubtitleError.Empty_Line;
 
             SubtitleError subtitleError = SubtitleError.None;
 
