@@ -35,8 +35,9 @@ namespace SubtitlesCleanerEditor
 
         protected virtual void OnLeaveWithChangedText(EventArgs e)
         {
-            if (LeaveWithChangedText != null)
-                LeaveWithChangedText(this, new Tuple<EditorRow, string>(editorRow, this.Text));
+            var handler = LeaveWithChangedText;
+            if (handler != null)
+                handler(this, new Tuple<EditorRow, string>(editorRow, this.Text));
         }
 
         protected override void OnTextChanged(EventArgs e)
