@@ -2533,6 +2533,11 @@ namespace SubtitlesCleanerLibrary
             // 1 987 => 1987 (Positive lookahead)
             // 1 1/2 => 1 1/2 (Negative lookahead)
             ,new FindAndReplace(new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled), "1", SubtitleError.Redundant_Spaces)
+
+            // " Text => "Text
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>[""'])\s+(?<Suffix>[A-ZÁ-Úa-zá-ú0-9])", RegexOptions.Compiled), "${Prefix}${Suffix}", SubtitleError.Redundant_Spaces)
+            // Text " => Text"
+            ,new FindAndReplace(new Regex(@"(?<Prefix>[A-ZÁ-Úa-zá-ú0-9.?!-])\s+(?<Suffix>[""'])$", RegexOptions.Compiled), "${Prefix}${Suffix}", SubtitleError.Redundant_Spaces)
         };
 
         #endregion
