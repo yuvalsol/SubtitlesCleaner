@@ -40,7 +40,6 @@ namespace SubtitlesCleanerEditor
                 bool isFile = File.Exists(args[0]);
 
                 string initialDirectory = null;
-                string initialFile = null;
 
                 if (isDirectory)
                 {
@@ -60,15 +59,19 @@ namespace SubtitlesCleanerEditor
                     openFileDialog.InitialDirectory = initialDirectory;
                     saveAsFileDialog.InitialDirectory = initialDirectory;
                 }
-
-                if (string.IsNullOrEmpty(initialFile) == false)
-                    LoadFile(initialFile);
             }
         }
 
+        private string initialFile;
+
         private void SubtitlesCleanerEditorForm_Load(object sender, EventArgs e)
         {
-            if (IsProduction == false)
+            if (IsProduction)
+            {
+                if (string.IsNullOrEmpty(initialFile) == false)
+                    LoadFile(initialFile);
+            }
+            else
             {
                 LoadFile(Path.GetFullPath(Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
@@ -121,7 +124,7 @@ namespace SubtitlesCleanerEditor
                         SubtitleError = subtitle.SubtitleError
                     };
                 }).ToList());
-                
+
                 CurrentSelectedRow = lstEditor.Rows[0];
             }
             else
