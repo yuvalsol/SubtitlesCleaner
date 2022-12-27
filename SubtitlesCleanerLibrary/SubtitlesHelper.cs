@@ -2280,17 +2280,22 @@ namespace SubtitlesCleanerLibrary
             // I6 => 16
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I)\d+\b", RegexOptions.Compiled), "OCR", "1", SubtitleError.OCR_Error)
 
-            // ♪
-            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>Jj)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"^(?<OCR>(J['""&!]?|j['""&!]?)+)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\s(?<OCR>(['""&!]?J|['""&!]?j)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"^(?<OCR>(['""&!]?J|['""&!]?j)+)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"\s(?<OCR>(J['""&!]?|j['""&!]?)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            // j" -> ♪
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>j)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(j['""&!]?)+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(['""&!]?j)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(['""&!]?j)+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(j['""&!]?)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
 
             // ♪ Text &
             ,new FindAndReplace(new Regex(@"^[♪&].*?(?<OCR>&)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
             // & Text ♪
             ,new FindAndReplace(new Regex(@"^(?<OCR>&).*?[♪&]$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+
+            // ♪ Text I
+            ,new FindAndReplace(new Regex(@"^♪.*?\s+(?<OCR>I)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
+            // I Text ♪
+            ,new FindAndReplace(new Regex(@"^(?<OCR>I)\s+.*?♪$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
 
             // Ordinal Numbers: 1st, 2nd, 3rd, 4th
             ,new FindAndReplace(new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
