@@ -49,8 +49,8 @@
             this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnCleanText = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnCopyCleanTextAndAdvance = new System.Windows.Forms.Button();
-            this.btnCopyCleanText = new System.Windows.Forms.Button();
+            this.btnFixTextAndAdvance = new System.Windows.Forms.Button();
+            this.btnFixText = new System.Windows.Forms.Button();
             this.txtCleanSubtitle = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLineLength1 = new System.Windows.Forms.Label();
@@ -184,8 +184,8 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.btnCopyCleanTextAndAdvance);
-            this.splitContainer2.Panel2.Controls.Add(this.btnCopyCleanText);
+            this.splitContainer2.Panel2.Controls.Add(this.btnFixTextAndAdvance);
+            this.splitContainer2.Panel2.Controls.Add(this.btnFixText);
             this.splitContainer2.Panel2.Controls.Add(this.txtCleanSubtitle);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel6);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel2);
@@ -300,27 +300,27 @@
             this.ColumnCleanText.ReadOnly = true;
             this.ColumnCleanText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
-            // btnCopyCleanTextAndAdvance
+            // btnFixTextAndAdvance
             // 
-            this.btnCopyCleanTextAndAdvance.AutoSize = true;
-            this.btnCopyCleanTextAndAdvance.Location = new System.Drawing.Point(450, 76);
-            this.btnCopyCleanTextAndAdvance.Name = "btnCopyCleanTextAndAdvance";
-            this.btnCopyCleanTextAndAdvance.Size = new System.Drawing.Size(129, 24);
-            this.btnCopyCleanTextAndAdvance.TabIndex = 9;
-            this.btnCopyCleanTextAndAdvance.Text = "<= Copy && Advance";
-            this.btnCopyCleanTextAndAdvance.UseVisualStyleBackColor = true;
-            this.btnCopyCleanTextAndAdvance.Click += new System.EventHandler(this.btnCopyCleanTextAndAdvance_Click);
+            this.btnFixTextAndAdvance.AutoSize = true;
+            this.btnFixTextAndAdvance.Location = new System.Drawing.Point(450, 76);
+            this.btnFixTextAndAdvance.Name = "btnFixTextAndAdvance";
+            this.btnFixTextAndAdvance.Size = new System.Drawing.Size(129, 24);
+            this.btnFixTextAndAdvance.TabIndex = 9;
+            this.btnFixTextAndAdvance.Text = "<= Fix && Advance";
+            this.btnFixTextAndAdvance.UseVisualStyleBackColor = true;
+            this.btnFixTextAndAdvance.Click += new System.EventHandler(this.btnFixTextAndAdvance_Click);
             // 
-            // btnCopyCleanText
+            // btnFixText
             // 
-            this.btnCopyCleanText.AutoSize = true;
-            this.btnCopyCleanText.Location = new System.Drawing.Point(477, 106);
-            this.btnCopyCleanText.Name = "btnCopyCleanText";
-            this.btnCopyCleanText.Size = new System.Drawing.Size(75, 24);
-            this.btnCopyCleanText.TabIndex = 8;
-            this.btnCopyCleanText.Text = "<= Copy";
-            this.btnCopyCleanText.UseVisualStyleBackColor = true;
-            this.btnCopyCleanText.Click += new System.EventHandler(this.btnCopyCleanText_Click);
+            this.btnFixText.AutoSize = true;
+            this.btnFixText.Location = new System.Drawing.Point(477, 106);
+            this.btnFixText.Name = "btnFixText";
+            this.btnFixText.Size = new System.Drawing.Size(75, 24);
+            this.btnFixText.TabIndex = 8;
+            this.btnFixText.Text = "<= Fix";
+            this.btnFixText.UseVisualStyleBackColor = true;
+            this.btnFixText.Click += new System.EventHandler(this.btnFixText_Click);
             // 
             // txtCleanSubtitle
             // 
@@ -858,8 +858,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnText;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnCleanText;
         private System.Windows.Forms.TextBox txtCleanSubtitle;
-        private System.Windows.Forms.Button btnCopyCleanTextAndAdvance;
-        private System.Windows.Forms.Button btnCopyCleanText;
+        private System.Windows.Forms.Button btnFixTextAndAdvance;
+        private System.Windows.Forms.Button btnFixText;
     }
 }
 

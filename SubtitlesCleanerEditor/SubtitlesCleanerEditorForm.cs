@@ -16,6 +16,8 @@ namespace SubtitlesCleanerEditor
     {
         #region Form
 
+        public static readonly bool IsProduction = true;
+
         public SubtitlesCleanerEditorForm(string[] args)
         {
             InitializeComponent();
@@ -64,11 +66,9 @@ namespace SubtitlesCleanerEditor
             }
         }
 
-        private readonly bool isLoadTest = false;
-
         private void SubtitlesCleanerEditorForm_Load(object sender, EventArgs e)
         {
-            if (isLoadTest)
+            if (IsProduction == false)
             {
                 LoadFile(Path.GetFullPath(Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
@@ -165,6 +165,7 @@ namespace SubtitlesCleanerEditor
                 this.filePath = filePath;
                 SetSubtitlesToEditor(subtitles);
                 SetFormTitle(false);
+                lstEditor.Focus();
             }
         }
 
@@ -369,7 +370,7 @@ namespace SubtitlesCleanerEditor
 
         #endregion
 
-        #region Clear Subtitles Cleaner Editor
+        #region Clear
 
         private void btnClear_Click(object sender, EventArgs e)
         {
@@ -385,7 +386,7 @@ namespace SubtitlesCleanerEditor
 
         #endregion
 
-        #region Delete Subtitles
+        #region Delete Subtitle
 
         private void lstEditor_KeyDown(object sender, KeyEventArgs e)
         {
@@ -395,30 +396,33 @@ namespace SubtitlesCleanerEditor
                 if (editorRow == null)
                     return;
 
-                int index = editorRow.Num - 1;
-
-                for (int i = index + 1; i < lstEditor.Rows.Count; i++)
-                {
-                    EditorRow er = GetEditorRowAt(i);
-                    er.Num = i;
-                }
-
-                if (lstEditor.Rows.Count == 1)
-                {
-                    txtSubtitle.Text = string.Empty;
-                    txtCleanSubtitle.Text = string.Empty;
-                    ResetLineLengths();
-                }
-
-                SetSubtitlesErrors();
-
-                SetFormTitle(true);
+                DeleteSubtitle(editorRow);
             }
+        }
+
+        private void DeleteSubtitle(EditorRow editorRow)
+        {
+            for (int num = editorRow.Num; num < lstEditor.Rows.Count; num++)
+            {
+                EditorRow er = GetEditorRowAt(num);
+                er.Num = num;
+            }
+
+            if (lstEditor.Rows.Count == 1)
+            {
+                txtSubtitle.Text = string.Empty;
+                txtCleanSubtitle.Text = string.Empty;
+                ResetLineLengths();
+            }
+
+            SetSubtitlesErrors();
+
+            SetFormTitle(true);
         }
 
         #endregion
 
-        #region Subtitles Cleaner Editor Selection Changed
+        #region Selection Changed
 
         private void lstEditor_SelectionChanged(object sender, EventArgs e)
         {
@@ -551,6 +555,34 @@ namespace SubtitlesCleanerEditor
                     break;
                 }
             }
+        }
+
+        private ErrorRow SelectClosestErrorRow(int num)
+        {
+            foreach (DataGridViewRow row in lstErrors.Rows)
+            {
+                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+                if (errorRow.Num == num)
+                {
+                    SelectRow(row);
+                    return errorRow;
+                }
+                else if (errorRow.Num > num)
+                {
+                    SelectRow(row);
+                    return errorRow;
+                }
+            }
+
+            if (lstErrors.Rows != null && lstErrors.Rows.Count > 0)
+            {
+                DataGridViewRow row = lstErrors.Rows[0];
+                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+                SelectRow(row);
+                return errorRow;
+            }
+
+            return null;
         }
 
         #endregion
@@ -1002,31 +1034,51 @@ namespace SubtitlesCleanerEditor
             SetFormTitle(true);
         }
 
-        private int CopyCleanText()
+        #endregion
+
+        #region Fix Text
+
+        private void btnFixText_Click(object sender, EventArgs e)
+        {
+            int num = FixText();
+            if (num != -1)
+            {
+                int index = num - 1;
+                if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                    SelectRow(index);
+            }
+        }
+
+        private void btnFixTextAndAdvance_Click(object sender, EventArgs e)
+        {
+            int num = FixText();
+            if (num != -1)
+            {
+                ErrorRow errorRow = SelectClosestErrorRow(num + 1);
+                if (errorRow != null)
+                    SelectRow(errorRow.Num - 1);
+            }
+        }
+
+        private int FixText()
         {
             EditorRow editorRow = GetSelectedEditorRow();
             if (editorRow == null)
                 return -1;
 
-            txtSubtitle.Text = txtCleanSubtitle.Text;
-            txtSubtitleTextChanged(editorRow, txtCleanSubtitle.Text);
+            if ((editorRow.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle ||
+                (editorRow.SubtitleError & SubtitleError.Empty_Line) == SubtitleError.Empty_Line)
+            {
+                DeleteSubtitle(editorRow);
+                (lstEditor.DataSource as BindingList<EditorRow>).Remove(editorRow);
+            }
+            else
+            {
+                txtSubtitle.Text = txtCleanSubtitle.Text;
+                txtSubtitleTextChanged(editorRow, txtCleanSubtitle.Text);
+            }
+
             return editorRow.Num;
-        }
-
-        private void btnCopyCleanText_Click(object sender, EventArgs e)
-        {
-            int num = CopyCleanText();
-            int index = num - 1;
-            if (0 <= index && index <= lstEditor.Rows.Count - 1)
-                SelectRow(index);
-        }
-
-        private void btnCopyCleanTextAndAdvance_Click(object sender, EventArgs e)
-        {
-            int num = CopyCleanText();
-            int index = num; // index + 1 = (num - 1) + 1 = num
-            if (0 <= index && index <= lstEditor.Rows.Count - 1)
-                SelectRow(index);
         }
 
         #endregion
