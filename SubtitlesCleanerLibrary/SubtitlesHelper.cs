@@ -1068,6 +1068,397 @@ namespace SubtitlesCleanerLibrary
                         }
                     }
                 }
+
+                var resultsNotes = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+
+                    isStartsWithNote1 = line.StartsWith("♪"),
+                    isStartsWithNote2 = line.StartsWith("-♪"),
+                    isStartsWithNote3 = line.StartsWith("- ♪"),
+                    isStartsWithNote4 = line.StartsWith("<i>♪"),
+                    isStartsWithNote5 = line.StartsWith("<i>-♪"),
+                    isStartsWithNote6 = line.StartsWith("<i>- ♪"),
+                    isStartsWithNote7 = line.StartsWith("-<i>♪"),
+                    isStartsWithNote8 = line.StartsWith("- <i>♪"),
+
+                    isEndsWithNote1 = line.EndsWith("♪"),
+                    isEndsWithNote2 = line.EndsWith("♪</i>"),
+                    isEndsWithNote3 = line.EndsWith("</i>♪"),
+                    isEndsWithNote4 = line.EndsWith("</i> ♪"),
+
+                    isStartsWithAmpersand1 = line.StartsWith("&"),
+                    isStartsWithAmpersand2 = line.StartsWith("-&"),
+                    isStartsWithAmpersand3 = line.StartsWith("- &"),
+                    isStartsWithAmpersand4 = line.StartsWith("<i>&"),
+                    isStartsWithAmpersand5 = line.StartsWith("<i>-&"),
+                    isStartsWithAmpersand6 = line.StartsWith("<i>- &"),
+                    isStartsWithAmpersand7 = line.StartsWith("-<i>&"),
+                    isStartsWithAmpersand8 = line.StartsWith("- <i>&"),
+
+                    isEndsWithAmpersand1 = line.EndsWith("&"),
+                    isEndsWithAmpersand2 = line.EndsWith("&</i>"),
+                    isEndsWithAmpersand3 = line.EndsWith("</i>&"),
+                    isEndsWithAmpersand4 = line.EndsWith("</i> &"),
+
+                    isStartsWithI1 = line.StartsWith("I "),
+                    isStartsWithI2 = line.StartsWith("-I "),
+                    isStartsWithI3 = line.StartsWith("- I "),
+                    isStartsWithI4 = line.StartsWith("<i>I "),
+                    isStartsWithI5 = line.StartsWith("<i>-I "),
+                    isStartsWithI6 = line.StartsWith("<i>- I "),
+                    isStartsWithI7 = line.StartsWith("-<i>I "),
+                    isStartsWithI8 = line.StartsWith("- <i>I "),
+
+                    isEndsWithI1 = line.EndsWith(" I"),
+                    isEndsWithI2 = line.EndsWith(" I</i>"),
+                    isEndsWithI3 = line.EndsWith(" </i>I"),
+                    isEndsWithI4 = line.EndsWith("</i> I")
+                }).Select(x => new
+                {
+                    x.line,
+                    x.index,
+
+                    x.isStartsWithNote1,
+                    x.isStartsWithNote2,
+                    x.isStartsWithNote3,
+                    x.isStartsWithNote4,
+                    x.isStartsWithNote5,
+                    x.isStartsWithNote6,
+                    x.isStartsWithNote7,
+                    x.isStartsWithNote8,
+                    isStartsWithNote =
+                        x.isStartsWithNote1 ||
+                        x.isStartsWithNote2 ||
+                        x.isStartsWithNote3 ||
+                        x.isStartsWithNote4 ||
+                        x.isStartsWithNote5 ||
+                        x.isStartsWithNote6 ||
+                        x.isStartsWithNote7 ||
+                        x.isStartsWithNote8,
+
+                    x.isEndsWithNote1,
+                    x.isEndsWithNote2,
+                    x.isEndsWithNote3,
+                    x.isEndsWithNote4,
+                    isEndsWithNote =
+                        x.isEndsWithNote1 ||
+                        x.isEndsWithNote2 ||
+                        x.isEndsWithNote3 ||
+                        x.isEndsWithNote4,
+
+                    x.isStartsWithAmpersand1,
+                    x.isStartsWithAmpersand2,
+                    x.isStartsWithAmpersand3,
+                    x.isStartsWithAmpersand4,
+                    x.isStartsWithAmpersand5,
+                    x.isStartsWithAmpersand6,
+                    x.isStartsWithAmpersand7,
+                    x.isStartsWithAmpersand8,
+                    isStartsWithAmpersand =
+                        x.isStartsWithAmpersand1 ||
+                        x.isStartsWithAmpersand2 ||
+                        x.isStartsWithAmpersand3 ||
+                        x.isStartsWithAmpersand4 ||
+                        x.isStartsWithAmpersand5 ||
+                        x.isStartsWithAmpersand6 ||
+                        x.isStartsWithAmpersand7 ||
+                        x.isStartsWithAmpersand8,
+
+                    x.isEndsWithAmpersand1,
+                    x.isEndsWithAmpersand2,
+                    x.isEndsWithAmpersand3,
+                    x.isEndsWithAmpersand4,
+                    isEndsWithAmpersand =
+                        x.isEndsWithAmpersand1 ||
+                        x.isEndsWithAmpersand2 ||
+                        x.isEndsWithAmpersand3 ||
+                        x.isEndsWithAmpersand4,
+
+                    x.isStartsWithI1,
+                    x.isStartsWithI2,
+                    x.isStartsWithI3,
+                    x.isStartsWithI4,
+                    x.isStartsWithI5,
+                    x.isStartsWithI6,
+                    x.isStartsWithI7,
+                    x.isStartsWithI8,
+                    isStartsWithI =
+                        x.isStartsWithI1 ||
+                        x.isStartsWithI2 ||
+                        x.isStartsWithI3 ||
+                        x.isStartsWithI4 ||
+                        x.isStartsWithI5 ||
+                        x.isStartsWithI6 ||
+                        x.isStartsWithI7 ||
+                        x.isStartsWithI8,
+
+                    x.isEndsWithI1,
+                    x.isEndsWithI2,
+                    x.isEndsWithI3,
+                    x.isEndsWithI4,
+                    isEndsWithI =
+                        x.isEndsWithI1 ||
+                        x.isEndsWithI2 ||
+                        x.isEndsWithI3 ||
+                        x.isEndsWithI4
+                }).Select(x => new
+                {
+                    x.line,
+                    x.index,
+
+                    x.isStartsWithNote1,
+                    x.isStartsWithNote2,
+                    x.isStartsWithNote3,
+                    x.isStartsWithNote4,
+                    x.isStartsWithNote5,
+                    x.isStartsWithNote6,
+                    x.isStartsWithNote7,
+                    x.isStartsWithNote8,
+                    x.isStartsWithNote,
+
+                    x.isEndsWithNote1,
+                    x.isEndsWithNote2,
+                    x.isEndsWithNote3,
+                    x.isEndsWithNote4,
+                    x.isEndsWithNote,
+
+                    x.isStartsWithAmpersand1,
+                    x.isStartsWithAmpersand2,
+                    x.isStartsWithAmpersand3,
+                    x.isStartsWithAmpersand4,
+                    x.isStartsWithAmpersand5,
+                    x.isStartsWithAmpersand6,
+                    x.isStartsWithAmpersand7,
+                    x.isStartsWithAmpersand8,
+                    x.isStartsWithAmpersand,
+
+                    x.isEndsWithAmpersand1,
+                    x.isEndsWithAmpersand2,
+                    x.isEndsWithAmpersand3,
+                    x.isEndsWithAmpersand4,
+                    x.isEndsWithAmpersand,
+
+                    x.isStartsWithI1,
+                    x.isStartsWithI2,
+                    x.isStartsWithI3,
+                    x.isStartsWithI4,
+                    x.isStartsWithI5,
+                    x.isStartsWithI6,
+                    x.isStartsWithI7,
+                    x.isStartsWithI8,
+                    x.isStartsWithI,
+
+                    x.isEndsWithI1,
+                    x.isEndsWithI2,
+                    x.isEndsWithI3,
+                    x.isEndsWithI4,
+                    x.isEndsWithI,
+
+                    // ♪ Line
+                    isStartsWithAndNotEndWithNote =
+                        x.isStartsWithNote &&
+                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
+                    //   Line ♪
+                    isNotStartWithAndEndsWithNote =
+                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
+                        x.isEndsWithNote,
+
+                    // & Line
+                    isStartsWithAndNotEndWithAmpersand =
+                        x.isStartsWithAmpersand &&
+                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
+                    //   Line &
+                    isNotStartWithAndEndsWithAmpersand =
+                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
+                        x.isEndsWithAmpersand,
+
+                    // I Line
+                    isStartsWithAndNotEndWithI =
+                        x.isStartsWithI &&
+                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
+                    //   Line I
+                    isNotStartWithAndEndsWithI =
+                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
+                        x.isEndsWithI,
+
+                    isRegularLine =
+                        x.isStartsWithNote == false && x.isEndsWithNote == false &&
+                        x.isStartsWithAmpersand == false && x.isEndsWithAmpersand == false &&
+                        x.isStartsWithI == false && x.isEndsWithI == false
+                }).ToArray();
+
+                List<int> startsWithAmpersand = new List<int>();
+                List<int> startsWithI = new List<int>();
+                List<int> endsWithAmpersand = new List<int>();
+                List<int> endsWithI = new List<int>();
+
+                for (int i = 0; i < resultsNotes.Length; i++)
+                {
+                    // ♪ Line1
+                    //   Line2
+                    //   Line3 &/I
+                    if (resultsNotes[i].isStartsWithAndNotEndWithNote)
+                    {
+                        for (int j = i + 1; j < resultsNotes.Length; j++)
+                        {
+                            if (resultsNotes[j].isNotStartWithAndEndsWithAmpersand)
+                            {
+                                endsWithAmpersand.Add(j);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isNotStartWithAndEndsWithI)
+                            {
+                                endsWithI.Add(j);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isRegularLine == false)
+                            {
+                                i = j - 1; // -1 is to counter the i++
+                                break;
+                            }
+                        }
+                    }
+                    // & Line1
+                    //   Line2
+                    //   Line3 ♪
+                    else if (resultsNotes[i].isStartsWithAndNotEndWithAmpersand)
+                    {
+                        for (int j = i + 1; j < resultsNotes.Length; j++)
+                        {
+                            if (resultsNotes[j].isNotStartWithAndEndsWithNote)
+                            {
+                                startsWithAmpersand.Add(i);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isRegularLine == false)
+                            {
+                                i = j - 1; // -1 is to counter the i++
+                                break;
+                            }
+                        }
+                    }
+                    // I Line1
+                    //   Line2
+                    //   Line3 ♪
+                    else if (resultsNotes[i].isStartsWithAndNotEndWithI)
+                    {
+                        for (int j = i + 1; j < resultsNotes.Length; j++)
+                        {
+                            if (resultsNotes[j].isNotStartWithAndEndsWithNote)
+                            {
+                                startsWithI.Add(i);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isRegularLine == false)
+                            {
+                                i = j - 1; // -1 is to counter the i++
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                foreach (int index in startsWithAmpersand)
+                {
+                    var item = resultsNotes[index];
+
+                    // "&"
+                    if (item.isStartsWithAmpersand1)
+                        lines[index] = "♪" + lines[index].Substring(1);
+                    // "-&"
+                    else if (item.isStartsWithAmpersand2)
+                        lines[index] = "-♪" + lines[index].Substring(2);
+                    // "- &"
+                    else if (item.isStartsWithAmpersand3)
+                        lines[index] = "- ♪" + lines[index].Substring(3);
+                    // "<i>&"
+                    else if (item.isStartsWithAmpersand4)
+                        lines[index] = "<i>♪" + lines[index].Substring(4);
+                    // "<i>-&"
+                    else if (item.isStartsWithAmpersand5)
+                        lines[index] = "<i>-♪" + lines[index].Substring(5);
+                    // "<i>- &"
+                    else if (item.isStartsWithAmpersand6)
+                        lines[index] = "<i>- ♪" + lines[index].Substring(6);
+                    // "-<i>&"
+                    else if (item.isStartsWithAmpersand7)
+                        lines[index] = "-<i>♪" + lines[index].Substring(5);
+                    // "- <i>&"
+                    else if (item.isStartsWithAmpersand8)
+                        lines[index] = "- <i>♪" + lines[index].Substring(6);
+                }
+
+                foreach (int index in startsWithI)
+                {
+                    var item = resultsNotes[index];
+
+                    // "I "
+                    if (item.isStartsWithI1)
+                        lines[index] = "♪ " + lines[index].Substring(2);
+                    // "-I "
+                    else if (item.isStartsWithI2)
+                        lines[index] = "-♪ " + lines[index].Substring(3);
+                    // "- I "
+                    else if (item.isStartsWithI3)
+                        lines[index] = "- ♪ " + lines[index].Substring(4);
+                    // "<i>I "
+                    else if (item.isStartsWithI4)
+                        lines[index] = "<i>♪ " + lines[index].Substring(5);
+                    // "<i>-I "
+                    else if (item.isStartsWithI5)
+                        lines[index] = "<i>-♪ " + lines[index].Substring(6);
+                    // "<i>- I "
+                    else if (item.isStartsWithI6)
+                        lines[index] = "<i>- ♪ " + lines[index].Substring(7);
+                    // "-<i>I "
+                    else if (item.isStartsWithI7)
+                        lines[index] = "-<i>♪ " + lines[index].Substring(6);
+                    // "- <i>I "
+                    else if (item.isStartsWithI8)
+                        lines[index] = "- <i>♪ " + lines[index].Substring(7);
+                }
+
+                foreach (int index in endsWithAmpersand)
+                {
+                    var item = resultsNotes[index];
+
+                    // "&"
+                    if (item.isEndsWithAmpersand1)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 1) + "♪";
+                    // "&</i>"
+                    else if (item.isEndsWithAmpersand2)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 5) + "♪</i>";
+                    // "</i>&"
+                    else if (item.isEndsWithAmpersand3)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 5) + "</i>♪";
+                    // "</i> &"
+                    else if (item.isEndsWithAmpersand4)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 6) + "</i> ♪";
+                }
+
+                foreach (int index in endsWithI)
+                {
+                    var item = resultsNotes[index];
+
+                    // " I"
+                    if (item.isEndsWithI1)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 2) + " ♪";
+                    // " I</i>"
+                    else if (item.isEndsWithI2)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 6) + " ♪</i>";
+                    // " </i>I"
+                    else if (item.isEndsWithI3)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 6) + " </i>♪";
+                    // "</i> I"
+                    else if (item.isEndsWithI4)
+                        lines[index] = lines[index].Substring(0, lines[index].Length - 6) + "</i> ♪";
+                }
             }
 
             if (lines.Count == 1)
@@ -1390,6 +1781,330 @@ namespace SubtitlesCleanerLibrary
                         }
                     }
                 }
+
+                var resultsNotes = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+
+                    isStartsWithNote1 = line.StartsWith("♪"),
+                    isStartsWithNote2 = line.StartsWith("-♪"),
+                    isStartsWithNote3 = line.StartsWith("- ♪"),
+                    isStartsWithNote4 = line.StartsWith("<i>♪"),
+                    isStartsWithNote5 = line.StartsWith("<i>-♪"),
+                    isStartsWithNote6 = line.StartsWith("<i>- ♪"),
+                    isStartsWithNote7 = line.StartsWith("-<i>♪"),
+                    isStartsWithNote8 = line.StartsWith("- <i>♪"),
+
+                    isEndsWithNote1 = line.EndsWith("♪"),
+                    isEndsWithNote2 = line.EndsWith("♪</i>"),
+                    isEndsWithNote3 = line.EndsWith("</i>♪"),
+                    isEndsWithNote4 = line.EndsWith("</i> ♪"),
+
+                    isStartsWithAmpersand1 = line.StartsWith("&"),
+                    isStartsWithAmpersand2 = line.StartsWith("-&"),
+                    isStartsWithAmpersand3 = line.StartsWith("- &"),
+                    isStartsWithAmpersand4 = line.StartsWith("<i>&"),
+                    isStartsWithAmpersand5 = line.StartsWith("<i>-&"),
+                    isStartsWithAmpersand6 = line.StartsWith("<i>- &"),
+                    isStartsWithAmpersand7 = line.StartsWith("-<i>&"),
+                    isStartsWithAmpersand8 = line.StartsWith("- <i>&"),
+
+                    isEndsWithAmpersand1 = line.EndsWith("&"),
+                    isEndsWithAmpersand2 = line.EndsWith("&</i>"),
+                    isEndsWithAmpersand3 = line.EndsWith("</i>&"),
+                    isEndsWithAmpersand4 = line.EndsWith("</i> &"),
+
+                    isStartsWithI1 = line.StartsWith("I "),
+                    isStartsWithI2 = line.StartsWith("-I "),
+                    isStartsWithI3 = line.StartsWith("- I "),
+                    isStartsWithI4 = line.StartsWith("<i>I "),
+                    isStartsWithI5 = line.StartsWith("<i>-I "),
+                    isStartsWithI6 = line.StartsWith("<i>- I "),
+                    isStartsWithI7 = line.StartsWith("-<i>I "),
+                    isStartsWithI8 = line.StartsWith("- <i>I "),
+
+                    isEndsWithI1 = line.EndsWith(" I"),
+                    isEndsWithI2 = line.EndsWith(" I</i>"),
+                    isEndsWithI3 = line.EndsWith(" </i>I"),
+                    isEndsWithI4 = line.EndsWith("</i> I")
+                }).Select(x => new
+                {
+                    x.line,
+                    x.index,
+
+                    x.isStartsWithNote1,
+                    x.isStartsWithNote2,
+                    x.isStartsWithNote3,
+                    x.isStartsWithNote4,
+                    x.isStartsWithNote5,
+                    x.isStartsWithNote6,
+                    x.isStartsWithNote7,
+                    x.isStartsWithNote8,
+                    isStartsWithNote =
+                        x.isStartsWithNote1 ||
+                        x.isStartsWithNote2 ||
+                        x.isStartsWithNote3 ||
+                        x.isStartsWithNote4 ||
+                        x.isStartsWithNote5 ||
+                        x.isStartsWithNote6 ||
+                        x.isStartsWithNote7 ||
+                        x.isStartsWithNote8,
+
+                    x.isEndsWithNote1,
+                    x.isEndsWithNote2,
+                    x.isEndsWithNote3,
+                    x.isEndsWithNote4,
+                    isEndsWithNote =
+                        x.isEndsWithNote1 ||
+                        x.isEndsWithNote2 ||
+                        x.isEndsWithNote3 ||
+                        x.isEndsWithNote4,
+
+                    x.isStartsWithAmpersand1,
+                    x.isStartsWithAmpersand2,
+                    x.isStartsWithAmpersand3,
+                    x.isStartsWithAmpersand4,
+                    x.isStartsWithAmpersand5,
+                    x.isStartsWithAmpersand6,
+                    x.isStartsWithAmpersand7,
+                    x.isStartsWithAmpersand8,
+                    isStartsWithAmpersand =
+                        x.isStartsWithAmpersand1 ||
+                        x.isStartsWithAmpersand2 ||
+                        x.isStartsWithAmpersand3 ||
+                        x.isStartsWithAmpersand4 ||
+                        x.isStartsWithAmpersand5 ||
+                        x.isStartsWithAmpersand6 ||
+                        x.isStartsWithAmpersand7 ||
+                        x.isStartsWithAmpersand8,
+
+                    x.isEndsWithAmpersand1,
+                    x.isEndsWithAmpersand2,
+                    x.isEndsWithAmpersand3,
+                    x.isEndsWithAmpersand4,
+                    isEndsWithAmpersand =
+                        x.isEndsWithAmpersand1 ||
+                        x.isEndsWithAmpersand2 ||
+                        x.isEndsWithAmpersand3 ||
+                        x.isEndsWithAmpersand4,
+
+                    x.isStartsWithI1,
+                    x.isStartsWithI2,
+                    x.isStartsWithI3,
+                    x.isStartsWithI4,
+                    x.isStartsWithI5,
+                    x.isStartsWithI6,
+                    x.isStartsWithI7,
+                    x.isStartsWithI8,
+                    isStartsWithI =
+                        x.isStartsWithI1 ||
+                        x.isStartsWithI2 ||
+                        x.isStartsWithI3 ||
+                        x.isStartsWithI4 ||
+                        x.isStartsWithI5 ||
+                        x.isStartsWithI6 ||
+                        x.isStartsWithI7 ||
+                        x.isStartsWithI8,
+
+                    x.isEndsWithI1,
+                    x.isEndsWithI2,
+                    x.isEndsWithI3,
+                    x.isEndsWithI4,
+                    isEndsWithI =
+                        x.isEndsWithI1 ||
+                        x.isEndsWithI2 ||
+                        x.isEndsWithI3 ||
+                        x.isEndsWithI4
+                }).Select(x => new
+                {
+                    x.line,
+                    x.index,
+
+                    x.isStartsWithNote1,
+                    x.isStartsWithNote2,
+                    x.isStartsWithNote3,
+                    x.isStartsWithNote4,
+                    x.isStartsWithNote5,
+                    x.isStartsWithNote6,
+                    x.isStartsWithNote7,
+                    x.isStartsWithNote8,
+                    x.isStartsWithNote,
+
+                    x.isEndsWithNote1,
+                    x.isEndsWithNote2,
+                    x.isEndsWithNote3,
+                    x.isEndsWithNote4,
+                    x.isEndsWithNote,
+
+                    x.isStartsWithAmpersand1,
+                    x.isStartsWithAmpersand2,
+                    x.isStartsWithAmpersand3,
+                    x.isStartsWithAmpersand4,
+                    x.isStartsWithAmpersand5,
+                    x.isStartsWithAmpersand6,
+                    x.isStartsWithAmpersand7,
+                    x.isStartsWithAmpersand8,
+                    x.isStartsWithAmpersand,
+
+                    x.isEndsWithAmpersand1,
+                    x.isEndsWithAmpersand2,
+                    x.isEndsWithAmpersand3,
+                    x.isEndsWithAmpersand4,
+                    x.isEndsWithAmpersand,
+
+                    x.isStartsWithI1,
+                    x.isStartsWithI2,
+                    x.isStartsWithI3,
+                    x.isStartsWithI4,
+                    x.isStartsWithI5,
+                    x.isStartsWithI6,
+                    x.isStartsWithI7,
+                    x.isStartsWithI8,
+                    x.isStartsWithI,
+
+                    x.isEndsWithI1,
+                    x.isEndsWithI2,
+                    x.isEndsWithI3,
+                    x.isEndsWithI4,
+                    x.isEndsWithI,
+
+                    // ♪ Line
+                    isStartsWithAndNotEndWithNote =
+                        x.isStartsWithNote &&
+                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
+                    //   Line ♪
+                    isNotStartWithAndEndsWithNote =
+                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
+                        x.isEndsWithNote,
+
+                    // & Line
+                    isStartsWithAndNotEndWithAmpersand =
+                        x.isStartsWithAmpersand &&
+                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
+                    //   Line &
+                    isNotStartWithAndEndsWithAmpersand =
+                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
+                        x.isEndsWithAmpersand,
+
+                    // I Line
+                    isStartsWithAndNotEndWithI =
+                        x.isStartsWithI &&
+                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
+                    //   Line I
+                    isNotStartWithAndEndsWithI =
+                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
+                        x.isEndsWithI,
+
+                    isRegularLine =
+                        x.isStartsWithNote == false && x.isEndsWithNote == false &&
+                        x.isStartsWithAmpersand == false && x.isEndsWithAmpersand == false &&
+                        x.isStartsWithI == false && x.isEndsWithI == false
+                }).ToArray();
+
+                List<int> startsWithAmpersand = new List<int>();
+                List<int> startsWithI = new List<int>();
+                List<int> endsWithAmpersand = new List<int>();
+                List<int> endsWithI = new List<int>();
+
+                for (int i = 0; i < resultsNotes.Length; i++)
+                {
+                    // ♪ Line1
+                    //   Line2
+                    //   Line3 &/I
+                    if (resultsNotes[i].isStartsWithAndNotEndWithNote)
+                    {
+                        for (int j = i + 1; j < resultsNotes.Length; j++)
+                        {
+                            if (resultsNotes[j].isNotStartWithAndEndsWithAmpersand)
+                            {
+                                endsWithAmpersand.Add(j);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isNotStartWithAndEndsWithI)
+                            {
+                                endsWithI.Add(j);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isRegularLine == false)
+                            {
+                                i = j - 1; // -1 is to counter the i++
+                                break;
+                            }
+                        }
+                    }
+                    // & Line1
+                    //   Line2
+                    //   Line3 ♪
+                    else if (resultsNotes[i].isStartsWithAndNotEndWithAmpersand)
+                    {
+                        for (int j = i + 1; j < resultsNotes.Length; j++)
+                        {
+                            if (resultsNotes[j].isNotStartWithAndEndsWithNote)
+                            {
+                                startsWithAmpersand.Add(i);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isRegularLine == false)
+                            {
+                                i = j - 1; // -1 is to counter the i++
+                                break;
+                            }
+                        }
+                    }
+                    // I Line1
+                    //   Line2
+                    //   Line3 ♪
+                    else if (resultsNotes[i].isStartsWithAndNotEndWithI)
+                    {
+                        for (int j = i + 1; j < resultsNotes.Length; j++)
+                        {
+                            if (resultsNotes[j].isNotStartWithAndEndsWithNote)
+                            {
+                                startsWithI.Add(i);
+                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
+                                break;
+                            }
+                            else if (resultsNotes[j].isRegularLine == false)
+                            {
+                                i = j - 1; // -1 is to counter the i++
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (startsWithAmpersand.Count > 0 ||
+                    startsWithI.Count > 0 ||
+                    endsWithAmpersand.Count > 0 ||
+                    endsWithI.Count > 0)
+                {
+                    subtitleError |= SubtitleError.Notes_Error;
+                }
+            }
+
+            if (lines.Count == 1)
+            {
+                string line = lines[0];
+                if (line.StartsWith("- ") == false)
+                {
+                    int index = -1;
+                    if ((index = line.IndexOf(". - ")) != -1)
+                    {
+                        subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                    else if ((index = line.IndexOf("? - ")) != -1)
+                    {
+                        subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                    else if ((index = line.IndexOf("! - ")) != -1)
+                    {
+                        subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                }
             }
 
             return subtitleError;
@@ -1683,12 +2398,6 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"""{2,}", RegexOptions.Compiled), "\"", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"[?!:](?<Dot>\.)(?:\s|\b|$)", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"(\w|\s)(?<Dot>\.)[?!:]", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuation_Error)
-            // - ? Lyrics ?
-            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?(?<QM>\?+)$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Missing_Spaces)
-            // - ♪ Lyrics ?
-            ,new FindAndReplace(new Regex(@"^(?:-\s*)?♪+\s+.*?\s(?<QM>\?+)$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Missing_Spaces)
-            // - ? Lyrics ♪
-            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?♪+$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Missing_Spaces)
             ,new FindAndReplace(new Regex(@"\(\?\)", RegexOptions.Compiled), "?", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\(!\)", RegexOptions.Compiled), "!", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\s\?", RegexOptions.Compiled), "?", SubtitleError.Punctuation_Error)
@@ -1708,9 +2417,40 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuation_Error)
             ,new FindAndReplace(new Regex(@"[;，]", RegexOptions.Compiled), ",", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"[♫¶*]", RegexOptions.Compiled), "♪", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"\#(?![0-9])", RegexOptions.Compiled), "♪", SubtitleError.Punctuation_Error)
-            ,new FindAndReplace(new Regex(@"♪{2,}", RegexOptions.Compiled), "♪", SubtitleError.Punctuation_Error)
+        };
+
+        #endregion
+
+        #region Notes
+
+        public static readonly FindAndReplace[] Notes = new FindAndReplace[] {
+            // - ? Lyrics ?
+            new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?(?<QM>\?+)$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Notes_Error)
+            // - ♪ Lyrics ?
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?♪+\s+.*?\s(?<QM>\?+)$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Notes_Error)
+            // - ? Lyrics ♪
+            ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?♪+$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Notes_Error)
+
+            ,new FindAndReplace(new Regex(@"[♫¶*]", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"\#(?![0-9])", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"♪{2,}", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
+
+            // j" -> ♪
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>j)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(j['""&!]?)+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(['""&!]?j)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(['""&!]?j)+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(j['""&!]?)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+
+            // ♪ Text &
+            ,new FindAndReplace(new Regex(@"^[♪&].*?(?<OCR>&)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // & Text ♪
+            ,new FindAndReplace(new Regex(@"^(?<OCR>&).*?[♪&]$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+
+            // ♪ Text I
+            ,new FindAndReplace(new Regex(@"^♪.*?\s+(?<OCR>I)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // I Text ♪
+            ,new FindAndReplace(new Regex(@"^(?<OCR>I)\s+.*?♪$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
         };
 
         #endregion
@@ -2284,23 +3024,6 @@ namespace SubtitlesCleanerLibrary
             // I6 => 16
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I)\d+\b", RegexOptions.Compiled), "OCR", "1", SubtitleError.OCR_Error)
 
-            // j" -> ♪
-            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>j)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(j['""&!]?)+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(['""&!]?j)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(['""&!]?j)+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(j['""&!]?)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-
-            // ♪ Text &
-            ,new FindAndReplace(new Regex(@"^[♪&].*?(?<OCR>&)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            // & Text ♪
-            ,new FindAndReplace(new Regex(@"^(?<OCR>&).*?[♪&]$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-
-            // ♪ Text I
-            ,new FindAndReplace(new Regex(@"^♪.*?\s+(?<OCR>I)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-            // I Text ♪
-            ,new FindAndReplace(new Regex(@"^(?<OCR>I)\s+.*?♪$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.OCR_Error)
-
             // Ordinal Numbers: 1st, 2nd, 3rd, 4th
             ,new FindAndReplace(new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"\b\d*2(?<OCR>\s+)nd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.OCR_Error)
@@ -2329,6 +3052,7 @@ namespace SubtitlesCleanerLibrary
 
         public static readonly FindAndReplace[] FindAndReplaceRules =
             Punctuations
+            .Concat(Notes)
             .Concat(OCRError_MalformedLetters)
             .Concat(HearingImpairedFullLine)
             .Concat(ScreenPosition)

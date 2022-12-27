@@ -35,14 +35,17 @@ namespace SubtitlesCleanerLibrary
         [ErrorColor(172, 201, 230)]
         Punctuation_Error = (1 << 8),
 
+        [ErrorColor(196, 198, 239)]
+        Notes_Error = (1 << 9),
+
         [ErrorColor(255, 229, 204)]
-        Dialog_Error = (1 << 9),
+        Dialog_Error = (1 << 10),
 
         [ErrorColor(255, 0, 0, 255, 255, 255)]
-        OCR_Error = (1 << 10),
+        OCR_Error = (1 << 11),
 
         [ErrorColor(255, 255, 0)]
-        Hearing_Impaired = (1 << 11)
+        Hearing_Impaired = (1 << 12)
     }
 
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
