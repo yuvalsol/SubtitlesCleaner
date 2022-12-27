@@ -3453,14 +3453,14 @@ namespace SubtitlesCleanerLibrary
             public bool EndsWithPunctuation;
         }
 
+        public static readonly Regex HTMLStyles = new Regex(@"</?\s*[iub]\s*>", RegexOptions.Compiled);
+
         public static int GetDisplayCharCount(string line)
         {
-            return
-                line
-                .Replace("<i>", string.Empty).Replace("</i>", string.Empty).Replace("</ i>", string.Empty)
-                .Replace("<u>", string.Empty).Replace("</u>", string.Empty).Replace("</ u>", string.Empty)
-                .Replace("<b>", string.Empty).Replace("</b>", string.Empty).Replace("</ b>", string.Empty)
-                .Length;
+            line = HTMLStyles.Replace(line, string.Empty);
+            foreach (FindAndReplace item in ScreenPosition)
+                line = item.Regex.Replace(line, string.Empty);
+            return line.Length;
         }
 
         public static List<Subtitle> BalanceLines(this List<Subtitle> subtitles)
