@@ -2432,6 +2432,7 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?♪+$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Notes_Error)
 
             ,new FindAndReplace(new Regex(@"[♫¶*]", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"<i>[♪♫¶*#]+</i>", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"\#(?![0-9])", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"♪{2,}", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
 
@@ -2622,7 +2623,7 @@ namespace SubtitlesCleanerLibrary
         #region Redundant Italics
 
         public static readonly FindAndReplace[] RedundantItalics = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"<i>\.</i>", RegexOptions.Compiled), ".", SubtitleError.Redundant_Italics)
+            new FindAndReplace(new Regex(@"<i>(?<Symbol>[-""'.:!?#])</i>", RegexOptions.Compiled), "${Symbol}", SubtitleError.Redundant_Italics)
             ,new FindAndReplace(new Regex(@"<i>\.{2,}</i>", RegexOptions.Compiled), "...", SubtitleError.Redundant_Italics)
             ,new FindAndReplace(new Regex(@"<i></i>", RegexOptions.Compiled), "", SubtitleError.Redundant_Italics)
             ,new FindAndReplace(new Regex(@"<i>\s+</i>", RegexOptions.Compiled), " ", SubtitleError.Redundant_Italics)
