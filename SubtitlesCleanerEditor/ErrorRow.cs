@@ -1,4 +1,5 @@
 ﻿using System;
+using SubtitlesCleanerLibrary;
 
 namespace SubtitlesCleanerEditor
 {
@@ -6,5 +7,6 @@ namespace SubtitlesCleanerEditor
     {
         public int Num { get; set; }
         public string Error { get; set; }
+        public SubtitleError SubtitleError { get; set; }
     }
 }

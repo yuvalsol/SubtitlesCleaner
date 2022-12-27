@@ -102,7 +102,11 @@ namespace SubtitlesCleanerEditor
             lstErrors_SortedColumnIndex = 0;
             lstErrors_sortOrder = SortOrder.Ascending;
 
+            CurrentSelectedRow = null;
+            CurrentErrorSelectedRow = null;
+
             lstEditor.SelectionChanged -= lstEditor_SelectionChanged;
+            lstErrors.SelectionChanged -= lstErrors_SelectionChanged;
 
             if (subtitles != null)
             {
@@ -130,12 +134,13 @@ namespace SubtitlesCleanerEditor
             else
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(new List<EditorRow>());
-
-                CurrentSelectedRow = null;
             }
 
             lstEditor.SelectionChanged += lstEditor_SelectionChanged;
+            lstErrors.SelectionChanged += lstErrors_SelectionChanged;
+
             SelectionChanged();
+            ErrorSelectionChanged();
         }
 
         private void SetSubtitlesToEditorAndKeepSubtitleNumber(List<Subtitle> subtitles)
@@ -253,7 +258,8 @@ namespace SubtitlesCleanerEditor
                             errorRows.Add(new ErrorRow()
                             {
                                 Num = editorRow.Num,
-                                Error = error.ToString().Replace('_', ' ')
+                                Error = error.ToString().Replace('_', ' '),
+                                SubtitleError = error
                             });
                         }
                     }
@@ -267,8 +273,25 @@ namespace SubtitlesCleanerEditor
                 }
             }
 
+            CurrentErrorSelectedRow = null;
+
             lstErrors.DataSource = errorRows;
             sortErrors();
+
+            if (lstErrors.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in lstErrors.Rows)
+                {
+                    ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+
+                    row.DefaultCellStyle.BackColor = errorRow.SubtitleError.BackErrorColor();
+                    row.DefaultCellStyle.ForeColor = errorRow.SubtitleError.ForeErrorColor();
+                    row.DefaultCellStyle.SelectionBackColor = errorRow.SubtitleError.BackErrorColor();
+                    row.DefaultCellStyle.SelectionForeColor = errorRow.SubtitleError.ForeErrorColor();
+                }
+
+                CurrentErrorSelectedRow = lstErrors.Rows[0];
+            }
         }
 
         private static readonly SubtitleError[] allSubtitleErrors = Enum.GetValues(typeof(SubtitleError)).Cast<SubtitleError>().OrderByDescending(e => e).ToArray();
@@ -322,6 +345,13 @@ namespace SubtitlesCleanerEditor
             if (row != null)
                 return row.DataBoundItem as EditorRow;
             return null;
+        }
+
+        private DataGridViewRow GetErrorSelectedRow()
+        {
+            if (lstErrors.SelectedRows == null || lstErrors.SelectedRows.Count == 0)
+                return null;
+            return lstErrors.SelectedRows[0];
         }
 
         #endregion
@@ -446,6 +476,7 @@ namespace SubtitlesCleanerEditor
         #region Selection Changed
 
         private DataGridViewRow CurrentSelectedRow;
+        private DataGridViewRow CurrentErrorSelectedRow;
 
         private void lstEditor_SelectionChanged(object sender, EventArgs e)
         {
@@ -472,6 +503,21 @@ namespace SubtitlesCleanerEditor
                 previousSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
             if (CurrentSelectedRow != null)
                 CurrentSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 8F, FontStyle.Bold);
+        }
+
+        private void lstErrors_SelectionChanged(object sender, EventArgs e)
+        {
+            ErrorSelectionChanged();
+        }
+
+        private void ErrorSelectionChanged()
+        {
+            DataGridViewRow previousErrorSelectedRow = CurrentErrorSelectedRow;
+            CurrentErrorSelectedRow = GetErrorSelectedRow();
+            if (previousErrorSelectedRow != null)
+                previousErrorSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
+            if (CurrentErrorSelectedRow != null)
+                CurrentErrorSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 8F, FontStyle.Bold);
         }
 
         #endregion
