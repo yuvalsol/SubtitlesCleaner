@@ -3575,7 +3575,7 @@ namespace SubtitlesCleanerLibrary
             }
             , new Error() {
                 // Of course 1 can
-                Regex = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+(1)\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled),
+                Regex = new Regex(@"[A-ZÁ-Úa-zá-ú]\s+1\s+[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled),
                 Description = "1 instead of I"
             }
             , new Error() {
@@ -3601,7 +3601,7 @@ namespace SubtitlesCleanerLibrary
             }
             , new Error() {
                 Regex = new Regex(@"^[A-ZÁ-Ú]+$", RegexOptions.Compiled),
-                Description = "Possible hearing-impaired"
+                Description = "Possible hearing-impaired (All caps)"
             }
             , new ComplexError() {
                 Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
@@ -3615,7 +3615,7 @@ namespace SubtitlesCleanerLibrary
             }
             , new Error() {
                 Regex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
-                Description = "Sentence ends with comma and question mark"
+                Description = "Ending with comma and question mark"
             }
             , new Error() {
                 // ignore Mc, PhD
@@ -3629,6 +3629,22 @@ namespace SubtitlesCleanerLibrary
             , new Error() {
                 Regex = new Regex(@"</i></i>", RegexOptions.Compiled),
                 Description = "Consecutive closing italic"
+            }
+            , new Error() {
+                Regex = new Regex(@"^""[^""]*$", RegexOptions.Compiled),
+                Description = "Opening quotation marks without closing"
+            }
+            , new Error() {
+                Regex = new Regex(@"^'[^']*$", RegexOptions.Compiled),
+                Description = "Opening quotation marks without closing"
+            }
+            , new Error() {
+                Regex = new Regex(@"^[^""]*""$", RegexOptions.Compiled),
+                Description = "Closing quotation marks without opening"
+            }
+            , new Error() {
+                Regex = new Regex(@"^[^']*'$", RegexOptions.Compiled),
+                Description = "Closing quotation marks without opening"
             }
         };
 
@@ -3649,7 +3665,7 @@ namespace SubtitlesCleanerLibrary
                         {
                             if (errorDescriptions.Contains(error.Description) == false)
                             {
-                                errorLines.Add("/* " + error.Description + " */");
+                                errorLines.Add("- " + error.Description);
                                 //errorLines.Add(error.GetErrors(line));
                                 errorDescriptions.Add(error.Description);
                             }
