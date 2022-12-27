@@ -99,6 +99,8 @@ namespace SubtitlesCleanerEditor
             lstErrors_SortedColumnIndex = 0;
             lstErrors_sortOrder = SortOrder.Ascending;
 
+            lstEditor.SelectionChanged -= lstEditor_SelectionChanged;
+
             if (subtitles != null)
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) =>
@@ -119,11 +121,18 @@ namespace SubtitlesCleanerEditor
                         SubtitleError = subtitle.SubtitleError
                     };
                 }).ToList());
+                
+                CurrentSelectedRow = lstEditor.Rows[0];
             }
             else
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(new List<EditorRow>());
+
+                CurrentSelectedRow = null;
             }
+
+            lstEditor.SelectionChanged += lstEditor_SelectionChanged;
+            SelectionChanged();
         }
 
         private void SetSubtitlesToEditorAndKeepSubtitleNumber(List<Subtitle> subtitles)
@@ -231,6 +240,8 @@ namespace SubtitlesCleanerEditor
                     SubtitleError firstError = allErrors.FirstOrDefault();
                     row.DefaultCellStyle.BackColor = firstError.BackErrorColor();
                     row.DefaultCellStyle.ForeColor = firstError.ForeErrorColor();
+                    row.DefaultCellStyle.SelectionBackColor = firstError.BackErrorColor();
+                    row.DefaultCellStyle.SelectionForeColor = firstError.ForeErrorColor();
 
                     foreach (var error in allErrors)
                     {
@@ -248,6 +259,8 @@ namespace SubtitlesCleanerEditor
                 {
                     row.DefaultCellStyle.BackColor = Color.White;
                     row.DefaultCellStyle.ForeColor = Color.Black;
+                    row.DefaultCellStyle.SelectionBackColor = Color.Empty;
+                    row.DefaultCellStyle.SelectionForeColor = Color.Empty;
                 }
             }
 
@@ -374,6 +387,11 @@ namespace SubtitlesCleanerEditor
 
         private void btnClear_Click(object sender, EventArgs e)
         {
+            Clear();
+        }
+
+        private void Clear()
+        {
             SetSubtitlesToEditor(null);
             originalSubtitles = null;
             filePath = null;
@@ -424,7 +442,14 @@ namespace SubtitlesCleanerEditor
 
         #region Selection Changed
 
+        private DataGridViewRow CurrentSelectedRow;
+
         private void lstEditor_SelectionChanged(object sender, EventArgs e)
+        {
+            SelectionChanged();
+        }
+
+        private void SelectionChanged()
         {
             EditorRow editorRow = GetSelectedEditorRow();
             if (editorRow == null)
@@ -437,7 +462,18 @@ namespace SubtitlesCleanerEditor
             timePicker.Value = editorRow.ShowValue;
 
             isIncludeSelectedRowInSearch = true;
+
+            DataGridViewRow previousSelectedRow = CurrentSelectedRow;
+            CurrentSelectedRow = GetSelectedRow();
+            if (previousSelectedRow != null)
+                previousSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
+            if (CurrentSelectedRow != null)
+                CurrentSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 8F, FontStyle.Bold);
         }
+
+        #endregion
+
+        #region Line Lengths
 
         private void SetLineLengths()
         {
@@ -1054,7 +1090,7 @@ namespace SubtitlesCleanerEditor
             int num = FixText();
             if (num != -1)
             {
-                ErrorRow errorRow = SelectClosestErrorRow(num + 1);
+                ErrorRow errorRow = SelectClosestErrorRow(num);
                 if (errorRow != null)
                     SelectRow(errorRow.Num - 1);
             }
