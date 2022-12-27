@@ -2192,8 +2192,12 @@ namespace SubtitlesCleanerLibrary
 			new FindAndReplace(new Regex(@"[0-9](?<OCR>O)", RegexOptions.Compiled), "OCR", "0", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"[0-9](?<OCR>\.O)", RegexOptions.Compiled), "OCR", ".0", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"[0-9](?<OCR>,O)", RegexOptions.Compiled), "OCR", ",0", SubtitleError.OCR_Error)
+            // S0ME
             ,new FindAndReplace(new Regex(@"[A-ZÁ-Ú](?<OCR>0)", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+            // 0ver
             ,new FindAndReplace(new Regex(@"\b(?<OCR>0)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+            // Someb0dy
+            ,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>0)[a-zá-ú]", RegexOptions.Compiled), "OCR", "o", SubtitleError.OCR_Error)
 
             // Mr. Mrs. Dr. St.
             ,new FindAndReplace(new Regex(@"\b(?:Mr|Mrs|Dr|St)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
