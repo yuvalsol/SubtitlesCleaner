@@ -3165,9 +3165,6 @@ namespace SubtitlesCleanerLibrary
                 }
             }
 
-            if (subtitleError.HasFlag(SubtitleError.Hearing_Impaired))
-                subtitleError = SubtitleError.Hearing_Impaired;
-
             if (isPrintCleaning && ruleCounter > 0)
             {
                 Console.WriteLine("******************************************");
