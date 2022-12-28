@@ -120,7 +120,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(1184, 494);
-            this.splitContainer1.SplitterDistance = 190;
+            this.splitContainer1.SplitterDistance = 195;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -142,7 +142,7 @@
             this.lstErrors.ReadOnly = true;
             this.lstErrors.RowHeadersVisible = false;
             this.lstErrors.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.lstErrors.Size = new System.Drawing.Size(190, 494);
+            this.lstErrors.Size = new System.Drawing.Size(195, 494);
             this.lstErrors.TabIndex = 0;
             this.lstErrors.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_CellMouseDoubleClick);
             this.lstErrors.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_ColumnHeaderMouseClick);
@@ -195,7 +195,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.txtSubtitle);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel5);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel3);
-            this.splitContainer2.Size = new System.Drawing.Size(989, 494);
+            this.splitContainer2.Size = new System.Drawing.Size(984, 494);
             this.splitContainer2.SplitterDistance = 238;
             this.splitContainer2.TabIndex = 2;
             // 
@@ -228,7 +228,7 @@
             this.lstEditor.ReadOnly = true;
             this.lstEditor.RowHeadersVisible = false;
             this.lstEditor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.lstEditor.Size = new System.Drawing.Size(989, 238);
+            this.lstEditor.Size = new System.Drawing.Size(984, 238);
             this.lstEditor.TabIndex = 1;
             this.lstEditor.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstEditor_CellMouseDoubleClick);
             this.lstEditor.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.lstEditor_DataBindingComplete);
