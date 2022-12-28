@@ -3144,9 +3144,7 @@ namespace SubtitlesCleanerLibrary
                     {
                         Console.WriteLine(ruleCounter);
                         Console.WriteLine("Regex:  " + (cleanHICaseInsensitive ? rule.ToStringCI() : rule.ToString()));
-                        //Console.WriteLine("Before: " + line);
-                        //Console.WriteLine("After:  " + cleanLine);
-                        PrintColorfulLines(line, rule, cleanHICaseInsensitive);
+                        PrintColorfulLines(line, cleanLine, rule, cleanHICaseInsensitive);
                     }
 
                     line = cleanLine;
@@ -3174,9 +3172,24 @@ namespace SubtitlesCleanerLibrary
             return line;
         }
 
-        private static void PrintColorfulLines(string line, FindAndReplace rule, bool cleanHICaseInsensitive)
+        private class LineSegment
         {
-            List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
+            public int Index { get; set; }
+            public int Length { get; set; }
+            public bool IsCapture { get; set; }
+        }
+
+        private static void PrintColorfulLines(string line, string cleanLine, FindAndReplace rule, bool cleanHICaseInsensitive)
+        {
+            if (rule.Replacement.Contains("${"))
+            {
+                Console.WriteLine("Before: " + line);
+                Console.WriteLine("After:  " + cleanLine);
+                return;
+            }
+
+            List<LineSegment> segments = new List<LineSegment>();
+
             Regex regex = (cleanHICaseInsensitive ? rule.RegexCI : rule.Regex);
             var matches = regex.Matches(line);
             foreach (Match match in matches)
@@ -3186,57 +3199,93 @@ namespace SubtitlesCleanerLibrary
                     var groups = match.Groups.Cast<Group>();
                     if (match.Groups.Count > 1)
                         groups = groups.Skip(1);
+
                     foreach (Group group in groups)
                     {
                         if (group.Success)
                         {
                             foreach (Capture capture in group.Captures)
                             {
-                                locations.Add(new Tuple<int, int>(capture.Index, capture.Length));
+                                bool isDuplicate = false;
+                                foreach (LineSegment segment in segments)
+                                {
+                                    if (segment.Index == capture.Index && segment.Length == capture.Length)
+                                    {
+                                        isDuplicate = true;
+                                        break;
+                                    }
+                                }
+
+                                if (isDuplicate == false)
+                                {
+                                    segments.Add(new LineSegment()
+                                    {
+                                        Index = capture.Index,
+                                        Length = capture.Length,
+                                        IsCapture = true
+                                    });
+                                }
                             }
                         }
                     }
                 }
             }
 
-            locations = locations.Distinct().OrderBy(l => l.Item1).ToList();
+            segments.Sort((x, y) => x.Index.CompareTo(y.Index));
 
-            Console.Write("Before: ");
-            PrintColorfulLines(line, locations, false);
-            Console.Write("After:  ");
-            PrintColorfulLines(line, locations, true, rule.Replacement);
-        }
-
-        private static void PrintColorfulLines(string line, List<Tuple<int, int>> locations, bool withReplacement, string replacement = null)
-        {
             int index = 0;
-            foreach (var location in locations)
+            int count = segments.Count;
+            for (int i = 0; i < count; i++)
             {
-                int length = location.Item1; // index
-                if (index + length >= line.Length)
-                    length = line.Length - index;
-                if (0 <= index && index < line.Length && length > 0)
+                LineSegment segment = segments[i];
+
+                if (index < segment.Index)
                 {
-                    Console.Write(line.Substring(index, length));
+                    segments.Add(new LineSegment()
+                    {
+                        Index = index,
+                        Length = segment.Index - index,
+                        IsCapture = false
+                    });
                 }
 
-                index = location.Item1; // index
-                length = location.Item2; // length
-                if (index + length >= line.Length)
-                    length = line.Length - index;
-                if (0 <= index && index < line.Length && length > 0)
+                index = segment.Index + segment.Length;
+            }
+
+            if (index < line.Length)
+            {
+                segments.Add(new LineSegment()
+                {
+                    Index = index,
+                    Length = line.Length - index,
+                    IsCapture = false
+                });
+            }
+
+            segments.Sort((x, y) => x.Index.CompareTo(y.Index));
+
+            Console.Write("Before: ");
+            PrintColorfulLines(line, segments, false);
+            Console.Write("After:  ");
+            PrintColorfulLines(line, segments, true, rule.Replacement);
+        }
+
+        private static void PrintColorfulLines(string line, List<LineSegment> segments, bool withReplacement, string replacement = null)
+        {
+            foreach (LineSegment segment in segments)
+            {
+                if (segment.IsCapture)
                 {
                     if (withReplacement)
                         Colorful.Console.Write(replacement, Color.Red);
                     else
-                        Colorful.Console.Write(line.Substring(index, length), Color.Red);
+                        Colorful.Console.Write(line.Substring(segment.Index, segment.Length), Color.Red);
                 }
-
-                index = location.Item1 + location.Item2; // index + length
+                else
+                {
+                    Console.Write(line.Substring(segment.Index, segment.Length));
+                }
             }
-
-            if (index < line.Length)
-                Console.Write(line.Substring(index));
 
             Console.WriteLine();
         }
