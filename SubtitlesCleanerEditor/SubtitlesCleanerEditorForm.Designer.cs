@@ -119,7 +119,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(1184, 494);
+            this.splitContainer1.Size = new System.Drawing.Size(1189, 494);
             this.splitContainer1.SplitterDistance = 195;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 0;
@@ -195,7 +195,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.txtSubtitle);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel5);
             this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel3);
-            this.splitContainer2.Size = new System.Drawing.Size(984, 494);
+            this.splitContainer2.Size = new System.Drawing.Size(989, 494);
             this.splitContainer2.SplitterDistance = 238;
             this.splitContainer2.TabIndex = 2;
             // 
@@ -228,7 +228,7 @@
             this.lstEditor.ReadOnly = true;
             this.lstEditor.RowHeadersVisible = false;
             this.lstEditor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.lstEditor.Size = new System.Drawing.Size(984, 238);
+            this.lstEditor.Size = new System.Drawing.Size(989, 238);
             this.lstEditor.TabIndex = 1;
             this.lstEditor.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstEditor_CellMouseDoubleClick);
             this.lstEditor.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.lstEditor_DataBindingComplete);
@@ -773,11 +773,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(1184, 494);
+            this.ClientSize = new System.Drawing.Size(1189, 494);
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(1200, 532);
+            this.MinimumSize = new System.Drawing.Size(1205, 532);
             this.Name = "SubtitlesCleanerEditorForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Subtitles Cleaner Editor";
