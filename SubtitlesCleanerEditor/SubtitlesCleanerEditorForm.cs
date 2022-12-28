@@ -273,25 +273,8 @@ namespace SubtitlesCleanerEditor
                 }
             }
 
-            CurrentErrorSelectedRow = null;
-
             lstErrors.DataSource = errorRows;
             sortErrors();
-
-            if (lstErrors.Rows.Count > 0)
-            {
-                foreach (DataGridViewRow row in lstErrors.Rows)
-                {
-                    ErrorRow errorRow = row.DataBoundItem as ErrorRow;
-
-                    row.DefaultCellStyle.BackColor = errorRow.SubtitleError.BackErrorColor();
-                    row.DefaultCellStyle.ForeColor = errorRow.SubtitleError.ForeErrorColor();
-                    row.DefaultCellStyle.SelectionBackColor = errorRow.SubtitleError.BackErrorColor();
-                    row.DefaultCellStyle.SelectionForeColor = errorRow.SubtitleError.ForeErrorColor();
-                }
-
-                CurrentErrorSelectedRow = lstErrors.Rows[0];
-            }
         }
 
         private static readonly SubtitleError[] allSubtitleErrors = Enum.GetValues(typeof(SubtitleError)).Cast<SubtitleError>().OrderByDescending(e => e).ToArray();
@@ -352,6 +335,14 @@ namespace SubtitlesCleanerEditor
             if (lstErrors.SelectedRows == null || lstErrors.SelectedRows.Count == 0)
                 return null;
             return lstErrors.SelectedRows[0];
+        }
+
+        private ErrorRow GetSelectedErrorRow()
+        {
+            DataGridViewRow row = GetErrorSelectedRow();
+            if (row != null)
+                return row.DataBoundItem as ErrorRow;
+            return null;
         }
 
         #endregion
@@ -549,6 +540,8 @@ namespace SubtitlesCleanerEditor
 
         private void sortErrors()
         {
+            ErrorRow errorRowBeforeSort = GetSelectedErrorRow();
+
             List<ErrorRow> errorRows = lstErrors.DataSource as List<ErrorRow>;
 
             if (lstErrors_SortedColumnIndex == 0 && lstErrors_sortOrder == SortOrder.Ascending)
@@ -592,9 +585,33 @@ namespace SubtitlesCleanerEditor
                 });
             }
 
+            CurrentErrorSelectedRow = null;
+
             lstErrors.DataSource = null;
             lstErrors.DataSource = errorRows;
             lstErrors.Columns[lstErrors_SortedColumnIndex].HeaderCell.SortGlyphDirection = lstErrors_sortOrder;
+
+            if (lstErrors.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in lstErrors.Rows)
+                {
+                    ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+
+                    row.DefaultCellStyle.BackColor = errorRow.SubtitleError.BackErrorColor();
+                    row.DefaultCellStyle.ForeColor = errorRow.SubtitleError.ForeErrorColor();
+                    row.DefaultCellStyle.SelectionBackColor = errorRow.SubtitleError.BackErrorColor();
+                    row.DefaultCellStyle.SelectionForeColor = errorRow.SubtitleError.ForeErrorColor();
+                    row.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
+
+                    if (errorRowBeforeSort == errorRow)
+                    {
+                        CurrentErrorSelectedRow = row;
+                        SelectRow(row);
+                    }
+                }
+
+                ErrorSelectionChanged();
+            }
         }
 
         private void lstErrors_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
