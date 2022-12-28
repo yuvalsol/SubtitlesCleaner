@@ -2434,12 +2434,21 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"♪{2,}", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
 
             // j" -> ♪
+
+            // ^j$
             ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>j)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // ^j Text
+            // ^j"Text
             ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(j+\s|j+['""&!])+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
-            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(['""&!]j)+)", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
-            ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(j+['""&!])+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // ^"j Text
+            ,new FindAndReplace(new Regex(@"(?i)^(?<OCR>(['""&!]j)+)\s", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // Text j"$
+            ,new FindAndReplace(new Regex(@"(?i)\s(?<OCR>(j+['""&!])+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // Text"j$
             ,new FindAndReplace(new Regex(@"(?i)(?<OCR>(['""&!]j+)+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // Text j$
             ,new FindAndReplace(new Regex(@"(?i)\s(?<OCR>j+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            // TextJ$
             ,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>J+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
 
             // ♪ Text &
@@ -2523,7 +2532,7 @@ namespace SubtitlesCleanerLibrary
             // Alpha {\alpha&HCC} {\1a&HCC} {\3a&HCC} {\4a&HCC}
             ,new FindAndReplace(new Regex(@"\{(?:\\(?:alpha|1a|3a|4a)&H[A-Fa-f0-9]+)+}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
             // Reset styles {\r}
-            , new FindAndReplace(new Regex(@"\{\\r}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            ,new FindAndReplace(new Regex(@"\{\\r}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
             // Position        {\pos(250,270)}
             // Rotation origin {\org(250,270)}
             // Fade            {\fad(250,250)}
