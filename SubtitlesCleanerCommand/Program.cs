@@ -51,6 +51,8 @@ namespace SubtitlesCleanerCommand
                                 Console.WriteLine("                              [--firstSubtitlesCount n]");
                                 Console.WriteLine("                              --path fileOrFolder");
                                 Console.WriteLine("                              (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("                              [--suppressBackupFile]");
+                                Console.WriteLine("                              [--suppressErrorFile]");
                                 Console.WriteLine();
                             }
 
@@ -62,6 +64,7 @@ namespace SubtitlesCleanerCommand
                                 Console.WriteLine("                                [--firstSubtitlesCount n]");
                                 Console.WriteLine("                                --path fileOrFolder");
                                 Console.WriteLine("                                (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("                                [--suppressBackupFile]");
                                 Console.WriteLine();
                             }
 
@@ -73,6 +76,7 @@ namespace SubtitlesCleanerCommand
                                 Console.WriteLine("                                    [--firstSubtitlesCount n]");
                                 Console.WriteLine("                                    --path fileOrFolder");
                                 Console.WriteLine("                                    (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("                                    [--suppressBackupFile]");
                                 Console.WriteLine();
                             }
 
@@ -84,20 +88,25 @@ namespace SubtitlesCleanerCommand
                                 Console.WriteLine("                                     [--firstSubtitlesCount n]");
                                 Console.WriteLine("                                     --path fileOrFolder");
                                 Console.WriteLine("                                     (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("                                     [--suppressBackupFile]");
                                 Console.WriteLine();
                             }
 
                             if (options.reorder)
                             {
                                 Console.WriteLine("Reorder");
-                                Console.WriteLine("SubtitlesCleanerCommand reorder --path fileOrFolder (--print|--save)");
+                                Console.WriteLine("SubtitlesCleanerCommand reorder --path fileOrFolder");
+                                Console.WriteLine("                                (--print|--save)");
+                                Console.WriteLine("                                [--suppressBackupFile]");
                                 Console.WriteLine();
                             }
 
                             if (options.balanceLines)
                             {
                                 Console.WriteLine("Balance Lines");
-                                Console.WriteLine("SubtitlesCleanerCommand balanceLines --path fileOrFolder (--print|--save)");
+                                Console.WriteLine("SubtitlesCleanerCommand balanceLines --path fileOrFolder");
+                                Console.WriteLine("                                     (--print|--save)");
+                                Console.WriteLine("                                     [--suppressBackupFile]");
                                 Console.WriteLine();
                             }
                         })
