@@ -2375,9 +2375,6 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"PRODUCED BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"WRITTEN BY", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
 
-            ,new FindAndReplace(new Regex(@"\\fad", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
-            ,new FindAndReplace(new Regex(@"\\move", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
-
             ,new FindAndReplace(new Regex(@"(?i)<font color=", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)^-?\s*<font>.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)^-?\s*<font\s+.*?</\s*font>$", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
@@ -2495,15 +2492,47 @@ namespace SubtitlesCleanerLibrary
 
         #endregion
 
-        #region Screen Position
+        #region ASSA Tags
 
-        public static readonly FindAndReplace[] ScreenPosition = new FindAndReplace[] {
-            // {\a1}
-            new FindAndReplace(new Regex(@"\{\\a\d+}", RegexOptions.Compiled), "", SubtitleError.Screen_Position)
-            // {\an1}
-            ,new FindAndReplace(new Regex(@"\{\\an\d+}", RegexOptions.Compiled), "", SubtitleError.Screen_Position)
-            // {\pos(250,270)}
-            ,new FindAndReplace(new Regex(@"\{\\pos\(\d+,\d+\)}", RegexOptions.Compiled), "", SubtitleError.Screen_Position)
+        // https://www.nikse.dk/subtitleedit/formats/assa-override-tags
+        public static readonly FindAndReplace[] ASSATags = new FindAndReplace[] {
+            // Italic       {\i1}
+            // Bold         {\b1}
+            // Underline    {\u1}
+            // Strikeout    {\s1}
+            // Alignment    {\an1}
+            // Font spacing {\fsp5}
+            new FindAndReplace(new Regex(@"\{\\(?:i|b|u|s|an|fsp)\d+}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Primary color {\c&H0000FF&}
+            // Outline color {\3c&H0000FF&}
+            // Shadow color  {\4c&H000000&}
+            ,new FindAndReplace(new Regex(@"\{\\(?:|3|4)c&H[A-Fa-f0-9]+&}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Outline border {\bord8.5} {\xbord8.5} {\ybord8.5}
+            // Shadow {\shad8.5} {\xshad8.5} {\yshad8.5}
+            ,new FindAndReplace(new Regex(@"\{\\(?:|x|y)(?:bord|shad)[0-9.]+}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Font size {\fs35.5}
+            // Font name {\fnSofia}
+            ,new FindAndReplace(new Regex(@"\{\\(?:fs|fn).+?}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Blur edges {\be3.5}
+            ,new FindAndReplace(new Regex(@"\{\\be[0-9.]+}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Font scale {\fscx200} {\fscy200} {\fscx200\fscy200}
+            ,new FindAndReplace(new Regex(@"\{(?:\\fsc(?:x|y)\d+)+}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Text rotation {\fr45} {\frx45} {\fry45} {\frz-180}
+            // Text shearing {\fax1} {\fay-1}
+            ,new FindAndReplace(new Regex(@"\{\\(?:fr|fa)(?:|x|y|z)[0-9-]+}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Alpha {\alpha&HCC} {\1a&HCC} {\3a&HCC} {\4a&HCC}
+            ,new FindAndReplace(new Regex(@"\{(?:\\(?:alpha|1a|3a|4a)&H[A-Fa-f0-9]+)+}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Reset styles {\r}
+            , new FindAndReplace(new Regex(@"\{\\r}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Position        {\pos(250,270)}
+            // Rotation origin {\org(250,270)}
+            // Fade            {\fad(250,250)}
+            ,new FindAndReplace(new Regex(@"\{\\(?:pos|org|fad)\(\d+,\d+\)}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Fade (Advanced) {\fade(0,255,0,1000,1200,1300,1500)}
+            // Move            {\move(350,350,1500,350)} {\move(350,350,1500,350,500,2600)}
+            ,new FindAndReplace(new Regex(@"\{\\(?:fade|move)\((?:\d+,)+\d+\)}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
+            // Clip {\clip(0,0,320,180)} {\iclip(0,0,320,180)}
+            ,new FindAndReplace(new Regex(@"\{\\(?:|i)clip\(\d+,\d+,\d+,\d+\)}", RegexOptions.Compiled), "", SubtitleError.ASSA_Tags)
         };
 
         #endregion
@@ -3063,7 +3092,7 @@ namespace SubtitlesCleanerLibrary
             .Concat(Notes)
             .Concat(OCRError_MalformedLetters)
             .Concat(HearingImpairedFullLine)
-            .Concat(ScreenPosition)
+            .Concat(ASSATags)
             .Concat(RedundantSpaces)
             .Concat(HearingImpaired)
             .Concat(RedundantItalics)
@@ -3466,7 +3495,7 @@ namespace SubtitlesCleanerLibrary
         public static int GetDisplayCharCount(string line)
         {
             line = HTMLStyles.Replace(line, string.Empty);
-            foreach (FindAndReplace item in ScreenPosition)
+            foreach (FindAndReplace item in ASSATags)
                 line = item.Regex.Replace(line, string.Empty);
             return line.Length;
         }

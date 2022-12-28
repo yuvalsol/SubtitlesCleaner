@@ -30,7 +30,7 @@ namespace SubtitlesCleanerLibrary
         Redundant_Spaces = (1 << 6),
 
         [ErrorColor(232, 221, 248)]
-        Screen_Position = (1 << 7),
+        ASSA_Tags = (1 << 7),
 
         [ErrorColor(172, 201, 230)]
         Punctuation_Error = (1 << 8),
