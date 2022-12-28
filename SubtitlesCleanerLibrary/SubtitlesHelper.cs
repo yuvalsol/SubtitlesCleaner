@@ -2894,6 +2894,7 @@ namespace SubtitlesCleanerLibrary
             // "I" at the beginning of a word before lowercase vowels is most likely an "l"
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I)[oaeiuyá-ú]", RegexOptions.Compiled), "OCR", "l", SubtitleError.OCR_Error,
                 new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfEqualsTo = "Iago" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "Ionian" }
             )
 
             // "I" after an uppercase letter at the beginning and before a lowercase letter is most likely an "l"
