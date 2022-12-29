@@ -14,9 +14,9 @@ namespace SubtitlesCleanerEditor
 {
     public partial class SubtitlesCleanerEditorForm : Form
     {
-        #region Form
-
         public static readonly bool IsProduction = true;
+
+        #region Form
 
         public SubtitlesCleanerEditorForm(string[] args)
         {

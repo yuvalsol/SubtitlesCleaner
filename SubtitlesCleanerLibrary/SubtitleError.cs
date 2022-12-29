@@ -24,28 +24,49 @@ namespace SubtitlesCleanerLibrary
         Missing_Spaces = (1 << 4),
 
         [ErrorColor(198, 230, 209)]
-        Missing_Dash = (1 << 5),
-
-        [ErrorColor(198, 255, 245)]
-        Redundant_Spaces = (1 << 6),
+        Redundant_Spaces = (1 << 5),
 
         [ErrorColor(232, 221, 248)]
-        ASSA_Tags = (1 << 7),
+        ASSA_Tags = (1 << 6),
 
         [ErrorColor(172, 201, 230)]
-        Punctuation_Error = (1 << 8),
+        Punctuations_Error = (1 << 7),
 
         [ErrorColor(196, 198, 239)]
-        Notes_Error = (1 << 9),
+        Notes_Error = (1 << 8),
 
         [ErrorColor(255, 229, 204)]
-        Dialog_Error = (1 << 10),
+        Dialog_Error = (1 << 9),
+
+        [ErrorColor(255, 146, 146)]
+        Non_Ansi_Chars = (1 << 10),
+
+        [ErrorColor(255, 134, 134)]
+        Encoded_HTML = (1 << 11),
+
+        [ErrorColor(255, 105, 105, 255, 255, 255)]
+        Malformed_Letters = (1 << 12),
+
+        [ErrorColor(255, 105, 105, 255, 255, 255)]
+        Contractions_Error = (1 << 13),
+
+        [ErrorColor(255, 88, 88, 255, 255, 255)]
+        Accent_Letters = (1 << 14),
+
+        [ErrorColor(255, 70, 70, 255, 255, 255)]
+        I_And_L_Error = (1 << 15),
+
+        [ErrorColor(255, 49, 49, 255, 255, 255)]
+        Merged_Words_Error = (1 << 16),
+
+        [ErrorColor(255, 26, 26, 255, 255, 255)]
+        O_And_0_Error = (1 << 17),
 
         [ErrorColor(255, 0, 0, 255, 255, 255)]
-        OCR_Error = (1 << 11),
+        OCR_Error = (1 << 18),
 
-        [ErrorColor(255, 255, 0)]
-        Hearing_Impaired = (1 << 12)
+        [ErrorColor(255, 255, 153)]
+        Hearing_Impaired = (1 << 19)
     }
 
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
