@@ -18,7 +18,7 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 ![Adjust Timing](./Solution%20Items/Images/AdjustTiming.jpg)
 
 5. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
-6. Balance Lines. Merge short line with preceding long line.
+6. Balance Lines. Merge short line with long line.
 7. Search and replace.
 8. Load the original subtitles and discard all changes.
 9. Time Calculator. A little utility when you need to calculate time differences and it is too hard to do the math in your head.
@@ -31,7 +31,7 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 13. Cleaned subtitle.
 14. Fix buttons will copy the cleaned subtitle to the subtitle itself. The advance button will also jump to the next subtitle with an error.
 15. Set Show Time. Set the specified show time to the selected subtitle and change the timings of all the subtitles below it based on their time differences. When the Interactive Retiming is checked, the show timings will change in the subtitles panel as the show time is changed.
-16. Add Time starting from the selected subtitle. Time can positive or negative. The time sign is clickable and change between `+` and `-`.
+16. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
 
 ## Subtitles Cleaner Command
 
@@ -41,7 +41,7 @@ Clean subtitles.
 
 ```console
 SubtitlesCleanerCommand clean [--cleanHICaseInsensitive]
-                              [--firstSubtitlesCount n]
+                              [--firstSubtitlesCount N]
                               --path fileOrFolder
                               (--print|--save [--outputFile file] [--outputFolder folder])
                               [--suppressBackupFile]
@@ -54,7 +54,7 @@ By default, Subtitles Cleaner Command identifies hearing-impaired line, which is
 --cleanHICaseInsensitive    Clean HI case-insensitive
 ```
 
-Use this parameter to read the first n subtitles out of the file (not the first number of lines).
+Use this parameter to read the first N subtitles out of the file (not the first number of lines).
 
 ```console
 --firstSubtitlesCount       Read only the specified first number of subtitles
@@ -136,8 +136,8 @@ Add time to subtitles.
 
 ```console
 SubtitlesCleanerCommand addTime --timeAdded (+00:00:00,000|-00:00:00,000)
-                                [--subtitleNumber n]
-                                [--firstSubtitlesCount n]
+                                [--subtitleNumber N]
+                                [--firstSubtitlesCount N]
                                 --path fileOrFolder
                                 (--print|--save [--outputFile file] [--outputFolder folder])
                                 [--suppressBackupFile]
@@ -157,8 +157,8 @@ Move subtitles to show time.
 
 ```console
 SubtitlesCleanerCommand setShowTime --showTime 00:00:00,000
-                                    [--subtitleNumber n]
-                                    [--firstSubtitlesCount n]
+                                    [--subtitleNumber N]
+                                    [--firstSubtitlesCount N]
                                     --path fileOrFolder
                                     (--print|--save [--outputFile file] [--outputFolder folder])
                                     [--suppressBackupFile]
@@ -179,7 +179,7 @@ Adjust subtitles timing by 2 sync points.
 ```console
 SubtitlesCleanerCommand adjustTiming --firstShowTime 00:00:00,000
                                      --lastShowTime 00:00:00,000
-                                     [--firstSubtitlesCount n]
+                                     [--firstSubtitlesCount N]
                                      --path fileOrFolder
                                      (--print|--save [--outputFile file] [--outputFolder folder])
                                      [--suppressBackupFile]
@@ -211,7 +211,7 @@ If the path points to a folder, it will reorder all the .srt files in that folde
 
 ### Balance Lines
 
-Merge short line with preceding long line.
+Merge short line with long line.
 
 ```console
 SubtitlesCleanerCommand balanceLines --path fileOrFolder
@@ -224,3 +224,47 @@ If the path points to a folder, it will balance the lines of all the .srt files 
 ```console
 --path                      Path to subtitle file or folder
 ```
+
+## Testing For Advance Users
+
+So you encountered a subtitle that is not cleaned as you might have expected and you want to do some testing on it but you don't want to work the whole subtitle file. These are the steps to start testing.
+
+1. Open the solution in Visual Studio.
+2. Copy just the subtitle lines, that you want to test, to [Subtitles/Test.srt](./Subtitles/Test.srt).
+3. Select [SubtitlesCleanerCommand](./SubtitlesCleanerCommand) as Startup Project in the Solution Explorer.
+4. Open [SubtitlesCleanerCommand/SubtitlesHandler.cs](./SubtitlesCleanerCommand/SubtitlesHandler.cs). At the top of the file there are 4 static class members.
+
+```cs
+bool IsProduction = true;
+bool IsPrintCleaning = false;
+bool CleanHICaseInsensitive = false;
+int? FirstSubtitlesCount = null;
+```
+
+5. Set `IsProduction` to `false`. Once you do that, the program is configured to read from [Subtitles/Test.srt](./Subtitles/Test.srt) and print to the console.
+
+```cs
+bool IsProduction = false;
+```
+
+6. Set `IsPrintCleaning` to `true` to print detailed descriptions of the steps the program takes to clean. It will print the regular expressions it used and its captures for each step of the cleaning process.
+
+```cs
+bool IsPrintCleaning = true;
+```
+
+7. Set `CleanHICaseInsensitive` to `true` to enable hearing-impaired detection of all-case text.
+
+```cs
+bool CleanHICaseInsensitive = true;
+```
+
+8. Set `FirstSubtitlesCount` to a number N to read the first N subtitles from the file.
+
+```cs
+int? FirstSubtitlesCount = 1;
+```
+
+9. All the cleaning regular expressions and cleaning routines are in [SubtitlesCleanerLibrary/SubtitlesHelper.cs](./SubtitlesCleanerLibrary/SubtitlesHelper.cs).
+
+10. Start debugging.

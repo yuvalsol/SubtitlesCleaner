@@ -80,7 +80,7 @@ namespace SubtitlesCleanerCommand
     {
     }
 
-    [Verb("balanceLines", HelpText = "Merge short line with preceding long line")]
+    [Verb("balanceLines", HelpText = "Merge short line with long line")]
     class BalanceLinesOptions : SharedOptions
     {
     }
