@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Subtitles", "Subtitles", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5437171-53C9-40D6-8606-7F61E3DF0A52}"
 	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 		Solution Items\SolutionAssemblyInfo.cs = Solution Items\SolutionAssemblyInfo.cs
 	EndProjectSection
 EndProject
@@ -20,6 +21,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerCommand", "SubtitlesCleanerCommand\SubtitlesCleanerCommand.csproj", "{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerEditor", "SubtitlesCleanerEditor\SubtitlesCleanerEditor.csproj", "{445E239A-DA9D-4864-A1B5-01B299AE12DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{6E119C67-7B5E-4C3A-A18E-EAFEEEBFDAB7}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Images\AdjustTiming.jpg = Solution Items\Images\AdjustTiming.jpg
+		Solution Items\Images\SubtitlesCleanerEditor.jpg = Solution Items\Images\SubtitlesCleanerEditor.jpg
+		Solution Items\Images\TimeCalculator.jpg = Solution Items\Images\TimeCalculator.jpg
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +54,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6E119C67-7B5E-4C3A-A18E-EAFEEEBFDAB7} = {F5437171-53C9-40D6-8606-7F61E3DF0A52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B3C386E-0299-4030-94E4-94A2D548B107}

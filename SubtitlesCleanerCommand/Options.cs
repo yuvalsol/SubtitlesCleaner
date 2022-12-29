@@ -19,7 +19,7 @@ namespace SubtitlesCleanerCommand
         [Option("outputFolder", Required = false, HelpText = "Output folder. If omitted, the program outputs in the original folder")]
         public string outputFolder { get; set; }
 
-        [Option("suppressBackupFile", Required = false, HelpText = "Do not create backup file with the original subtitles")]
+        [Option("suppressBackupFile", Required = false, HelpText = "Do not create backup file of the original subtitles")]
         public bool suppressBackupFile { get; set; }
     }
 
@@ -32,7 +32,7 @@ namespace SubtitlesCleanerCommand
         [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
 
-        [Option("suppressErrorFile", Required = false, HelpText = "Do not create error file with possible errors that the program couldn't handled")]
+        [Option("suppressErrorFile", Required = false, HelpText = "Do not create error file with possible errors")]
         public bool suppressErrorFile { get; set; }
     }
 
