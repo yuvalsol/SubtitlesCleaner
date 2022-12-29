@@ -13,12 +13,14 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 1. Subtitles panel. The last column, Clean Text, is the text after Subtitles Cleaner gone over it. It is only a suggestion and it does not take effect until it is copied to the Text column. Double-click on a subtitle with an error will make the error list panel focus on the error.
 2. Error list panel. The headers can be sorted by subtitle numbers (#) or by errors. Double-click on an error will make the Subtitles panel focus on the subtitle.
 3. Clean subtitles in the subtitles panel.
-4. Adjust Timing. Adjust subtitles timing by 2 sync points. The popup will open with the sync points filled with timing of the first and last subtitles. Load From File loads the first and last sync points from another subtitles file. ![Adjust Timing](./Solution%20Items/Images/AdjustTiming.jpg)
+4. Adjust Timing. Adjust subtitles timing by 2 sync points. The popup will open with the sync points filled with timing of the first and last subtitles. Load From File loads the first and last sync points from another subtitles file.
+   ![Adjust Timing](./Solution%20Items/Images/AdjustTiming.jpg)
 5. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
 6. Balance Lines. Merge short line with preceding long line.
 7. Search and replace.
 8. Load the original subtitles and discard all changes.
-9. Time Calculator. A little utility when you need to calculate time differences and it is too hard to do the math in your head. ![Time Calculator](./Solution%20Items/Images/TimeCalculator.jpg)
+9. Time Calculator. A little utility when you need to calculate time differences and it is too hard to do the math in your head.
+   ![Time Calculator](./Solution%20Items/Images/TimeCalculator.jpg)
 10. Hearing-Impaired Detection. Identifies hearing-impaired with only capital letters text or all-case text.
 11. Current selected subtitle. Changes can be made in the textbox.
 12. Display length of the first 4 lines of the subtitle. Display length means only the text that is shown on the screen, so no `<i>`, `<b>`, `<u>` and no [ASSA Tags](https://www.nikse.dk/subtitleedit/formats/assa-override-tags).
@@ -80,13 +82,13 @@ Subtitles Cleaner Command saves a backup file, of the original file, with extens
 --suppressBackupFile        Do not create backup file of the original subtitles
 ```
 
-Subtitles Cleaner Command creates an error file with extension .error.srt. This file includes all the ***possible*** errors the program encountered but didn't cleaned up. These are meant to be viewed by a human eye and fix accordingly. This parameter suppresses the error file.
+Subtitles Cleaner Command creates an error file with extension .error.srt. This file includes all the **_possible_** errors the program encountered but didn't cleaned up. These are meant to be viewed by a human eye and fix accordingly. This parameter suppresses the error file.
 
 ```console
 --suppressErrorFile         Do not create error file with possible errors
 ```
 
-Examples:
+**Examples:**
 
 Clean subtitle file
 
