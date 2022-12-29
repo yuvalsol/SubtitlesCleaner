@@ -283,7 +283,7 @@ namespace SubtitlesCleanerEditor
         {
             foreach (SubtitleError error in allSubtitleErrors)
             {
-                if (subtitleError.HasFlag(error))
+                if (subtitleError.IsSet(error))
                     yield return error;
             }
         }
@@ -1168,8 +1168,8 @@ namespace SubtitlesCleanerEditor
             if (editorRow == null)
                 return -1;
 
-            if ((editorRow.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle ||
-                (editorRow.SubtitleError & SubtitleError.Empty_Line) == SubtitleError.Empty_Line)
+            if (editorRow.SubtitleError.IsSet(SubtitleError.Not_Subtitle) ||
+                editorRow.SubtitleError.IsSet(SubtitleError.Empty_Line))
             {
                 DeleteSubtitle(editorRow);
                 (lstEditor.DataSource as BindingList<EditorRow>).Remove(editorRow);

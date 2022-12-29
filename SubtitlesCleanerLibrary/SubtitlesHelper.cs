@@ -442,11 +442,11 @@ namespace SubtitlesCleanerLibrary
                 }
             }
 
-            if ((subtitle.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle)
+            if (subtitle.SubtitleError.IsSet(SubtitleError.Not_Subtitle))
             {
                 subtitle.SubtitleError = SubtitleError.Not_Subtitle;
             }
-            else if ((subtitle.SubtitleError & SubtitleError.Empty_Line) == SubtitleError.Empty_Line)
+            else if (subtitle.SubtitleError.IsSet(SubtitleError.Empty_Line))
             {
                 subtitle.SubtitleError = SubtitleError.Empty_Line;
             }
@@ -456,9 +456,9 @@ namespace SubtitlesCleanerLibrary
                 subtitle.SubtitleError |= CheckSubtitleMultipleLines(subtitle.Lines, cleanHICaseInsensitive);
                 subtitle.SubtitleError |= CheckSubtitleMultipleLinesPost(subtitle.Lines);
 
-                if ((subtitle.SubtitleError & SubtitleError.Not_Subtitle) == SubtitleError.Not_Subtitle)
+                if (subtitle.SubtitleError.IsSet(SubtitleError.Not_Subtitle))
                     subtitle.SubtitleError = SubtitleError.Not_Subtitle;
-                else if ((subtitle.SubtitleError & SubtitleError.Empty_Line) == SubtitleError.Empty_Line)
+                else if (subtitle.SubtitleError.IsSet(SubtitleError.Empty_Line))
                     subtitle.SubtitleError = SubtitleError.Empty_Line;
             }
         }
@@ -3140,12 +3140,12 @@ namespace SubtitlesCleanerLibrary
                     line = cleanLine;
                     subtitleError |= rule.SubtitleError;
 
-                    if (subtitleError.HasFlag(SubtitleError.Empty_Line))
+                    if (subtitleError.IsSet(SubtitleError.Empty_Line))
                     {
                         subtitleError = SubtitleError.Empty_Line;
                         return null;
                     }
-                    else if (subtitleError.HasFlag(SubtitleError.Not_Subtitle))
+                    else if (subtitleError.IsSet(SubtitleError.Not_Subtitle))
                     {
                         subtitleError = SubtitleError.Not_Subtitle;
                         return null;

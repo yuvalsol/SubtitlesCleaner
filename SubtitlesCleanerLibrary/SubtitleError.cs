@@ -86,6 +86,11 @@ namespace SubtitlesCleanerLibrary
 
     public static partial class SubtitleErrorExtensions
     {
+        public static bool IsSet(this SubtitleError enumValue, SubtitleError flag)
+        {
+            return (enumValue & flag) == flag;
+        }
+
         public static Color BackErrorColor(this SubtitleError enumValue)
         {
             var field = typeof(SubtitleError).GetField(enumValue.ToString());
