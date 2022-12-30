@@ -3526,6 +3526,20 @@ namespace SubtitlesCleanerLibrary
 
         private const int SINGLE_LINE_MAX_LENGTH = 43;
 
+        public static readonly FindAndReplace[] FindAndReplaceRulesDisplayCharCount =
+            new FindAndReplace[] {
+                new FindAndReplace(new Regex(@"</?\s*[iub]\s*>", RegexOptions.Compiled), "", SubtitleError.None)
+            }
+            .Concat(ASSATags)
+            .ToArray();
+
+        public static int GetDisplayCharCount(string line)
+        {
+            foreach (var rule in FindAndReplaceRulesDisplayCharCount)
+                line = rule.CleanLine(line);
+            return line.Length;
+        }
+
         private class LineBalance
         {
             public int DisplayCharCount;
@@ -3533,16 +3547,6 @@ namespace SubtitlesCleanerLibrary
             public bool ContainsItalicsStart;
             public bool ContainsItalicsEnd;
             public bool EndsWithPunctuation;
-        }
-
-        public static readonly Regex HTMLStyles = new Regex(@"</?\s*[iub]\s*>", RegexOptions.Compiled);
-
-        public static int GetDisplayCharCount(string line)
-        {
-            line = HTMLStyles.Replace(line, string.Empty);
-            foreach (FindAndReplace item in ASSATags)
-                line = item.Regex.Replace(line, string.Empty);
-            return line.Length;
         }
 
         public static List<Subtitle> BalanceLines(this List<Subtitle> subtitles)
