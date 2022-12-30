@@ -517,18 +517,21 @@ namespace SubtitlesCleanerEditor
 
         private void SetLineLengths()
         {
-            lblLineLength1.Text = (txtSubtitle.Lines.Length >= 1 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[0]).ToString() : string.Empty);
-            lblLineLength2.Text = (txtSubtitle.Lines.Length >= 2 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[1]).ToString() : string.Empty);
-            lblLineLength3.Text = (txtSubtitle.Lines.Length >= 3 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[2]).ToString() : string.Empty);
-            lblLineLength4.Text = (txtSubtitle.Lines.Length >= 4 ? SubtitlesHelper.GetDisplayCharCount(txtSubtitle.Lines[3]).ToString() : string.Empty);
+            lblLineLengths.Text =
+                (txtSubtitle.Lines.Length > 0 ?
+                string.Join(" / ", txtSubtitle.Lines.Select(line => SubtitlesHelper.GetDisplayCharCount(line))) :
+                string.Empty);
+
+            lblCleanLineLengths.Text =
+                (txtCleanSubtitle.Lines.Length > 0 ?
+                string.Join(" / ", txtCleanSubtitle.Lines.Select(line => SubtitlesHelper.GetDisplayCharCount(line))) :
+                string.Empty);
         }
 
         private void ResetLineLengths()
         {
-            lblLineLength1.Text =
-            lblLineLength2.Text =
-            lblLineLength3.Text =
-            lblLineLength4.Text = string.Empty;
+            lblLineLengths.Text = string.Empty;
+            lblCleanLineLengths.Text = string.Empty;
         }
 
         #endregion
