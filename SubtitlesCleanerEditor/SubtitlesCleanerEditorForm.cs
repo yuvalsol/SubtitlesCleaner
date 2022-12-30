@@ -874,9 +874,12 @@ namespace SubtitlesCleanerEditor
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                subtitles.AdjustTiming(dialog.X1, dialog.X2, dialog.Y1, dialog.Y2);
-                SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
-                SetFormTitle(true);
+                if (dialog.X1 != dialog.X2 || dialog.Y1 != dialog.Y2)
+                {
+                    subtitles.AdjustTiming(dialog.X1, dialog.X2, dialog.Y1, dialog.Y2);
+                    SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
+                    SetFormTitle(true);
+                }
             }
         }
 

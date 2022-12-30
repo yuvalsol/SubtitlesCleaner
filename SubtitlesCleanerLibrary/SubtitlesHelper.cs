@@ -3460,11 +3460,16 @@ namespace SubtitlesCleanerLibrary
             if (x1Show == DateTime.MinValue || x2Show == DateTime.MinValue || y1Show == DateTime.MinValue || y2Show == DateTime.MinValue)
                 return;
 
-            var x1 = x1Show.ToMilliseconds();
-            var x2 = x2Show.ToMilliseconds();
+            if (x1Show == x2Show && y1Show == y2Show)
+                return;
 
-            var y1 = y1Show.ToMilliseconds();
-            var y2 = y2Show.ToMilliseconds();
+            // x1 -> x2
+            int x1 = x1Show.ToMilliseconds();
+            int x2 = x2Show.ToMilliseconds();
+
+            // y1 -> y2
+            int y1 = y1Show.ToMilliseconds();
+            int y2 = y2Show.ToMilliseconds();
 
             // y = v1 * x + v2
             // (x2,y2) = v1 * (x1,y1) + v2
