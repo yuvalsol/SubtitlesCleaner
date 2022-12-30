@@ -3710,7 +3710,7 @@ namespace SubtitlesCleanerLibrary
                 Regex = new Regex(@"</i></i>", RegexOptions.Compiled),
                 Description = "Consecutive closing italic"
             }
-            , new Error() {
+            /*, new Error() {
                 Regex = new Regex(@"^""[^""]*$", RegexOptions.Compiled),
                 Description = "Opening quotation marks without closing"
             }
@@ -3725,7 +3725,7 @@ namespace SubtitlesCleanerLibrary
             , new Error() {
                 Regex = new Regex(@"^[^']*'$", RegexOptions.Compiled),
                 Description = "Closing quotation marks without opening"
-            }
+            }*/
         };
 
         public static string[] GetSubtitlesErrors(List<Subtitle> subtitles)
