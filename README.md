@@ -20,18 +20,17 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 5. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
 6. Balance Lines. Merge short line with long line.
 7. Search and replace.
-8. Load the original subtitles and discard all changes.
+8. Load the original subtitles and discard all previous changes.
 9. Time Calculator. A little utility when you need to calculate time differences and it is too hard to do the math in your head.
 
 ![Time Calculator](./Solution%20Items/Images/TimeCalculator.jpg)
 
 10. Hearing-Impaired Detection. Identifies hearing-impaired with only capital letters text or all-case text.
-11. Current selected subtitle. Changes can be made in the textbox.
-12. Display length of the first 4 lines of the subtitle. Display length means only the text that is shown on the screen, so no `<i>`, `<b>`, `<u>` and no [ASSA Tags](https://www.nikse.dk/subtitleedit/formats/assa-override-tags).
-13. Cleaned subtitle.
-14. Fix buttons will copy the cleaned subtitle to the subtitle itself. The advance button will also jump to the next subtitle with an error.
-15. Set Show Time. Set the specified show time to the selected subtitle and change the timings of all the subtitles below it based on their time differences. When the Interactive Retiming is checked, the show timings will change in the subtitles panel as the show time is changed.
-16. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
+11. Selected subtitle. Changes can be made in the textbox.
+12. Cleaned subtitle.
+13. Fix buttons will copy the cleaned subtitle to the subtitle itself. The advance button will also jump to the next subtitle with an error.
+14. Set Show Time. Set the specified show time to the selected subtitle and change the timings of all the subtitles below it based on their time differences. When the Interactive Retiming is checked, the show timings will change in the subtitles panel as the show time is changed.
+15. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
 
 ## Subtitles Cleaner Command
 
