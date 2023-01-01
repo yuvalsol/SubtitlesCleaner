@@ -38,6 +38,9 @@
   <PropertyGroup>
     <StartupObject>SubtitlesCleanerEditor.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>cleaning-brush.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -123,6 +126,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SubtitlesCleanerEditorForm.resx">
       <DependentUpon>SubtitlesCleanerEditorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TimeCalculatorForm.resx">
       <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
@@ -146,6 +150,9 @@
       <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
       <Name>SubtitlesCleanerLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cleaning-brush.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

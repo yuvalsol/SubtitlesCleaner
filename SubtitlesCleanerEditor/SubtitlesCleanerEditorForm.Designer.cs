@@ -28,15 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubtitlesCleanerEditorForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lstErrors = new System.Windows.Forms.DataGridView();
             this.ColumnNum1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -49,10 +50,10 @@
             this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnCleanText = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lblCleanLineLengths = new System.Windows.Forms.Label();
-            this.lblLineLengths = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lblCleanLineLengths = new System.Windows.Forms.Label();
             this.btnFixText = new System.Windows.Forms.Button();
+            this.lblLineLengths = new System.Windows.Forms.Label();
             this.btnFixTextAndAdvance = new System.Windows.Forms.Button();
             this.txtCleanSubtitle = new System.Windows.Forms.TextBox();
             this.txtSubtitle = new SubtitlesCleanerEditor.TextBox();
@@ -149,8 +150,8 @@
             // ColumnNum1
             // 
             this.ColumnNum1.DataPropertyName = "Num";
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle1;
             this.ColumnNum1.HeaderText = "#";
             this.ColumnNum1.Name = "ColumnNum1";
             this.ColumnNum1.ReadOnly = true;
@@ -161,8 +162,8 @@
             // 
             this.ColumnError1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnError1.DataPropertyName = "Error";
-            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle2;
             this.ColumnError1.HeaderText = "Error";
             this.ColumnError1.Name = "ColumnError1";
             this.ColumnError1.ReadOnly = true;
@@ -199,14 +200,14 @@
             this.lstEditor.AllowUserToResizeColumns = false;
             this.lstEditor.AllowUserToResizeRows = false;
             this.lstEditor.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle19.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle19.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.lstEditor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lstEditor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNum,
@@ -232,8 +233,8 @@
             // ColumnNum
             // 
             this.ColumnNum.DataPropertyName = "Num";
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle4;
             this.ColumnNum.HeaderText = "#";
             this.ColumnNum.Name = "ColumnNum";
             this.ColumnNum.ReadOnly = true;
@@ -243,8 +244,8 @@
             // ColumnShow
             // 
             this.ColumnShow.DataPropertyName = "Show";
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle5;
             this.ColumnShow.HeaderText = "Show";
             this.ColumnShow.Name = "ColumnShow";
             this.ColumnShow.ReadOnly = true;
@@ -254,8 +255,8 @@
             // ColumnHide
             // 
             this.ColumnHide.DataPropertyName = "Hide";
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle6;
             this.ColumnHide.HeaderText = "Hide";
             this.ColumnHide.Name = "ColumnHide";
             this.ColumnHide.ReadOnly = true;
@@ -265,8 +266,8 @@
             // ColumnDuration
             // 
             this.ColumnDuration.DataPropertyName = "Duration";
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle7;
             this.ColumnDuration.HeaderText = "Duration";
             this.ColumnDuration.Name = "ColumnDuration";
             this.ColumnDuration.ReadOnly = true;
@@ -277,8 +278,8 @@
             // 
             this.ColumnText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnText.DataPropertyName = "Text";
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle8;
             this.ColumnText.HeaderText = "Text";
             this.ColumnText.Name = "ColumnText";
             this.ColumnText.ReadOnly = true;
@@ -288,30 +289,12 @@
             // 
             this.ColumnCleanText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnCleanText.DataPropertyName = "CleanText";
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnCleanText.DefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnCleanText.DefaultCellStyle = dataGridViewCellStyle9;
             this.ColumnCleanText.HeaderText = "Clean Text";
             this.ColumnCleanText.Name = "ColumnCleanText";
             this.ColumnCleanText.ReadOnly = true;
             this.ColumnCleanText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // lblCleanLineLengths
-            // 
-            this.lblCleanLineLengths.AutoSize = true;
-            this.lblCleanLineLengths.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCleanLineLengths.Location = new System.Drawing.Point(554, 88);
-            this.lblCleanLineLengths.Name = "lblCleanLineLengths";
-            this.lblCleanLineLengths.Size = new System.Drawing.Size(0, 14);
-            this.lblCleanLineLengths.TabIndex = 0;
-            // 
-            // lblLineLengths
-            // 
-            this.lblLineLengths.AutoSize = true;
-            this.lblLineLengths.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLineLengths.Location = new System.Drawing.Point(3, 88);
-            this.lblLineLengths.Name = "lblLineLengths";
-            this.lblLineLengths.Size = new System.Drawing.Size(0, 14);
-            this.lblLineLengths.TabIndex = 0;
             // 
             // tableLayoutPanel1
             // 
@@ -336,6 +319,15 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 102);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
+            // lblCleanLineLengths
+            // 
+            this.lblCleanLineLengths.AutoSize = true;
+            this.lblCleanLineLengths.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCleanLineLengths.Location = new System.Drawing.Point(554, 88);
+            this.lblCleanLineLengths.Name = "lblCleanLineLengths";
+            this.lblCleanLineLengths.Size = new System.Drawing.Size(0, 14);
+            this.lblCleanLineLengths.TabIndex = 0;
+            // 
             // btnFixText
             // 
             this.btnFixText.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -347,6 +339,15 @@
             this.btnFixText.Text = "<= Fix";
             this.btnFixText.UseVisualStyleBackColor = true;
             this.btnFixText.Click += new System.EventHandler(this.btnFixText_Click);
+            // 
+            // lblLineLengths
+            // 
+            this.lblLineLengths.AutoSize = true;
+            this.lblLineLengths.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLineLengths.Location = new System.Drawing.Point(3, 88);
+            this.lblLineLengths.Name = "lblLineLengths";
+            this.lblLineLengths.Size = new System.Drawing.Size(0, 14);
+            this.lblLineLengths.TabIndex = 0;
             // 
             // btnFixTextAndAdvance
             // 
@@ -765,6 +766,7 @@
             this.ClientSize = new System.Drawing.Size(1189, 494);
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(1205, 532);
             this.Name = "SubtitlesCleanerEditorForm";

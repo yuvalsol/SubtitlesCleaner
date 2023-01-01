@@ -29,6 +29,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{6E119C
 		Solution Items\Images\TimeCalculator.jpg = Solution Items\Images\TimeCalculator.jpg
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{2F91AC8E-3D23-4B36-A898-5D351CD9B858}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\cleaning-brush.ico = Resources\cleaning-brush.ico
+		Resources\cleaning-brush.png = Resources\cleaning-brush.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

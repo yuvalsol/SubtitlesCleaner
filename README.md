@@ -8,14 +8,14 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 
 ## Subtitles Cleaner Editor
 
-![Subtitles Cleaner Editor](./Solution%20Items/Images/SubtitlesCleanerEditor.jpg)
+![Subtitles Cleaner Editor](./Solution%20Items/Images/SubtitlesCleanerEditor.jpg "Subtitles Cleaner Editor")
 
 1. Subtitles panel. The last column, Clean Text, is the text after Subtitles Cleaner gone over it. It is only a suggestion and it does not take effect until it is copied to the Text column. Double-click on a subtitle with an error will make the error list panel focus on the error.
 2. Error list panel. The headers can be sorted by subtitle numbers (#) or by errors. Double-click on an error will make the Subtitles panel focus on the subtitle.
 3. Clean subtitles in the subtitles panel.
 4. Adjust Timing. Adjust subtitles timing by 2 sync points. The popup will open with the sync points filled with timing of the first and last subtitles. Load From File loads the first and last sync points from another subtitles file.
 
-![Adjust Timing](./Solution%20Items/Images/AdjustTiming.jpg)
+![Adjust Timing](./Solution%20Items/Images/AdjustTiming.jpg "Adjust Timing")
 
 5. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
 6. Balance Lines. Merge short line with long line.
@@ -23,7 +23,7 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 8. Load the original subtitles and discard all previous changes.
 9. Time Calculator. A little utility when you need to calculate time differences and it is too hard to do the math in your head.
 
-![Time Calculator](./Solution%20Items/Images/TimeCalculator.jpg)
+![Time Calculator](./Solution%20Items/Images/TimeCalculator.jpg "Time Calculator")
 
 10. Hearing-Impaired Detection. Identifies hearing-impaired with only capital letters text or all-case text.
 11. Selected subtitle. Changes can be made in the textbox.
@@ -223,3 +223,15 @@ If the path points to a folder, it will balance the lines of all the .srt files 
 ```console
 --path                      Path to subtitle file or folder
 ```
+
+## Useful Resources
+
+[Subtitle Edit](https://www.nikse.dk/subtitleedit "Subtitle Edit")
+
+[Subtitle Edit GitHub](https://github.com/SubtitleEdit/subtitleedit "Subtitle Edit GitHub")
+
+[WinMerge](https://winmerge.org/ "WinMerge")
+
+## Attributes
+
+[Cleaning-brush icons created by Umeicon - Flaticon](https://www.flaticon.com/free-icons/cleaning-brush "cleaning-brush icons")
