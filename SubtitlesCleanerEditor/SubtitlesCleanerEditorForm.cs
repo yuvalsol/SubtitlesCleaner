@@ -1135,6 +1135,11 @@ namespace SubtitlesCleanerEditor
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
 
+            Subtitle cleanSubtitle = SubtitlesHelper.CleanSubtitles(subtitle.Clone() as Subtitle, cleanHICaseInsensitive, false);
+            editorRow.CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty);
+            editorRow.CleanLines = (cleanSubtitle != null ? cleanSubtitle.ToString() : string.Empty);
+            txtCleanSubtitle.Text = editorRow.CleanLines;
+
             SetLineLengths();
 
             SetSubtitlesErrors();
