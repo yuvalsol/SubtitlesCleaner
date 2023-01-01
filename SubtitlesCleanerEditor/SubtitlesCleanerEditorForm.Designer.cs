@@ -364,7 +364,6 @@
             // txtCleanSubtitle
             // 
             this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
-            this.txtCleanSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCleanSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtCleanSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
