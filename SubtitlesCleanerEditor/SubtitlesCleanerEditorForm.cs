@@ -1002,9 +1002,7 @@ namespace SubtitlesCleanerEditor
 
                     EditorRow editorRow = GetEditorRowAt(i);
 
-                    editorRow.Text = subtitle.ToStringWithPipe();
-                    editorRow.Lines = subtitle.ToString();
-                    editorRow.SubtitleError = subtitle.SubtitleError;
+                    SetSubtitleToEditor(editorRow, subtitle);
 
                     SetSubtitlesErrors();
 
@@ -1044,9 +1042,7 @@ namespace SubtitlesCleanerEditor
 
                     EditorRow editorRow = GetEditorRowAt(i);
 
-                    editorRow.Text = subtitle.ToStringWithPipe();
-                    editorRow.Lines = subtitle.ToString();
-                    editorRow.SubtitleError = subtitle.SubtitleError;
+                    SetSubtitleToEditor(editorRow, subtitle);
                 }
             }
 
@@ -1121,16 +1117,25 @@ namespace SubtitlesCleanerEditor
 
         private void txtSubtitle_LeaveWithChangedText(object sender, Tuple<EditorRow, string> e)
         {
-            txtSubtitleTextChanged(e.Item1, e.Item2);
+            ChangeSubtitleText(e.Item1, e.Item2);
         }
 
-        private void txtSubtitleTextChanged(EditorRow editorRow, string text)
+        private void ChangeSubtitleText(EditorRow editorRow, string text)
         {
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
             subtitle.CheckSubtitle(cleanHICaseInsensitive);
 
+            SetSubtitleToEditor(editorRow, subtitle);
+
+            SetSubtitlesErrors();
+
+            SetFormTitle(true);
+        }
+
+        private void SetSubtitleToEditor(EditorRow editorRow, Subtitle subtitle)
+        {
             editorRow.Text = subtitle.ToStringWithPipe();
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
@@ -1141,10 +1146,6 @@ namespace SubtitlesCleanerEditor
             txtCleanSubtitle.Text = editorRow.CleanLines;
 
             SetLineLengths();
-
-            SetSubtitlesErrors();
-
-            SetFormTitle(true);
         }
 
         #endregion
@@ -1180,23 +1181,16 @@ namespace SubtitlesCleanerEditor
                 return -1;
 
             if (editorRow.SubtitleError.IsSet(SubtitleError.Not_Subtitle) ||
-                editorRow.SubtitleError.IsSet(SubtitleError.Empty_Line))
+                editorRow.SubtitleError.IsSet(SubtitleError.Empty_Line) ||
+                string.IsNullOrEmpty(txtCleanSubtitle.Text))
             {
                 DeleteSubtitle(editorRow);
                 (lstEditor.DataSource as BindingList<EditorRow>).Remove(editorRow);
             }
             else
             {
-                if (string.IsNullOrEmpty(txtCleanSubtitle.Text))
-                {
-                    DeleteSubtitle(editorRow);
-                    (lstEditor.DataSource as BindingList<EditorRow>).Remove(editorRow);
-                }
-                else
-                {
-                    txtSubtitle.Text = txtCleanSubtitle.Text;
-                    txtSubtitleTextChanged(editorRow, txtCleanSubtitle.Text);
-                }
+                txtSubtitle.Text = txtCleanSubtitle.Text;
+                ChangeSubtitleText(editorRow, txtCleanSubtitle.Text);
             }
 
             return editorRow.Num;
