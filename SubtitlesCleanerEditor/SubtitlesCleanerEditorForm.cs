@@ -1187,8 +1187,16 @@ namespace SubtitlesCleanerEditor
             }
             else
             {
-                txtSubtitle.Text = txtCleanSubtitle.Text;
-                txtSubtitleTextChanged(editorRow, txtCleanSubtitle.Text);
+                if (string.IsNullOrEmpty(txtCleanSubtitle.Text))
+                {
+                    DeleteSubtitle(editorRow);
+                    (lstEditor.DataSource as BindingList<EditorRow>).Remove(editorRow);
+                }
+                else
+                {
+                    txtSubtitle.Text = txtCleanSubtitle.Text;
+                    txtSubtitleTextChanged(editorRow, txtCleanSubtitle.Text);
+                }
             }
 
             return editorRow.Num;
