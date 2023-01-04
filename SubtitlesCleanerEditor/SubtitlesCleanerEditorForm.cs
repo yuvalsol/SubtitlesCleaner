@@ -1152,18 +1152,7 @@ namespace SubtitlesCleanerEditor
 
         #region Fix Text
 
-        private void btnFixText_Click(object sender, EventArgs e)
-        {
-            int num = FixText();
-            if (num != -1)
-            {
-                int index = num - 1;
-                if (0 <= index && index <= lstEditor.Rows.Count - 1)
-                    SelectRow(index);
-            }
-        }
-
-        private void btnFixTextAndAdvance_Click(object sender, EventArgs e)
+        private void btnFixAndAdvance_Click(object sender, EventArgs e)
         {
             int num = FixText();
             if (num != -1)
@@ -1171,6 +1160,29 @@ namespace SubtitlesCleanerEditor
                 ErrorRow errorRow = SelectClosestErrorRow(num);
                 if (errorRow != null)
                     SelectRow(errorRow.Num - 1);
+            }
+        }
+
+        private void btnAdvance_Click(object sender, EventArgs e)
+        {
+            EditorRow editorRow = GetSelectedEditorRow();
+            if (editorRow == null)
+                return;
+
+            int num = editorRow.Num + 1;
+            ErrorRow errorRow = SelectClosestErrorRow(num);
+            if (errorRow != null)
+                SelectRow(errorRow.Num - 1);
+        }
+
+        private void btnFix_Click(object sender, EventArgs e)
+        {
+            int num = FixText();
+            if (num != -1)
+            {
+                int index = num - 1;
+                if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                    SelectRow(index);
             }
         }
 

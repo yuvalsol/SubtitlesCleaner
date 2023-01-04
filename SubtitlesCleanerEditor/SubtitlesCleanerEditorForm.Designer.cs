@@ -50,11 +50,13 @@
             this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnCleanText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnFixAndAdvance = new System.Windows.Forms.Button();
+            this.btnAdvance = new System.Windows.Forms.Button();
+            this.btnFix = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblCleanLineLengths = new System.Windows.Forms.Label();
-            this.btnFixText = new System.Windows.Forms.Button();
             this.lblLineLengths = new System.Windows.Forms.Label();
-            this.btnFixTextAndAdvance = new System.Windows.Forms.Button();
             this.txtCleanSubtitle = new System.Windows.Forms.TextBox();
             this.txtSubtitle = new SubtitlesCleanerEditor.TextBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
@@ -95,6 +97,7 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).BeginInit();
+            this.flowLayoutPanel6.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -296,6 +299,64 @@
             this.ColumnCleanText.ReadOnly = true;
             this.ColumnCleanText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
+            // flowLayoutPanel6
+            // 
+            this.flowLayoutPanel6.AutoSize = true;
+            this.flowLayoutPanel6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel6.Controls.Add(this.btnFixAndAdvance);
+            this.flowLayoutPanel6.Controls.Add(this.btnAdvance);
+            this.flowLayoutPanel6.Controls.Add(this.btnFix);
+            this.flowLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel6.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel6.Location = new System.Drawing.Point(431, 0);
+            this.flowLayoutPanel6.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel6.Name = "flowLayoutPanel6";
+            this.tableLayoutPanel1.SetRowSpan(this.flowLayoutPanel6, 2);
+            this.flowLayoutPanel6.Size = new System.Drawing.Size(111, 88);
+            this.flowLayoutPanel6.TabIndex = 10;
+            // 
+            // btnFixAndAdvance
+            // 
+            this.btnFixAndAdvance.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnFixAndAdvance.AutoSize = true;
+            this.btnFixAndAdvance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnFixAndAdvance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFixAndAdvance.Location = new System.Drawing.Point(3, 3);
+            this.btnFixAndAdvance.Name = "btnFixAndAdvance";
+            this.btnFixAndAdvance.Size = new System.Drawing.Size(105, 23);
+            this.btnFixAndAdvance.TabIndex = 7;
+            this.btnFixAndAdvance.Text = "<= Fix && Advance";
+            this.btnFixAndAdvance.UseVisualStyleBackColor = true;
+            this.btnFixAndAdvance.Click += new System.EventHandler(this.btnFixAndAdvance_Click);
+            // 
+            // btnAdvance
+            // 
+            this.btnAdvance.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnAdvance.AutoSize = true;
+            this.btnAdvance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAdvance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAdvance.Location = new System.Drawing.Point(16, 32);
+            this.btnAdvance.Name = "btnAdvance";
+            this.btnAdvance.Size = new System.Drawing.Size(78, 23);
+            this.btnAdvance.TabIndex = 9;
+            this.btnAdvance.Text = "<= Advance";
+            this.btnAdvance.UseVisualStyleBackColor = true;
+            this.btnAdvance.Click += new System.EventHandler(this.btnAdvance_Click);
+            // 
+            // btnFix
+            // 
+            this.btnFix.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnFix.AutoSize = true;
+            this.btnFix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnFix.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFix.Location = new System.Drawing.Point(30, 61);
+            this.btnFix.Name = "btnFix";
+            this.btnFix.Size = new System.Drawing.Size(50, 23);
+            this.btnFix.TabIndex = 8;
+            this.btnFix.Text = "<= Fix";
+            this.btnFix.UseVisualStyleBackColor = true;
+            this.btnFix.Click += new System.EventHandler(this.btnFix_Click);
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -304,10 +365,9 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel6, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblCleanLineLengths, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.btnFixText, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblLineLengths, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.btnFixTextAndAdvance, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtCleanSubtitle, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtSubtitle, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 63);
@@ -323,22 +383,10 @@
             // 
             this.lblCleanLineLengths.AutoSize = true;
             this.lblCleanLineLengths.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCleanLineLengths.Location = new System.Drawing.Point(554, 88);
+            this.lblCleanLineLengths.Location = new System.Drawing.Point(545, 88);
             this.lblCleanLineLengths.Name = "lblCleanLineLengths";
             this.lblCleanLineLengths.Size = new System.Drawing.Size(0, 14);
             this.lblCleanLineLengths.TabIndex = 0;
-            // 
-            // btnFixText
-            // 
-            this.btnFixText.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnFixText.AutoSize = true;
-            this.btnFixText.Location = new System.Drawing.Point(449, 54);
-            this.btnFixText.Name = "btnFixText";
-            this.btnFixText.Size = new System.Drawing.Size(75, 24);
-            this.btnFixText.TabIndex = 3;
-            this.btnFixText.Text = "<= Fix";
-            this.btnFixText.UseVisualStyleBackColor = true;
-            this.btnFixText.Click += new System.EventHandler(this.btnFixText_Click);
             // 
             // lblLineLengths
             // 
@@ -349,31 +397,19 @@
             this.lblLineLengths.Size = new System.Drawing.Size(0, 14);
             this.lblLineLengths.TabIndex = 0;
             // 
-            // btnFixTextAndAdvance
-            // 
-            this.btnFixTextAndAdvance.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnFixTextAndAdvance.AutoSize = true;
-            this.btnFixTextAndAdvance.Location = new System.Drawing.Point(425, 10);
-            this.btnFixTextAndAdvance.Name = "btnFixTextAndAdvance";
-            this.btnFixTextAndAdvance.Size = new System.Drawing.Size(123, 24);
-            this.btnFixTextAndAdvance.TabIndex = 2;
-            this.btnFixTextAndAdvance.Text = "<= Fix && Advance";
-            this.btnFixTextAndAdvance.UseVisualStyleBackColor = true;
-            this.btnFixTextAndAdvance.Click += new System.EventHandler(this.btnFixTextAndAdvance_Click);
-            // 
             // txtCleanSubtitle
             // 
             this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
             this.txtCleanSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtCleanSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtCleanSubtitle.Location = new System.Drawing.Point(554, 3);
+            this.txtCleanSubtitle.Location = new System.Drawing.Point(545, 3);
             this.txtCleanSubtitle.Multiline = true;
             this.txtCleanSubtitle.Name = "txtCleanSubtitle";
             this.txtCleanSubtitle.ReadOnly = true;
             this.tableLayoutPanel1.SetRowSpan(this.txtCleanSubtitle, 2);
             this.txtCleanSubtitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCleanSubtitle.Size = new System.Drawing.Size(417, 82);
+            this.txtCleanSubtitle.Size = new System.Drawing.Size(426, 82);
             this.txtCleanSubtitle.TabIndex = 4;
             this.txtCleanSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -388,7 +424,7 @@
             this.txtSubtitle.Name = "txtSubtitle";
             this.tableLayoutPanel1.SetRowSpan(this.txtSubtitle, 2);
             this.txtSubtitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSubtitle.Size = new System.Drawing.Size(416, 82);
+            this.txtSubtitle.Size = new System.Drawing.Size(425, 82);
             this.txtSubtitle.TabIndex = 1;
             this.txtSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesCleanerEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
@@ -786,6 +822,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).EndInit();
+            this.flowLayoutPanel6.ResumeLayout(false);
+            this.flowLayoutPanel6.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
@@ -846,11 +884,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnText;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnCleanText;
         private System.Windows.Forms.TextBox txtCleanSubtitle;
-        private System.Windows.Forms.Button btnFixTextAndAdvance;
-        private System.Windows.Forms.Button btnFixText;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblLineLengths;
         private System.Windows.Forms.Label lblCleanLineLengths;
+        private System.Windows.Forms.Button btnAdvance;
+        private System.Windows.Forms.Button btnFix;
+        private System.Windows.Forms.Button btnFixAndAdvance;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
     }
 }
 
