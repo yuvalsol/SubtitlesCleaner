@@ -2433,6 +2433,9 @@ namespace SubtitlesCleanerLibrary
             // TextJ$
             ,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR>J+)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
 
+            // ♪ Text j"
+            ,new FindAndReplace(new Regex(@"(?i)^♪.*?(?<OCR>j['""&!])$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+
             // ♪ Text &
             ,new FindAndReplace(new Regex(@"^[♪&].*?(?<OCR>&)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
             // & Text ♪
