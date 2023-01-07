@@ -904,10 +904,6 @@ namespace SubtitlesCleanerEditor
             {
                 SearchAndReplace();
             }
-            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S)
-            {
-                Save(false);
-            }
             else if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.F3)
             {
                 if (searchAndReplaceDialog != null)
@@ -917,6 +913,14 @@ namespace SubtitlesCleanerEditor
             {
                 if (searchAndReplaceDialog != null)
                     FindNext(searchAndReplaceDialog.GetFind());
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S)
+            {
+                Save(false);
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.G)
+            {
+                GoToSubtitle();
             }
         }
 
@@ -1505,6 +1509,44 @@ namespace SubtitlesCleanerEditor
             SetFormTitle(true);
 
             this.Cursor = Cursors.Default;
+        }
+
+        #endregion
+
+        #region Go To Subtitle
+
+        private GoToSubtitleForm goToSubtitleDialog;
+
+        private void GoToSubtitle()
+        {
+            if (subtitles == null || subtitles.Count == 0)
+                return;
+
+            if (goToSubtitleDialog == null)
+                goToSubtitleDialog = new GoToSubtitleForm();
+
+            if (goToSubtitleDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                int num = goToSubtitleDialog.GetSubtitleNumber();
+                if (num != -1)
+                {
+                    int index = num - 1;
+                    if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                    {
+                        SelectEditorRow(index);
+
+                        foreach (DataGridViewRow row in lstErrors.Rows)
+                        {
+                            ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+                            if (errorRow.Num == num)
+                            {
+                                SelectGVRow(row);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         #endregion

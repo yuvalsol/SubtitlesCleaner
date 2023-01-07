@@ -74,6 +74,12 @@
     <Compile Include="ErrorRow.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Find.cs" />
+    <Compile Include="GoToSubtitleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GoToSubtitleForm.Designer.cs">
+      <DependentUpon>GoToSubtitleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MethodInfoExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -112,6 +118,9 @@
     </Compile>
     <EmbeddedResource Include="AdjustTimingForm.resx">
       <DependentUpon>AdjustTimingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GoToSubtitleForm.resx">
+      <DependentUpon>GoToSubtitleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
