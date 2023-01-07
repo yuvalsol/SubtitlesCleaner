@@ -72,7 +72,9 @@
     </Compile>
     <Compile Include="EditorRow.cs" />
     <Compile Include="ErrorRow.cs" />
+    <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Find.cs" />
+    <Compile Include="MethodInfoExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepeatButton.cs">

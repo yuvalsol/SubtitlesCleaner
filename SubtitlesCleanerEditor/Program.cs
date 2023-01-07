@@ -34,7 +34,7 @@ namespace SubtitlesCleanerEditor
                 MessageBox.Show(string.Format("An unhandled error occurred.{0}The application will terminate now.{0}{0}{1}{0}{0}{2}",
                     "\n",
                     ex.Message,
-                    ex.StackTrace.Split('\n')[0]
+                    ex.GetFormattedStackTrace()
                 ), string.Format("Unhandled Error - {0} {1}",
                     Assembly.GetExecutingAssembly().GetName().Name,
                     Assembly.GetExecutingAssembly().GetName().Version.ToString(3)
