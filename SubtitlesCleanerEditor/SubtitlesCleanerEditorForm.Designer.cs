@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -42,6 +43,9 @@
             this.lstErrors = new System.Windows.Forms.DataGridView();
             this.ColumnNum1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnError1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.contextMenuStripErrors = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.fixErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixAllErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.lstEditor = new System.Windows.Forms.DataGridView();
             this.ColumnNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -50,11 +54,16 @@
             this.ColumnDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnCleanText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.contextMenuStripEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copySubtitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCleanTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCleanSubtitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnFixAndAdvance = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
             this.btnFix = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblCleanLineLengths = new System.Windows.Forms.Label();
             this.lblLineLengths = new System.Windows.Forms.Label();
             this.txtCleanSubtitle = new System.Windows.Forms.TextBox();
@@ -92,13 +101,15 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lstErrors)).BeginInit();
+            this.contextMenuStripErrors.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).BeginInit();
-            this.flowLayoutPanel6.SuspendLayout();
+            this.contextMenuStripEditor.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel6.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
@@ -137,6 +148,7 @@
             this.lstErrors.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNum1,
             this.ColumnError1});
+            this.lstErrors.ContextMenuStrip = this.contextMenuStripErrors;
             this.lstErrors.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstErrors.Location = new System.Drawing.Point(0, 0);
             this.lstErrors.MultiSelect = false;
@@ -149,6 +161,7 @@
             this.lstErrors.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_CellMouseDoubleClick);
             this.lstErrors.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_ColumnHeaderMouseClick);
             this.lstErrors.SelectionChanged += new System.EventHandler(this.lstErrors_SelectionChanged);
+            this.lstErrors.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lstErrors_MouseUp);
             // 
             // ColumnNum1
             // 
@@ -171,6 +184,29 @@
             this.ColumnError1.Name = "ColumnError1";
             this.ColumnError1.ReadOnly = true;
             this.ColumnError1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // contextMenuStripErrors
+            // 
+            this.contextMenuStripErrors.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fixErrorToolStripMenuItem,
+            this.fixAllErrorsToolStripMenuItem});
+            this.contextMenuStripErrors.Name = "contextMenuStripErrors";
+            this.contextMenuStripErrors.ShowImageMargin = false;
+            this.contextMenuStripErrors.Size = new System.Drawing.Size(114, 48);
+            // 
+            // fixErrorToolStripMenuItem
+            // 
+            this.fixErrorToolStripMenuItem.Name = "fixErrorToolStripMenuItem";
+            this.fixErrorToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.fixErrorToolStripMenuItem.Text = "Fix Error";
+            this.fixErrorToolStripMenuItem.Click += new System.EventHandler(this.fixErrorToolStripMenuItem_Click);
+            // 
+            // fixAllErrorsToolStripMenuItem
+            // 
+            this.fixAllErrorsToolStripMenuItem.Name = "fixAllErrorsToolStripMenuItem";
+            this.fixAllErrorsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.fixAllErrorsToolStripMenuItem.Text = "Fix All Errors";
+            this.fixAllErrorsToolStripMenuItem.Click += new System.EventHandler(this.fixAllErrorsToolStripMenuItem_Click);
             // 
             // splitContainer2
             // 
@@ -219,6 +255,7 @@
             this.ColumnDuration,
             this.ColumnText,
             this.ColumnCleanText});
+            this.lstEditor.ContextMenuStrip = this.contextMenuStripEditor;
             this.lstEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstEditor.Location = new System.Drawing.Point(0, 0);
             this.lstEditor.MultiSelect = false;
@@ -232,6 +269,7 @@
             this.lstEditor.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.lstEditor_DataBindingComplete);
             this.lstEditor.SelectionChanged += new System.EventHandler(this.lstEditor_SelectionChanged);
             this.lstEditor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstEditor_KeyDown);
+            this.lstEditor.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lstEditor_MouseUp);
             // 
             // ColumnNum
             // 
@@ -299,6 +337,67 @@
             this.ColumnCleanText.ReadOnly = true;
             this.ColumnCleanText.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
+            // contextMenuStripEditor
+            // 
+            this.contextMenuStripEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyTextToolStripMenuItem,
+            this.copySubtitleToolStripMenuItem,
+            this.copyCleanTextToolStripMenuItem,
+            this.copyCleanSubtitleToolStripMenuItem});
+            this.contextMenuStripEditor.Name = "contextMenuStripEditor";
+            this.contextMenuStripEditor.ShowImageMargin = false;
+            this.contextMenuStripEditor.Size = new System.Drawing.Size(154, 92);
+            // 
+            // copyTextToolStripMenuItem
+            // 
+            this.copyTextToolStripMenuItem.Name = "copyTextToolStripMenuItem";
+            this.copyTextToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copyTextToolStripMenuItem.Text = "Copy Text";
+            this.copyTextToolStripMenuItem.Click += new System.EventHandler(this.copyTextToolStripMenuItem_Click);
+            // 
+            // copySubtitleToolStripMenuItem
+            // 
+            this.copySubtitleToolStripMenuItem.Name = "copySubtitleToolStripMenuItem";
+            this.copySubtitleToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copySubtitleToolStripMenuItem.Text = "Copy Subtitle";
+            this.copySubtitleToolStripMenuItem.Click += new System.EventHandler(this.copySubtitleToolStripMenuItem_Click);
+            // 
+            // copyCleanTextToolStripMenuItem
+            // 
+            this.copyCleanTextToolStripMenuItem.Name = "copyCleanTextToolStripMenuItem";
+            this.copyCleanTextToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copyCleanTextToolStripMenuItem.Text = "Copy Clean Text";
+            this.copyCleanTextToolStripMenuItem.Click += new System.EventHandler(this.copyCleanTextToolStripMenuItem_Click);
+            // 
+            // copyCleanSubtitleToolStripMenuItem
+            // 
+            this.copyCleanSubtitleToolStripMenuItem.Name = "copyCleanSubtitleToolStripMenuItem";
+            this.copyCleanSubtitleToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copyCleanSubtitleToolStripMenuItem.Text = "Copy Clean Subtitle";
+            this.copyCleanSubtitleToolStripMenuItem.Click += new System.EventHandler(this.copyCleanSubtitleToolStripMenuItem_Click);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 3;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel6, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblCleanLineLengths, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblLineLengths, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.txtCleanSubtitle, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.txtSubtitle, 0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 63);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 102);
+            this.tableLayoutPanel1.TabIndex = 3;
+            // 
             // flowLayoutPanel6
             // 
             this.flowLayoutPanel6.AutoSize = true;
@@ -356,28 +455,6 @@
             this.btnFix.Text = "<= Fix";
             this.btnFix.UseVisualStyleBackColor = true;
             this.btnFix.Click += new System.EventHandler(this.btnFix_Click);
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel6, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblCleanLineLengths, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblLineLengths, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.txtCleanSubtitle, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.txtSubtitle, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 63);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 102);
-            this.tableLayoutPanel1.TabIndex = 3;
             // 
             // lblCleanLineLengths
             // 
@@ -816,16 +893,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lstErrors)).EndInit();
+            this.contextMenuStripErrors.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).EndInit();
-            this.flowLayoutPanel6.ResumeLayout(false);
-            this.flowLayoutPanel6.PerformLayout();
+            this.contextMenuStripEditor.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel6.ResumeLayout(false);
+            this.flowLayoutPanel6.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
@@ -891,6 +970,14 @@
         private System.Windows.Forms.Button btnFix;
         private System.Windows.Forms.Button btnFixAndAdvance;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripErrors;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripEditor;
+        private System.Windows.Forms.ToolStripMenuItem copyTextToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fixErrorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fixAllErrorsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copySubtitleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyCleanSubtitleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyCleanTextToolStripMenuItem;
     }
 }
 

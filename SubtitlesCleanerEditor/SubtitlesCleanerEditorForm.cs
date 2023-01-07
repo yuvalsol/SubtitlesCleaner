@@ -162,7 +162,7 @@ namespace SubtitlesCleanerEditor
             else if (index > lstEditor.Rows.Count - 1)
                 index = lstEditor.Rows.Count - 1;
 
-            SelectRow(index);
+            SelectEditorRow(index);
         }
 
         #endregion
@@ -274,6 +274,7 @@ namespace SubtitlesCleanerEditor
             }
 
             lstErrors.DataSource = errorRows;
+
             sortErrors();
         }
 
@@ -292,54 +293,62 @@ namespace SubtitlesCleanerEditor
 
         #region Select Row
 
-        private void SelectRow(int index)
-        {
-            DataGridViewRow row = lstEditor.Rows[index];
-            SelectRow(row);
-        }
-
-        private void SelectRow(DataGridViewRow row)
+        private void SelectGVRow(DataGridViewRow row)
         {
             row.Selected = true;
             row.Cells[0].Selected = true;
+            //row.DataGridView.FirstDisplayedScrollingRowIndex = row.Index;
         }
 
-        private DataGridViewRow GetRowAt(int index)
+        private void SelectEditorRow(int index)
         {
-            return lstEditor.Rows[index];
+            DataGridViewRow row = lstEditor.Rows[index];
+            SelectGVRow(row);
+        }
+
+        private void SelectErrorRow(int index)
+        {
+            DataGridViewRow row = lstErrors.Rows[index];
+            SelectGVRow(row);
         }
 
         private EditorRow GetEditorRowAt(int index)
         {
-            DataGridViewRow row = GetRowAt(index);
+            DataGridViewRow row = lstEditor.Rows[index];
             return row.DataBoundItem as EditorRow;
         }
 
-        private DataGridViewRow GetSelectedRow()
+        private ErrorRow GetErrorRowAt(int index)
+        {
+            DataGridViewRow row = lstErrors.Rows[index];
+            return row.DataBoundItem as ErrorRow;
+        }
+
+        private DataGridViewRow GetSelectedEditorGVRow()
         {
             if (lstEditor.SelectedRows == null || lstEditor.SelectedRows.Count == 0)
                 return null;
             return lstEditor.SelectedRows[0];
         }
 
-        private EditorRow GetSelectedEditorRow()
-        {
-            DataGridViewRow row = GetSelectedRow();
-            if (row != null)
-                return row.DataBoundItem as EditorRow;
-            return null;
-        }
-
-        private DataGridViewRow GetErrorSelectedRow()
+        private DataGridViewRow GetSelectedErrorGVRow()
         {
             if (lstErrors.SelectedRows == null || lstErrors.SelectedRows.Count == 0)
                 return null;
             return lstErrors.SelectedRows[0];
         }
 
+        private EditorRow GetSelectedEditorRow()
+        {
+            DataGridViewRow row = GetSelectedEditorGVRow();
+            if (row != null)
+                return row.DataBoundItem as EditorRow;
+            return null;
+        }
+
         private ErrorRow GetSelectedErrorRow()
         {
-            DataGridViewRow row = GetErrorSelectedRow();
+            DataGridViewRow row = GetSelectedErrorGVRow();
             if (row != null)
                 return row.DataBoundItem as ErrorRow;
             return null;
@@ -444,6 +453,8 @@ namespace SubtitlesCleanerEditor
 
         private void DeleteSubtitle(EditorRow editorRow)
         {
+            subtitles.RemoveAt(editorRow.Num - 1);
+
             for (int num = editorRow.Num; num < lstEditor.Rows.Count; num++)
             {
                 EditorRow er = GetEditorRowAt(num);
@@ -489,7 +500,7 @@ namespace SubtitlesCleanerEditor
             isIncludeSelectedRowInSearch = true;
 
             DataGridViewRow previousSelectedRow = CurrentSelectedRow;
-            CurrentSelectedRow = GetSelectedRow();
+            CurrentSelectedRow = GetSelectedEditorGVRow();
             if (previousSelectedRow != null)
                 previousSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
             if (CurrentSelectedRow != null)
@@ -504,7 +515,7 @@ namespace SubtitlesCleanerEditor
         private void ErrorSelectionChanged()
         {
             DataGridViewRow previousErrorSelectedRow = CurrentErrorSelectedRow;
-            CurrentErrorSelectedRow = GetErrorSelectedRow();
+            CurrentErrorSelectedRow = GetSelectedErrorGVRow();
             if (previousErrorSelectedRow != null)
                 previousErrorSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
             if (CurrentErrorSelectedRow != null)
@@ -592,6 +603,7 @@ namespace SubtitlesCleanerEditor
 
             lstErrors.DataSource = null;
             lstErrors.DataSource = errorRows;
+
             lstErrors.Columns[lstErrors_SortedColumnIndex].HeaderCell.SortGlyphDirection = lstErrors_sortOrder;
 
             if (lstErrors.Rows.Count > 0)
@@ -609,7 +621,7 @@ namespace SubtitlesCleanerEditor
                     if (errorRowBeforeSort == errorRow)
                     {
                         CurrentErrorSelectedRow = row;
-                        SelectRow(row);
+                        SelectGVRow(row);
                     }
                 }
 
@@ -639,11 +651,10 @@ namespace SubtitlesCleanerEditor
         {
             if (lstErrors.CurrentRow.Selected)
             {
-                if (lstErrors.SelectedRows == null || lstErrors.SelectedRows.Count == 0)
+                ErrorRow selectedErrorRow = GetSelectedErrorRow();
+                if (selectedErrorRow == null)
                     return;
-                ErrorRow selectedErrorRow = lstErrors.SelectedRows[0].DataBoundItem as ErrorRow;
-
-                SelectRow(selectedErrorRow.Num - 1);
+                SelectEditorRow(selectedErrorRow.Num - 1);
             }
         }
 
@@ -656,7 +667,7 @@ namespace SubtitlesCleanerEditor
                 ErrorRow errorRow = row.DataBoundItem as ErrorRow;
                 if (errorRow.Num == editorRow.Num)
                 {
-                    SelectRow(row);
+                    SelectGVRow(row);
                     break;
                 }
             }
@@ -669,12 +680,12 @@ namespace SubtitlesCleanerEditor
                 ErrorRow errorRow = row.DataBoundItem as ErrorRow;
                 if (errorRow.Num == num)
                 {
-                    SelectRow(row);
+                    SelectGVRow(row);
                     return errorRow;
                 }
                 else if (errorRow.Num > num)
                 {
-                    SelectRow(row);
+                    SelectGVRow(row);
                     return errorRow;
                 }
             }
@@ -683,7 +694,7 @@ namespace SubtitlesCleanerEditor
             {
                 DataGridViewRow row = lstErrors.Rows[0];
                 ErrorRow errorRow = row.DataBoundItem as ErrorRow;
-                SelectRow(row);
+                SelectGVRow(row);
                 return errorRow;
             }
 
@@ -942,7 +953,7 @@ namespace SubtitlesCleanerEditor
 
             int fromIndex = 0;
 
-            DataGridViewRow row = GetSelectedRow();
+            DataGridViewRow row = GetSelectedEditorGVRow();
             if (row != null)
                 fromIndex = row.Index + (isIncludeSelectedRowInSearch ? 0 : 1);
 
@@ -950,7 +961,7 @@ namespace SubtitlesCleanerEditor
             {
                 if (IsFound(i, find))
                 {
-                    SelectRow(i);
+                    SelectEditorRow(i);
 
                     isIncludeSelectedRowInSearch = false;
 
@@ -966,7 +977,7 @@ namespace SubtitlesCleanerEditor
 
             int fromIndex = lstEditor.Rows.Count - 1;
 
-            DataGridViewRow row = GetSelectedRow();
+            DataGridViewRow row = GetSelectedEditorGVRow();
             if (row != null)
                 fromIndex = row.Index + (isIncludeSelectedRowInSearch ? 0 : -1);
 
@@ -974,7 +985,7 @@ namespace SubtitlesCleanerEditor
             {
                 if (IsFound(i, find))
                 {
-                    SelectRow(i);
+                    SelectEditorRow(i);
 
                     isIncludeSelectedRowInSearch = false;
 
@@ -990,7 +1001,7 @@ namespace SubtitlesCleanerEditor
 
             int fromIndex = 0;
 
-            DataGridViewRow row = GetSelectedRow();
+            DataGridViewRow row = GetSelectedEditorGVRow();
             if (row != null)
                 fromIndex = row.Index + (isIncludeSelectedRowInSearch ? 0 : 1);
 
@@ -1006,7 +1017,7 @@ namespace SubtitlesCleanerEditor
 
                     SetSubtitlesErrors();
 
-                    SelectRow(i);
+                    SelectEditorRow(i);
 
                     isIncludeSelectedRowInSearch = false;
 
@@ -1024,7 +1035,7 @@ namespace SubtitlesCleanerEditor
 
             int fromIndex = 0;
 
-            DataGridViewRow row = GetSelectedRow();
+            DataGridViewRow row = GetSelectedEditorGVRow();
             if (row != null)
                 fromIndex = row.Index + (isIncludeSelectedRowInSearch ? 0 : 1);
 
@@ -1050,7 +1061,7 @@ namespace SubtitlesCleanerEditor
             {
                 SetSubtitlesErrors();
 
-                SelectRow(lastIndexFoundAndReplaced);
+                SelectEditorRow(lastIndexFoundAndReplaced);
 
                 isIncludeSelectedRowInSearch = false;
 
@@ -1159,7 +1170,7 @@ namespace SubtitlesCleanerEditor
             {
                 ErrorRow errorRow = SelectClosestErrorRow(num);
                 if (errorRow != null)
-                    SelectRow(errorRow.Num - 1);
+                    SelectEditorRow(errorRow.Num - 1);
             }
         }
 
@@ -1172,7 +1183,7 @@ namespace SubtitlesCleanerEditor
             int num = editorRow.Num + 1;
             ErrorRow errorRow = SelectClosestErrorRow(num);
             if (errorRow != null)
-                SelectRow(errorRow.Num - 1);
+                SelectEditorRow(errorRow.Num - 1);
         }
 
         private void btnFix_Click(object sender, EventArgs e)
@@ -1182,7 +1193,7 @@ namespace SubtitlesCleanerEditor
             {
                 int index = num - 1;
                 if (0 <= index && index <= lstEditor.Rows.Count - 1)
-                    SelectRow(index);
+                    SelectEditorRow(index);
             }
         }
 
@@ -1224,6 +1235,276 @@ namespace SubtitlesCleanerEditor
                 dialog.DiffValue1 = editorRow.ShowValue;
             };
             dialog.Show(this);
+        }
+
+        #endregion
+
+        #region lstEditor Context Menu
+
+        private DataGridView.HitTestInfo lstEditor_hitTestInfo;
+
+        private void lstEditor_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                DataGridView.HitTestInfo hitTestInfo = lstEditor.HitTest(e.X, e.Y);
+                if (hitTestInfo != null && hitTestInfo.Type == DataGridViewHitTestType.Cell)
+                {
+                    lstEditor_hitTestInfo = hitTestInfo;
+                    contextMenuStripEditor.Show(lstEditor, new Point(e.X, e.Y));
+                }
+                else
+                {
+                    lstEditor_hitTestInfo = null;
+                    contextMenuStripEditor.Hide();
+                }
+            }
+        }
+
+        private void copyTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstEditor_hitTestInfo == null)
+                return;
+            copyText(lstEditor_hitTestInfo.RowIndex);
+            lstEditor_hitTestInfo = null;
+        }
+
+        private void copyText(int rowIndex)
+        {
+            EditorRow editorRow = GetEditorRowAt(rowIndex);
+            string text = editorRow.Lines;
+
+            if (string.IsNullOrEmpty(text))
+                Clipboard.Clear();
+            else
+                Clipboard.SetText(text);
+        }
+
+        private void copyCleanTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstEditor_hitTestInfo == null)
+                return;
+            copyCleanText(lstEditor_hitTestInfo.RowIndex);
+            lstEditor_hitTestInfo = null;
+        }
+
+        private void copyCleanText(int rowIndex)
+        {
+            EditorRow editorRow = GetEditorRowAt(rowIndex);
+            string text = editorRow.CleanLines;
+
+            if (string.IsNullOrEmpty(text))
+                Clipboard.Clear();
+            else
+                Clipboard.SetText(text);
+        }
+
+        private void copySubtitleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstEditor_hitTestInfo == null)
+                return;
+            copySubtitle(lstEditor_hitTestInfo.RowIndex);
+            lstEditor_hitTestInfo = null;
+        }
+
+        private void copySubtitle(int rowIndex)
+        {
+            EditorRow editorRow = GetEditorRowAt(rowIndex);
+            Subtitle subtitle = subtitles[editorRow.Num - 1];
+            string[] lines = subtitle.ToLines(rowIndex);
+            string text = string.Join(Environment.NewLine, lines);
+
+            if (string.IsNullOrEmpty(text))
+                Clipboard.Clear();
+            else
+                Clipboard.SetText(text);
+        }
+
+        private void copyCleanSubtitleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstEditor_hitTestInfo == null)
+                return;
+            copyCleanSubtitle(lstEditor_hitTestInfo.RowIndex);
+            lstEditor_hitTestInfo = null;
+        }
+
+        private void copyCleanSubtitle(int rowIndex)
+        {
+            EditorRow editorRow = GetEditorRowAt(rowIndex);
+            Subtitle subtitle = subtitles[editorRow.Num - 1];
+            Subtitle cleanSubtitle = SubtitlesHelper.CleanSubtitles(subtitle.Clone() as Subtitle, cleanHICaseInsensitive, false);
+
+            string[] lines = null;
+            if (cleanSubtitle != null)
+            {
+                lines = cleanSubtitle.ToLines(rowIndex);
+            }
+            else
+            {
+                lines = new string[3];
+                lines[0] = (rowIndex + 1).ToString();
+                lines[1] = subtitle.TimeToString();
+                lines[2] = string.Empty;
+            }
+
+            string text = string.Join(Environment.NewLine, lines);
+
+            if (string.IsNullOrEmpty(text))
+                Clipboard.Clear();
+            else
+                Clipboard.SetText(text);
+        }
+
+        #endregion
+
+        #region lstErrors Context Menu
+
+        private DataGridView.HitTestInfo lstErrors_hitTestInfo;
+
+        private void lstErrors_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                DataGridView.HitTestInfo hitTestInfo = lstErrors.HitTest(e.X, e.Y);
+                if (hitTestInfo != null && hitTestInfo.Type == DataGridViewHitTestType.Cell)
+                {
+                    lstErrors_hitTestInfo = hitTestInfo;
+                    ErrorRow errorRow = GetErrorRowAt(lstErrors_hitTestInfo.RowIndex);
+                    fixAllErrorsToolStripMenuItem.Text = "Fix All " + errorRow.Error + (errorRow.Error.EndsWith("Error") ? "s" : " Errors");
+                    contextMenuStripErrors.Show(lstErrors, new Point(e.X, e.Y));
+                }
+                else
+                {
+                    lstErrors_hitTestInfo = null;
+                    contextMenuStripErrors.Hide();
+                }
+            }
+        }
+
+        private void fixErrorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstErrors_hitTestInfo == null)
+                return;
+            FixError(lstErrors_hitTestInfo.RowIndex);
+            lstErrors_hitTestInfo = null;
+        }
+
+        private void FixError(int rowIndex)
+        {
+            SelectErrorRow(rowIndex);
+            ErrorRow selectedErrorRow = GetSelectedErrorRow();
+            if (selectedErrorRow == null)
+                return;
+            SelectEditorRow(selectedErrorRow.Num - 1);
+            FixText();
+            SelectClosestErrorRow(selectedErrorRow.Num);
+        }
+
+        private void fixAllErrorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstErrors_hitTestInfo == null)
+                return;
+            FixAllErrors(lstErrors_hitTestInfo.RowIndex);
+            lstErrors_hitTestInfo = null;
+        }
+
+        private void FixAllErrors(int rowIndex)
+        {
+            this.Cursor = Cursors.WaitCursor;
+
+            ErrorRow selectedErrorRow = GetErrorRowAt(rowIndex);
+            SubtitleError selectedSubtitleError = selectedErrorRow.SubtitleError;
+
+            var errorRowNums = lstErrors.Rows
+                .Cast<DataGridViewRow>()
+                .Select(row => row.DataBoundItem as ErrorRow)
+                .Where(errorRow => errorRow.SubtitleError == selectedSubtitleError)
+                .Select(errorRow => errorRow.Num)
+                .ToArray();
+
+            var rows = lstEditor.Rows
+                .Cast<DataGridViewRow>()
+                .Select(row => new { GVEditorRow = row, EditorRow = row.DataBoundItem as EditorRow })
+                .Join(
+                    errorRowNums,
+                    item => item.EditorRow.Num,
+                    num => num,
+                    (item, num) => new
+                    {
+                        item.GVEditorRow,
+                        item.EditorRow,
+                        Subtitle = subtitles[item.EditorRow.Num - 1],
+                        IsToDeleteSubtitle =
+                            item.EditorRow.SubtitleError.IsSet(SubtitleError.Not_Subtitle) ||
+                            item.EditorRow.SubtitleError.IsSet(SubtitleError.Empty_Line) ||
+                            string.IsNullOrEmpty(item.EditorRow.CleanLines)
+                    }
+                )
+                .OrderBy(item => item.EditorRow.Num)
+                .ToArray();
+
+            foreach (var item in rows.Where(r => r.IsToDeleteSubtitle == false))
+            {
+                item.Subtitle.Lines = (item.EditorRow.CleanLines ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                item.Subtitle.SubtitleError = SubtitleError.None;
+
+                item.EditorRow.Text = item.EditorRow.CleanText = item.Subtitle.ToStringWithPipe();
+                item.EditorRow.Lines = item.EditorRow.CleanLines = item.Subtitle.ToString();
+                item.EditorRow.SubtitleError = item.Subtitle.SubtitleError;
+            }
+
+            var toDeleteGVEditorRows =
+                rows.Where(r => r.IsToDeleteSubtitle).Select(item => item.GVEditorRow)
+                .Distinct()
+                .OrderBy(r => r.Index)
+                .ToArray();
+
+            var toDeleteSubtitles =
+                rows.Where(r => r.IsToDeleteSubtitle).Select(item => item.Subtitle)
+                .Distinct()
+                .OrderBy(s => s.Show)
+                .ToArray();
+
+            int startIndex = -1;
+            if (toDeleteGVEditorRows.Length > 0)
+                startIndex = toDeleteGVEditorRows[0].Index;
+
+            foreach (var row in toDeleteGVEditorRows)
+                lstEditor.Rows.Remove(row);
+
+            foreach (var subtitle in toDeleteSubtitles)
+                subtitles.Remove(subtitle);
+
+            if (startIndex != -1)
+            {
+                for (int index = startIndex; index < lstEditor.Rows.Count; index++)
+                {
+                    EditorRow er = GetEditorRowAt(index);
+                    er.Num = index + 1;
+                }
+            }
+
+            SetSubtitlesErrors();
+
+            if (lstErrors.Rows != null && lstErrors.Rows.Count > 0)
+            {
+                DataGridViewRow row = lstErrors.Rows[0];
+                SelectGVRow(row);
+                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+                SelectEditorRow(errorRow.Num - 1);
+            }
+            else
+            {
+                DataGridViewRow row = GetSelectedEditorGVRow();
+                if (row == null && lstEditor.Rows.Count > 0)
+                    SelectEditorRow(0);
+            }
+
+            SelectionChanged();
+
+            SetFormTitle(true);
+
+            this.Cursor = Cursors.Default;
         }
 
         #endregion
