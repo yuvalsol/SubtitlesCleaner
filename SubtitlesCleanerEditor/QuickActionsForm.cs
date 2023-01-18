@@ -94,41 +94,45 @@ namespace SubtitlesCleanerEditor
 
                     List<string> lines1 = item.OriginalSubtitle.Lines;
                     List<string> lines2 = item.CleanedSubtitle.Lines;
+                    bool isOriginalSubtitleNotEmpty = (lines1.Count > 0);
                     bool isCleanedSubtitleNotEmpty = (lines2.Count > 0);
 
-                    int maxLineLength1 = lines1.Max(l => l.Length);
-
-                    for (int i = 0; i < lines1.Count; i++)
+                    if (isOriginalSubtitleNotEmpty)
                     {
-                        string line1 = lines1[i];
-                        if (isCleanedSubtitleNotEmpty)
+                        int maxLineLength1 = lines1.Max(l => l.Length);
+
+                        for (int i = 0; i < lines1.Count; i++)
                         {
-                            sb.Append(line1);
-                            sb.Append(new String(' ', maxLineLength1 - line1.Length));
-                            sb.Append(" | ");
-                            if (i < lines2.Count)
+                            string line1 = lines1[i];
+                            if (isCleanedSubtitleNotEmpty)
                             {
-                                string line2 = lines2[i];
-                                sb.AppendLine(line2);
+                                sb.Append(line1);
+                                sb.Append(new String(' ', maxLineLength1 - line1.Length));
+                                sb.Append(" | ");
+                                if (i < lines2.Count)
+                                {
+                                    string line2 = lines2[i];
+                                    sb.AppendLine(line2);
+                                }
+                                else
+                                {
+                                    sb.AppendLine();
+                                }
                             }
                             else
                             {
-                                sb.AppendLine();
+                                sb.AppendLine(line1);
                             }
                         }
-                        else
-                        {
-                            sb.AppendLine(line1);
-                        }
-                    }
 
-                    if (isCleanedSubtitleNotEmpty)
-                    {
-                        for (int i = lines1.Count; i < lines2.Count; i++)
+                        if (isCleanedSubtitleNotEmpty)
                         {
-                            sb.Append(new String(' ', maxLineLength1));
-                            sb.Append(" | ");
-                            sb.AppendLine(lines2[i]);
+                            for (int i = lines1.Count; i < lines2.Count; i++)
+                            {
+                                sb.Append(new String(' ', maxLineLength1));
+                                sb.Append(" | ");
+                                sb.AppendLine(lines2[i]);
+                            }
                         }
                     }
 
