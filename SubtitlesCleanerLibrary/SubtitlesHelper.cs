@@ -2347,6 +2347,7 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"(?i)Sync by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synced & corrected", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synced and corrected", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Synced by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synced:", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synchronization by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Synchronized by", RegexOptions.Compiled), "", SubtitleError.Not_Subtitle)
@@ -2390,14 +2391,17 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"-\s-", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^[—–―‒]", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^<i>(?<Dash>[—–―‒])</i>", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@"[…—–―‒]", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace(new Regex(@"[;，]", RegexOptions.Compiled), ",", SubtitleError.Punctuations_Error)
+        };
+
+        public static readonly FindAndReplace[] Punctuations_ThreeDots = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"[…—–―‒]", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"\.\s\.\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"\.\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"\.\s\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"-{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@"[;，]", RegexOptions.Compiled), ",", SubtitleError.Punctuations_Error)
         };
 
         #endregion
@@ -3090,6 +3094,7 @@ namespace SubtitlesCleanerLibrary
 
         public static readonly FindAndReplace[] FindAndReplaceRules =
             Punctuations
+            .Concat(Punctuations_ThreeDots)
             .Concat(Notes)
             .Concat(MalformedLetters)
             .Concat(HearingImpairedFullLine)

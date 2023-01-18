@@ -74,6 +74,7 @@
             this.rdbHIUpperLowerCases = new System.Windows.Forms.RadioButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnClean = new System.Windows.Forms.Button();
+            this.btnQuickActions = new System.Windows.Forms.Button();
             this.btnAdjustTiming = new System.Windows.Forms.Button();
             this.btnReorder = new System.Windows.Forms.Button();
             this.btnBalanceLines = new System.Windows.Forms.Button();
@@ -557,6 +558,7 @@
             this.flowLayoutPanel1.AutoSize = true;
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.btnClean);
+            this.flowLayoutPanel1.Controls.Add(this.btnQuickActions);
             this.flowLayoutPanel1.Controls.Add(this.btnAdjustTiming);
             this.flowLayoutPanel1.Controls.Add(this.btnReorder);
             this.flowLayoutPanel1.Controls.Add(this.btnBalanceLines);
@@ -565,7 +567,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnTimeCalculator);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 6);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(590, 30);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(687, 30);
             this.flowLayoutPanel1.TabIndex = 1;
             // 
             // btnClean
@@ -581,6 +583,20 @@
             this.btnClean.UseVisualStyleBackColor = true;
             this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
             // 
+            // btnQuickActions
+            // 
+            this.btnQuickActions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnQuickActions.AutoSize = true;
+            this.btnQuickActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnQuickActions.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnQuickActions.Location = new System.Drawing.Point(55, 3);
+            this.btnQuickActions.Name = "btnQuickActions";
+            this.btnQuickActions.Size = new System.Drawing.Size(91, 24);
+            this.btnQuickActions.TabIndex = 2;
+            this.btnQuickActions.Text = "Quick Actions";
+            this.btnQuickActions.UseVisualStyleBackColor = true;
+            this.btnQuickActions.Click += new System.EventHandler(this.btnQuickActions_Click);
+            // 
             // btnAdjustTiming
             // 
             this.btnAdjustTiming.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -588,10 +604,10 @@
             this.btnAdjustTiming.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAdjustTiming.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnAdjustTiming.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdjustTiming.Location = new System.Drawing.Point(55, 3);
+            this.btnAdjustTiming.Location = new System.Drawing.Point(152, 3);
             this.btnAdjustTiming.Name = "btnAdjustTiming";
             this.btnAdjustTiming.Size = new System.Drawing.Size(92, 24);
-            this.btnAdjustTiming.TabIndex = 2;
+            this.btnAdjustTiming.TabIndex = 3;
             this.btnAdjustTiming.Text = "Adjust Timing";
             this.btnAdjustTiming.UseVisualStyleBackColor = true;
             this.btnAdjustTiming.Click += new System.EventHandler(this.btnAdjustTiming_Click);
@@ -603,10 +619,10 @@
             this.btnReorder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnReorder.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnReorder.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReorder.Location = new System.Drawing.Point(153, 3);
+            this.btnReorder.Location = new System.Drawing.Point(250, 3);
             this.btnReorder.Name = "btnReorder";
             this.btnReorder.Size = new System.Drawing.Size(60, 24);
-            this.btnReorder.TabIndex = 3;
+            this.btnReorder.TabIndex = 4;
             this.btnReorder.Text = "Reorder";
             this.btnReorder.UseVisualStyleBackColor = true;
             this.btnReorder.Click += new System.EventHandler(this.btnReorder_Click);
@@ -618,10 +634,10 @@
             this.btnBalanceLines.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnBalanceLines.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnBalanceLines.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBalanceLines.Location = new System.Drawing.Point(219, 3);
+            this.btnBalanceLines.Location = new System.Drawing.Point(316, 3);
             this.btnBalanceLines.Name = "btnBalanceLines";
             this.btnBalanceLines.Size = new System.Drawing.Size(89, 24);
-            this.btnBalanceLines.TabIndex = 4;
+            this.btnBalanceLines.TabIndex = 5;
             this.btnBalanceLines.Text = "Balance Lines";
             this.btnBalanceLines.UseVisualStyleBackColor = true;
             this.btnBalanceLines.Click += new System.EventHandler(this.btnBalanceLines_Click);
@@ -633,10 +649,10 @@
             this.btnSearchAndReplace.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnSearchAndReplace.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnSearchAndReplace.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSearchAndReplace.Location = new System.Drawing.Point(314, 3);
+            this.btnSearchAndReplace.Location = new System.Drawing.Point(411, 3);
             this.btnSearchAndReplace.Name = "btnSearchAndReplace";
             this.btnSearchAndReplace.Size = new System.Drawing.Size(54, 24);
-            this.btnSearchAndReplace.TabIndex = 5;
+            this.btnSearchAndReplace.TabIndex = 6;
             this.btnSearchAndReplace.Text = "Search";
             this.btnSearchAndReplace.UseVisualStyleBackColor = true;
             this.btnSearchAndReplace.Click += new System.EventHandler(this.btnSearchAndReplace_Click);
@@ -646,10 +662,10 @@
             this.btnOriginalSubtitles.AutoSize = true;
             this.btnOriginalSubtitles.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnOriginalSubtitles.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOriginalSubtitles.Location = new System.Drawing.Point(374, 3);
+            this.btnOriginalSubtitles.Location = new System.Drawing.Point(471, 3);
             this.btnOriginalSubtitles.Name = "btnOriginalSubtitles";
             this.btnOriginalSubtitles.Size = new System.Drawing.Size(107, 24);
-            this.btnOriginalSubtitles.TabIndex = 6;
+            this.btnOriginalSubtitles.TabIndex = 7;
             this.btnOriginalSubtitles.Text = "Original Subtitles";
             this.btnOriginalSubtitles.UseVisualStyleBackColor = true;
             this.btnOriginalSubtitles.Click += new System.EventHandler(this.btnOriginalSubtitles_Click);
@@ -660,10 +676,10 @@
             this.btnTimeCalculator.AutoSize = true;
             this.btnTimeCalculator.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnTimeCalculator.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTimeCalculator.Location = new System.Drawing.Point(487, 3);
+            this.btnTimeCalculator.Location = new System.Drawing.Point(584, 3);
             this.btnTimeCalculator.Name = "btnTimeCalculator";
             this.btnTimeCalculator.Size = new System.Drawing.Size(100, 24);
-            this.btnTimeCalculator.TabIndex = 7;
+            this.btnTimeCalculator.TabIndex = 8;
             this.btnTimeCalculator.Text = "Time Calculator";
             this.btnTimeCalculator.UseVisualStyleBackColor = true;
             this.btnTimeCalculator.Click += new System.EventHandler(this.btnTimeCalculator_Click);
@@ -978,6 +994,7 @@
         private System.Windows.Forms.ToolStripMenuItem copySubtitleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyCleanSubtitleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyCleanTextToolStripMenuItem;
+        private System.Windows.Forms.Button btnQuickActions;
     }
 }
 

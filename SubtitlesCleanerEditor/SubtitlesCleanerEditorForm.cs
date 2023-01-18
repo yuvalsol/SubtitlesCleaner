@@ -98,6 +98,8 @@ namespace SubtitlesCleanerEditor
 
         private void SetSubtitlesToEditor(List<Subtitle> subtitles)
         {
+            this.Cursor = Cursors.WaitCursor;
+
             this.subtitles = subtitles;
             lstErrors_SortedColumnIndex = 0;
             lstErrors_sortOrder = SortOrder.Ascending;
@@ -141,6 +143,8 @@ namespace SubtitlesCleanerEditor
 
             SelectionChanged();
             ErrorSelectionChanged();
+
+            this.Cursor = Cursors.Default;
         }
 
         private void SetSubtitlesToEditorAndKeepSubtitleNumber(List<Subtitle> subtitles)
@@ -1547,6 +1551,188 @@ namespace SubtitlesCleanerEditor
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region Quick Actions
+
+        private void btnQuickActions_Click(object sender, EventArgs e)
+        {
+            if (subtitles == null || subtitles.Count == 0)
+                return;
+
+            List<QuickAction> quickActions = new List<QuickAction>()
+            {
+                new QuickAction("Remove Empty Lines", RemoveEmptyLines)
+                ,new QuickAction("Remove Non-Subtitles", RemoveNonSubtitles)
+                ,new QuickAction("Fix Three Dots ...", FixThreeDots)
+                ,new QuickAction("Fix Notes ♪", FixNotes)
+            };
+
+            List<Subtitle> newSubtitles = subtitles.Clone();
+            var dialog = new QuickActionsForm(newSubtitles, quickActions);
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+                SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
+                SetFormTitle(true);
+            }
+        }
+
+        private QuickActionResult RemoveEmptyLines(List<Subtitle> subtitles)
+        {
+            try
+            {
+                int changeCount = 0;
+
+                for (int i = subtitles.Count - 1; i >= 0; i--)
+                {
+                    Subtitle subtitle = subtitles[i];
+
+                    for (int k = subtitle.Lines.Count - 1; k >= 0; k--)
+                    {
+                        string line = subtitle.Lines[k];
+
+                        if (string.IsNullOrEmpty(line))
+                        {
+                            subtitle.Lines.RemoveAt(k);
+                            changeCount++;
+                        }
+                        else
+                        {
+                            foreach (var rule in SubtitlesHelper.EmptyLine)
+                            {
+                                string cleanLine = rule.CleanLine(line, cleanHICaseInsensitive);
+                                if (string.IsNullOrEmpty(cleanLine))
+                                {
+                                    subtitle.Lines.RemoveAt(k);
+                                    changeCount++;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (subtitle.Lines.Count == 0)
+                        subtitles.RemoveAt(i);
+                }
+
+                return new QuickActionResult()
+                {
+                    Succeeded = true,
+                    ResultMessage = string.Format("Removed {0} line{1}", changeCount, changeCount == 1 ? "" : "s")
+                };
+            }
+            catch (Exception ex)
+            {
+                return new QuickActionResult()
+                {
+                    Succeeded = false,
+                    ResultMessage = ex.Message
+                };
+            }
+        }
+
+        private QuickActionResult RemoveNonSubtitles(List<Subtitle> subtitles)
+        {
+            try
+            {
+                int changeCount = 0;
+
+                for (int i = subtitles.Count - 1; i >= 0; i--)
+                {
+                    Subtitle subtitle = subtitles[i];
+
+                    bool isNonSubtitle = false;
+
+                    for (int k = subtitle.Lines.Count - 1; k >= 0; k--)
+                    {
+                        string line = subtitle.Lines[k];
+
+                        foreach (var rule in SubtitlesHelper.NotSubtitle)
+                        {
+                            string cleanLine = rule.CleanLine(line, cleanHICaseInsensitive);
+                            if (line != cleanLine)
+                            {
+                                subtitles.RemoveAt(i);
+                                changeCount++;
+                                isNonSubtitle = true;
+                                break;
+                            }
+                        }
+
+                        if (isNonSubtitle)
+                            break;
+                    }
+                }
+
+                return new QuickActionResult()
+                {
+                    Succeeded = true,
+                    ResultMessage = string.Format("Removed {0} non-subtitle{1}", changeCount, changeCount == 1 ? "" : "s")
+                };
+            }
+            catch (Exception ex)
+            {
+                return new QuickActionResult()
+                {
+                    Succeeded = false,
+                    ResultMessage = ex.Message
+                };
+            }
+        }
+
+        private QuickActionResult QuickActionFindAndReplace(List<Subtitle> subtitles, SubtitlesCleanerLibrary.FindAndReplace[] rules)
+        {
+            try
+            {
+                int changeCount = 0;
+
+                for (int i = subtitles.Count - 1; i >= 0; i--)
+                {
+                    Subtitle subtitle = subtitles[i];
+
+                    for (int k = subtitle.Lines.Count - 1; k >= 0; k--)
+                    {
+                        string line = subtitle.Lines[k];
+
+                        foreach (var rule in rules)
+                        {
+                            string cleanLine = rule.CleanLine(line, cleanHICaseInsensitive);
+                            if (line != cleanLine)
+                            {
+                                subtitle.Lines[k] = cleanLine;
+                                changeCount++;
+                            }
+                        }
+                    }
+                }
+
+                return new QuickActionResult()
+                {
+                    Succeeded = true,
+                    ResultMessage = string.Format("Fixed {0} line{1}", changeCount, changeCount == 1 ? "" : "s")
+                };
+            }
+            catch (Exception ex)
+            {
+                return new QuickActionResult()
+                {
+                    Succeeded = false,
+                    ResultMessage = ex.Message
+                };
+            }
+        }
+
+        private QuickActionResult FixThreeDots(List<Subtitle> subtitles)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.Punctuations_ThreeDots);
+        }
+
+        private QuickActionResult FixNotes(List<Subtitle> subtitles)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.Notes);
         }
 
         #endregion
