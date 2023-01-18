@@ -31,11 +31,11 @@ namespace SubtitlesCleanerEditor
 
         private void lstQuickActions_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 0 || e.ColumnIndex == 3)
-            {
-                bool isFix = (e.ColumnIndex == 0);
-                bool isPreview = (e.ColumnIndex == 3);
+            bool isFix = (e.ColumnIndex == 0);
+            bool isPreview = (e.ColumnIndex == 4);
 
+            if (isFix || isPreview)
+            {
                 DataGridViewButtonCell cell = lstQuickActions.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewButtonCell;
 
                 if (disabledCells.Contains(cell) == false)

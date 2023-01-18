@@ -10,9 +10,10 @@ namespace SubtitlesCleanerEditor
 
     public class QuickAction : INotifyPropertyChanged
     {
-        public QuickAction(string action, DoQuickActionHandler @do)
+        public QuickAction(string action, string examples, DoQuickActionHandler @do)
         {
             Action = action;
+            Examples = examples;
             Do = @do;
         }
 
@@ -24,6 +25,7 @@ namespace SubtitlesCleanerEditor
         }
 
         public string Action { get; set; }
+        public string Examples { get; set; }
 
         private string result;
         public string Result

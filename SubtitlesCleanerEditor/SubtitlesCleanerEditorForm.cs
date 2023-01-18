@@ -1564,10 +1564,27 @@ namespace SubtitlesCleanerEditor
 
             List<QuickAction> quickActions = new List<QuickAction>()
             {
-                new QuickAction("Remove Empty Lines", RemoveEmptyLines)
-                ,new QuickAction("Remove Non-Subtitles", RemoveNonSubtitles)
-                ,new QuickAction("Fix Three Dots ...", FixThreeDots)
-                ,new QuickAction("Fix Notes ♪", FixNotes)
+                new QuickAction("Remove Empty Lines", "", RemoveEmptyLines)
+                ,new QuickAction("Remove Non-Subtitles", "Synced By", RemoveNonSubtitles)
+                ,new QuickAction("Remove Full Line Hearing-Impaired", "", RemoveFullLineHearingImpaired)
+                //,new QuickAction("Fix Hearing-Impaired", "", FixHearingImpaired)
+                ,new QuickAction("Fix Three Dots ...", "-- => ...  … => ...", FixThreeDots)
+                ,new QuickAction("Fix Notes ♪", "j\" => ♪  ♫¶* => ♪", FixNotes)
+                ,new QuickAction("Fix Malformed Letters", "I-l => H  L\\/l => M  L/V => W", FixMalformedLetters)
+                ,new QuickAction("Remove ASSA Tags", "{\\an1}", RemoveASSATags)
+                ,new QuickAction("Remove Space After 1", "1 987 => 1987", RemoveSpaceAfterOne)
+                ,new QuickAction("Fix Ordinal Numbers", "1 st => 1st", FixOrdinalNumbers)
+                ,new QuickAction("Add Space After Dot", "First.Second => First. Second", AddSpaceAfterDot)
+                ,new QuickAction("Add Space After Comma", "One,Two => One, Two", AddSpaceAfterComma)
+                ,new QuickAction("Add Space After Three Dots", "Text...Text => Text... Text", AddSpaceAfterThreeDot)
+                ,new QuickAction("Fix Non-Ansi Chars", "ﬁ => fi", FixNonAnsiChars)
+                ,new QuickAction("Fix Encoded HTML", "&amp; => &  &quot; => \"", FixEncodedHTML)
+                ,new QuickAction("Fix Contractions", "I'’m => I'm  sayin ' => sayin'", FixContractions)
+                ,new QuickAction("Fix I And L Errors", "I'II => I'll  L'm => I'm", FixIAndLErrors)
+                ,new QuickAction("Fix Merged Words", "ofthe => of the", FixMergedWords)
+                ,new QuickAction("Fix O And 0 Errors", "0ver => Over  1O => 10", FixOAnd0Errors)
+                ,new QuickAction("Add Dot After Abbreviation", "Mr => Mr.  Dr => Dr.  St => St.", AddDotAfterAbbreviation)
+                ,new QuickAction("Fix I And 1 Errors", "I6 => 16  1 can => I can", FixIAnd1Errors)
             };
 
             List<Subtitle> newSubtitles = subtitles.Clone();
@@ -1590,14 +1607,99 @@ namespace SubtitlesCleanerEditor
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.NotSubtitle, isPreview, isRemoveNonSubtitles: true);
         }
 
+        private QuickActionResult RemoveFullLineHearingImpaired(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.HearingImpairedFullLine.ByGroup("HI Full Line"), isPreview);
+        }
+
+        //private QuickActionResult FixHearingImpaired(List<Subtitle> subtitles, bool isPreview)
+        //{
+        //    return QuickActionFindAndReplace(subtitles, SubtitlesHelper.HearingImpairedFullLine.Concat(SubtitlesHelper.HearingImpaired).Concat(SubtitlesHelper.RedundantItalics).ToArray(), isPreview);
+        //}
+
         private QuickActionResult FixThreeDots(List<Subtitle> subtitles, bool isPreview)
         {
-            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.Punctuations_ThreeDots, isPreview);
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.FindAndReplaceRules.ByGroup("Three Dots"), isPreview);
         }
 
         private QuickActionResult FixNotes(List<Subtitle> subtitles, bool isPreview)
         {
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.Notes, isPreview);
+        }
+
+        private QuickActionResult FixMalformedLetters(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.MalformedLetters, isPreview);
+        }
+
+        private QuickActionResult RemoveASSATags(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.ASSATags, isPreview);
+        }
+
+        private QuickActionResult RemoveSpaceAfterOne(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.RedundantSpaces.ByGroup("Space After 1"), isPreview);
+        }
+
+        private QuickActionResult FixOrdinalNumbers(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.RedundantSpaces.ByGroup("Ordinal Numbers"), isPreview);
+        }
+
+        private QuickActionResult AddSpaceAfterDot(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.MissingSpaces.ByGroup("Space After Dot"), isPreview);
+        }
+
+        private QuickActionResult AddSpaceAfterComma(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.MissingSpaces.ByGroup("Space After Comma"), isPreview);
+        }
+
+        private QuickActionResult AddSpaceAfterThreeDot(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.MissingSpaces.ByGroup("Space After Three Dot"), isPreview);
+        }
+
+        private QuickActionResult FixNonAnsiChars(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.NonAnsiChars, isPreview);
+        }
+
+        private QuickActionResult FixEncodedHTML(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.EncodedHTML, isPreview);
+        }
+
+        private QuickActionResult FixContractions(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.Contractions, isPreview);
+        }
+
+        private QuickActionResult FixIAndLErrors(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.I_And_L, isPreview);
+        }
+
+        private QuickActionResult FixMergedWords(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.MergedWords, isPreview);
+        }
+
+        private QuickActionResult FixOAnd0Errors(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.O_And_0, isPreview);
+        }
+
+        private QuickActionResult AddDotAfterAbbreviation(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.OCRErrors.ByGroup("Dot After Abbreviation"), isPreview);
+        }
+
+        private QuickActionResult FixIAnd1Errors(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.OCRErrors.ByGroup("I And 1"), isPreview);
         }
 
         private QuickActionResult QuickActionFindAndReplace(
@@ -1637,6 +1739,8 @@ namespace SubtitlesCleanerEditor
                                     if (string.IsNullOrEmpty(cleanLine) || (isRemoveNonSubtitles && line != cleanLine))
                                         break;
                                 }
+
+                                cleanLine = cleanLine.Trim();
 
                                 if (isRemoveNonSubtitles && line != cleanLine)
                                 {
@@ -1710,6 +1814,8 @@ namespace SubtitlesCleanerEditor
                                     if (string.IsNullOrEmpty(cleanLine) || (isRemoveNonSubtitles && line != cleanLine))
                                         break;
                                 }
+
+                                cleanLine = cleanLine.Trim();
 
                                 if (isRemoveNonSubtitles && line != cleanLine)
                                 {

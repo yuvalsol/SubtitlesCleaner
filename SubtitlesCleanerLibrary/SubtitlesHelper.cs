@@ -2391,17 +2391,14 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"-\s-", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^[—–―‒]", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^<i>(?<Dash>[—–―‒])</i>", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"[…—–―‒]", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"\.\s\.\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"\.\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"\.\s\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"-{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"[;，]", RegexOptions.Compiled), ",", SubtitleError.Punctuations_Error)
-        };
-
-        public static readonly FindAndReplace[] Punctuations_ThreeDots = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"[…—–―‒]", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@"\.\s\.\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@"\.\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@"\.\s\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@"-{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
-            ,new FindAndReplace(new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
         };
 
         #endregion
@@ -2458,8 +2455,8 @@ namespace SubtitlesCleanerLibrary
         public static readonly FindAndReplace[] HearingImpairedFullLine = new FindAndReplace[] {
             // ^(HI)$
             // ^- (HI)$
-            new FindAndReplace(new Regex(@"^\s*-?\s*\(.*?\)\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^\s*-?\s*\[.*?\]\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            new FindAndReplace("HI Full Line", new Regex(@"^\s*-?\s*\(.*?\)\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("HI Full Line", new Regex(@"^\s*-?\s*\[.*?\]\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
             // ^<i>- ♪$
             ,new FindAndReplace(new Regex(@"^\s*<i>\s*-\s*♪+\s*$", RegexOptions.Compiled), "<i>", SubtitleError.Hearing_Impaired)
@@ -2471,10 +2468,10 @@ namespace SubtitlesCleanerLibrary
             // ^<i>- (HI)</i>$
             // ^♪ <i>(HI)</i>$
             // ^<i>♪ (HI)</i>$
-            ,new FindAndReplace(new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\(.*?\)\s*</i>\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\[.*?\]\s*</i>\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("HI Full Line", new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\(.*?\)\s*</i>\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("HI Full Line", new Regex(@"^\s*-?\s*♪?\s*<i>\s*-?\s*♪?\s*\[.*?\]\s*</i>\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
-            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS + @"\[\]]+:\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("HI Full Line", new Regex(@"^[" + HI_CHARS + @"\[\]]+:\s*$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI + @"\[\]]+:\s*$", RegexOptions.Compiled))
 
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)?[" + HI_CHARS + @"]+\[.*?\]:\s*$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
@@ -2482,9 +2479,9 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)?[" + HI_CHARS + @"]+\(.*?\):\s*$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^(?<Prefix><i>)?[" + HI_CHARS_CI + @"]+\(.*?\):\s*$", RegexOptions.Compiled))
 
-            ,new FindAndReplace(new Regex(@"^<i>[" + HI_CHARS + @"]+\[.*?\]:\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("HI Full Line", new Regex(@"^<i>[" + HI_CHARS + @"]+\[.*?\]:\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^<i>[" + HI_CHARS_CI + @"]+\[.*?\]:\s*</i>$", RegexOptions.Compiled))
-            ,new FindAndReplace(new Regex(@"^<i>[" + HI_CHARS + @"]+\(.*?\):\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("HI Full Line", new Regex(@"^<i>[" + HI_CHARS + @"]+\(.*?\):\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^<i>[" + HI_CHARS_CI + @"]+\(.*?\):\s*</i>$", RegexOptions.Compiled))
         };
 
@@ -2566,7 +2563,7 @@ namespace SubtitlesCleanerLibrary
 
             // 1 987 => 1987 (Positive lookahead)
             // 1 1 /2 => 1 1/2 (Negative lookahead)
-            ,new FindAndReplace(new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled), "1", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace("Space After 1", new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled), "1", SubtitleError.Redundant_Spaces)
 
             // 9: 55 => 9:55
 			,new FindAndReplace(new Regex(@"[0-2]?\d(?<OCR>: )[0-5]\d", RegexOptions.Compiled), "OCR", ":", SubtitleError.Redundant_Spaces)
@@ -2598,10 +2595,10 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\s\.)\s[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.Redundant_Spaces)
 
             // Ordinal Numbers: 1st, 2nd, 3rd, 4th
-            ,new FindAndReplace(new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"\b\d*2(?<OCR>\s+)nd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"\b\d*3(?<OCR>\s+)rd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace(new Regex(@"\b\d*[4-9](?<OCR>\s+)th\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*2(?<OCR>\s+)nd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*3(?<OCR>\s+)rd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*[4-9](?<OCR>\s+)th\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
         };
 
         #endregion
@@ -2722,7 +2719,7 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.)\d+\b", RegexOptions.Compiled), "OCR", " .", SubtitleError.Missing_Spaces)
 
             // Add space after a single dot
-            ,new FindAndReplace(new Regex(@"[a-zá-úñä-ü](?<OCR>\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.Missing_Spaces,
+            ,new FindAndReplace("Space After Dot", new Regex(@"[a-zá-úñä-ü](?<OCR>\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.Missing_Spaces,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfEqualsTo = "Ph.D" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "a.m." }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "p.m." }
@@ -2734,10 +2731,10 @@ namespace SubtitlesCleanerLibrary
             )
 
             // Add space after comma
-            ,new FindAndReplace(new Regex(@"(?<OCR>\,)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", ", ", SubtitleError.Missing_Spaces)
+            ,new FindAndReplace("Space After Comma", new Regex(@"(?<OCR>\,)[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", ", ", SubtitleError.Missing_Spaces)
 
             // Text...Text => Text... Text
-            ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú0-9](?:(?<OCR>\.{2,})[A-ZÁ-Úa-zá-ú0-9])+", RegexOptions.Compiled), "OCR", "... ", SubtitleError.Missing_Spaces)
+            ,new FindAndReplace("Space After Three Dot", new Regex(@"[A-ZÁ-Úa-zá-ú0-9](?:(?<OCR>\.{2,})[A-ZÁ-Úa-zá-ú0-9])+", RegexOptions.Compiled), "OCR", "... ", SubtitleError.Missing_Spaces)
         };
 
         #endregion
@@ -3039,7 +3036,7 @@ namespace SubtitlesCleanerLibrary
 
         public static readonly FindAndReplace[] OCRErrors = new FindAndReplace[] {
             // Mr. Mrs. Dr. St.
-            new FindAndReplace(new Regex(@"\b(?:Mr|Mrs|Dr|St)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
+            new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
 
             // a.m. p.m.
             ,new FindAndReplace(new Regex(@"(?<OCR>a|p)\.M\.", RegexOptions.Compiled), "${OCR}.m.", SubtitleError.OCR_Error)
@@ -3055,28 +3052,28 @@ namespace SubtitlesCleanerLibrary
             //,new FindAndReplace(new Regex(@"(?<OCR>I-I)", RegexOptions.Compiled), "OCR", "I... I", SubtitleError.OCR_Error)
 
             // -</i> => ...</i>
-            ,new FindAndReplace(new Regex(@"(?<OCR>\s*-\s*)</i>$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"(?<OCR>\s*-\s*)</i>$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
             // Text - $ => Text...$
             // doesn't match un-fuckin-$reasonable
-            ,new FindAndReplace(new Regex(@"(?<![A-ZÁ-Úa-zá-ú]+-[A-ZÁ-Úa-zá-ú]+)(?<OCR>\s*-\s*)$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"(?<![A-ZÁ-Úa-zá-ú]+-[A-ZÁ-Úa-zá-ú]+)(?<OCR>\s*-\s*)$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
             // text - text => text... text
-            ,new FindAndReplace(new Regex(@"[a-zá-ú](?<OCR> - )[a-zá-ú]", RegexOptions.Compiled), "OCR", "... ", SubtitleError.OCR_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"[a-zá-ú](?<OCR> - )[a-zá-ú]", RegexOptions.Compiled), "OCR", "... ", SubtitleError.OCR_Error)
             // text - text => text... text
-            ,new FindAndReplace(new Regex(@"[Ia-zá-ú](?<OCR>-)\s[A-ZÁ-Ú]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"[Ia-zá-ú](?<OCR>-)\s[A-ZÁ-Ú]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
 
             // Text..
-            ,new FindAndReplace(new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.{2})(?:\s|♪|</i>|$)", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"[A-ZÁ-Úa-zá-ú](?<OCR>\.{2})(?:\s|♪|</i>|$)", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
             // ..Text
-            ,new FindAndReplace(new Regex(@"(?:\s|♪|<i>|^)(?<OCR>\.{2})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"(?:\s|♪|<i>|^)(?<OCR>\.{2})[A-ZÁ-Úa-zá-ú]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
 
             // I6 => 16
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>I)\d+\b", RegexOptions.Compiled), "OCR", "1", SubtitleError.OCR_Error)
+            ,new FindAndReplace("I And 1", new Regex(@"\b(?<OCR>I)\d+\b", RegexOptions.Compiled), "OCR", "1", SubtitleError.OCR_Error)
 
             // 1 => I
             // 1 can
-            ,new FindAndReplace(new Regex(@"(?i)\b(?<OCR>1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace("I And 1", new Regex(@"(?i)\b(?<OCR>1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
             // can 1
-            ,new FindAndReplace(new Regex(@"(?i)\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(?<OCR>1)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            ,new FindAndReplace("I And 1", new Regex(@"(?i)\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(?<OCR>1)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
         };
 
         #endregion
@@ -3094,7 +3091,6 @@ namespace SubtitlesCleanerLibrary
 
         public static readonly FindAndReplace[] FindAndReplaceRules =
             Punctuations
-            .Concat(Punctuations_ThreeDots)
             .Concat(Notes)
             .Concat(MalformedLetters)
             .Concat(HearingImpairedFullLine)
