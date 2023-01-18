@@ -14,35 +14,39 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 
 2. Error list panel. The headers can be sorted by subtitle numbers (#) or by errors. Double-click on an error will make the Subtitles panel focus on the subtitle. Context menu offers fixing all errors of the same type.
 
-3. Clean subtitles in the subtitles panel.
+3. Clean all subtitles in the subtitles panel.
 
-4. Adjust Timing. Adjust subtitles timing by 2 sync points. The popup will open with the sync points filled with timing of the first and last subtitles. Load From File loads the first and last sync points from another subtitles file.
+4. Quick Actions. Perform quick selective fixes to subtitles.
+
+![Quick Actions](./Solution%20Items/Images/QuickActions.jpg "Quick Actions")
+
+5. Adjust Timing. Adjust subtitles timing by 2 sync points. The popup will open with the sync points filled with timing of the first and last subtitles. Load From File loads the first and last sync points from another subtitles file.
 
 ![Adjust Timing](./Solution%20Items/Images/AdjustTiming.jpg "Adjust Timing")
 
-5. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
+6. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
 
-6. Balance Lines. Merge short line with long line.
+7. Balance Lines. Merge short line with long line.
 
-7. Search and replace.
+8. Search and replace.
 
-8. Load the original subtitles and discard all previous changes.
+9. Load the original subtitles and discard all previous changes.
 
-9. Time Calculator. A little utility when you need to calculate time differences and it is too hard to do the math in your head.
+10. Time Calculator. A little utility when you need to calculate time differences and it is too hard to do the math in your head.
 
 ![Time Calculator](./Solution%20Items/Images/TimeCalculator.jpg "Time Calculator")
 
-10. Hearing-Impaired Detection. Identifies hearing-impaired with only capital letters text or all-case text.
+11. Hearing-Impaired Detection. Identifies hearing-impaired with only capital letters text or all-case text.
 
-11. Selected subtitle. Changes can be made in the textbox.
+12. Selected subtitle. Changes can be made in the textbox.
 
-12. Cleaned subtitle.
+13. Cleaned subtitle.
 
-13. Fix buttons will copy the cleaned subtitle to the subtitle itself. The advance button will also jump to the next subtitle with an error.
+14. Fix buttons will copy the cleaned subtitle to the subtitle itself. The advance button will also jump to the next subtitle with an error.
 
-14. Set Show Time. Set the specified show time to the selected subtitle and change the timings of all the subtitles below it based on their time differences. When the Interactive Retiming is checked, the show timings will change in the subtitles panel as the show time is changed.
+15. Set Show Time. Set the specified show time to the selected subtitle and change the timings of all the subtitles below it based on their time differences. When the Interactive Retiming is checked, the show timings will change in the subtitles panel as the show time is changed.
 
-15. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
+16. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
 
 ## Subtitles Cleaner Command
 
