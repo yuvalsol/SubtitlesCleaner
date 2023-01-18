@@ -6,9 +6,11 @@ using SubtitlesCleanerLibrary;
 
 namespace SubtitlesCleanerEditor
 {
+    public delegate QuickActionResult DoQuickActionHandler(List<Subtitle> subtitles, bool isPreview);
+
     public class QuickAction : INotifyPropertyChanged
     {
-        public QuickAction(string action, Func<List<Subtitle>, QuickActionResult> @do)
+        public QuickAction(string action, DoQuickActionHandler @do)
         {
             Action = action;
             Do = @do;
@@ -38,12 +40,20 @@ namespace SubtitlesCleanerEditor
             }
         }
 
-        public Func<List<Subtitle>, QuickActionResult> Do { get; set; }
+        public DoQuickActionHandler Do { get; set; }
     }
 
     public class QuickActionResult
     {
         public bool Succeeded { get; set; }
         public string ResultMessage { get; set; }
+        public List<PreviewSubtitle> Preview { get; set; }
+    }
+
+    public class PreviewSubtitle
+    {
+        public int SubtitleNumber { get; set; }
+        public Subtitle OriginalSubtitle { get; set; }
+        public Subtitle CleanedSubtitle { get; set; }
     }
 }

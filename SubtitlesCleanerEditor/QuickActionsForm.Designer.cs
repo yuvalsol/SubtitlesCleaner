@@ -38,6 +38,7 @@ namespace SubtitlesCleanerEditor
             this.ColumnFix = new System.Windows.Forms.DataGridViewButtonColumn();
             this.ColumnAction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnPreview = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.lstQuickActions)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -61,7 +62,8 @@ namespace SubtitlesCleanerEditor
             this.lstQuickActions.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnFix,
             this.ColumnAction,
-            this.ColumnResult});
+            this.ColumnResult,
+            this.ColumnPreview});
             this.lstQuickActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstQuickActions.Location = new System.Drawing.Point(0, 0);
             this.lstQuickActions.MultiSelect = false;
@@ -69,7 +71,7 @@ namespace SubtitlesCleanerEditor
             this.lstQuickActions.ReadOnly = true;
             this.lstQuickActions.RowHeadersVisible = false;
             this.lstQuickActions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.lstQuickActions.Size = new System.Drawing.Size(664, 362);
+            this.lstQuickActions.Size = new System.Drawing.Size(664, 325);
             this.lstQuickActions.TabIndex = 1;
             this.lstQuickActions.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.lstQuickActions_CellContentClick);
             // 
@@ -111,7 +113,7 @@ namespace SubtitlesCleanerEditor
             // 
             // ColumnFix
             // 
-            this.ColumnFix.HeaderText = "Fix";
+            this.ColumnFix.HeaderText = "";
             this.ColumnFix.Name = "ColumnFix";
             this.ColumnFix.ReadOnly = true;
             this.ColumnFix.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -140,6 +142,16 @@ namespace SubtitlesCleanerEditor
             this.ColumnResult.ReadOnly = true;
             this.ColumnResult.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
+            // ColumnPreview
+            // 
+            this.ColumnPreview.HeaderText = "";
+            this.ColumnPreview.Name = "ColumnPreview";
+            this.ColumnPreview.ReadOnly = true;
+            this.ColumnPreview.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnPreview.Text = "Preview";
+            this.ColumnPreview.UseColumnTextForButtonValue = true;
+            this.ColumnPreview.Width = 80;
+            // 
             // QuickActionsForm
             // 
             this.AcceptButton = this.btnOK;
@@ -147,8 +159,8 @@ namespace SubtitlesCleanerEditor
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(664, 362);
-            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.lstQuickActions);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.MinimumSize = new System.Drawing.Size(680, 400);
             this.Name = "QuickActionsForm";
@@ -169,5 +181,6 @@ namespace SubtitlesCleanerEditor
         private System.Windows.Forms.DataGridViewButtonColumn ColumnFix;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnAction;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnResult;
+        private System.Windows.Forms.DataGridViewButtonColumn ColumnPreview;
     }
 }
