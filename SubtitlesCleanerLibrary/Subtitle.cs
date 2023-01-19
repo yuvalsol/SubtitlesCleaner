@@ -32,6 +32,8 @@ namespace SubtitlesCleanerLibrary
 
         public TimeSpan Duration { get { return Hide - Show; } }
 
+        #region To String
+
         private const string timeFormat = "{0:D2}:{1:D2}:{2:D2},{3:D3}";
 
         public string ShowToString()
@@ -74,6 +76,7 @@ namespace SubtitlesCleanerLibrary
             return string.Join(Environment.NewLine, Lines);
         }
 
+        #endregion
 
         #region IComparable
 
