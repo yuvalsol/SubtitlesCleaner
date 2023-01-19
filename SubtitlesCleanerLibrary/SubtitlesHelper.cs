@@ -3500,29 +3500,6 @@ namespace SubtitlesCleanerLibrary
             if (subtitles.Count == 0)
                 return subtitles;
 
-            for (int k = subtitles.Count - 1; k >= 0; k--)
-            {
-                Subtitle subtitle = subtitles[k];
-
-                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
-                {
-                    string line = subtitle.Lines[i];
-
-                    if (IsEmptyLine(line))
-                    {
-                        subtitle.Lines.RemoveAt(i);
-                    }
-                    else if (IsNotSubtitle(line))
-                    {
-                        subtitle.Lines = null;
-                        break;
-                    }
-                }
-
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
-                    subtitles.RemoveAt(k);
-            }
-
             subtitles.Sort();
 
             return subtitles;
