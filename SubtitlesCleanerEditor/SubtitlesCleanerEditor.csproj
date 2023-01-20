@@ -83,6 +83,19 @@
     <Compile Include="MethodInfoExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickAction.cs" />
+    <Compile Include="QuickActionPreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuickActionPreviewForm.Designer.cs">
+      <DependentUpon>QuickActionPreviewForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QuickActionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuickActionsForm.Designer.cs">
+      <DependentUpon>QuickActionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="RepeatButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -132,6 +145,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="QuickActionPreviewForm.resx">
+      <DependentUpon>QuickActionPreviewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QuickActionsForm.resx">
+      <DependentUpon>QuickActionsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SearchAndReplaceForm.resx">
       <DependentUpon>SearchAndReplaceForm.cs</DependentUpon>
     </EmbeddedResource>

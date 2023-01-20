@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace SubtitlesCleanerLibrary
 {
     public class FindAndReplace
     {
+        public string Group { get; private set; }
         public Regex Regex { get; private set; }
         public string GroupName { get; private set; }
         public string Replacement { get; private set; }
@@ -15,19 +17,32 @@ namespace SubtitlesCleanerLibrary
         #region Constructors
 
         public FindAndReplace(Regex regex, string replacement, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
-            : this(regex, null, replacement, null, subtitleError, ignoreRules)
+            : this(null, regex, null, replacement, null, subtitleError, ignoreRules)
         { }
 
         public FindAndReplace(Regex regex, MatchEvaluator evaluator, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
-            : this(regex, null, null, evaluator, subtitleError, ignoreRules)
+            : this(null, regex, null, null, evaluator, subtitleError, ignoreRules)
         { }
 
         public FindAndReplace(Regex regex, string groupName, string replacement, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
-            : this(regex, groupName, replacement, null, subtitleError, ignoreRules)
+            : this(null, regex, groupName, replacement, null, subtitleError, ignoreRules)
         { }
 
-        public FindAndReplace(Regex regex, string groupName, string replacement, MatchEvaluator evaluator, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
+        public FindAndReplace(string group, Regex regex, string replacement, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
+            : this(group, regex, null, replacement, null, subtitleError, ignoreRules)
+        { }
+
+        public FindAndReplace(string group, Regex regex, MatchEvaluator evaluator, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
+            : this(group, regex, null, null, evaluator, subtitleError, ignoreRules)
+        { }
+
+        public FindAndReplace(string group, Regex regex, string groupName, string replacement, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
+            : this(group, regex, groupName, replacement, null, subtitleError, ignoreRules)
+        { }
+
+        public FindAndReplace(string group, Regex regex, string groupName, string replacement, MatchEvaluator evaluator, SubtitleError subtitleError, params IgnoreRule[] ignoreRules)
         {
+            Group = group;
             Regex = regex;
             GroupName = groupName;
             Replacement = replacement ?? string.Empty;
@@ -141,6 +156,14 @@ namespace SubtitlesCleanerLibrary
                     return regex.ReplaceGroup(line, GroupName, Replacement, IsMatch);
                 }
             }
+        }
+    }
+
+    public static partial class FindAndReplaceExtensions
+    {
+        public static FindAndReplace[] ByGroup(this FindAndReplace[] findAndReplaces, string group)
+        {
+            return findAndReplaces.Where(f => f.Group == group).ToArray();
         }
     }
 }
