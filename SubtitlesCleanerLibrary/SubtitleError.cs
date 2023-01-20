@@ -15,58 +15,61 @@ namespace SubtitlesCleanerLibrary
         Not_Subtitle = (1 << 1),
 
         [ErrorColor(220, 250, 174)]
-        Merge_Lines = (1 << 2),
+        Missing_New_Line = (1 << 2),
+
+        [ErrorColor(220, 232, 174)]
+        Merge_Lines = (1 << 3),
 
         [ErrorColor(198, 230, 209)]
-        Redundant_Italics = (1 << 3),
+        Redundant_Italics = (1 << 4),
 
         [ErrorColor(240, 255, 225)]
-        Redundant_Spaces = (1 << 4),
+        Redundant_Spaces = (1 << 5),
 
         [ErrorColor(198, 255, 209)]
-        Missing_Spaces = (1 << 5),
+        Missing_Spaces = (1 << 6),
 
         [ErrorColor(232, 221, 248)]
-        ASSA_Tags = (1 << 6),
+        ASSA_Tags = (1 << 7),
 
         [ErrorColor(196, 198, 239)]
-        Notes_Error = (1 << 7),
+        Notes_Error = (1 << 8),
 
         [ErrorColor(189, 219, 250)]
-        Punctuations_Error = (1 << 8),
+        Punctuations_Error = (1 << 9),
 
         [ErrorColor(172, 201, 230)]
-        Non_Ansi_Chars = (1 << 9),
+        Non_Ansi_Chars = (1 << 10),
 
         [ErrorColor(154, 179, 204)]
-        Encoded_HTML = (1 << 10),
+        Encoded_HTML = (1 << 11),
 
         [ErrorColor(206, 206, 113)]
-        Malformed_Letters = (1 << 11),
+        Malformed_Letters = (1 << 12),
 
         [ErrorColor(192, 192, 160)]
-        Accent_Letters = (1 << 12),
+        Accent_Letters = (1 << 13),
 
         [ErrorColor(206, 206, 157)]
-        Merged_Words_Error = (1 << 13),
+        Merged_Words_Error = (1 << 14),
 
         [ErrorColor(209, 181, 155)]
-        Contractions_Error = (1 << 14),
+        Contractions_Error = (1 << 15),
 
         [ErrorColor(219, 204, 190)]
-        O_And_0_Error = (1 << 15),
+        O_And_0_Error = (1 << 16),
 
         [ErrorColor(237, 214, 193)]
-        I_And_L_Error = (1 << 16),
+        I_And_L_Error = (1 << 17),
 
         [ErrorColor(255, 229, 204)]
-        OCR_Error = (1 << 17),
+        OCR_Error = (1 << 18),
 
         [ErrorColor(253, 222, 128)]
-        Dialog_Error = (1 << 18),
+        Dialog_Error = (1 << 19),
 
         [ErrorColor(255, 255, 153)]
-        Hearing_Impaired = (1 << 19)
+        Hearing_Impaired = (1 << 20)
     }
 
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]

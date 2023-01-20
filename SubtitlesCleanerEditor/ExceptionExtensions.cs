@@ -9,7 +9,7 @@ namespace System
         public static string GetFormattedStackTrace(this Exception ex)
         {
             StringBuilder sb = new StringBuilder();
-            bool isFoundNamespaceNotSystemWindowsForms = false;
+            bool isFoundNamespaceNotSystem = false;
 
             StackTrace st = new StackTrace(ex, true);
             for (int i = 0; i < st.FrameCount; i++)
@@ -23,9 +23,9 @@ namespace System
                         Type reflectedType = method.ReflectedType;
                         if (reflectedType != null)
                         {
-                            if (reflectedType.Namespace != "System.Windows.Forms")
+                            if (isFoundNamespaceNotSystem == false || reflectedType.Namespace.StartsWith("System") == false)
                             {
-                                isFoundNamespaceNotSystemWindowsForms = true;
+                                isFoundNamespaceNotSystem = reflectedType.Namespace.StartsWith("System") == false;
 
                                 MethodInfo mi = method as MethodInfo;
                                 if (mi != null)
@@ -42,7 +42,7 @@ namespace System
                                     sb.Append("\n");
                                 }
                             }
-                            else if (isFoundNamespaceNotSystemWindowsForms)
+                            else
                             {
                                 break;
                             }

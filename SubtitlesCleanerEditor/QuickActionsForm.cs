@@ -15,6 +15,7 @@ namespace SubtitlesCleanerEditor
     {
         private string filePath;
         private List<Subtitle> subtitles;
+        private bool isSubtitlesChanged;
 
         public QuickActionsForm(string filePath, List<Subtitle> subtitles, List<QuickAction> quickActions)
         {
@@ -49,13 +50,16 @@ namespace SubtitlesCleanerEditor
                         if (result.Succeeded)
                         {
                             if (string.IsNullOrEmpty(result.ResultMessage))
-                            {
                                 quickAction.Result = "Fix succeeded";
-                            }
                             else
-                            {
                                 quickAction.Result = result.ResultMessage;
-                            }
+
+                            bool anyChanges =
+                                result.CountSubtitlesChanged != 0 ||
+                                result.CountLinesRemoved != 0 ||
+                                result.CountSubtitlesRemoved != 0;
+
+                            isSubtitlesChanged |= anyChanges;
                         }
                         else
                         {
@@ -74,11 +78,17 @@ namespace SubtitlesCleanerEditor
                             DataGridViewTextBoxCell actionCell = lstQuickActions.Rows[e.RowIndex].Cells[1] as DataGridViewTextBoxCell;
                             string action = actionCell.Value as string;
                             string preview = PreviewToString(result.Preview);
-                            new QuickActionPreviewForm(filePath, action, preview).ShowDialog(this);
+                            new QuickActionPreviewForm(filePath, preview, action).ShowDialog(this);
                         }
                     }
                 }
             }
+        }
+
+        private void btnPreviewChanges_Click(object sender, EventArgs e)
+        {
+            string preview = PreviewToString(subtitles.Select((s, i) => new PreviewSubtitle() { SubtitleNumber = i + 1, OriginalSubtitle = s }).ToList());
+            new QuickActionPreviewForm(filePath, preview).ShowDialog(this);
         }
 
         private string PreviewToString(List<PreviewSubtitle> preview)
@@ -87,15 +97,17 @@ namespace SubtitlesCleanerEditor
 
             if (preview != null && preview.Count > 0)
             {
+                var lastItem = preview.Last();
+
                 foreach (var item in preview)
                 {
                     sb.AppendLine(item.SubtitleNumber.ToString());
                     sb.AppendLine(item.OriginalSubtitle.TimeToString());
 
                     List<string> lines1 = item.OriginalSubtitle.Lines;
-                    List<string> lines2 = item.CleanedSubtitle.Lines;
+                    List<string> lines2 = item.CleanedSubtitle?.Lines;
                     bool isOriginalSubtitleNotEmpty = (lines1.Count > 0);
-                    bool isCleanedSubtitleNotEmpty = (lines2.Count > 0);
+                    bool isCleanedSubtitleNotEmpty = (lines2?.Count > 0);
 
                     if (isOriginalSubtitleNotEmpty)
                     {
@@ -109,7 +121,7 @@ namespace SubtitlesCleanerEditor
                                 sb.Append(line1);
                                 sb.Append(new String(' ', maxLineLength1 - line1.Length));
                                 sb.Append(" | ");
-                                if (i < lines2.Count)
+                                if (lines2 != null && i < lines2.Count)
                                 {
                                     string line2 = lines2[i];
                                     sb.AppendLine(line2);
@@ -136,11 +148,18 @@ namespace SubtitlesCleanerEditor
                         }
                     }
 
-                    sb.AppendLine();
+                    if (item != lastItem)
+                        sb.AppendLine();
                 }
             }
 
             return sb.ToString();
+        }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            if (isSubtitlesChanged == false)
+                this.DialogResult = DialogResult.Cancel;
         }
     }
 }

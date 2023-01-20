@@ -14,18 +14,24 @@ namespace SubtitlesCleanerEditor
     public partial class QuickActionPreviewForm : Form
     {
         private string filePath;
-        private string action;
         private string preview;
+        private string action;
+        private bool isPreviewChanges;
 
-        public QuickActionPreviewForm(string filePath, string action, string preview)
+        public QuickActionPreviewForm(string filePath, string preview, string action) : this(filePath, preview, action, false) { }
+
+        public QuickActionPreviewForm(string filePath, string preview) : this(filePath, preview, null, true) { }
+
+        private QuickActionPreviewForm(string filePath, string preview, string action, bool isPreviewChanges)
         {
             InitializeComponent();
 
             this.filePath = filePath;
-            this.action = action;
             this.preview = preview;
+            this.action = action;
+            this.isPreviewChanges = isPreviewChanges;
 
-            this.Text = action + " - " + this.Text;
+            this.Text = (isPreviewChanges ? "Preview Changes" : action) + " - " + this.Text;
 
             txtPreview.Text = preview;
             txtPreview.SelectionStart = 0;
@@ -54,11 +60,11 @@ namespace SubtitlesCleanerEditor
 
             try
             {
-                string actionCleanName = action.Replace("♪", string.Empty).Replace(".", string.Empty);
+                string actionCleanName = (isPreviewChanges ? "Preview Changes" : action.Replace("♪", string.Empty).Replace(".", string.Empty));
                 actionCleanName = string.Concat(actionCleanName.Split(Path.GetInvalidFileNameChars()));
                 actionCleanName = actionCleanName.Trim();
 
-                fileName = Path.GetFileNameWithoutExtension(filePath) + " - " + actionCleanName + ".txt";
+                fileName = Path.GetFileNameWithoutExtension(filePath) + " - " + actionCleanName + (isPreviewChanges ? ".srt" : ".txt");
 
                 string path = Path.GetFullPath(Path.Combine(
                     Path.GetDirectoryName(filePath),

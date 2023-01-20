@@ -49,6 +49,9 @@ namespace SubtitlesCleanerEditor
     {
         public bool Succeeded { get; set; }
         public string ResultMessage { get; set; }
+        public int CountSubtitlesChanged { get; set; }
+        public int CountLinesRemoved { get; set; }
+        public int CountSubtitlesRemoved { get; set; }
         public List<PreviewSubtitle> Preview { get; set; }
     }
 
@@ -58,4 +61,6 @@ namespace SubtitlesCleanerEditor
         public Subtitle OriginalSubtitle { get; set; }
         public Subtitle CleanedSubtitle { get; set; }
     }
+
+    public delegate List<string> QuickActionCleanHandler(List<string> lines, bool cleanHICaseInsensitive);
 }

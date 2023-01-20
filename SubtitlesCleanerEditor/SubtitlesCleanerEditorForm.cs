@@ -110,7 +110,7 @@ namespace SubtitlesCleanerEditor
             lstEditor.SelectionChanged -= lstEditor_SelectionChanged;
             lstErrors.SelectionChanged -= lstErrors_SelectionChanged;
 
-            if (subtitles != null)
+            if (subtitles != null && subtitles.Count > 0)
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) =>
                 {
@@ -143,6 +143,14 @@ namespace SubtitlesCleanerEditor
 
             SelectionChanged();
             ErrorSelectionChanged();
+
+            if (subtitles == null || subtitles.Count == 0)
+            {
+                txtSubtitle.Text = string.Empty;
+                txtCleanSubtitle.Text = string.Empty;
+                ResetLineLengths();
+                timePicker.Reset();
+            }
 
             this.Cursor = Cursors.Default;
         }
@@ -306,8 +314,11 @@ namespace SubtitlesCleanerEditor
 
         private void SelectEditorRow(int index)
         {
-            DataGridViewRow row = lstEditor.Rows[index];
-            SelectGVRow(row);
+            if (0 <= index && index < lstEditor.Rows.Count)
+            {
+                DataGridViewRow row = lstEditor.Rows[index];
+                SelectGVRow(row);
+            }
         }
 
         private void SelectErrorRow(int index)
@@ -1559,6 +1570,11 @@ namespace SubtitlesCleanerEditor
 
         private void btnQuickActions_Click(object sender, EventArgs e)
         {
+            QuickActions();
+        }
+
+        private void QuickActions()
+        {
             if (subtitles == null || subtitles.Count == 0)
                 return;
 
@@ -1566,10 +1582,12 @@ namespace SubtitlesCleanerEditor
             {
                 new QuickAction("Remove Empty Lines", "", RemoveEmptyLines)
                 ,new QuickAction("Remove Non-Subtitles", "Synced By", RemoveNonSubtitles)
-                ,new QuickAction("Remove Full Line Hearing-Impaired", "", RemoveFullLineHearingImpaired)
-                //,new QuickAction("Fix Hearing-Impaired", "", FixHearingImpaired)
+                ,new QuickAction("Fix Dialog", "-Hello. => - Hello.", FixDialog)
+                ,new QuickAction("Remove Full Lines Hearing-Impaired", "MAN:", RemoveFullLinesHearingImpaired)
+                ,new QuickAction("Fix Hearing-Impaired", "[singing]", FixHearingImpaired)
+                ,new QuickAction("Remove Consecutive Italics", "<i>L1</i>|<i>L2</i> => <i>L1|L2</i>", RemoveConsecutiveItalics)
                 ,new QuickAction("Fix Three Dots ...", "-- => ...  … => ...", FixThreeDots)
-                ,new QuickAction("Fix Notes ♪", "j\" => ♪  ♫¶* => ♪", FixNotes)
+                ,new QuickAction("Fix Notes ♪", "♫¶* => ♪  j\" => ♪", FixNotes)
                 ,new QuickAction("Fix Malformed Letters", "I-l => H  L\\/l => M  L/V => W", FixMalformedLetters)
                 ,new QuickAction("Remove ASSA Tags", "{\\an1}", RemoveASSATags)
                 ,new QuickAction("Remove Space After 1", "1 987 => 1987", RemoveSpaceAfterOne)
@@ -1581,10 +1599,11 @@ namespace SubtitlesCleanerEditor
                 ,new QuickAction("Fix Encoded HTML", "&amp; => &  &quot; => \"", FixEncodedHTML)
                 ,new QuickAction("Fix Contractions", "I'’m => I'm  sayin ' => sayin'", FixContractions)
                 ,new QuickAction("Fix I And L Errors", "I'II => I'll  L'm => I'm", FixIAndLErrors)
-                ,new QuickAction("Fix Merged Words", "ofthe => of the", FixMergedWords)
                 ,new QuickAction("Fix O And 0 Errors", "0ver => Over  1O => 10", FixOAnd0Errors)
+                ,new QuickAction("Fix Merged Words", "ofthe => of the", FixMergedWords)
                 ,new QuickAction("Add Dot After Abbreviation", "Mr => Mr.  Dr => Dr.  St => St.", AddDotAfterAbbreviation)
                 ,new QuickAction("Fix I And 1 Errors", "I6 => 16  1 can => I can", FixIAnd1Errors)
+                ,new QuickAction("Merge Short Line With Long Line", "", MergeShortLineWithLongLine)
             };
 
             List<Subtitle> newSubtitles = subtitles.Clone();
@@ -1607,15 +1626,57 @@ namespace SubtitlesCleanerEditor
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.NotSubtitle, isPreview, isRemoveNonSubtitles: true);
         }
 
-        private QuickActionResult RemoveFullLineHearingImpaired(List<Subtitle> subtitles, bool isPreview)
+        private QuickActionResult FixDialog(List<Subtitle> subtitles, bool isPreview)
         {
-            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.HearingImpairedFullLine.ByGroup("HI Full Line"), isPreview);
+            return QuickActionFindAndReplace(
+                subtitles,
+                new QuickActionCleanHandler[] {
+                    SubtitlesHelper.CleanDialogSingleLine,
+                    SubtitlesHelper.CleanDialogMultipleLines
+                },
+                SubtitlesHelper.MissingSpaces.ByGroup("Space After Dialog Dash"),
+                new QuickActionCleanHandler[] {
+                    SubtitlesHelper.CleanMissingDialogDashSingleLine,
+                    SubtitlesHelper.CleanMissingDialogDashMultipleLines
+                },
+                isPreview
+            );
         }
 
-        //private QuickActionResult FixHearingImpaired(List<Subtitle> subtitles, bool isPreview)
-        //{
-        //    return QuickActionFindAndReplace(subtitles, SubtitlesHelper.HearingImpairedFullLine.Concat(SubtitlesHelper.HearingImpaired).Concat(SubtitlesHelper.RedundantItalics).ToArray(), isPreview);
-        //}
+        private QuickActionResult RemoveFullLinesHearingImpaired(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(
+                subtitles,
+                null,
+                SubtitlesHelper.HearingImpairedFullLine.ByGroup("HI Full Line"),
+                new QuickActionCleanHandler[] { SubtitlesHelper.CleanHearingImpairedMultipleLines },
+                isPreview
+            );
+        }
+
+        private QuickActionResult FixHearingImpaired(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(
+                subtitles,
+                new QuickActionCleanHandler[] { SubtitlesHelper.CleanHIPrefixWithoutDialogDash },
+                SubtitlesHelper.HearingImpairedFullLine
+                    .Concat(SubtitlesHelper.HearingImpaired)
+                    .Concat(SubtitlesHelper.RedundantItalics)
+                    .Concat(SubtitlesHelper.TrimSpaces)
+                    .ToArray(),
+                new QuickActionCleanHandler[] {
+                    SubtitlesHelper.CleanHearingImpairedMultipleLines,
+                    SubtitlesHelper.CleanHIPrefixSingleLine,
+                    SubtitlesHelper.CleanHIPrefixMultipleLines
+                },
+                isPreview
+            );
+        }
+
+        private QuickActionResult RemoveConsecutiveItalics(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.CleanRedundantItalicsMultipleLines, isPreview);
+        }
 
         private QuickActionResult FixThreeDots(List<Subtitle> subtitles, bool isPreview)
         {
@@ -1624,7 +1685,13 @@ namespace SubtitlesCleanerEditor
 
         private QuickActionResult FixNotes(List<Subtitle> subtitles, bool isPreview)
         {
-            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.Notes, isPreview);
+            return QuickActionFindAndReplace(
+                subtitles,
+                new QuickActionCleanHandler[] { SubtitlesHelper.CleanLyricsMultipleLines },
+                SubtitlesHelper.Notes,
+                new QuickActionCleanHandler[] { SubtitlesHelper.CleanNotesMultipleLines },
+                isPreview
+            );
         }
 
         private QuickActionResult FixMalformedLetters(List<Subtitle> subtitles, bool isPreview)
@@ -1682,14 +1749,14 @@ namespace SubtitlesCleanerEditor
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.I_And_L, isPreview);
         }
 
-        private QuickActionResult FixMergedWords(List<Subtitle> subtitles, bool isPreview)
-        {
-            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.MergedWords, isPreview);
-        }
-
         private QuickActionResult FixOAnd0Errors(List<Subtitle> subtitles, bool isPreview)
         {
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.O_And_0, isPreview);
+        }
+
+        private QuickActionResult FixMergedWords(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.MergedWords, isPreview);
         }
 
         private QuickActionResult AddDotAfterAbbreviation(List<Subtitle> subtitles, bool isPreview)
@@ -1702,9 +1769,31 @@ namespace SubtitlesCleanerEditor
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.OCRErrors.ByGroup("I And 1"), isPreview);
         }
 
+        private QuickActionResult MergeShortLineWithLongLine(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.CleanMergeShortLineWithLongLine, isPreview);
+        }
+
         private QuickActionResult QuickActionFindAndReplace(
             List<Subtitle> subtitles,
             SubtitlesCleanerLibrary.FindAndReplace[] rules,
+            bool isPreview,
+            bool isRemoveEmptyLines = false,
+            bool isRemoveNonSubtitles = false)
+        {
+            return QuickActionFindAndReplace(subtitles, null, rules, null, isPreview, isRemoveEmptyLines, isRemoveNonSubtitles);
+        }
+
+        private QuickActionResult QuickActionFindAndReplace(List<Subtitle> subtitles, QuickActionCleanHandler cleaner, bool isPreview)
+        {
+            return QuickActionFindAndReplace(subtitles, new QuickActionCleanHandler[] { cleaner }, null, null, isPreview);
+        }
+
+        private QuickActionResult QuickActionFindAndReplace(
+            List<Subtitle> subtitles,
+            QuickActionCleanHandler[] preCleaners,
+            SubtitlesCleanerLibrary.FindAndReplace[] rules,
+            QuickActionCleanHandler[] postCleaners,
             bool isPreview,
             bool isRemoveEmptyLines = false,
             bool isRemoveNonSubtitles = false)
@@ -1727,40 +1816,131 @@ namespace SubtitlesCleanerEditor
                         }
                         else
                         {
-                            for (int k = subtitle.Lines.Count - 1; k >= 0 && k < subtitle.Lines.Count; k--)
+                            #region Pre Cleaners
+
+                            if (preCleaners != null && preCleaners.Length > 0)
                             {
-                                string line = subtitle.Lines[k];
-                                string cleanLine = line;
-
-                                foreach (var rule in rules)
+                                List<string> cleanLines = new List<string>(subtitle.Lines);
+                                if (cleanLines != null && cleanLines.Count > 0)
                                 {
-                                    cleanLine = rule.CleanLine(cleanLine, cleanHICaseInsensitive);
-
-                                    if (string.IsNullOrEmpty(cleanLine) || (isRemoveNonSubtitles && line != cleanLine))
-                                        break;
+                                    foreach (var cleaner in preCleaners)
+                                    {
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
+                                        if (cleanLines == null || cleanLines.Count == 0)
+                                            break;
+                                    }
                                 }
 
-                                cleanLine = cleanLine.Trim();
+                                if (cleanLines != null && cleanLines.Count > 0)
+                                {
+                                    for (int k = 0; k < cleanLines.Count; k++)
+                                        cleanLines[k] = cleanLines[k].Trim();
+                                }
 
-                                if (isRemoveNonSubtitles && line != cleanLine)
+                                if (cleanLines == null || (cleanLines.Count == 0 && subtitle.Lines.Count > 0))
                                 {
                                     subtitle.Lines.Clear();
                                     isSubtitlesChanged = true;
-                                    break;
                                 }
-                                else if (string.IsNullOrEmpty(cleanLine))
+                                else
                                 {
-                                    subtitle.Lines.RemoveAt(k);
-                                    isSubtitlesChanged = true;
-                                    if (subtitle.Lines.Count == 0)
-                                        break;
-                                }
-                                else if (line != cleanLine)
-                                {
-                                    subtitle.Lines[k] = cleanLine;
-                                    isSubtitlesChanged = true;
+                                    bool anyChanges =
+                                        cleanLines.Count != subtitle.Lines.Count ||
+                                        cleanLines.Zip(subtitle.Lines, (cl, l) => cl != l).Any(isChanged => isChanged);
+
+                                    if (anyChanges)
+                                    {
+                                        subtitle.Lines = cleanLines;
+                                        isSubtitlesChanged = true;
+                                    }
                                 }
                             }
+
+                            #endregion
+
+                            #region Rules
+
+                            if (rules != null && rules.Length > 0)
+                            {
+                                for (int k = subtitle.Lines.Count - 1; k >= 0 && k < subtitle.Lines.Count; k--)
+                                {
+                                    string line = subtitle.Lines[k];
+                                    string cleanLine = line;
+
+                                    foreach (var rule in rules)
+                                    {
+                                        cleanLine = rule.CleanLine(cleanLine, cleanHICaseInsensitive);
+
+                                        if (string.IsNullOrEmpty(cleanLine) || (isRemoveNonSubtitles && line != cleanLine))
+                                            break;
+                                    }
+
+                                    cleanLine = cleanLine.Trim();
+
+                                    if (isRemoveNonSubtitles && line != cleanLine)
+                                    {
+                                        subtitle.Lines.Clear();
+                                        isSubtitlesChanged = true;
+                                        break;
+                                    }
+                                    else if (string.IsNullOrEmpty(cleanLine))
+                                    {
+                                        subtitle.Lines.RemoveAt(k);
+                                        isSubtitlesChanged = true;
+                                        if (subtitle.Lines.Count == 0)
+                                            break;
+                                    }
+                                    else if (line != cleanLine)
+                                    {
+                                        subtitle.Lines[k] = cleanLine;
+                                        isSubtitlesChanged = true;
+                                    }
+                                }
+                            }
+
+                            #endregion
+
+                            #region Post Cleaners
+
+                            if (postCleaners != null && postCleaners.Length > 0)
+                            {
+                                List<string> cleanLines = new List<string>(subtitle.Lines);
+                                if (cleanLines != null && cleanLines.Count > 0)
+                                {
+                                    foreach (var cleaner in postCleaners)
+                                    {
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
+                                        if (cleanLines == null || cleanLines.Count == 0)
+                                            break;
+                                    }
+                                }
+
+                                if (cleanLines != null && cleanLines.Count > 0)
+                                {
+                                    for (int k = 0; k < cleanLines.Count; k++)
+                                        cleanLines[k] = cleanLines[k].Trim();
+                                }
+
+                                if (cleanLines == null || (cleanLines.Count == 0 && subtitle.Lines.Count > 0))
+                                {
+                                    subtitle.Lines.Clear();
+                                    isSubtitlesChanged = true;
+                                }
+                                else
+                                {
+                                    bool anyChanges =
+                                        cleanLines.Count != subtitle.Lines.Count ||
+                                        cleanLines.Zip(subtitle.Lines, (cl, l) => cl != l).Any(isChanged => isChanged);
+
+                                    if (anyChanges)
+                                    {
+                                        subtitle.Lines = cleanLines;
+                                        isSubtitlesChanged = true;
+                                    }
+                                }
+                            }
+
+                            #endregion
                         }
 
                         if (isSubtitlesChanged)
@@ -1802,76 +1982,163 @@ namespace SubtitlesCleanerEditor
                         }
                         else
                         {
-                            for (int k = subtitle.Lines.Count - 1; k >= 0 && k < subtitle.Lines.Count; k--)
+                            #region Pre Cleaners
+
+                            if (preCleaners != null && preCleaners.Length > 0)
                             {
-                                string line = subtitle.Lines[k];
-                                string cleanLine = line;
-
-                                foreach (var rule in rules)
+                                List<string> cleanLines = new List<string>(subtitle.Lines);
+                                if (cleanLines != null && cleanLines.Count > 0)
                                 {
-                                    cleanLine = rule.CleanLine(cleanLine, cleanHICaseInsensitive);
-
-                                    if (string.IsNullOrEmpty(cleanLine) || (isRemoveNonSubtitles && line != cleanLine))
-                                        break;
+                                    foreach (var cleaner in preCleaners)
+                                    {
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
+                                        if (cleanLines == null || cleanLines.Count == 0)
+                                            break;
+                                    }
                                 }
 
-                                cleanLine = cleanLine.Trim();
+                                if (cleanLines != null && cleanLines.Count > 0)
+                                {
+                                    for (int k = 0; k < cleanLines.Count; k++)
+                                        cleanLines[k] = cleanLines[k].Trim();
+                                }
 
-                                if (isRemoveNonSubtitles && line != cleanLine)
+                                if (cleanLines == null || (cleanLines.Count == 0 && subtitle.Lines.Count > 0))
                                 {
                                     subtitles.RemoveAt(i);
                                     isSubtitlesChanged = true;
                                     countSubtitlesRemoved++;
-                                    break;
+                                    countLinesRemoved += subtitle.Lines.Count;
                                 }
-                                else if (string.IsNullOrEmpty(cleanLine))
+                                else
                                 {
-                                    subtitle.Lines.RemoveAt(k);
-                                    isSubtitlesChanged = true;
-                                    countLinesRemoved++;
-                                    if (subtitle.Lines.Count == 0)
+                                    bool anyChanges =
+                                        cleanLines.Count != subtitle.Lines.Count ||
+                                        cleanLines.Zip(subtitle.Lines, (cl, l) => cl != l).Any(isChanged => isChanged);
+
+                                    if (anyChanges)
+                                    {
+                                        subtitle.Lines = cleanLines;
+                                        isSubtitlesChanged = true;
+                                    }
+                                }
+                            }
+
+                            #endregion
+
+                            #region Rules
+
+                            if (rules != null && rules.Length > 0)
+                            {
+                                for (int k = subtitle.Lines.Count - 1; k >= 0 && k < subtitle.Lines.Count; k--)
+                                {
+                                    string line = subtitle.Lines[k];
+                                    string cleanLine = line;
+
+                                    foreach (var rule in rules)
+                                    {
+                                        cleanLine = rule.CleanLine(cleanLine, cleanHICaseInsensitive);
+
+                                        if (string.IsNullOrEmpty(cleanLine) || (isRemoveNonSubtitles && line != cleanLine))
+                                            break;
+                                    }
+
+                                    cleanLine = cleanLine.Trim();
+
+                                    if (isRemoveNonSubtitles && line != cleanLine)
                                     {
                                         subtitles.RemoveAt(i);
+                                        isSubtitlesChanged = true;
                                         countSubtitlesRemoved++;
                                         break;
                                     }
-                                }
-                                else if (line != cleanLine)
-                                {
-                                    subtitle.Lines[k] = cleanLine;
-                                    isSubtitlesChanged = true;
+                                    else if (string.IsNullOrEmpty(cleanLine))
+                                    {
+                                        subtitle.Lines.RemoveAt(k);
+                                        isSubtitlesChanged = true;
+                                        countLinesRemoved++;
+                                        if (subtitle.Lines.Count == 0)
+                                        {
+                                            subtitles.RemoveAt(i);
+                                            countSubtitlesRemoved++;
+                                            break;
+                                        }
+                                    }
+                                    else if (line != cleanLine)
+                                    {
+                                        subtitle.Lines[k] = cleanLine;
+                                        isSubtitlesChanged = true;
+                                    }
                                 }
                             }
+
+                            #endregion
+
+                            #region Post Cleaners
+
+                            if (postCleaners != null && postCleaners.Length > 0)
+                            {
+                                List<string> cleanLines = new List<string>(subtitle.Lines);
+                                if (cleanLines != null && cleanLines.Count > 0)
+                                {
+                                    foreach (var cleaner in postCleaners)
+                                    {
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
+                                        if (cleanLines == null || cleanLines.Count == 0)
+                                            break;
+                                    }
+                                }
+
+                                if (cleanLines != null && cleanLines.Count > 0)
+                                {
+                                    for (int k = 0; k < cleanLines.Count; k++)
+                                        cleanLines[k] = cleanLines[k].Trim();
+                                }
+
+                                if (cleanLines == null || (cleanLines.Count == 0 && subtitle.Lines.Count > 0))
+                                {
+                                    subtitles.RemoveAt(i);
+                                    isSubtitlesChanged = true;
+                                    countSubtitlesRemoved++;
+                                    countLinesRemoved += subtitle.Lines.Count;
+                                }
+                                else
+                                {
+                                    bool anyChanges =
+                                        cleanLines.Count != subtitle.Lines.Count ||
+                                        cleanLines.Zip(subtitle.Lines, (cl, l) => cl != l).Any(isChanged => isChanged);
+
+                                    if (anyChanges)
+                                    {
+                                        subtitle.Lines = cleanLines;
+                                        isSubtitlesChanged = true;
+                                    }
+                                }
+                            }
+
+                            #endregion
                         }
 
                         if (isSubtitlesChanged)
                             countSubtitlesChanged++;
                     }
 
+                    var result = new QuickActionResult()
+                    {
+                        Succeeded = true,
+                        CountSubtitlesChanged = countSubtitlesChanged,
+                        CountLinesRemoved = countLinesRemoved,
+                        CountSubtitlesRemoved = countSubtitlesRemoved
+                    };
+
                     if (isRemoveEmptyLines)
-                    {
-                        return new QuickActionResult()
-                        {
-                            Succeeded = true,
-                            ResultMessage = string.Format("Removed {0} line{1}", countLinesRemoved, countLinesRemoved == 1 ? "" : "s")
-                        };
-                    }
+                        result.ResultMessage = string.Format("Removed {0} line{1}", countLinesRemoved, countLinesRemoved == 1 ? "" : "s");
                     else if (isRemoveNonSubtitles)
-                    {
-                        return new QuickActionResult()
-                        {
-                            Succeeded = true,
-                            ResultMessage = string.Format("Removed {0} non-subtitle{1}", countSubtitlesRemoved, countSubtitlesRemoved == 1 ? "" : "s")
-                        };
-                    }
+                        result.ResultMessage = string.Format("Removed {0} non-subtitle{1}", countSubtitlesRemoved, countSubtitlesRemoved == 1 ? "" : "s");
                     else
-                    {
-                        return new QuickActionResult()
-                        {
-                            Succeeded = true,
-                            ResultMessage = string.Format("Fixed {0} subtitle{1}", countSubtitlesChanged, countSubtitlesChanged == 1 ? "" : "s")
-                        };
-                    }
+                        result.ResultMessage = string.Format("Fixed {0} subtitle{1}", countSubtitlesChanged, countSubtitlesChanged == 1 ? "" : "s");
+
+                    return result;
                 }
             }
             catch (Exception ex)

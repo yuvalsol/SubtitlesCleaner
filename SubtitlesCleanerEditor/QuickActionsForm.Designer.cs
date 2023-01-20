@@ -40,10 +40,13 @@ namespace SubtitlesCleanerEditor
             this.ColumnResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnPreview = new System.Windows.Forms.DataGridViewButtonColumn();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnApply = new System.Windows.Forms.Button();
+            this.btnDiscardChanges = new System.Windows.Forms.Button();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnPreviewChanges = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.lstQuickActions)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstQuickActions
@@ -75,7 +78,7 @@ namespace SubtitlesCleanerEditor
             this.lstQuickActions.ReadOnly = true;
             this.lstQuickActions.RowHeadersVisible = false;
             this.lstQuickActions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.lstQuickActions.Size = new System.Drawing.Size(844, 465);
+            this.lstQuickActions.Size = new System.Drawing.Size(844, 552);
             this.lstQuickActions.TabIndex = 1;
             this.lstQuickActions.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.lstQuickActions_CellContentClick);
             // 
@@ -137,49 +140,83 @@ namespace SubtitlesCleanerEditor
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.btnOK);
-            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 465);
+            this.flowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel1.Controls.Add(this.btnApply);
+            this.flowLayoutPanel1.Controls.Add(this.btnDiscardChanges);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 9);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(844, 37);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(164, 33);
             this.flowLayoutPanel1.TabIndex = 3;
             // 
-            // btnOK
+            // btnApply
             // 
-            this.btnOK.AutoSize = true;
-            this.btnOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(3, 6);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(33, 24);
-            this.btnOK.TabIndex = 2;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnApply.AutoSize = true;
+            this.btnApply.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnApply.Location = new System.Drawing.Point(3, 6);
+            this.btnApply.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(47, 24);
+            this.btnApply.TabIndex = 2;
+            this.btnApply.Text = "Apply";
+            this.btnApply.UseVisualStyleBackColor = true;
+            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
-            // btnCancel
+            // btnDiscardChanges
             // 
-            this.btnCancel.AutoSize = true;
-            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(42, 6);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(52, 24);
-            this.btnCancel.TabIndex = 3;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnDiscardChanges.AutoSize = true;
+            this.btnDiscardChanges.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnDiscardChanges.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnDiscardChanges.Location = new System.Drawing.Point(56, 6);
+            this.btnDiscardChanges.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.btnDiscardChanges.Name = "btnDiscardChanges";
+            this.btnDiscardChanges.Size = new System.Drawing.Size(105, 24);
+            this.btnDiscardChanges.TabIndex = 3;
+            this.btnDiscardChanges.Text = "Discard Changes";
+            this.btnDiscardChanges.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.btnPreviewChanges, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 552);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 52);
+            this.tableLayoutPanel1.TabIndex = 4;
+            // 
+            // btnPreviewChanges
+            // 
+            this.btnPreviewChanges.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnPreviewChanges.AutoSize = true;
+            this.btnPreviewChanges.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnPreviewChanges.Location = new System.Drawing.Point(731, 15);
+            this.btnPreviewChanges.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.btnPreviewChanges.Name = "btnPreviewChanges";
+            this.btnPreviewChanges.Size = new System.Drawing.Size(110, 24);
+            this.btnPreviewChanges.TabIndex = 5;
+            this.btnPreviewChanges.Text = "Preview Changes";
+            this.btnPreviewChanges.UseVisualStyleBackColor = true;
+            this.btnPreviewChanges.Click += new System.EventHandler(this.btnPreviewChanges_Click);
             // 
             // QuickActionsForm
             // 
-            this.AcceptButton = this.btnOK;
+            this.AcceptButton = this.btnApply;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(844, 502);
+            this.CancelButton = this.btnDiscardChanges;
+            this.ClientSize = new System.Drawing.Size(844, 604);
             this.Controls.Add(this.lstQuickActions);
-            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -190,6 +227,8 @@ namespace SubtitlesCleanerEditor
             ((System.ComponentModel.ISupportInitialize)(this.lstQuickActions)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -197,12 +236,14 @@ namespace SubtitlesCleanerEditor
         #endregion
         private System.Windows.Forms.DataGridView lstQuickActions;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.Button btnDiscardChanges;
         private System.Windows.Forms.DataGridViewButtonColumn ColumnFix;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnAction;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnExamples;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnResult;
         private System.Windows.Forms.DataGridViewButtonColumn ColumnPreview;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button btnPreviewChanges;
     }
 }
