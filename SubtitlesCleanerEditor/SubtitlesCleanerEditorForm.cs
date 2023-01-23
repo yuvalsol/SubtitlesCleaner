@@ -722,23 +722,14 @@ namespace SubtitlesCleanerEditor
 
         private void rdbHICase_CheckedChanged(object sender, EventArgs e)
         {
-            if (rdbHIUpperCaseOnly.Checked)
-                cleanHICaseInsensitive = false;
-            else if (rdbHIUpperLowerCases.Checked)
-                cleanHICaseInsensitive = true;
+            ChangeHICaseSensitivity();
+        }
 
-            foreach (DataGridViewRow row in lstEditor.Rows)
-            {
-                EditorRow editorRow = row.DataBoundItem as EditorRow;
-                Subtitle subtitle = subtitles[editorRow.Num - 1];
-
-                subtitle.CheckSubtitle(cleanHICaseInsensitive);
-
-                editorRow.SubtitleError = subtitle.SubtitleError;
-            }
-
-            SetSubtitlesErrors();
-
+        private void ChangeHICaseSensitivity()
+        {
+            cleanHICaseInsensitive = rdbHIUpperLowerCases.Checked;
+            subtitles.CheckSubtitles(cleanHICaseInsensitive);
+            SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
             SetFormTitle(true);
         }
 
