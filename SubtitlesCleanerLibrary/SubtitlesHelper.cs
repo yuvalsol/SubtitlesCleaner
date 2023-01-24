@@ -1409,7 +1409,7 @@ namespace SubtitlesCleanerLibrary
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
-                    string firstCharSecondLine = (lines[1].Length > 0 ? (lines[1][0]).ToString() : string.Empty);
+                    string firstCharSecondLine = (lines[1].Length > 0 ? lines[1][0].ToString() : string.Empty);
 
                     if (regexCapitalLetter.IsMatch(firstCharSecondLine))
                     {
@@ -1483,8 +1483,14 @@ namespace SubtitlesCleanerLibrary
                 }
                 else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    string firstCharFirstLine = (lines[0].Length > 0 ? (lines[0][0]).ToString() : string.Empty);
-                    string firstCharSecondLine = (lines[1].Length > 0 ? (lines[1][0]).ToString() : string.Empty);
+                    bool isStartsWithItalics = false;
+                    string line0 = lines[0];
+                    if (isStartsWithItalics = line0.StartsWith("<i>"))
+                        line0 = line0.Substring(3);
+
+                    string firstCharFirstLine = (lines[0].Length > 0 ? lines[0][0].ToString() : string.Empty);
+                    if (isStartsWithItalics)
+                        firstCharFirstLine = (lines[0].Length > 3 ? lines[0][3].ToString() : string.Empty);
 
                     if (regexLowerLetter.IsMatch(firstCharFirstLine) && (
                         resultsDialog[0].isEndsWithDots ||
@@ -1494,7 +1500,7 @@ namespace SubtitlesCleanerLibrary
                     {
                         // line 1.
                         // - Line 2
-                        lines[0] = "- " + lines[0];
+                        lines[0] = (isStartsWithItalics ? "<i>" : string.Empty) + "- " + line0;
                         // - line 1.
                         // - Line 2
                     }
@@ -1502,7 +1508,7 @@ namespace SubtitlesCleanerLibrary
                     {
                         // Line 1
                         // - Line 2
-                        lines[0] = "- " + lines[0];
+                        lines[0] = (isStartsWithItalics ? "<i>" : string.Empty) + "- " + line0;
                         // - Line 1
                         // - Line 2
                     }
@@ -1580,7 +1586,7 @@ namespace SubtitlesCleanerLibrary
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
-                    string firstCharSecondLine = (lines[1][0]).ToString();
+                    string firstCharSecondLine = (lines[1].Length > 0 ? lines[1][0].ToString() : string.Empty);
 
                     if (regexCapitalLetter.IsMatch(firstCharSecondLine))
                     {
@@ -1635,8 +1641,14 @@ namespace SubtitlesCleanerLibrary
                 }
                 else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    string firstCharFirstLine = (lines[0][0]).ToString();
-                    string firstCharSecondLine = (lines[1][0]).ToString();
+                    bool isStartsWithItalics = false;
+                    string line0 = lines[0];
+                    if (isStartsWithItalics = line0.StartsWith("<i>"))
+                        line0 = line0.Substring(3);
+
+                    string firstCharFirstLine = (lines[0].Length > 0 ? lines[0][0].ToString() : string.Empty);
+                    if (isStartsWithItalics)
+                        firstCharFirstLine = (lines[0].Length > 3 ? lines[0][3].ToString() : string.Empty);
 
                     if (regexLowerLetter.IsMatch(firstCharFirstLine) && (
                         resultsDialog[0].isEndsWithDots ||
