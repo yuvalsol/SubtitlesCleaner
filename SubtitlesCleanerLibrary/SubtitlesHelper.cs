@@ -3225,8 +3225,8 @@ namespace SubtitlesCleanerLibrary
 
             // fix acronym with periods (replace match to upper case)
             // c.E.O. => C.E.O.
-            // this is an OCR Error but it needs to be executed before the next one - Add space after a single dot
-            ,new FindAndReplace("Space After Dot", new Regex(@"([a-zà-ÿ])\.([A-ZÀ-Ý]\.)+", RegexOptions.Compiled), m => m.ToString().ToUpper(), SubtitleError.OCR_Error)
+            // this is an OCR_Error but it needs to be executed before the next one - Add space after a single dot
+            ,new FindAndReplace("Space After Dot", new Regex(@"(\b[a-zà-ÿ])\.([A-ZÀ-Ý]\.)+", RegexOptions.Compiled), m => m.ToString().ToUpper(), SubtitleError.OCR_Error)
 
             // Add space after a single dot
             ,new FindAndReplace("Space After Dot", new Regex(@"[a-zà-ÿ](?<OCR>\.)[^(\s\n\'\.\?\!<"")\,]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.Missing_Spaces,
