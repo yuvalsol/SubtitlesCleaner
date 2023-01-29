@@ -2786,8 +2786,8 @@ namespace SubtitlesCleanerLibrary
 
         #region Cleaning Regex Rules
 
-        private const string HI_CHARS = @"A-ZÀ-Ý0-9 #\-'.";
-        private const string HI_CHARS_CI = @"A-ZÀ-Ýa-zà-ÿ0-9 #\-'.";
+        private const string HI_CHARS = @"A-ZÀ-Ý0-9 #\-'.&";
+        private const string HI_CHARS_CI = @"A-ZÀ-Ýa-zà-ÿ0-9 #\-'.&";
 
         #region Empty Line
 
