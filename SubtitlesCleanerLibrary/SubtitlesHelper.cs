@@ -3491,32 +3491,17 @@ namespace SubtitlesCleanerLibrary
         #region Merged Words
 
         public static readonly FindAndReplace[] MergedWords = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"\b(?<OCR>ofthe)\b", RegexOptions.Compiled), "OCR", "of the", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>onthe)\b", RegexOptions.Compiled), "OCR", "on the", SubtitleError.Merged_Words_Error)
+             new FindAndReplace(new Regex(@"\b(?<OCR>of)(?i:the|you|we|him|her|it|this|they|them|those|thing|things|too)\b", RegexOptions.Compiled), "OCR", "of ", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>on)(?i:the|you|we|him|her|it|this|they|them|those|thing|things|too)\b", RegexOptions.Compiled), "OCR", "on ", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>if)(?i:the|you|we|him|her|it|this|they|them|those|thing|things|too)\b", RegexOptions.Compiled), "OCR", "if ", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if)(?<Suffix>[A-ZÀ-Ý][a-zà-ÿ])", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:after|don't|for|of|our|that|this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>off)(?i:first|too)\b", RegexOptions.Compiled), "OCR", "off ", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>fora)\b", RegexOptions.Compiled), "OCR", "for a", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>numberi)\b", RegexOptions.Compiled), "OCR", "number one", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:time)(?<OCR>to)\b", RegexOptions.Compiled), "OCR", " to", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:don't)(?<OCR>do)\b", RegexOptions.Compiled), "OCR", " do", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:off)(?<OCR>too)\b", RegexOptions.Compiled), "OCR", " too", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:off)(?<OCR>first)\b", RegexOptions.Compiled), "OCR", " first", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>this)\b", RegexOptions.Compiled), "OCR", " this", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>they)\b", RegexOptions.Compiled), "OCR", " they", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>this)\b", RegexOptions.Compiled), "OCR", " this", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>them)\b", RegexOptions.Compiled), "OCR", " them", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>thing)\b", RegexOptions.Compiled), "OCR", " thing", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>things)\b", RegexOptions.Compiled), "OCR", " things", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>too)\b", RegexOptions.Compiled), "OCR", " too", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>we)\b", RegexOptions.Compiled), "OCR", " we", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>the)\b", RegexOptions.Compiled), "OCR", " the", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:if)(?<OCR>those)\b", RegexOptions.Compiled), "OCR", " those", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:you)(?<OCR>have)\b", RegexOptions.Compiled), "OCR", " have", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:after)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:don't)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:for)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:of)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:our)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:that)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
         };
 
         #endregion
