@@ -486,7 +486,7 @@ namespace SubtitlesCleanerLibrary
             if (lines == null || lines.Count == 0)
                 return null;
 
-            lines = CleanMissingNewLineMultipleLines(lines, cleanHICaseInsensitive);
+            /*lines = CleanMissingNewLineMultipleLines(lines, cleanHICaseInsensitive);*/
             lines = CleanLyricsMultipleLines(lines, cleanHICaseInsensitive);
             lines = CleanHIPrefixWithoutDialogDash(lines, cleanHICaseInsensitive);
 
@@ -499,7 +499,7 @@ namespace SubtitlesCleanerLibrary
                 return SubtitleError.Empty_Line;
 
             SubtitleError subtitleError = SubtitleError.None;
-            subtitleError = CheckMissingNewLineMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
+            /*subtitleError = CheckMissingNewLineMultipleLines(lines, cleanHICaseInsensitive, subtitleError);*/
             subtitleError = CheckLyricsMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
             subtitleError = CheckHIPrefixWithoutDialogDash(lines, cleanHICaseInsensitive, subtitleError);
 
@@ -508,7 +508,7 @@ namespace SubtitlesCleanerLibrary
 
         public static readonly Regex regexMissingNewLine = new Regex(@"[!?][A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled);
 
-        public static List<string> CleanMissingNewLineMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
+        /*public static List<string> CleanMissingNewLineMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
                 return null;
@@ -561,7 +561,7 @@ namespace SubtitlesCleanerLibrary
             }
 
             return subtitleError;
-        }
+        }*/
 
         public static readonly Regex regexNoteStart = new Regex(@"^(?:-\s*)?(?<Note>♪+)", RegexOptions.Compiled);
         public static readonly Regex regexNoteEnd = new Regex(@"\s+(?<Note>♪+)$", RegexOptions.Compiled);
@@ -3242,6 +3242,9 @@ namespace SubtitlesCleanerLibrary
 
             // Add space after comma
             ,new FindAndReplace("Space After Comma", new Regex(@"(?<OCR>\,)[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled), "OCR", ", ", SubtitleError.Missing_Spaces)
+
+            // Add space after exclamation mark, question mark
+            ,new FindAndReplace(new Regex(@"(?<Prefix>[!?])(?<Suffix>[A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Missing_Spaces)
 
             // Text...Text => Text... Text
             ,new FindAndReplace("Space After Three Dot", new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9](?:(?<OCR>\.{2,})[A-ZÀ-Ýa-zà-ÿ0-9])+", RegexOptions.Compiled), "OCR", "... ", SubtitleError.Missing_Spaces)
