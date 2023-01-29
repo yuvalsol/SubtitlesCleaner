@@ -2899,6 +2899,7 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace("Three Dots", new Regex(@"\.\s\.\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"\.\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"\.\s\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"_\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"-{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
