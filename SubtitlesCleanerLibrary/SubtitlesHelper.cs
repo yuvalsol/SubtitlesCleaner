@@ -3096,8 +3096,8 @@ namespace SubtitlesCleanerLibrary
             // 1, 000
             ,new FindAndReplace(new Regex(@"\b\d+(?<OCR>, | ,)0{3}\b", RegexOptions.Compiled), "OCR", ",", SubtitleError.Redundant_Spaces)
             
-            // Text . Next text
-            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\s\.)\s[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled), "OCR", ". ", SubtitleError.Redundant_Spaces)
+            // Text . Next text => Text. Next text
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\s)[.,!?](?:\s[A-ZÀ-Ýa-zà-ÿ]|$)", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
 
             // Ordinal Numbers: 1st, 2nd, 3rd, 4th
             ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
