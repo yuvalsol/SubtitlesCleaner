@@ -3256,7 +3256,9 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace("Space After Three Dot", new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9](?:(?<OCR>\.{2,})[A-ZÀ-Ýa-zà-ÿ0-9])+", RegexOptions.Compiled), "OCR", "... ", SubtitleError.Missing_Spaces)
 
             // "Quotation"Text => "Quotation" Text
-            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9.,!?](?<OCR>"")[A-ZÀ-Ýa-zà-ÿ0-9]", RegexOptions.Compiled), "OCR", @""" ", SubtitleError.Missing_Spaces)
+            ,new FindAndReplace(new Regex(@"^.*?"".*?(?<OCR>"")[A-ZÀ-Ýa-zà-ÿ0-9][^""]*$", RegexOptions.Compiled), "OCR", @""" ", SubtitleError.Missing_Spaces)
+            // Text"Quotation" => Text "Quotation"
+            ,new FindAndReplace(new Regex(@"^[^""]*[A-ZÀ-Ýa-zà-ÿ0-9](?<OCR>"").*?"".*?$", RegexOptions.Compiled), "OCR", @" """, SubtitleError.Missing_Spaces)
         };
 
         #endregion
