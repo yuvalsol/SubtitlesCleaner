@@ -193,6 +193,7 @@ namespace SubtitlesCleanerEditor
                 originalSubtitles = subtitles.Clone();
                 this.filePath = filePath;
                 SetSubtitlesToEditor(subtitles);
+                SelectFirstError();
                 SetFormTitle(false);
                 lstEditor.Focus();
             }
@@ -567,6 +568,29 @@ namespace SubtitlesCleanerEditor
         private int lstErrors_SortedColumnIndex;
         private SortOrder lstErrors_sortOrder;
 
+        private void lstErrors_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            ChangeErrorsSort(e.ColumnIndex);
+        }
+
+        private void ChangeErrorsSort(int columnIndex)
+        {
+            if (lstErrors_SortedColumnIndex == columnIndex)
+            {
+                if (lstErrors_sortOrder == SortOrder.Ascending)
+                    lstErrors_sortOrder = SortOrder.Descending;
+                else
+                    lstErrors_sortOrder = SortOrder.Ascending;
+            }
+            else
+            {
+                lstErrors_SortedColumnIndex = columnIndex;
+                lstErrors_sortOrder = SortOrder.Ascending;
+            }
+
+            sortErrors();
+        }
+
         private void sortErrors()
         {
             ErrorRow errorRowBeforeSort = GetSelectedErrorRow();
@@ -644,25 +668,21 @@ namespace SubtitlesCleanerEditor
             }
         }
 
-        private void lstErrors_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void SelectFirstError()
         {
-            if (lstErrors_SortedColumnIndex == e.ColumnIndex)
-            {
-                if (lstErrors_sortOrder == SortOrder.Ascending)
-                    lstErrors_sortOrder = SortOrder.Descending;
-                else
-                    lstErrors_sortOrder = SortOrder.Ascending;
-            }
-            else
-            {
-                lstErrors_SortedColumnIndex = e.ColumnIndex;
-                lstErrors_sortOrder = SortOrder.Ascending;
-            }
+            ErrorRow errorRow = SelectFirstErrorRow();
+            if (errorRow == null)
+                return;
 
-            sortErrors();
+            SelectEditorRowFromErrorRow();
         }
 
         private void lstErrors_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            SelectEditorRowFromErrorRow();
+        }
+
+        private void SelectEditorRowFromErrorRow()
         {
             if (lstErrors.CurrentRow.Selected)
             {
@@ -675,7 +695,12 @@ namespace SubtitlesCleanerEditor
 
         private void lstEditor_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            EditorRow editorRow = GetEditorRowAt(e.RowIndex);
+            SelectErrorRowFromEditorRow(e.RowIndex);
+        }
+
+        private void SelectErrorRowFromEditorRow(int rowIndex)
+        {
+            EditorRow editorRow = GetEditorRowAt(rowIndex);
 
             foreach (DataGridViewRow row in lstErrors.Rows)
             {
@@ -705,6 +730,11 @@ namespace SubtitlesCleanerEditor
                 }
             }
 
+            return SelectFirstErrorRow();
+        }
+
+        private ErrorRow SelectFirstErrorRow()
+        {
             if (lstErrors.Rows != null && lstErrors.Rows.Count > 0)
             {
                 DataGridViewRow row = lstErrors.Rows[0];
