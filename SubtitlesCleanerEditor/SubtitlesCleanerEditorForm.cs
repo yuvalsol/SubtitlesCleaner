@@ -1210,7 +1210,15 @@ namespace SubtitlesCleanerEditor
             {
                 ErrorRow errorRow = SelectClosestErrorRow(num);
                 if (errorRow != null)
+                {
                     SelectEditorRow(errorRow.Num - 1);
+                }
+                else
+                {
+                    int index = num - 1;
+                    if (index > lstEditor.Rows.Count - 1)
+                        SelectEditorRow(lstEditor.Rows.Count - 1);
+                }
             }
         }
 
@@ -1234,6 +1242,8 @@ namespace SubtitlesCleanerEditor
                 int index = num - 1;
                 if (0 <= index && index <= lstEditor.Rows.Count - 1)
                     SelectEditorRow(index);
+                else if (index > lstEditor.Rows.Count - 1)
+                    SelectEditorRow(lstEditor.Rows.Count - 1);
             }
         }
 
