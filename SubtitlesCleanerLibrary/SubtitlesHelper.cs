@@ -3429,6 +3429,7 @@ namespace SubtitlesCleanerLibrary
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "Il est" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il faut" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il y a " }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
             )
 
             // Lowercase word at the end: II => ll
@@ -3447,7 +3448,9 @@ namespace SubtitlesCleanerLibrary
 			,new FindAndReplace(new Regex(@"[A-ZÀ-Ý]{2,}(?<OCR>l)", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
 
 			// Replace single l with I. not preceding l- and follwoing -l
-            ,new FindAndReplace(new Regex(@"\b(?<!l-)(?<OCR>l)(?!-l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<!l-)(?<OCR>l)(?!-l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
+            )
 
 			// Replace single i with I, but not <i> or </i> and not with following -i (i-i-is)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>(?<!<|/)i(?!>|-i))\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
@@ -3485,6 +3488,7 @@ namespace SubtitlesCleanerLibrary
             // l at the beginning before a consonant different from l is most likely an I
             ,new FindAndReplace(new Regex(@"\b(?<!l-)(?<OCR>l)(?!-l)[^aeiouyà-ÿl]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
                 new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "lbs" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "l'chaim" }
             )
 
 			// The name "Ian"
