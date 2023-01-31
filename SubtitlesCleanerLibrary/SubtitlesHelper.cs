@@ -3293,6 +3293,11 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"Τ", RegexOptions.Compiled), "T", SubtitleError.Non_Ansi_Chars) //  932 => T
             ,new FindAndReplace(new Regex(@"Υ", RegexOptions.Compiled), "Y", SubtitleError.Non_Ansi_Chars) //  933 => Y
             ,new FindAndReplace(new Regex(@"Χ", RegexOptions.Compiled), "X", SubtitleError.Non_Ansi_Chars) //  935 => X
+            ,new FindAndReplace(new Regex(@"κ", RegexOptions.Compiled), "k", SubtitleError.Non_Ansi_Chars) //  954 => k
+            ,new FindAndReplace(new Regex(@"ν", RegexOptions.Compiled), "v", SubtitleError.Non_Ansi_Chars) //  957 => v
+            ,new FindAndReplace(new Regex(@"ο", RegexOptions.Compiled), "o", SubtitleError.Non_Ansi_Chars) //  959 => o
+            ,new FindAndReplace(new Regex(@"ρ", RegexOptions.Compiled), "p", SubtitleError.Non_Ansi_Chars) //  961 => p
+            ,new FindAndReplace(new Regex(@"ω", RegexOptions.Compiled), "w", SubtitleError.Non_Ansi_Chars) //  969 => w
             ,new FindAndReplace(new Regex(@"ϲ", RegexOptions.Compiled), "c", SubtitleError.Non_Ansi_Chars) // 1010 => c
             ,new FindAndReplace(new Regex(@"ϳ", RegexOptions.Compiled), "j", SubtitleError.Non_Ansi_Chars) // 1011 => j
             ,new FindAndReplace(new Regex(@"Ϲ", RegexOptions.Compiled), "C", SubtitleError.Non_Ansi_Chars) // 1017 => C
@@ -3312,11 +3317,17 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"Т", RegexOptions.Compiled), "T", SubtitleError.Non_Ansi_Chars) // 1058 => T
             ,new FindAndReplace(new Regex(@"У", RegexOptions.Compiled), "y", SubtitleError.Non_Ansi_Chars) // 1059 => y
             ,new FindAndReplace(new Regex(@"Х", RegexOptions.Compiled), "X", SubtitleError.Non_Ansi_Chars) // 1061 => X
+            ,new FindAndReplace(new Regex(@"Ь", RegexOptions.Compiled), "b", SubtitleError.Non_Ansi_Chars) // 1068 => b
             ,new FindAndReplace(new Regex(@"а", RegexOptions.Compiled), "a", SubtitleError.Non_Ansi_Chars) // 1072 => a
+            ,new FindAndReplace(new Regex(@"в", RegexOptions.Compiled), "B", SubtitleError.Non_Ansi_Chars) // 1074 => B
             ,new FindAndReplace(new Regex(@"е", RegexOptions.Compiled), "e", SubtitleError.Non_Ansi_Chars) // 1077 => e
+            ,new FindAndReplace(new Regex(@"к", RegexOptions.Compiled), "k", SubtitleError.Non_Ansi_Chars) // 1082 => k
+            ,new FindAndReplace(new Regex(@"м", RegexOptions.Compiled), "M", SubtitleError.Non_Ansi_Chars) // 1084 => M
+            ,new FindAndReplace(new Regex(@"н", RegexOptions.Compiled), "H", SubtitleError.Non_Ansi_Chars) // 1085 => H
             ,new FindAndReplace(new Regex(@"о", RegexOptions.Compiled), "o", SubtitleError.Non_Ansi_Chars) // 1086 => o
             ,new FindAndReplace(new Regex(@"р", RegexOptions.Compiled), "p", SubtitleError.Non_Ansi_Chars) // 1088 => p
             ,new FindAndReplace(new Regex(@"с", RegexOptions.Compiled), "c", SubtitleError.Non_Ansi_Chars) // 1089 => c
+            ,new FindAndReplace(new Regex(@"т", RegexOptions.Compiled), "T", SubtitleError.Non_Ansi_Chars) // 1090 => T
             ,new FindAndReplace(new Regex(@"у", RegexOptions.Compiled), "y", SubtitleError.Non_Ansi_Chars) // 1091 => y
             ,new FindAndReplace(new Regex(@"х", RegexOptions.Compiled), "x", SubtitleError.Non_Ansi_Chars) // 1093 => x
         };
