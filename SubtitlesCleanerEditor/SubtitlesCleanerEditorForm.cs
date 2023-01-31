@@ -34,30 +34,29 @@ namespace SubtitlesCleanerEditor
 
         private void ParseArgs(string[] args)
         {
-            if (args != null && args.Length == 1 && string.IsNullOrEmpty(args[0]) == false && Directory.Exists(args[0]))
+            if (args != null && args.Length == 1)
             {
-                bool isDirectory = Directory.Exists(args[0]);
-                bool isFile = File.Exists(args[0]);
+                string path = args[0];
 
-                string initialDirectory = null;
+                if (string.IsNullOrEmpty(path) == false)
+                {
+                    string initialDirectory = null;
 
-                if (isDirectory)
-                {
-                    initialDirectory = args[0];
-                    string[] filePaths = Directory.GetFiles(initialDirectory, "*.srt");
-                    if (filePaths != null && filePaths.Length > 0)
-                        initialFile = filePaths[0];
-                }
-                else if (isFile)
-                {
-                    initialFile = args[0];
-                    initialDirectory = Path.GetDirectoryName(args[0]);
-                }
+                    if (Directory.Exists(path))
+                    {
+                        initialDirectory = path;
+                        string[] filePaths = Directory.GetFiles(initialDirectory, "*.srt");
+                        if (filePaths != null && filePaths.Length > 0)
+                            initialFile = filePaths[0];
+                    }
+                    else if (File.Exists(path))
+                    {
+                        initialFile = path;
+                        initialDirectory = Path.GetDirectoryName(path);
+                    }
 
-                if (string.IsNullOrEmpty(initialDirectory) == false)
-                {
-                    openFileDialog.InitialDirectory = initialDirectory;
-                    saveAsFileDialog.InitialDirectory = initialDirectory;
+                    if (string.IsNullOrEmpty(initialDirectory) == false)
+                        openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = initialDirectory;
                 }
             }
         }
@@ -192,6 +191,7 @@ namespace SubtitlesCleanerEditor
                 subtitles.CheckSubtitles(cleanHICaseInsensitive);
                 originalSubtitles = subtitles.Clone();
                 this.filePath = filePath;
+                openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
                 SetSubtitlesToEditor(subtitles);
                 SelectFirstError();
                 SetFormTitle(false);
