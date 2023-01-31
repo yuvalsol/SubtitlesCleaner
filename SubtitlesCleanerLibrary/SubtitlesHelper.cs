@@ -3573,15 +3573,17 @@ namespace SubtitlesCleanerLibrary
             //,new FindAndReplace(new Regex(@"(?<OCR>I- I)", RegexOptions.Compiled), "OCR", "I... I", SubtitleError.OCR_Error)
             //,new FindAndReplace(new Regex(@"(?<OCR>I-I)", RegexOptions.Compiled), "OCR", "I... I", SubtitleError.OCR_Error)
 
-            // -</i> => ...</i>
-            ,new FindAndReplace("Three Dots", new Regex(@"(?<OCR>\s*-\s*)</i>$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            // -</i> => ...</i>  -" => ..."
+            ,new FindAndReplace("Three Dots", new Regex(@"(?<OCR>\s*-\s*)(?:</i>|"")$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
             // Text - $ => Text...$
             // doesn't match un-fuckin-$reasonable
             ,new FindAndReplace("Three Dots", new Regex(@"(?<![A-ZÀ-Ýa-zà-ÿ]+-[A-ZÀ-Ýa-zà-ÿ]+)(?<OCR>\s*-\s*)$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
             // text - text => text... text
             ,new FindAndReplace("Three Dots", new Regex(@"[a-zà-ÿ](?<OCR> - )[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "... ", SubtitleError.OCR_Error)
-            // text - text => text... text
+            // text- Text => text... Text
             ,new FindAndReplace("Three Dots", new Regex(@"[Ia-zà-ÿ](?<OCR>-)\s[A-ZÀ-Ý]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+            // text- text => text... text
+            //,new FindAndReplace("Three Dots", new Regex(@"[a-zà-ÿ](?<OCR>-)\s[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
 
             // Text..
             ,new FindAndReplace("Three Dots", new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\.{2})(?:\s|♪|</i>|$)", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
