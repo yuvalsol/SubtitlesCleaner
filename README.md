@@ -48,6 +48,8 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 
 16. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
 
+17. Sync Errors & Subtitles. When checked, clicking on an error or a subtitle will also focus on the other one.
+
 ## Subtitles Cleaner Command
 
 ### Clean
