@@ -310,7 +310,8 @@ namespace SubtitlesCleanerEditor
         {
             row.Selected = true;
             row.Cells[0].Selected = true;
-            //row.DataGridView.FirstDisplayedScrollingRowIndex = row.Index;
+
+            row.DataGridView.FirstDisplayedScrollingRowIndex = (row.Index - 4 >= 0 ? row.Index - 4 : 0);
         }
 
         private void SelectEditorRow(int index)
