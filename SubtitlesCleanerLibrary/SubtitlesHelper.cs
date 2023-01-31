@@ -3109,6 +3109,9 @@ namespace SubtitlesCleanerLibrary
             // $ 1 => $1
 			,new FindAndReplace(new Regex(@"(?<OCR>\$\s)\d", RegexOptions.Compiled), "OCR", "$", SubtitleError.Redundant_Spaces)
 
+            // 1 % => 1%
+			,new FindAndReplace(new Regex(@"\d(?<OCR>\s%)", RegexOptions.Compiled), "OCR", "%", SubtitleError.Redundant_Spaces)
+
             // H i => Hi
 			,new FindAndReplace(new Regex(@"\b(?i:H)(?<OCR>\s)i\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
         };
