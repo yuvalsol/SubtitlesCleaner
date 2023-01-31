@@ -1634,7 +1634,7 @@ namespace SubtitlesCleanerEditor
                 ,new QuickAction("Fix Merged Words", "ofthe => of the", FixMergedWords)
                 ,new QuickAction("Add Dot After Abbreviation", "Mr => Mr.  Dr => Dr.  St => St.", AddDotAfterAbbreviation)
                 ,new QuickAction("Fix I And 1 Errors", "I6 => 16  1 can => I can", FixIAnd1Errors)
-                ,new QuickAction("Merge Short Line With Long Line", "", MergeShortLineWithLongLine)
+                ,new QuickAction("Merge Lines", "", MergeLines)
             };
 
             List<Subtitle> newSubtitles = subtitles.Clone();
@@ -1800,9 +1800,9 @@ namespace SubtitlesCleanerEditor
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.OCRErrors.ByGroup("I And 1"), isPreview);
         }
 
-        private QuickActionResult MergeShortLineWithLongLine(List<Subtitle> subtitles, bool isPreview)
+        private QuickActionResult MergeLines(List<Subtitle> subtitles, bool isPreview)
         {
-            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.CleanMergeShortLineWithLongLine, isPreview);
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.CleanMergeLines, isPreview);
         }
 
         private QuickActionResult QuickActionFindAndReplace(
