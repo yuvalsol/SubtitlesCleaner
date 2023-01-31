@@ -3486,7 +3486,9 @@ namespace SubtitlesCleanerLibrary
             )
 
             // I after an uppercase letter at the beginning and before a lowercase letter is most likely an l
-            ,new FindAndReplace(new Regex(@"\b[A-ZÀ-Ý](?<OCR>I)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "l", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"\b[A-ZÀ-Ý](?<OCR>I)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "l", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { IgnoreIfCaseInsensitiveEqualsTo = "GIs" }
+            )
 
             // l at the beginning before a consonant different from l is most likely an I
             ,new FindAndReplace(new Regex(@"\b(?<!l-)(?<OCR>l)(?!-l)[^aeiouyà-ÿl]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
