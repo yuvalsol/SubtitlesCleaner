@@ -26,7 +26,7 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 
 6. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
 
-7. Balance Lines. Merge short line with long line.
+7. Balance Lines. Merge short line with long line, or first line with its continuation in the second line.
 
 8. Search and replace.
 
@@ -226,7 +226,7 @@ If the path points to a folder, it will reorder all the .srt files in that folde
 
 ### Balance Lines
 
-Merge short line with long line.
+Merge short line with long line, or first line with its continuation in the second line.
 
 ```console
 SubtitlesCleanerCommand balanceLines --path fileOrFolder
