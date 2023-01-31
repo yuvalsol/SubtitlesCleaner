@@ -12,7 +12,7 @@ namespace SubtitlesCleanerLibrary
         Empty_Line = (1 << 0),
 
         [ErrorColor(207, 207, 207)]
-        Not_Subtitle = (1 << 1),
+        Non_Subtitle = (1 << 1),
 
         [ErrorColor(220, 250, 174)]
         Missing_New_Line = (1 << 2),

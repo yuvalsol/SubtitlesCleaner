@@ -1295,7 +1295,7 @@ namespace SubtitlesCleanerEditor
             if (editorRow == null)
                 return -1;
 
-            if (editorRow.SubtitleError.IsSet(SubtitleError.Not_Subtitle) ||
+            if (editorRow.SubtitleError.IsSet(SubtitleError.Non_Subtitle) ||
                 editorRow.SubtitleError.IsSet(SubtitleError.Empty_Line) ||
                 string.IsNullOrEmpty(txtCleanSubtitle.Text))
             {
@@ -1527,7 +1527,7 @@ namespace SubtitlesCleanerEditor
                         item.EditorRow,
                         Subtitle = subtitles[item.EditorRow.Num - 1],
                         IsToDeleteSubtitle =
-                            item.EditorRow.SubtitleError.IsSet(SubtitleError.Not_Subtitle) ||
+                            item.EditorRow.SubtitleError.IsSet(SubtitleError.Non_Subtitle) ||
                             item.EditorRow.SubtitleError.IsSet(SubtitleError.Empty_Line) ||
                             string.IsNullOrEmpty(item.EditorRow.CleanLines)
                     }
@@ -1687,7 +1687,7 @@ namespace SubtitlesCleanerEditor
 
         private QuickActionResult RemoveNonSubtitles(List<Subtitle> subtitles, bool isPreview)
         {
-            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.NotSubtitle, isPreview, isRemoveNonSubtitles: true);
+            return QuickActionFindAndReplace(subtitles, SubtitlesHelper.NonSubtitle, isPreview, isRemoveNonSubtitles: true);
         }
 
         private QuickActionResult FixDialog(List<Subtitle> subtitles, bool isPreview)
