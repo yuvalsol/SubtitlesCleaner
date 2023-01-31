@@ -328,6 +328,19 @@ namespace SubtitlesCleanerEditor
             SelectGVRow(row);
         }
 
+        private void SelectErrorRowByNum(int num)
+        {
+            foreach (DataGridViewRow row in lstErrors.Rows)
+            {
+                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+                if (errorRow.Num == num)
+                {
+                    SelectGVRow(row);
+                    break;
+                }
+            }
+        }
+
         private EditorRow GetEditorRowAt(int index)
         {
             DataGridViewRow row = lstEditor.Rows[index];
@@ -367,6 +380,39 @@ namespace SubtitlesCleanerEditor
             DataGridViewRow row = GetSelectedErrorGVRow();
             if (row != null)
                 return row.DataBoundItem as ErrorRow;
+            return null;
+        }
+
+        private ErrorRow SelectClosestErrorRow(int num)
+        {
+            foreach (DataGridViewRow row in lstErrors.Rows)
+            {
+                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+                if (errorRow.Num == num)
+                {
+                    SelectGVRow(row);
+                    return errorRow;
+                }
+                else if (errorRow.Num > num)
+                {
+                    SelectGVRow(row);
+                    return errorRow;
+                }
+            }
+
+            return SelectFirstErrorRow();
+        }
+
+        private ErrorRow SelectFirstErrorRow()
+        {
+            if (lstErrors.Rows != null && lstErrors.Rows.Count > 0)
+            {
+                DataGridViewRow row = lstErrors.Rows[0];
+                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
+                SelectGVRow(row);
+                return errorRow;
+            }
+
             return null;
         }
 
@@ -521,6 +567,9 @@ namespace SubtitlesCleanerEditor
                 previousSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
             if (CurrentSelectedRow != null)
                 CurrentSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 8F, FontStyle.Bold);
+
+            if (chkSyncErrorsAndSubtitles.Checked)
+                SyncErrorsAndSubtitles(editorRow);
         }
 
         private void lstErrors_SelectionChanged(object sender, EventArgs e)
@@ -536,6 +585,43 @@ namespace SubtitlesCleanerEditor
                 previousErrorSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 9F, FontStyle.Regular);
             if (CurrentErrorSelectedRow != null)
                 CurrentErrorSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 8F, FontStyle.Bold);
+
+            if (chkSyncErrorsAndSubtitles.Checked)
+                SyncErrorsAndSubtitles(GetSelectedErrorRow());
+        }
+
+        #endregion
+
+        #region Sync Errors And Subtitles
+
+        private void SyncErrorsAndSubtitles(EditorRow editorRow)
+        {
+            if (editorRow == null)
+                return;
+
+            int num = editorRow.Num;
+
+            ErrorRow errorRow = GetSelectedErrorRow();
+            if (errorRow != null && errorRow.Num == num)
+                return;
+
+            SelectErrorRowByNum(num);
+        }
+
+        private void SyncErrorsAndSubtitles(ErrorRow errorRow)
+        {
+            if (errorRow == null)
+                return;
+
+            int num = errorRow.Num;
+
+            EditorRow editorRow = GetSelectedEditorRow();
+            if (editorRow != null && editorRow.Num == num)
+                return;
+
+            int index = num - 1;
+            if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                SelectEditorRow(index);
         }
 
         #endregion
@@ -686,10 +772,8 @@ namespace SubtitlesCleanerEditor
         {
             if (lstErrors.CurrentRow.Selected)
             {
-                ErrorRow selectedErrorRow = GetSelectedErrorRow();
-                if (selectedErrorRow == null)
-                    return;
-                SelectEditorRow(selectedErrorRow.Num - 1);
+                ErrorRow errorRow = GetSelectedErrorRow();
+                SyncErrorsAndSubtitles(errorRow);
             }
         }
 
@@ -701,49 +785,7 @@ namespace SubtitlesCleanerEditor
         private void SelectErrorRowFromEditorRow(int rowIndex)
         {
             EditorRow editorRow = GetEditorRowAt(rowIndex);
-
-            foreach (DataGridViewRow row in lstErrors.Rows)
-            {
-                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
-                if (errorRow.Num == editorRow.Num)
-                {
-                    SelectGVRow(row);
-                    break;
-                }
-            }
-        }
-
-        private ErrorRow SelectClosestErrorRow(int num)
-        {
-            foreach (DataGridViewRow row in lstErrors.Rows)
-            {
-                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
-                if (errorRow.Num == num)
-                {
-                    SelectGVRow(row);
-                    return errorRow;
-                }
-                else if (errorRow.Num > num)
-                {
-                    SelectGVRow(row);
-                    return errorRow;
-                }
-            }
-
-            return SelectFirstErrorRow();
-        }
-
-        private ErrorRow SelectFirstErrorRow()
-        {
-            if (lstErrors.Rows != null && lstErrors.Rows.Count > 0)
-            {
-                DataGridViewRow row = lstErrors.Rows[0];
-                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
-                SelectGVRow(row);
-                return errorRow;
-            }
-
-            return null;
+            SyncErrorsAndSubtitles(editorRow);
         }
 
         #endregion
@@ -1580,16 +1622,7 @@ namespace SubtitlesCleanerEditor
                     if (0 <= index && index <= lstEditor.Rows.Count - 1)
                     {
                         SelectEditorRow(index);
-
-                        foreach (DataGridViewRow row in lstErrors.Rows)
-                        {
-                            ErrorRow errorRow = row.DataBoundItem as ErrorRow;
-                            if (errorRow.Num == num)
-                            {
-                                SelectGVRow(row);
-                                break;
-                            }
-                        }
+                        SelectErrorRowByNum(num);
                     }
                 }
             }

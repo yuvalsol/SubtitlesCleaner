@@ -46,6 +46,8 @@
             this.contextMenuStripErrors = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.fixErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fixAllErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkSyncErrorsAndSubtitles = new System.Windows.Forms.CheckBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.lstEditor = new System.Windows.Forms.DataGridView();
             this.ColumnNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -103,6 +105,7 @@
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lstErrors)).BeginInit();
             this.contextMenuStripErrors.SuspendLayout();
+            this.flowLayoutPanel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -129,6 +132,7 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.lstErrors);
+            this.splitContainer1.Panel1.Controls.Add(this.flowLayoutPanel7);
             // 
             // splitContainer1.Panel2
             // 
@@ -157,7 +161,7 @@
             this.lstErrors.ReadOnly = true;
             this.lstErrors.RowHeadersVisible = false;
             this.lstErrors.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.lstErrors.Size = new System.Drawing.Size(195, 494);
+            this.lstErrors.Size = new System.Drawing.Size(195, 470);
             this.lstErrors.TabIndex = 0;
             this.lstErrors.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_CellMouseDoubleClick);
             this.lstErrors.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.lstErrors_ColumnHeaderMouseClick);
@@ -208,6 +212,28 @@
             this.fixAllErrorsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.fixAllErrorsToolStripMenuItem.Text = "Fix All Errors";
             this.fixAllErrorsToolStripMenuItem.Click += new System.EventHandler(this.fixAllErrorsToolStripMenuItem_Click);
+            // 
+            // flowLayoutPanel7
+            // 
+            this.flowLayoutPanel7.AutoSize = true;
+            this.flowLayoutPanel7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel7.Controls.Add(this.chkSyncErrorsAndSubtitles);
+            this.flowLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel7.Location = new System.Drawing.Point(0, 470);
+            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
+            this.flowLayoutPanel7.Size = new System.Drawing.Size(195, 24);
+            this.flowLayoutPanel7.TabIndex = 8;
+            // 
+            // chkSyncErrorsAndSubtitles
+            // 
+            this.chkSyncErrorsAndSubtitles.AutoSize = true;
+            this.chkSyncErrorsAndSubtitles.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkSyncErrorsAndSubtitles.Location = new System.Drawing.Point(3, 3);
+            this.chkSyncErrorsAndSubtitles.Name = "chkSyncErrorsAndSubtitles";
+            this.chkSyncErrorsAndSubtitles.Size = new System.Drawing.Size(150, 18);
+            this.chkSyncErrorsAndSubtitles.TabIndex = 7;
+            this.chkSyncErrorsAndSubtitles.Text = "Sync Errors && Subtitles";
+            this.chkSyncErrorsAndSubtitles.UseVisualStyleBackColor = true;
             // 
             // splitContainer2
             // 
@@ -905,11 +931,14 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SubtitlesCleanerEditorForm_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubtitlesCleanerEditorForm_KeyDown);
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lstErrors)).EndInit();
             this.contextMenuStripErrors.ResumeLayout(false);
+            this.flowLayoutPanel7.ResumeLayout(false);
+            this.flowLayoutPanel7.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
@@ -995,6 +1024,8 @@
         private System.Windows.Forms.ToolStripMenuItem copyCleanSubtitleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyCleanTextToolStripMenuItem;
         private System.Windows.Forms.Button btnQuickActions;
+        private System.Windows.Forms.CheckBox chkSyncErrorsAndSubtitles;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
     }
 }
 
