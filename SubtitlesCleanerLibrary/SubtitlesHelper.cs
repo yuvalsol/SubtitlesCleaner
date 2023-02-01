@@ -2606,6 +2606,8 @@ namespace SubtitlesCleanerLibrary
             return subtitleError;
         }
 
+        public static readonly Regex regexLineWithSingleWord = new Regex(@"^\w+,?$");
+
         public static List<string> CleanMergeLines(List<string> lines, bool cleanHICaseInsensitive)
         {
             if (lines == null || lines.Count == 0)
@@ -2613,16 +2615,52 @@ namespace SubtitlesCleanerLibrary
 
             if (lines.Count > 1)
             {
-                for (int i = 1; i < lines.Count; i++)
-                {
-                    string prevLine = lines[i - 1];
-                    string line = lines[i];
+                bool isDialogFound = false;
 
-                    if (IsMergeLines(prevLine, line))
+                for (int i = 0; i < lines.Count - 1; i++)
+                {
+                    string line1 = lines[i];
+                    string line2 = lines[i + 1];
+
+                    if (line1.Length + line2.Length + 1 <= SINGLE_LINE_MAX_LENGTH &&
+                        regexDialog.IsMatch(line2) == false)
                     {
-                        lines[i - 1] = lines[i - 1] + " " + line;
-                        lines.RemoveAt(i);
-                        i--;
+                        isDialogFound = isDialogFound || regexDialog.IsMatch(line1);
+
+                        // Word,
+                        // line
+                        //
+                        // Word, line
+                        bool isMergeLines = regexLineWithSingleWord.IsMatch(line1);
+
+                        if (isMergeLines == false)
+                        {
+                            // - Line 1
+                            // line 2
+                            // - Line 3
+                            // 
+                            // - Line 1 line 2
+                            // - Line 3
+                            // or
+                            // - Line
+                            // - Line 1
+                            // line 2
+                            // 
+                            // - Line
+                            // - Line 1 line 2
+                            string line3 = (i + 2 < lines.Count ? lines[i + 2] : null);
+                            isMergeLines =
+                                regexDialog.IsMatch(line1) &&
+                                regexLowerLetter.IsMatch(line2.Length > 0 ? line2[0].ToString() : string.Empty) &&
+                                (isDialogFound || (string.IsNullOrEmpty(line3) == false && regexDialog.IsMatch(line3)));
+                        }
+
+                        if (isMergeLines)
+                        {
+                            lines[i] = line1 + " " + line2;
+                            lines.RemoveAt(i + 1);
+                            i--;
+                        }
                     }
                 }
             }
@@ -2637,15 +2675,51 @@ namespace SubtitlesCleanerLibrary
 
             if (lines.Count > 1)
             {
-                for (int i = 1; i < lines.Count; i++)
-                {
-                    string prevLine = lines[i - 1];
-                    string line = lines[i];
+                bool isDialogFound = false;
 
-                    if (IsMergeLines(prevLine, line))
+                for (int i = 0; i < lines.Count - 1; i++)
+                {
+                    string line1 = lines[i];
+                    string line2 = lines[i + 1];
+
+                    if (line1.Length + line2.Length + 1 <= SINGLE_LINE_MAX_LENGTH &&
+                        regexDialog.IsMatch(line2) == false)
                     {
-                        subtitleError |= SubtitleError.Merge_Lines;
-                        break;
+                        isDialogFound = isDialogFound || regexDialog.IsMatch(line1);
+
+                        // Word,
+                        // line
+                        //
+                        // Word, line
+                        bool isMergeLines = regexLineWithSingleWord.IsMatch(line1);
+
+                        if (isMergeLines == false)
+                        {
+                            // - Line 1
+                            // line 2
+                            // - Line 3
+                            // 
+                            // - Line 1 line 2
+                            // - Line 3
+                            // or
+                            // - Line
+                            // - Line 1
+                            // line 2
+                            // 
+                            // - Line
+                            // - Line 1 line 2
+                            string line3 = (i + 2 < lines.Count ? lines[i + 2] : null);
+                            isMergeLines =
+                                regexDialog.IsMatch(line1) &&
+                                regexLowerLetter.IsMatch(line2.Length > 0 ? line2[0].ToString() : string.Empty) &&
+                                (isDialogFound || (string.IsNullOrEmpty(line3) == false && regexDialog.IsMatch(line3)));
+                        }
+
+                        if (isMergeLines)
+                        {
+                            subtitleError |= SubtitleError.Merge_Lines;
+                            break;
+                        }
                     }
                 }
             }
@@ -3856,29 +3930,6 @@ namespace SubtitlesCleanerLibrary
         private static bool IsRedundantItalics(string line1, string line2)
         {
             return line1.EndsWith("</i>") && line2.StartsWith("<i>");
-        }
-
-        public static readonly Regex regexLineWithSingleWord = new Regex(@"^\w+,?$");
-
-        private static bool IsMergeLines(string line1, string line2)
-        {
-            return
-                line1.Length + line2.Length + 1 <= SINGLE_LINE_MAX_LENGTH &&
-                line2.StartsWith("-") == false && line2.StartsWith("<i>") == false &&
-                ((
-                    // Word,
-                    // line
-                    //
-                    // Word, line
-                    regexLineWithSingleWord.IsMatch(line1)
-                ) || (
-                    // - Line 1
-                    // line 2
-                    // 
-                    // - Line 1 line 2
-                    regexDialog.IsMatch(line1) &&
-                    regexLowerLetter.IsMatch(line2.Length > 0 ? line2[0].ToString() : string.Empty)
-                ));
         }
 
         #endregion
