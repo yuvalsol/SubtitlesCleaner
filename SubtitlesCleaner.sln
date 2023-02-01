@@ -31,10 +31,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{6E119C
 		Solution Items\Images\TimeCalculator.jpg = Solution Items\Images\TimeCalculator.jpg
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{2F91AC8E-3D23-4B36-A898-5D351CD9B858}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{91012046-59A0-4EB1-A64A-F550FC21C55D}"
 	ProjectSection(SolutionItems) = preProject
-		Resources\cleaning-brush.ico = Resources\cleaning-brush.ico
-		Resources\cleaning-brush.png = Resources\cleaning-brush.png
+		Solution Items\Icons\cleaning-brush.ico = Solution Items\Icons\cleaning-brush.ico
+		Solution Items\Icons\cleaning-brush.png = Solution Items\Icons\cleaning-brush.png
 	EndProjectSection
 EndProject
 Global
@@ -65,6 +65,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6E119C67-7B5E-4C3A-A18E-EAFEEEBFDAB7} = {F5437171-53C9-40D6-8606-7F61E3DF0A52}
+		{91012046-59A0-4EB1-A64A-F550FC21C55D} = {F5437171-53C9-40D6-8606-7F61E3DF0A52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B3C386E-0299-4030-94E4-94A2D548B107}
