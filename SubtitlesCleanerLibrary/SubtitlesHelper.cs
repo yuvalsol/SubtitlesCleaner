@@ -3770,9 +3770,9 @@ namespace SubtitlesCleanerLibrary
 
         private class LineSegment
         {
-            public int Index { get; set; }
-            public int Length { get; set; }
-            public bool IsCapture { get; set; }
+            internal int Index;
+            internal int Length;
+            internal bool IsCapture;
         }
 
         private static void PrintColorfulLines(string line, string cleanLine, FindAndReplace rule, bool cleanHICaseInsensitive)
@@ -4122,11 +4122,11 @@ namespace SubtitlesCleanerLibrary
 
         private class LineBalance
         {
-            public int DisplayCharCount;
-            public bool IsMatchDialog;
-            public bool ContainsItalicsStart;
-            public bool ContainsItalicsEnd;
-            public bool EndsWithPunctuation;
+            internal int DisplayCharCount;
+            internal bool IsMatchDialog;
+            internal bool ContainsItalicsStart;
+            internal bool ContainsItalicsEnd;
+            internal bool EndsWithPunctuation;
         }
 
         public static List<Subtitle> BalanceLines(this List<Subtitle> subtitles)
@@ -4181,7 +4181,7 @@ namespace SubtitlesCleanerLibrary
 
         #region Errors
 
-        public interface IError
+        private interface IError
         {
             string Description { get; }
             bool HasError(string line);
@@ -4190,8 +4190,9 @@ namespace SubtitlesCleanerLibrary
 
         private class Error : IError
         {
-            public virtual Regex Regex { get; set; }
-            public virtual string Description { get; set; }
+            internal Regex Regex;
+
+            public virtual string Description { get; internal set; }
 
             public virtual bool HasError(string line)
             {
@@ -4206,7 +4207,7 @@ namespace SubtitlesCleanerLibrary
 
         private class ComplexError : Error
         {
-            public Regex ExcludeRegex { get; set; }
+            internal Regex ExcludeRegex;
 
             public override bool HasError(string line)
             {
@@ -4214,7 +4215,7 @@ namespace SubtitlesCleanerLibrary
             }
         }
 
-        public static readonly IError[] ErrorList = new IError[]
+        private static readonly IError[] ErrorList = new IError[]
         {
             new Error() {
                 Regex = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled),
@@ -4342,11 +4343,6 @@ namespace SubtitlesCleanerLibrary
             }
 
             return errorLines.ToArray();
-        }
-
-        public static bool HasErrors(this Subtitle subtitle)
-        {
-            return subtitle.Lines.Any(HasErrors);
         }
 
         public static bool HasErrors(string line)
