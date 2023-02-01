@@ -384,26 +384,6 @@ namespace SubtitlesCleanerEditor
             return null;
         }
 
-        private ErrorRow SelectClosestErrorRow(int num)
-        {
-            foreach (DataGridViewRow row in lstErrors.Rows)
-            {
-                ErrorRow errorRow = row.DataBoundItem as ErrorRow;
-                if (errorRow.Num == num)
-                {
-                    SelectGVRow(row);
-                    return errorRow;
-                }
-                else if (errorRow.Num > num)
-                {
-                    SelectGVRow(row);
-                    return errorRow;
-                }
-            }
-
-            return SelectFirstErrorRow();
-        }
-
         private ErrorRow SelectFirstErrorRow()
         {
             if (lstErrors.Rows != null && lstErrors.Rows.Count > 0)
@@ -570,7 +550,7 @@ namespace SubtitlesCleanerEditor
                 CurrentSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 8F, FontStyle.Bold);
 
             if (chkSyncErrorsAndSubtitles.Checked)
-                SyncErrorsAndSubtitles(editorRow);
+                SyncErrorsAndSubtitlesBy(editorRow);
         }
 
         private void lstErrors_SelectionChanged(object sender, EventArgs e)
@@ -588,14 +568,14 @@ namespace SubtitlesCleanerEditor
                 CurrentErrorSelectedRow.DefaultCellStyle.Font = new Font("Tahoma", 8F, FontStyle.Bold);
 
             if (chkSyncErrorsAndSubtitles.Checked)
-                SyncErrorsAndSubtitles(GetSelectedErrorRow());
+                SyncErrorsAndSubtitlesBy(GetSelectedErrorRow());
         }
 
         #endregion
 
         #region Sync Errors And Subtitles
 
-        private void SyncErrorsAndSubtitles(EditorRow editorRow)
+        private void SyncErrorsAndSubtitlesBy(EditorRow editorRow)
         {
             if (editorRow == null)
                 return;
@@ -609,7 +589,7 @@ namespace SubtitlesCleanerEditor
             SelectErrorRowByNum(num);
         }
 
-        private void SyncErrorsAndSubtitles(ErrorRow errorRow)
+        private void SyncErrorsAndSubtitlesBy(ErrorRow errorRow)
         {
             if (errorRow == null)
                 return;
@@ -686,6 +666,7 @@ namespace SubtitlesCleanerEditor
 
             if (lstErrors_SortedColumnIndex == 0 && lstErrors_sortOrder == SortOrder.Ascending)
             {
+                // Num Ascending, Error Ascending
                 errorRows.Sort((x, y) =>
                 {
                     int result = 0;
@@ -696,6 +677,7 @@ namespace SubtitlesCleanerEditor
             }
             else if (lstErrors_SortedColumnIndex == 1 && lstErrors_sortOrder == SortOrder.Ascending)
             {
+                // Error Ascending, Num Ascending
                 errorRows.Sort((x, y) =>
                 {
                     int result = 0;
@@ -706,6 +688,7 @@ namespace SubtitlesCleanerEditor
             }
             else if (lstErrors_SortedColumnIndex == 0 && lstErrors_sortOrder == SortOrder.Descending)
             {
+                // Num Descending, Error Ascending
                 errorRows.Sort((x, y) =>
                 {
                     int result = 0;
@@ -716,6 +699,7 @@ namespace SubtitlesCleanerEditor
             }
             else if (lstErrors_SortedColumnIndex == 1 && lstErrors_sortOrder == SortOrder.Descending)
             {
+                // Error Descending, Num Ascending
                 errorRows.Sort((x, y) =>
                 {
                     int result = 0;
@@ -774,7 +758,7 @@ namespace SubtitlesCleanerEditor
             if (lstErrors.CurrentRow.Selected)
             {
                 ErrorRow errorRow = GetSelectedErrorRow();
-                SyncErrorsAndSubtitles(errorRow);
+                SyncErrorsAndSubtitlesBy(errorRow);
             }
         }
 
@@ -786,7 +770,7 @@ namespace SubtitlesCleanerEditor
         private void SelectErrorRowFromEditorRow(int rowIndex)
         {
             EditorRow editorRow = GetEditorRowAt(rowIndex);
-            SyncErrorsAndSubtitles(editorRow);
+            SyncErrorsAndSubtitlesBy(editorRow);
         }
 
         #endregion
@@ -1244,57 +1228,162 @@ namespace SubtitlesCleanerEditor
 
         #endregion
 
-        #region Fix Text
+        #region Fix And Advance
 
         private void btnFixAndAdvance_Click(object sender, EventArgs e)
         {
-            int num = FixText();
-            if (num != -1)
-            {
-                ErrorRow errorRow = SelectClosestErrorRow(num);
-                if (errorRow != null)
-                {
-                    SelectEditorRow(errorRow.Num - 1);
-                }
-                else
-                {
-                    int index = num - 1;
-                    if (index > lstEditor.Rows.Count - 1)
-                        SelectEditorRow(lstEditor.Rows.Count - 1);
-                }
-            }
+            FixAndAdvance();
         }
 
         private void btnAdvance_Click(object sender, EventArgs e)
         {
-            EditorRow editorRow = GetSelectedEditorRow();
-            if (editorRow == null)
-                return;
-
-            int num = editorRow.Num + 1;
-            ErrorRow errorRow = SelectClosestErrorRow(num);
-            if (errorRow != null)
-                SelectEditorRow(errorRow.Num - 1);
+            Advance();
         }
 
         private void btnFix_Click(object sender, EventArgs e)
         {
-            int num = FixText();
-            if (num != -1)
+            Fix();
+        }
+
+        private void FixAndAdvance()
+        {
+            ErrorRow nextErrorRow = GetNextErrorRow();
+            FixTextResult fixTextResult = FixText();
+            if (fixTextResult.isFixed)
             {
-                int index = num - 1;
-                if (0 <= index && index <= lstEditor.Rows.Count - 1)
-                    SelectEditorRow(index);
-                else if (index > lstEditor.Rows.Count - 1)
-                    SelectEditorRow(lstEditor.Rows.Count - 1);
+                if (nextErrorRow != null)
+                {
+                    if (fixTextResult.IsRowDeleted && fixTextResult.Num < nextErrorRow.Num)
+                        nextErrorRow.Num -= 1;
+
+                    AdvanceToNextError(nextErrorRow.Num, nextErrorRow.SubtitleError);
+                }
+                else
+                {
+                    int index = fixTextResult.Num - 1;
+                    if (0 <= index && index > lstEditor.Rows.Count - 1)
+                        SelectEditorRow(lstEditor.Rows.Count - 1);
+                }
+            }
+            else if (fixTextResult.Num > 0)
+            {
+                Advance(nextErrorRow);
             }
         }
 
-        private int FixText()
+        private void Advance()
+        {
+            Advance(GetNextErrorRow());
+        }
+
+        private void Advance(ErrorRow nextErrorRow)
+        {
+            if (nextErrorRow != null)
+            {
+                AdvanceToNextError(nextErrorRow.Num, nextErrorRow.SubtitleError);
+            }
+            else
+            {
+                DataGridViewRow row = GetSelectedEditorGVRow();
+                if (row != null)
+                {
+                    int index = row.Index + 1;
+                    if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                        SelectEditorRow(index);
+                    else if (index > lstEditor.Rows.Count - 1)
+                        SelectEditorRow(0);
+                }
+            }
+        }
+
+        private void AdvanceToNextError(int num, SubtitleError subtitleError)
+        {
+            List<ErrorRow> errorRows = lstErrors.DataSource as List<ErrorRow>;
+            ErrorRow errorRow = errorRows.Find(r => r.Num == num && r.SubtitleError == subtitleError);
+            int index = errorRows.IndexOf(errorRow);
+            SelectErrorRow(index);
+            SyncErrorsAndSubtitlesBy(errorRow);
+        }
+
+        private void Fix()
+        {
+            FixTextResult fixTextResult = FixText();
+            if (fixTextResult.isFixed)
+            {
+                int index = fixTextResult.Num - 1;
+                if (0 <= index && index <= lstEditor.Rows.Count - 1)
+                {
+                    SelectEditorRow(index);
+                    SyncErrorsAndSubtitlesBy(GetSelectedEditorRow());
+                }
+                else if (index > lstEditor.Rows.Count - 1)
+                {
+                    SelectEditorRow(lstEditor.Rows.Count - 1);
+                    SyncErrorsAndSubtitlesBy(GetSelectedEditorRow());
+                }
+            }
+        }
+
+        private ErrorRow GetNextErrorRow()
+        {
+            List<ErrorRow> errorRows = lstErrors.DataSource as List<ErrorRow>;
+            if (errorRows == null || errorRows.Count == 0)
+                return null;
+
+            EditorRow editorRow = GetSelectedEditorRow();
+            ErrorRow errorRow = GetSelectedErrorRow();
+
+            if (errorRow != null && (editorRow == null || editorRow.Num == errorRow.Num))
+            {
+                int index = errorRows.IndexOf(errorRow);
+
+                for (int i = index + 1; i < errorRows.Count; i++)
+                {
+                    ErrorRow row = errorRows[i];
+                    if (row.Num != errorRow.Num)
+                    {
+                        return row;
+                    }
+                }
+
+                for (int i = 0; i < index; i++)
+                {
+                    ErrorRow row = errorRows[i];
+                    if (row.Num != errorRow.Num)
+                    {
+                        return row;
+                    }
+                }
+            }
+            else if (editorRow != null && (errorRow == null || editorRow.Num != errorRow.Num))
+            {
+                // the next row with an error in the editor, not in the errors list
+                var lst = errorRows.Where(r => r.Num > editorRow.Num);
+                if (lst.Any())
+                {
+                    int num = lst.Min(r => r.Num);
+                    return errorRows.Find(r => r.Num == num);
+                }
+            }
+
+            return null;
+        }
+
+        private class FixTextResult
+        {
+            internal bool isFixed;
+            internal int Num;
+            internal bool IsRowDeleted;
+        }
+
+        private FixTextResult FixText()
         {
             EditorRow editorRow = GetSelectedEditorRow();
             if (editorRow == null)
-                return -1;
+                return new FixTextResult() { isFixed = false };
+
+            if (editorRow.SubtitleError == SubtitleError.None)
+                return new FixTextResult() { isFixed = false, Num = editorRow.Num, IsRowDeleted = false };
 
             if (editorRow.SubtitleError.IsSet(SubtitleError.Non_Subtitle) ||
                 editorRow.SubtitleError.IsSet(SubtitleError.Empty_Line) ||
@@ -1302,14 +1391,14 @@ namespace SubtitlesCleanerEditor
             {
                 DeleteSubtitle(editorRow);
                 (lstEditor.DataSource as BindingList<EditorRow>).Remove(editorRow);
+                return new FixTextResult() { isFixed = true, Num = editorRow.Num, IsRowDeleted = true };
             }
             else
             {
                 txtSubtitle.Text = txtCleanSubtitle.Text;
                 ChangeSubtitleText(editorRow, txtCleanSubtitle.Text);
+                return new FixTextResult() { isFixed = true, Num = editorRow.Num, IsRowDeleted = false };
             }
-
-            return editorRow.Num;
         }
 
         #endregion
@@ -1463,6 +1552,7 @@ namespace SubtitlesCleanerEditor
                 {
                     lstErrors_hitTestInfo = hitTestInfo;
                     ErrorRow errorRow = GetErrorRowAt(lstErrors_hitTestInfo.RowIndex);
+                    fixErrorToolStripMenuItem.Text = "Fix Error #" + errorRow.Num + " " + errorRow.Error;
                     fixAllErrorsToolStripMenuItem.Text = "Fix All " + errorRow.Error + (errorRow.Error.EndsWith("Error") ? "s" : " Errors");
                     contextMenuStripErrors.Show(lstErrors, new Point(e.X, e.Y));
                 }
@@ -1489,8 +1579,7 @@ namespace SubtitlesCleanerEditor
             if (selectedErrorRow == null)
                 return;
             SelectEditorRow(selectedErrorRow.Num - 1);
-            FixText();
-            SelectClosestErrorRow(selectedErrorRow.Num);
+            FixAndAdvance();
         }
 
         private void fixAllErrorsToolStripMenuItem_Click(object sender, EventArgs e)
