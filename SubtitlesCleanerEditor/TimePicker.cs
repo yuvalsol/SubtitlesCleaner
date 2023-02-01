@@ -85,7 +85,7 @@ namespace SubtitlesCleanerEditor
 
         public override string ToString()
         {
-            return string.Format("{0}{1:D2}:{2:D2}:{3:D2},{4:D3}", Sign, HH, MM, SS, MS);
+            return string.Format("{0}{1:D2}:{2:D2}:{3:D2},{4:D3}", (IsNegativeTime ? Sign : string.Empty), HH, MM, SS, MS);
         }
 
         public void Reset()
