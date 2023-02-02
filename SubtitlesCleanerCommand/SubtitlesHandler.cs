@@ -55,6 +55,31 @@ namespace SubtitlesCleanerCommand
             }
         }
 
+        public static void CleanEmptyAndNonSubtitles(CleanEmptyAndNonSubtitlesOptions options)
+        {
+            string[] filePaths = GetFilePaths(options.path);
+            if (filePaths == null || filePaths.Length == 0)
+                return;
+
+            foreach (var filePath in filePaths)
+            {
+                Encoding encoding = Encoding.UTF8;
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
+                    filePath,
+                    ref encoding,
+                    options.firstSubtitlesCount ?? FirstSubtitlesCount
+                );
+
+                subtitles = subtitles.CleanEmptyAndNonSubtitles();
+
+                if (options.save)
+                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+
+                if (options.print)
+                    Print(subtitles);
+            }
+        }
+
         public static void AddTime(AddTimeOptions options)
         {
             string[] filePaths = GetFilePaths(options.path);

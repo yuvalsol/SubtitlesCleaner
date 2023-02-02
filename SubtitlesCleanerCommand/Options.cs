@@ -36,6 +36,13 @@ namespace SubtitlesCleanerCommand
         public bool suppressErrorFile { get; set; }
     }
 
+    [Verb("cleanEmptyAndNonSubtitles", HelpText = "Clean empty and non-subtitles")]
+    class CleanEmptyAndNonSubtitlesOptions : SharedOptions
+    {
+        [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
+        public int? firstSubtitlesCount { get; set; }
+    }
+
     [Verb("addTime", HelpText = "Add time to subtitles")]
     class AddTimeOptions : SharedOptions
     {
@@ -90,6 +97,9 @@ namespace SubtitlesCleanerCommand
     {
         [Option("clean", Required = false, HelpText = "Print usage for clean")]
         public bool clean { get; set; }
+
+        [Option("cleanEmptyAndNonSubtitles", Required = false, HelpText = "Print usage for cleanEmptyAndNonSubtitles")]
+        public bool cleanEmptyAndNonSubtitles { get; set; }
 
         [Option("addTime", Required = false, HelpText = "Print usage for addTime")]
         public bool addTime { get; set; }
