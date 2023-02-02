@@ -3520,9 +3520,10 @@ namespace SubtitlesCleanerLibrary
         #region Accent Letters
 
         public static readonly FindAndReplace[] AccentLetters = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"\b(?i:F)ianc(?<OCR>'e)\b", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
-            ,new FindAndReplace(new Regex(@"\b(?i:C)af(?<OCR>'e)\b", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
-            ,new FindAndReplace(new Regex(@"\b(?i:C)ach(?<OCR>'e)\b", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
+            new FindAndReplace(new Regex(@"\b(?i:F)ianc(?<OCR>'e|Ã©)e?", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
+            ,new FindAndReplace(new Regex(@"\b(?i:C)af(?<OCR>'e|Ã©)", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
+            ,new FindAndReplace(new Regex(@"\b(?i:C)ach(?<OCR>'e|Ã©)", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
+            ,new FindAndReplace(new Regex(@"\b(?i:M)(?<OCR>'e|Ã©)xico", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
         };
 
         #endregion
