@@ -19,6 +19,7 @@ namespace SubtitlesCleanerCommand
                     var parser = new Parser(with => with.HelpWriter = null);
                     var parserResult = parser.ParseArguments<
                         CleanOptions,
+                        CleanEmptyAndNonSubtitlesOptions,
                         AddTimeOptions,
                         SetShowTimeOptions,
                         AdjustTimingOptions,
@@ -28,6 +29,7 @@ namespace SubtitlesCleanerCommand
 
                     parserResult
                         .WithParsed<CleanOptions>(SubtitlesHandler.Clean)
+                        .WithParsed<CleanEmptyAndNonSubtitlesOptions>(SubtitlesHandler.CleanEmptyAndNonSubtitles)
                         .WithParsed<AddTimeOptions>(SubtitlesHandler.AddTime)
                         .WithParsed<SetShowTimeOptions>(SubtitlesHandler.SetShowTime)
                         .WithParsed<AdjustTimingOptions>(SubtitlesHandler.AdjustTiming)
@@ -53,6 +55,16 @@ namespace SubtitlesCleanerCommand
                                 Console.WriteLine("                              (--print|--save [--outputFile file] [--outputFolder folder])");
                                 Console.WriteLine("                              [--suppressBackupFile]");
                                 Console.WriteLine("                              [--suppressErrorFile]");
+                                Console.WriteLine();
+                            }
+
+                            if (options.cleanEmptyAndNonSubtitles)
+                            {
+                                Console.WriteLine("Clean Empty And Non-Subtitles");
+                                Console.WriteLine("SubtitlesCleanerCommand cleanEmptyAndNonSubtitles [--firstSubtitlesCount N]");
+                                Console.WriteLine("                                                  --path fileOrFolder");
+                                Console.WriteLine("                                                  (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("                                                  [--suppressBackupFile]");
                                 Console.WriteLine();
                             }
 

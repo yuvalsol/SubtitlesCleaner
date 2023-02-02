@@ -263,6 +263,40 @@ namespace SubtitlesCleanerLibrary
             return subtitles;
         }
 
+        public static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles)
+        {
+            if (subtitles == null)
+                return new List<Subtitle>();
+
+            if (subtitles.Count == 0)
+                return subtitles;
+
+            for (int k = subtitles.Count - 1; k >= 0; k--)
+            {
+                Subtitle subtitle = subtitles[k];
+
+                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                {
+                    string line = subtitle.Lines[i];
+
+                    if (IsEmptyLine(line))
+                    {
+                        subtitle.Lines.RemoveAt(i);
+                    }
+                    else if (IsNonSubtitle(line))
+                    {
+                        subtitle.Lines = null;
+                        break;
+                    }
+                }
+
+                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
+                    subtitles.RemoveAt(k);
+            }
+
+            return subtitles;
+        }
+
         private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
             if (subtitles == null)

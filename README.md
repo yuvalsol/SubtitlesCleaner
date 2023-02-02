@@ -24,7 +24,7 @@ This program is not, and was not meant to be, a comprehensive subtitles editor.
 
 ![Adjust Timing](./Solution%20Items/Images/AdjustTiming.jpg "Adjust Timing")
 
-6. Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
+6. Reorder subtitles based on their show time.
 
 7. Balance Lines. Merge short line with long line, or first line with its continuation in the second line.
 
@@ -147,6 +147,17 @@ Print to console
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --print
 ```
 
+### Clean Empty And Non-Subtitles
+
+Clean empty lines and non-subtitles.
+
+```console
+SubtitlesCleanerCommand cleanEmptyAndNonSubtitles [--firstSubtitlesCount N]
+                                                  --path fileOrFolder
+                                                  (--print|--save [--outputFile file] [--outputFolder folder])
+                                                  [--suppressBackupFile]
+```
+
 ### Add Time
 
 Add time to subtitles.
@@ -212,7 +223,7 @@ SubtitlesCleanerCommand adjustTiming --firstShowTime 00:00:00,000
 
 ### Reorder
 
-Reorder subtitles based on their show time. Also, does a little cleanup of empty lines and non-subtitle lines ("Sync by").
+Reorder subtitles based on their show time.
 
 ```console
 SubtitlesCleanerCommand reorder --path fileOrFolder
