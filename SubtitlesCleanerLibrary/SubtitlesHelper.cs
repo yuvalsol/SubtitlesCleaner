@@ -3621,7 +3621,20 @@ namespace SubtitlesCleanerLibrary
             ,new FindAndReplace(new Regex(@"\b(?<OCR>l)odo", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
 
             // Single L. ignore L- -L- -L L. .L. .L L'
-            ,new FindAndReplace(new Regex(@"\b(?<![A-ZÀ-Ý][-.])(?<OCR>L)(?![-.][A-ZÀ-Ý]|')\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            // ignore if preceding by Mr. or Mrs.
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>L)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "-L-" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "L-" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfEqualsTo = "-L" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = ".L." }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "L." }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfEqualsTo = ".L" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "L'" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 5, IgnoreIfEqualsTo = "Mrs. L" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 4, IgnoreIfEqualsTo = "Mrs L" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 4, IgnoreIfEqualsTo = "Mr. L" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, IgnoreIfEqualsTo = "Mr L" }
+            )
 
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L)'m\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L)'d\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
