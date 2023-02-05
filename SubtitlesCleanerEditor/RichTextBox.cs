@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace SubtitlesCleanerEditor
 {
-    public class TextBox : System.Windows.Forms.TextBox
+    public class RichTextBox : System.Windows.Forms.RichTextBox
     {
         public event EventHandler<Tuple<EditorRow, string>> LeaveWithChangedText;
 

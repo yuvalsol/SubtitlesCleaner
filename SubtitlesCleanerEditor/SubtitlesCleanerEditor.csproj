@@ -42,6 +42,9 @@
     <ApplicationIcon>cleaning-brush.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NetDiff, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Diff4Net.1.1.2\lib\net452\NetDiff.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -114,7 +117,7 @@
     <Compile Include="SubtitlesCleanerEditorForm.Designer.cs">
       <DependentUpon>SubtitlesCleanerEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TextBox.cs">
+    <Compile Include="RichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TimeCalculatorForm.cs">

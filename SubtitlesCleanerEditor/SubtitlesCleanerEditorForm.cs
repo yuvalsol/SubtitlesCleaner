@@ -145,8 +145,7 @@ namespace SubtitlesCleanerEditor
 
             if (subtitles == null || subtitles.Count == 0)
             {
-                txtSubtitle.Text = string.Empty;
-                txtCleanSubtitle.Text = string.Empty;
+                SetTextToTextBoxes(string.Empty, string.Empty);
                 ResetLineLengths();
                 timePicker.Reset();
             }
@@ -471,8 +470,7 @@ namespace SubtitlesCleanerEditor
             SetSubtitlesToEditor(null);
             originalSubtitles = null;
             filePath = null;
-            txtSubtitle.Text = string.Empty;
-            txtCleanSubtitle.Text = string.Empty;
+            SetTextToTextBoxes(string.Empty, string.Empty);
             ResetLineLengths();
             timePicker.Reset();
             ResetFormTitle();
@@ -506,14 +504,97 @@ namespace SubtitlesCleanerEditor
 
             if (lstEditor.Rows.Count == 1)
             {
-                txtSubtitle.Text = string.Empty;
-                txtCleanSubtitle.Text = string.Empty;
+                SetTextToTextBoxes(string.Empty, string.Empty);
                 ResetLineLengths();
             }
 
             SetSubtitlesErrors();
 
             SetFormTitle(true);
+        }
+
+        #endregion
+
+        #region Set Text To Text Boxes
+
+        private static readonly Color textDeletedColor = Color.FromArgb(255, 193, 192);
+        private static readonly Color textInsertedColor = Color.FromArgb(171, 242, 188);
+
+        private void SetTextToTextBoxes(string text, string cleanText)
+        {
+            txtSubtitle.Clear();
+            txtCleanSubtitle.Clear();
+
+            if (string.IsNullOrEmpty(text) && string.IsNullOrEmpty(cleanText))
+                return;
+
+            if (text == cleanText)
+            {
+                txtSubtitle.Text = text;
+                txtCleanSubtitle.Text = cleanText;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(cleanText))
+            {
+                txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
+                txtSubtitle.SelectionLength = 0;
+                txtSubtitle.SelectionBackColor = textDeletedColor;
+                txtSubtitle.AppendText(text);
+                return;
+            }
+
+            var results = NetDiff.DiffUtil.Diff(text, cleanText);
+
+            foreach (var item in results)
+            {
+                if (item.Status == NetDiff.DiffStatus.Equal)
+                {
+                    AppendText(txtSubtitle, item.Obj1, txtSubtitle.BackColor);
+                    AppendText(txtCleanSubtitle, item.Obj2, txtCleanSubtitle.BackColor);
+                }
+                else if (item.Status == NetDiff.DiffStatus.Deleted)
+                {
+                    AppendText(txtSubtitle, item.Obj1, textDeletedColor);
+                    AppendText(txtCleanSubtitle, item.Obj2, textDeletedColor);
+                }
+                else if (item.Status == NetDiff.DiffStatus.Inserted)
+                {
+                    AppendText(txtSubtitle, item.Obj1, textInsertedColor);
+                    AppendText(txtCleanSubtitle, item.Obj2, textInsertedColor);
+                }
+                else if (item.Status == NetDiff.DiffStatus.Modified)
+                {
+                    if (item.Obj1 == item.Obj2)
+                    {
+                        AppendText(txtSubtitle, item.Obj1, txtSubtitle.BackColor);
+                        AppendText(txtCleanSubtitle, item.Obj2, txtCleanSubtitle.BackColor);
+                    }
+                    else
+                    {
+                        AppendText(txtSubtitle, item.Obj1, textDeletedColor);
+                        AppendText(txtCleanSubtitle, item.Obj2, textInsertedColor);
+                    }
+                }
+            }
+        }
+
+        public void AppendText(System.Windows.Forms.RichTextBox box, char chr, Color backColor)
+        {
+            if (chr == default(char) || chr == '\r')
+                return;
+
+            if (chr == '\n')
+            {
+                box.AppendText(Environment.NewLine);
+            }
+            else
+            {
+                box.SelectionStart = box.Text.Length;
+                box.SelectionLength = 0;
+                box.SelectionBackColor = backColor;
+                box.AppendText(chr.ToString());
+            }
         }
 
         #endregion
@@ -534,8 +615,7 @@ namespace SubtitlesCleanerEditor
             if (editorRow == null)
                 return;
 
-            txtSubtitle.Text = editorRow.Lines;
-            txtCleanSubtitle.Text = editorRow.CleanLines;
+            SetTextToTextBoxes(editorRow.Lines, editorRow.CleanLines);
             SetLineLengths();
 
             timePicker.Value = editorRow.ShowValue;
@@ -1221,7 +1301,7 @@ namespace SubtitlesCleanerEditor
             Subtitle cleanSubtitle = SubtitlesHelper.CleanSubtitles(subtitle.Clone() as Subtitle, cleanHICaseInsensitive, false);
             editorRow.CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty);
             editorRow.CleanLines = (cleanSubtitle != null ? cleanSubtitle.ToString() : string.Empty);
-            txtCleanSubtitle.Text = editorRow.CleanLines;
+            SetTextToTextBoxes(txtSubtitle.Text, editorRow.CleanLines);
 
             SetLineLengths();
         }
@@ -1395,7 +1475,7 @@ namespace SubtitlesCleanerEditor
             }
             else
             {
-                txtSubtitle.Text = txtCleanSubtitle.Text;
+                SetTextToTextBoxes(txtCleanSubtitle.Text, txtCleanSubtitle.Text);
                 ChangeSubtitleText(editorRow, txtCleanSubtitle.Text);
                 return new FixTextResult() { isFixed = true, Num = editorRow.Num, IsRowDeleted = false };
             }
