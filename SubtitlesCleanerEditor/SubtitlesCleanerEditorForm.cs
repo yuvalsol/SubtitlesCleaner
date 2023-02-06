@@ -531,7 +531,13 @@ namespace SubtitlesCleanerEditor
             if (text == cleanText)
             {
                 txtSubtitle.Text = text;
+                txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
+                txtSubtitle.SelectionLength = 0;
+
                 txtCleanSubtitle.Text = cleanText;
+                txtCleanSubtitle.SelectionStart = txtCleanSubtitle.Text.Length;
+                txtCleanSubtitle.SelectionLength = 0;
+
                 return;
             }
 
@@ -541,60 +547,92 @@ namespace SubtitlesCleanerEditor
                 txtSubtitle.SelectionLength = 0;
                 txtSubtitle.SelectionBackColor = textDeletedColor;
                 txtSubtitle.AppendText(text);
+                txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
+                txtSubtitle.SelectionLength = 0;
                 return;
             }
 
+            txtSubtitle.Text = text;
+            txtCleanSubtitle.Text = cleanText;
+
             var results = NetDiff.DiffUtil.Diff(text, cleanText);
 
+            int selectionStart1 = 0;
+            int selectionStart2 = 0;
             foreach (var item in results)
             {
                 if (item.Status == NetDiff.DiffStatus.Equal)
                 {
-                    AppendText(txtSubtitle, item.Obj1, txtSubtitle.BackColor);
-                    AppendText(txtCleanSubtitle, item.Obj2, txtCleanSubtitle.BackColor);
+                    if (item.Obj1 != '\r')
+                    {
+                        selectionStart1++;
+                        selectionStart2++;
+                    }
                 }
                 else if (item.Status == NetDiff.DiffStatus.Deleted)
                 {
-                    AppendText(txtSubtitle, item.Obj1, textDeletedColor);
-                    AppendText(txtCleanSubtitle, item.Obj2, textDeletedColor);
+                    if (item.Obj1 != default(char) && item.Obj1 != '\r')
+                    {
+                        if (item.Obj1 != '\n')
+                            AppendText(txtSubtitle, textDeletedColor, selectionStart1);
+                        selectionStart1++;
+                    }
+
+                    if (item.Obj2 != default(char) && item.Obj2 != '\r')
+                    {
+                        if (item.Obj2 != '\n')
+                            AppendText(txtCleanSubtitle, textDeletedColor, selectionStart2);
+                        selectionStart2++;
+                    }
                 }
                 else if (item.Status == NetDiff.DiffStatus.Inserted)
                 {
-                    AppendText(txtSubtitle, item.Obj1, textInsertedColor);
-                    AppendText(txtCleanSubtitle, item.Obj2, textInsertedColor);
+                    if (item.Obj1 != default(char) && item.Obj1 != '\r')
+                    {
+                        if (item.Obj1 != '\n')
+                            AppendText(txtSubtitle, textInsertedColor, selectionStart1);
+                        selectionStart1++;
+                    }
+
+                    if (item.Obj2 != default(char) && item.Obj2 != '\r')
+                    {
+                        if (item.Obj2 != '\n')
+                            AppendText(txtCleanSubtitle, textInsertedColor, selectionStart2);
+                        selectionStart2++;
+                    }
                 }
                 else if (item.Status == NetDiff.DiffStatus.Modified)
                 {
-                    if (item.Obj1 == item.Obj2)
+                    if (item.Obj1 != item.Obj2)
                     {
-                        AppendText(txtSubtitle, item.Obj1, txtSubtitle.BackColor);
-                        AppendText(txtCleanSubtitle, item.Obj2, txtCleanSubtitle.BackColor);
-                    }
-                    else
-                    {
-                        AppendText(txtSubtitle, item.Obj1, textDeletedColor);
-                        AppendText(txtCleanSubtitle, item.Obj2, textInsertedColor);
+                        if (item.Obj1 != default(char) && item.Obj1 != '\r')
+                        {
+                            if (item.Obj1 != '\n')
+                                AppendText(txtSubtitle, textDeletedColor, selectionStart1);
+                            selectionStart1++;
+                        }
+
+                        if (item.Obj2 != default(char) && item.Obj2 != '\r')
+                        {
+                            if (item.Obj2 != '\n')
+                                AppendText(txtCleanSubtitle, textInsertedColor, selectionStart2);
+                            selectionStart2++;
+                        }
                     }
                 }
             }
+
+            txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
+            txtSubtitle.SelectionLength = 0;
+            txtCleanSubtitle.SelectionStart = txtCleanSubtitle.Text.Length;
+            txtCleanSubtitle.SelectionLength = 0;
         }
 
-        public void AppendText(System.Windows.Forms.RichTextBox box, char chr, Color backColor)
+        public void AppendText(System.Windows.Forms.RichTextBox box, Color backColor, int selectionStart)
         {
-            if (chr == default(char) || chr == '\r')
-                return;
-
-            if (chr == '\n')
-            {
-                box.AppendText(Environment.NewLine);
-            }
-            else
-            {
-                box.SelectionStart = box.Text.Length;
-                box.SelectionLength = 0;
-                box.SelectionBackColor = backColor;
-                box.AppendText(chr.ToString());
-            }
+            box.SelectionStart = selectionStart;
+            box.SelectionLength = 1;
+            box.SelectionBackColor = backColor;
         }
 
         #endregion
