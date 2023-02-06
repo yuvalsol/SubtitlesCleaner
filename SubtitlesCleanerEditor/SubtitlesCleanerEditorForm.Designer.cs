@@ -62,14 +62,14 @@
             this.copyCleanTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyCleanSubtitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.txtCleanSubtitle = new System.Windows.Forms.RichTextBox();
+            this.txtSubtitle = new SubtitlesCleanerEditor.RichTextBox();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnFixAndAdvance = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
             this.btnFix = new System.Windows.Forms.Button();
             this.lblCleanLineLengths = new System.Windows.Forms.Label();
             this.lblLineLengths = new System.Windows.Forms.Label();
-            this.txtCleanSubtitle = new System.Windows.Forms.TextBox();
-            this.txtSubtitle = new SubtitlesCleanerEditor.TextBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblHearingImpairedDetection = new System.Windows.Forms.Label();
             this.rdbHIUpperCaseOnly = new System.Windows.Forms.RadioButton();
@@ -411,11 +411,11 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.txtCleanSubtitle, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.txtSubtitle, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel6, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblCleanLineLengths, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.lblLineLengths, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.txtCleanSubtitle, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.txtSubtitle, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 63);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
@@ -424,6 +424,38 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 102);
             this.tableLayoutPanel1.TabIndex = 3;
+            // 
+            // txtCleanSubtitle
+            // 
+            this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
+            this.txtCleanSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtCleanSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCleanSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
+            this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
+            this.txtCleanSubtitle.Location = new System.Drawing.Point(545, 3);
+            this.txtCleanSubtitle.Name = "txtCleanSubtitle";
+            this.txtCleanSubtitle.ReadOnly = true;
+            this.tableLayoutPanel1.SetRowSpan(this.txtCleanSubtitle, 2);
+            this.txtCleanSubtitle.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtCleanSubtitle.Size = new System.Drawing.Size(426, 82);
+            this.txtCleanSubtitle.TabIndex = 4;
+            this.txtCleanSubtitle.Text = "";
+            // 
+            // txtSubtitle
+            // 
+            this.txtSubtitle.BackColor = System.Drawing.Color.White;
+            this.txtSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
+            this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
+            this.txtSubtitle.Location = new System.Drawing.Point(3, 3);
+            this.txtSubtitle.Name = "txtSubtitle";
+            this.tableLayoutPanel1.SetRowSpan(this.txtSubtitle, 2);
+            this.txtSubtitle.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtSubtitle.Size = new System.Drawing.Size(425, 82);
+            this.txtSubtitle.TabIndex = 11;
+            this.txtSubtitle.Text = "";
+            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<SubtitlesCleanerEditor.LeaveWithChangedTextEventArgs>(this.txtSubtitle_LeaveWithChangedText);
             // 
             // flowLayoutPanel6
             // 
@@ -500,38 +532,6 @@
             this.lblLineLengths.Name = "lblLineLengths";
             this.lblLineLengths.Size = new System.Drawing.Size(0, 14);
             this.lblLineLengths.TabIndex = 0;
-            // 
-            // txtCleanSubtitle
-            // 
-            this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
-            this.txtCleanSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCleanSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtCleanSubtitle.Location = new System.Drawing.Point(545, 3);
-            this.txtCleanSubtitle.Multiline = true;
-            this.txtCleanSubtitle.Name = "txtCleanSubtitle";
-            this.txtCleanSubtitle.ReadOnly = true;
-            this.tableLayoutPanel1.SetRowSpan(this.txtCleanSubtitle, 2);
-            this.txtCleanSubtitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCleanSubtitle.Size = new System.Drawing.Size(426, 82);
-            this.txtCleanSubtitle.TabIndex = 4;
-            this.txtCleanSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // txtSubtitle
-            // 
-            this.txtSubtitle.BackColor = System.Drawing.Color.White;
-            this.txtSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtSubtitle.Location = new System.Drawing.Point(3, 3);
-            this.txtSubtitle.Multiline = true;
-            this.txtSubtitle.Name = "txtSubtitle";
-            this.tableLayoutPanel1.SetRowSpan(this.txtSubtitle, 2);
-            this.txtSubtitle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSubtitle.Size = new System.Drawing.Size(425, 82);
-            this.txtSubtitle.TabIndex = 1;
-            this.txtSubtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesCleanerEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
             // 
             // flowLayoutPanel2
             // 
@@ -971,7 +971,6 @@
         private System.Windows.Forms.Button btnClean;
         private System.Windows.Forms.Button btnOriginalSubtitles;
         private System.Windows.Forms.Button btnClear;
-        private SubtitlesCleanerEditor.TextBox txtSubtitle;
         private System.Windows.Forms.DataGridView lstEditor;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button btnSave;
@@ -1007,7 +1006,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDuration;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnText;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnCleanText;
-        private System.Windows.Forms.TextBox txtCleanSubtitle;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblLineLengths;
         private System.Windows.Forms.Label lblCleanLineLengths;
@@ -1026,6 +1024,8 @@
         private System.Windows.Forms.Button btnQuickActions;
         private System.Windows.Forms.CheckBox chkSyncErrorsAndSubtitles;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
+        private SubtitlesCleanerEditor.RichTextBox txtSubtitle;
+        private System.Windows.Forms.RichTextBox txtCleanSubtitle;
     }
 }
 
