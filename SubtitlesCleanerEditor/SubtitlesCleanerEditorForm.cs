@@ -986,6 +986,11 @@ namespace SubtitlesCleanerEditor
                 try
                 {
                     File.WriteAllLines(saveAsFileDialog.FileName, subtitles.ToLines(), encoding);
+
+                    filePath = saveAsFileDialog.FileName;
+                    openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
+                    this.SetFormTitle(false);
+
                     MessageBox.Show(this,
                         Path.GetFileName(saveAsFileDialog.FileName) + " saved",
                         "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information
