@@ -533,10 +533,12 @@ namespace SubtitlesCleanerEditor
                 txtSubtitle.Text = text;
                 txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
                 txtSubtitle.SelectionLength = 0;
+                txtSubtitle.SelectionBackColor = txtSubtitle.BackColor;
 
                 txtCleanSubtitle.Text = cleanText;
                 txtCleanSubtitle.SelectionStart = txtCleanSubtitle.Text.Length;
                 txtCleanSubtitle.SelectionLength = 0;
+                txtCleanSubtitle.SelectionBackColor = txtCleanSubtitle.BackColor;
 
                 return;
             }
@@ -546,9 +548,13 @@ namespace SubtitlesCleanerEditor
                 txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
                 txtSubtitle.SelectionLength = 0;
                 txtSubtitle.SelectionBackColor = textDeletedColor;
+
                 txtSubtitle.AppendText(text);
+
                 txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
                 txtSubtitle.SelectionLength = 0;
+                txtSubtitle.SelectionBackColor = txtSubtitle.BackColor;
+
                 return;
             }
 
@@ -624,8 +630,11 @@ namespace SubtitlesCleanerEditor
 
             txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
             txtSubtitle.SelectionLength = 0;
+            txtSubtitle.SelectionBackColor = txtSubtitle.BackColor;
+
             txtCleanSubtitle.SelectionStart = txtCleanSubtitle.Text.Length;
             txtCleanSubtitle.SelectionLength = 0;
+            txtCleanSubtitle.SelectionBackColor = txtCleanSubtitle.BackColor;
         }
 
         public void AppendText(System.Windows.Forms.RichTextBox box, Color backColor, int selectionStart)
@@ -1311,16 +1320,16 @@ namespace SubtitlesCleanerEditor
 
         #region Subtitles TextBox
 
-        private void txtSubtitle_LeaveWithChangedText(object sender, Tuple<EditorRow, string> e)
+        private void txtSubtitle_LeaveWithChangedText(object sender, LeaveWithChangedTextEventArgs e)
         {
-            ChangeSubtitleText(e.Item1, e.Item2);
+            ChangeSubtitleText(e.EditorRow, e.Text);
         }
 
         private void ChangeSubtitleText(EditorRow editorRow, string text)
         {
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
-            subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
             subtitle.CheckSubtitle(cleanHICaseInsensitive);
 
             SetSubtitleToEditor(editorRow, subtitle);
@@ -1745,7 +1754,7 @@ namespace SubtitlesCleanerEditor
 
             foreach (var item in rows.Where(r => r.IsToDeleteSubtitle == false))
             {
-                item.Subtitle.Lines = (item.EditorRow.CleanLines ?? string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                item.Subtitle.Lines = (item.EditorRow.CleanLines ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 item.Subtitle.SubtitleError = SubtitleError.None;
 
                 item.EditorRow.Text = item.EditorRow.CleanText = item.Subtitle.ToStringWithPipe();

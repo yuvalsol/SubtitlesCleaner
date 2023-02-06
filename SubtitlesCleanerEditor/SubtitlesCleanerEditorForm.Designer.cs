@@ -62,6 +62,8 @@
             this.copyCleanTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyCleanSubtitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.txtCleanSubtitle = new System.Windows.Forms.RichTextBox();
+            this.txtSubtitle = new SubtitlesCleanerEditor.RichTextBox();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnFixAndAdvance = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
@@ -97,8 +99,6 @@
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.txtSubtitle = new SubtitlesCleanerEditor.RichTextBox();
-            this.txtCleanSubtitle = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -424,6 +424,38 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 102);
             this.tableLayoutPanel1.TabIndex = 3;
+            // 
+            // txtCleanSubtitle
+            // 
+            this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
+            this.txtCleanSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtCleanSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCleanSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
+            this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
+            this.txtCleanSubtitle.Location = new System.Drawing.Point(545, 3);
+            this.txtCleanSubtitle.Name = "txtCleanSubtitle";
+            this.txtCleanSubtitle.ReadOnly = true;
+            this.tableLayoutPanel1.SetRowSpan(this.txtCleanSubtitle, 2);
+            this.txtCleanSubtitle.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtCleanSubtitle.Size = new System.Drawing.Size(426, 82);
+            this.txtCleanSubtitle.TabIndex = 4;
+            this.txtCleanSubtitle.Text = "";
+            // 
+            // txtSubtitle
+            // 
+            this.txtSubtitle.BackColor = System.Drawing.Color.White;
+            this.txtSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
+            this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
+            this.txtSubtitle.Location = new System.Drawing.Point(3, 3);
+            this.txtSubtitle.Name = "txtSubtitle";
+            this.tableLayoutPanel1.SetRowSpan(this.txtSubtitle, 2);
+            this.txtSubtitle.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtSubtitle.Size = new System.Drawing.Size(425, 82);
+            this.txtSubtitle.TabIndex = 11;
+            this.txtSubtitle.Text = "";
+            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<SubtitlesCleanerEditor.LeaveWithChangedTextEventArgs>(this.txtSubtitle_LeaveWithChangedText);
             // 
             // flowLayoutPanel6
             // 
@@ -878,38 +910,6 @@
             // 
             this.saveAsFileDialog.DefaultExt = "srt";
             this.saveAsFileDialog.Filter = "SubRip Subtitle|*.srt";
-            // 
-            // txtSubtitle
-            // 
-            this.txtSubtitle.BackColor = System.Drawing.Color.White;
-            this.txtSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtSubtitle.Location = new System.Drawing.Point(3, 3);
-            this.txtSubtitle.Name = "txtSubtitle";
-            this.tableLayoutPanel1.SetRowSpan(this.txtSubtitle, 2);
-            this.txtSubtitle.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtSubtitle.Size = new System.Drawing.Size(425, 82);
-            this.txtSubtitle.TabIndex = 11;
-            this.txtSubtitle.Text = "";
-            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<System.Tuple<SubtitlesCleanerEditor.EditorRow, string>>(this.txtSubtitle_LeaveWithChangedText);
-            // 
-            // txtCleanSubtitle
-            // 
-            this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
-            this.txtCleanSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtCleanSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCleanSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
-            this.txtCleanSubtitle.Location = new System.Drawing.Point(545, 3);
-            this.txtCleanSubtitle.Name = "txtCleanSubtitle";
-            this.txtCleanSubtitle.ReadOnly = true;
-            this.tableLayoutPanel1.SetRowSpan(this.txtCleanSubtitle, 2);
-            this.txtCleanSubtitle.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtCleanSubtitle.Size = new System.Drawing.Size(426, 82);
-            this.txtCleanSubtitle.TabIndex = 4;
-            this.txtCleanSubtitle.Text = "";
             // 
             // SubtitlesCleanerEditorForm
             // 
