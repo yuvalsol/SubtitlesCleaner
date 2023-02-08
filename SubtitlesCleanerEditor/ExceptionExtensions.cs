@@ -30,6 +30,7 @@ namespace System
                                 MethodInfo mi = method as MethodInfo;
                                 if (mi != null)
                                 {
+                                    sb.Append((i + 1) + ". ");
                                     sb.Append(mi.GetSignature());
 
                                     int lineNumber = sf.GetFileLineNumber();
