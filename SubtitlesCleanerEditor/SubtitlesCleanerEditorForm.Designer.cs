@@ -926,7 +926,7 @@
             this.Name = "SubtitlesCleanerEditorForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Subtitles Cleaner Editor";
-            this.Load += new System.EventHandler(this.SubtitlesCleanerEditorForm_Load);
+            this.Shown += new System.EventHandler(this.SubtitlesCleanerEditorForm_Shown);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SubtitlesCleanerEditorForm_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SubtitlesCleanerEditorForm_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubtitlesCleanerEditorForm_KeyDown);

@@ -45,7 +45,7 @@ namespace SubtitlesCleanerCommand
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrintCleaning);
+                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, false, IsPrintCleaning);
 
                 if (options.save)
                     Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressErrorFile);
@@ -70,7 +70,7 @@ namespace SubtitlesCleanerCommand
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles = subtitles.CleanEmptyAndNonSubtitles();
+                subtitles = subtitles.CleanEmptyAndNonSubtitles(false, IsPrintCleaning);
 
                 if (options.save)
                     Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
