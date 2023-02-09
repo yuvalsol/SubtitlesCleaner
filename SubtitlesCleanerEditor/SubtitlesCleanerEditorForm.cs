@@ -113,7 +113,7 @@ namespace SubtitlesCleanerEditor
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) =>
                 {
-                    Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false, false);
+                    Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
                     if (cleanSubtitle != null)
                         cleanSubtitle.SubtitleError = SubtitleError.None;
 
@@ -432,7 +432,7 @@ namespace SubtitlesCleanerEditor
             if (subtitles == null)
                 return;
 
-            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false, false);
+            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
             newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
@@ -1395,7 +1395,7 @@ namespace SubtitlesCleanerEditor
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
 
-            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
             if (cleanSubtitle != null)
                 cleanSubtitle.SubtitleError = SubtitleError.None;
             editorRow.CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty);
@@ -1692,7 +1692,7 @@ namespace SubtitlesCleanerEditor
         {
             EditorRow editorRow = GetEditorRowAt(rowIndex);
             Subtitle subtitle = subtitles[editorRow.Num - 1];
-            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
             if (cleanSubtitle != null)
                 cleanSubtitle.SubtitleError = SubtitleError.None;
 

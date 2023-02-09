@@ -231,12 +231,22 @@ namespace SubtitlesCleanerLibrary
 
         #region Clean Subtitles
 
-        public static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
+        public static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        {
+            return CleanSubtitle(subtitle, cleanHICaseInsensitive, false, isPrintCleaning);
+        }
+
+        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        {
+            return CleanSubtitles(subtitles, cleanHICaseInsensitive, false, isPrintCleaning);
+        }
+
+        private static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
         {
             return new List<Subtitle>() { subtitle }.CleanSubtitles(cleanHICaseInsensitive, isCheckMode, isPrintCleaning)?.FirstOrDefault();
         }
 
-        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
+        private static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
         {
             if (subtitles == null || subtitles.Count == 0)
                 return null;
@@ -303,72 +313,6 @@ namespace SubtitlesCleanerLibrary
             {
                 if (subtitle.SubtitleError.IsSet(SubtitleError.Non_Subtitle))
                     subtitle.SubtitleError = SubtitleError.Non_Subtitle;
-            }
-
-            return subtitles;
-        }
-
-        // debug this needs testing
-        public static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles, bool isCheckMode, bool isPrintCleaning)
-        {
-            if (subtitles == null || subtitles.Count == 0)
-                return null;
-
-            for (int k = subtitles.Count - 1; k >= 0; k--)
-            {
-                Subtitle subtitle = subtitles[k];
-                SubtitleError subtitleError = SubtitleError.None;
-
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
-                {
-                    for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
-                    {
-                        string line = subtitle.Lines[i];
-
-                        subtitleError = SubtitleError.None;
-                        bool isEmpty = string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, isCheckMode, ref subtitleError, isPrintCleaning));
-                        if (isEmpty)
-                        {
-                            subtitle.Lines.RemoveAt(i);
-                            if (isCheckMode)
-                                subtitle.SubtitleError |= SubtitleError.Empty_Line;
-                            if (subtitle.Lines.Count == 0)
-                            {
-                                subtitle.Lines = null;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            subtitleError = SubtitleError.None;
-                            string cleanLine = (CleanLine(line, NonSubtitle, false, isCheckMode, ref subtitleError, isPrintCleaning) ?? string.Empty).Trim();
-                            bool isChanged = (line != cleanLine);
-                            if (isChanged)
-                            {
-                                subtitle.Lines = null;
-                                if (isCheckMode)
-                                    subtitle.SubtitleError |= SubtitleError.Non_Subtitle;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (isCheckMode)
-                        subtitle.SubtitleError |= SubtitleError.Empty_Line;
-                }
-
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
-                {
-                    if (isCheckMode)
-                        subtitle.Lines = null;
-                    else
-                        subtitles.RemoveAt(k);
-                }
-
-                if (subtitles.Count == 0)
-                    return null;
             }
 
             return subtitles;
@@ -2261,6 +2205,81 @@ namespace SubtitlesCleanerLibrary
         }
 
         #endregion
+
+        #endregion
+
+        #region Clean Empty And Non-Subtitles
+
+        public static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles, bool isPrintCleaning)
+        {
+            return CleanEmptyAndNonSubtitles(subtitles, false, isPrintCleaning);
+        }
+
+        // debug this needs testing
+        private static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles, bool isCheckMode, bool isPrintCleaning)
+        {
+            if (subtitles == null || subtitles.Count == 0)
+                return null;
+
+            for (int k = subtitles.Count - 1; k >= 0; k--)
+            {
+                Subtitle subtitle = subtitles[k];
+                SubtitleError subtitleError = SubtitleError.None;
+
+                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                {
+                    for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                    {
+                        string line = subtitle.Lines[i];
+
+                        subtitleError = SubtitleError.None;
+                        bool isEmpty = string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, isCheckMode, ref subtitleError, isPrintCleaning));
+                        if (isEmpty)
+                        {
+                            subtitle.Lines.RemoveAt(i);
+                            if (isCheckMode)
+                                subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                            if (subtitle.Lines.Count == 0)
+                            {
+                                subtitle.Lines = null;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            subtitleError = SubtitleError.None;
+                            string cleanLine = (CleanLine(line, NonSubtitle, false, isCheckMode, ref subtitleError, isPrintCleaning) ?? string.Empty).Trim();
+                            bool isChanged = (line != cleanLine);
+                            if (isChanged)
+                            {
+                                subtitle.Lines = null;
+                                if (isCheckMode)
+                                    subtitle.SubtitleError |= SubtitleError.Non_Subtitle;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (isCheckMode)
+                        subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                }
+
+                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
+                {
+                    if (isCheckMode)
+                        subtitle.Lines = null;
+                    else
+                        subtitles.RemoveAt(k);
+                }
+
+                if (subtitles.Count == 0)
+                    return null;
+            }
+
+            return subtitles;
+        }
 
         #endregion
 
