@@ -583,6 +583,13 @@ namespace SubtitlesCleanerLibrary
                         }
                     }
                 }
+                else
+                {
+                    if (isCheckMode)
+                        subtitle.Lines = null;
+                    else
+                        subtitles.RemoveAt(k);
+                }
 
                 if (subtitles.Count == 0)
                     return null;
@@ -649,6 +656,13 @@ namespace SubtitlesCleanerLibrary
                             subtitle.Lines = cleanLines;
                         }
                     }
+                }
+                else
+                {
+                    if (isCheckMode)
+                        subtitle.Lines = null;
+                    else
+                        subtitles.RemoveAt(k);
                 }
 
                 if (subtitles.Count == 0)

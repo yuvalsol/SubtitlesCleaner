@@ -424,6 +424,11 @@ namespace SubtitlesCleanerEditor
 
         private void btnClean_Click(object sender, EventArgs e)
         {
+            CleanSubtitles();
+        }
+
+        private void CleanSubtitles()
+        {
             if (subtitles == null)
                 return;
 
@@ -438,6 +443,11 @@ namespace SubtitlesCleanerEditor
         #region Reorder
 
         private void btnReorder_Click(object sender, EventArgs e)
+        {
+            Reorder();
+        }
+
+        private void Reorder()
         {
             if (subtitles == null)
                 return;
@@ -454,6 +464,11 @@ namespace SubtitlesCleanerEditor
 
         private void btnBalanceLines_Click(object sender, EventArgs e)
         {
+            BalanceLines();
+        }
+
+        private void BalanceLines()
+        {
             if (subtitles == null)
                 return;
 
@@ -468,6 +483,11 @@ namespace SubtitlesCleanerEditor
         #region Original Subtitles
 
         private void btnOriginalSubtitles_Click(object sender, EventArgs e)
+        {
+            OriginalSubtitles();
+        }
+
+        private void OriginalSubtitles()
         {
             if (originalSubtitles == null)
                 return;
