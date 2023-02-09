@@ -58,8 +58,6 @@
     <Compile Include="..\Solution Items\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ExceptionExtensions.cs" />
-    <Compile Include="MethodInfoExtensions.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +70,10 @@
     <ProjectReference Include="..\SubtitlesCleanerLibrary\SubtitlesCleanerLibrary.csproj">
       <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
       <Name>SubtitlesCleanerLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{3b1896b1-af5f-433d-9d36-dca95eb9fce8}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

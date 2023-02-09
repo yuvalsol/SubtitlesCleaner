@@ -189,32 +189,11 @@ namespace SubtitlesCleanerCommand
         {
             try
             {
-                string caption = string.Format("Unhandled Error - {0} {1}",
-                     Assembly.GetExecutingAssembly().GetName().Name,
-                     Assembly.GetExecutingAssembly().GetName().Version.ToString(3)
-                 );
-
-                string message = caption;
-
-                message += string.Format("{0}An unhandled error occurred.{0}The application will terminate now.{0}{0}{1}{0}{0}{2}",
-                    "\n",
-                    ex.Message,
-                    ex.GetFormattedStackTrace()
-                );
-
-                while (ex.InnerException != null)
-                {
-                    ex = ex.InnerException;
-                    message += string.Format("{0}{1}{0}{0}{2}",
-                        "\n",
-                        ex.Message,
-                        ex.GetFormattedStackTrace()
-                    );
-                }
-
-                message = message.Trim();
-
-                return message;
+                return
+                    string.Format("Unhandled Error - {0} {1}",
+                        Assembly.GetExecutingAssembly().GetName().Name,
+                        Assembly.GetExecutingAssembly().GetName().Version.ToString(3)) + Environment.NewLine +
+                    ex.GetUnhandledExceptionErrorMessage();
             }
             catch
             {
