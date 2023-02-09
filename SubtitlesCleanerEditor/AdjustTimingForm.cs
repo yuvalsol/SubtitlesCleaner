@@ -43,7 +43,7 @@ namespace SubtitlesCleanerEditor
                         Encoding encoding = Encoding.UTF8;
                         List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
 
-                        if (subtitles != null && subtitles.Count > 0)
+                        if (subtitles.HasAny())
                         {
                             timePickerX2.Value = subtitles[0].Show;
 

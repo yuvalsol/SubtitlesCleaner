@@ -205,7 +205,7 @@ namespace SubtitlesCleanerLibrary
 
         public static string[] ToLines(this List<Subtitle> subtitles)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return new string[0];
 
             return subtitles.SelectMany((subtitle, index) => subtitle.ToLines(index)).ToArray();
@@ -213,10 +213,10 @@ namespace SubtitlesCleanerLibrary
 
         public static string[] ToLines(this Subtitle subtitle, int index)
         {
-            string[] lines = new string[(subtitle.Lines != null && subtitle.Lines.Count > 0 ? subtitle.Lines.Count : 0) + 3];
+            string[] lines = new string[(subtitle.Lines.HasAny() ? subtitle.Lines.Count : 0) + 3];
             lines[0] = (index + 1).ToString();
             lines[1] = subtitle.TimeToString();
-            if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+            if (subtitle.Lines.HasAny())
                 subtitle.Lines.CopyTo(lines, 2);
             lines[lines.Length - 1] = string.Empty;
             return lines;
@@ -248,11 +248,11 @@ namespace SubtitlesCleanerLibrary
 
         private static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return null;
 
             subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isCheckMode, isPrintCleaning);
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return null;
 
             bool subtitlesChanged = false;
@@ -264,7 +264,7 @@ namespace SubtitlesCleanerLibrary
                 subtitlesChanged = false;
                 int lastSubtitleToChange = -1;
                 subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, isCheckMode, ref subtitlesChanged, ref lastSubtitleToChange, isPrintCleaning);
-                if (subtitles == null || subtitles.Count == 0)
+                if (subtitles.IsNullOrEmpty())
                     return null;
 
                 loopCount++;
@@ -306,7 +306,7 @@ namespace SubtitlesCleanerLibrary
             } while (subtitlesChanged);
 
             subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive, isCheckMode, isPrintCleaning);
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return null;
 
             foreach (var subtitle in subtitles)
@@ -320,7 +320,7 @@ namespace SubtitlesCleanerLibrary
 
         private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return null;
 
             for (int k = subtitles.Count - 1; k >= 0; k--)
@@ -328,7 +328,7 @@ namespace SubtitlesCleanerLibrary
                 Subtitle subtitle = subtitles[k];
                 SubtitleError subtitleError = SubtitleError.None;
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
                     {
@@ -395,7 +395,7 @@ namespace SubtitlesCleanerLibrary
                         subtitle.SubtitleError |= SubtitleError.Empty_Line;
                 }
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     subtitleError = SubtitleError.None;
                     List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
@@ -409,7 +409,7 @@ namespace SubtitlesCleanerLibrary
                         if (isCheckMode)
                             subtitle.SubtitleError |= subtitleError;
 
-                        if (cleanLines == null || cleanLines.Count == 0)
+                        if (cleanLines.IsNullOrEmpty())
                         {
                             if (isCheckMode)
                                 subtitle.Lines = null;
@@ -439,7 +439,7 @@ namespace SubtitlesCleanerLibrary
 
         private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, ref bool subtitlesChanged, ref int lastSubtitleToChange, bool isPrintCleaning)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return null;
 
             for (int k = subtitles.Count - 1; k >= 0; k--)
@@ -447,7 +447,7 @@ namespace SubtitlesCleanerLibrary
                 Subtitle subtitle = subtitles[k];
                 SubtitleError subtitleError = SubtitleError.None;
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
                     {
@@ -498,7 +498,7 @@ namespace SubtitlesCleanerLibrary
                     }
                 }
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     subtitleError = SubtitleError.None;
                     List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
@@ -514,7 +514,7 @@ namespace SubtitlesCleanerLibrary
                         if (isCheckMode)
                             subtitle.SubtitleError |= subtitleError;
 
-                        if (cleanLines == null || cleanLines.Count == 0)
+                        if (cleanLines.IsNullOrEmpty())
                         {
                             if (isCheckMode)
                                 subtitle.Lines = null;
@@ -544,7 +544,7 @@ namespace SubtitlesCleanerLibrary
 
         private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return null;
 
             for (int k = subtitles.Count - 1; k >= 0; k--)
@@ -552,7 +552,7 @@ namespace SubtitlesCleanerLibrary
                 Subtitle subtitle = subtitles[k];
                 SubtitleError subtitleError = SubtitleError.None;
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
                     {
@@ -574,7 +574,7 @@ namespace SubtitlesCleanerLibrary
                     }
                 }
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     subtitleError = SubtitleError.None;
                     List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
@@ -588,7 +588,7 @@ namespace SubtitlesCleanerLibrary
                         if (isCheckMode)
                             subtitle.SubtitleError |= subtitleError;
 
-                        if (cleanLines == null || cleanLines.Count == 0)
+                        if (cleanLines.IsNullOrEmpty())
                         {
                             if (isCheckMode)
                                 subtitle.Lines = null;
@@ -662,7 +662,7 @@ namespace SubtitlesCleanerLibrary
 
         private static List<string> CleanSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -680,7 +680,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanMissingNewLineMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -729,7 +729,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanLyricsMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -816,7 +816,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanHIPrefixWithoutDialogDash(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -857,7 +857,7 @@ namespace SubtitlesCleanerLibrary
 
         private static List<string> CleanSubtitleMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -882,7 +882,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanMergedLinesWithHIToSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -920,7 +920,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanHearingImpairedMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -982,7 +982,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanItalicsThreeLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1067,7 +1067,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanItalicsTwoLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1147,7 +1147,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanDialogSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1178,7 +1178,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanHIPrefixSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1209,7 +1209,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanHIPrefixMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1262,7 +1262,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanDialogMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1509,7 +1509,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanNotesMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1924,7 +1924,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanStartWithPunctuationSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1960,7 +1960,7 @@ namespace SubtitlesCleanerLibrary
 
         private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -1978,7 +1978,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanMissingDialogDashSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -2009,7 +2009,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanRedundantItalicsMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -2047,7 +2047,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanMergeLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -2125,7 +2125,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanMissingDialogDashMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -2167,7 +2167,7 @@ namespace SubtitlesCleanerLibrary
 
         public static List<string> CleanLineEndWithApostropheAndQuestionMark(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
             {
                 if (isCheckMode)
                     subtitleError |= SubtitleError.Empty_Line;
@@ -2215,10 +2215,9 @@ namespace SubtitlesCleanerLibrary
             return CleanEmptyAndNonSubtitles(subtitles, false, isPrintCleaning);
         }
 
-        // debug this needs testing
         private static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles, bool isCheckMode, bool isPrintCleaning)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return null;
 
             for (int k = subtitles.Count - 1; k >= 0; k--)
@@ -2226,7 +2225,7 @@ namespace SubtitlesCleanerLibrary
                 Subtitle subtitle = subtitles[k];
                 SubtitleError subtitleError = SubtitleError.None;
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
                     {
@@ -2266,7 +2265,7 @@ namespace SubtitlesCleanerLibrary
                         subtitle.SubtitleError |= SubtitleError.Empty_Line;
                 }
 
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
+                if (subtitle.Lines.IsNullOrEmpty())
                 {
                     if (isCheckMode)
                         subtitle.Lines = null;
@@ -2292,7 +2291,7 @@ namespace SubtitlesCleanerLibrary
 
         public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             var tempSubtitles = subtitles.Clone();
@@ -3316,7 +3315,7 @@ namespace SubtitlesCleanerLibrary
 
         public static void AddTime(this List<Subtitle> subtitles, TimeSpan span, int? subtitleNumber = null)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (span == TimeSpan.Zero)
@@ -3375,7 +3374,7 @@ namespace SubtitlesCleanerLibrary
 
         public static void SetShowTime(this List<Subtitle> subtitles, DateTime show, int? subtitleNumber = 1)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (show == DateTime.MinValue)
@@ -3422,7 +3421,7 @@ namespace SubtitlesCleanerLibrary
 
         public static void AdjustTiming(this List<Subtitle> subtitles, DateTime x1Show, DateTime x2Show, DateTime y1Show, DateTime y2Show)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (x1Show == DateTime.MinValue || x2Show == DateTime.MinValue || y1Show == DateTime.MinValue || y2Show == DateTime.MinValue)
@@ -3687,7 +3686,7 @@ namespace SubtitlesCleanerLibrary
                 bool hasError = false;
                 List<string> errorDescriptions = new List<string>();
 
-                if (subtitle.Lines != null && subtitle.Lines.Count > 0)
+                if (subtitle.Lines.HasAny())
                 {
                     foreach (var error in ErrorList)
                     {

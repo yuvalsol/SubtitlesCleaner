@@ -25,7 +25,7 @@ namespace SubtitlesCleanerLibrary
             {
                 Show = Show,
                 Hide = Hide,
-                Lines = (Lines != null && Lines.Count > 0 ? new List<string>(Lines) : null),
+                Lines = (Lines.HasAny() ? new List<string>(Lines) : null),
                 SubtitleError = SubtitleError
             };
         }
@@ -68,12 +68,12 @@ namespace SubtitlesCleanerLibrary
 
         public string ToStringWithPipe()
         {
-            return (Lines != null && Lines.Count > 0 ? string.Join("|", Lines) : string.Empty);
+            return (Lines.HasAny() ? string.Join("|", Lines) : string.Empty);
         }
 
         public override string ToString()
         {
-            return (Lines != null && Lines.Count > 0 ? string.Join(Environment.NewLine, Lines) : string.Empty);
+            return (Lines.HasAny() ? string.Join(Environment.NewLine, Lines) : string.Empty);
         }
 
         #endregion
