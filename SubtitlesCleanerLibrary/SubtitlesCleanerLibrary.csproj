@@ -62,9 +62,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Utils\Utils.csproj">
+    <ProjectReference Include="..\SubtitlesCleaner.Utils\SubtitlesCleaner.Utils.csproj">
       <Project>{3b1896b1-af5f-433d-9d36-dca95eb9fce8}</Project>
-      <Name>Utils</Name>
+      <Name>SubtitlesCleaner.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
