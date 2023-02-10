@@ -988,7 +988,8 @@ namespace SubtitlesCleaner.Editor
 
                 try
                 {
-                    File.WriteAllLines(backPath, originalSubtitles.ToLines(), encoding);
+                    string[] lines = originalSubtitles.ToLines();
+                    File.WriteAllLines(backPath, lines.Take(lines.Length - 1), encoding);
                     message = Path.GetFileName(backPath) + " saved" + Environment.NewLine;
                 }
                 catch (Exception ex)
@@ -1014,7 +1015,8 @@ namespace SubtitlesCleaner.Editor
 
             try
             {
-                File.WriteAllLines(filePath, subtitles.ToLines(), encoding);
+                string[] lines = subtitles.ToLines();
+                File.WriteAllLines(filePath, lines.Take(lines.Length - 1), encoding);
                 SetFormTitle(false);
                 message += Path.GetFileName(filePath) + " saved";
             }
@@ -1061,7 +1063,8 @@ namespace SubtitlesCleaner.Editor
             {
                 try
                 {
-                    File.WriteAllLines(saveAsFileDialog.FileName, subtitles.ToLines(), encoding);
+                    string[] lines = subtitles.ToLines();
+                    File.WriteAllLines(saveAsFileDialog.FileName, lines.Take(lines.Length - 1), encoding);
 
                     filePath = saveAsFileDialog.FileName;
                     openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);

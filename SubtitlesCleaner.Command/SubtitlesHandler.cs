@@ -266,7 +266,8 @@ namespace SubtitlesCleaner.Command
 
             try
             {
-                File.WriteAllLines(outputFilePath, subtitles.ToLines(), encoding);
+                string[] lines = subtitles.ToLines();
+                File.WriteAllLines(outputFilePath, lines.Take(lines.Length - 1), encoding);
             }
             catch (Exception ex)
             {
