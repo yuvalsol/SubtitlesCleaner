@@ -63,7 +63,7 @@ namespace SubtitlesCleanerEditor
 
         private string initialFile;
 
-        private void SubtitlesCleanerEditorForm_Load(object sender, EventArgs e)
+        private void SubtitlesCleanerEditorForm_Shown(object sender, EventArgs e)
         {
             if (IsProduction)
             {
@@ -109,11 +109,13 @@ namespace SubtitlesCleanerEditor
             lstEditor.SelectionChanged -= lstEditor_SelectionChanged;
             lstErrors.SelectionChanged -= lstErrors_SelectionChanged;
 
-            if (subtitles != null && subtitles.Count > 0)
+            if (subtitles.HasAny())
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) =>
                 {
-                    Subtitle cleanSubtitle = SubtitlesHelper.CleanSubtitles(subtitle.Clone() as Subtitle, cleanHICaseInsensitive, false);
+                    Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+                    if (cleanSubtitle != null)
+                        cleanSubtitle.SubtitleError = SubtitleError.None;
 
                     return new EditorRow()
                     {
@@ -143,7 +145,7 @@ namespace SubtitlesCleanerEditor
             SelectionChanged();
             ErrorSelectionChanged();
 
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
             {
                 SetTextToTextBoxes(string.Empty, string.Empty);
                 ResetLineLengths();
@@ -181,20 +183,30 @@ namespace SubtitlesCleanerEditor
 
         private void LoadFile(string filePath)
         {
-            string extension = Path.GetExtension(filePath);
-            bool isSRT = string.Compare(extension, ".srt", true) == 0;
-            if (isSRT)
+            try
             {
-                encoding = Encoding.UTF8;
-                subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
-                subtitles.CheckSubtitles(cleanHICaseInsensitive);
-                originalSubtitles = subtitles.Clone();
-                this.filePath = filePath;
-                openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
-                SetSubtitlesToEditor(subtitles);
-                SelectFirstError();
-                SetFormTitle(false);
-                lstEditor.Focus();
+                string extension = Path.GetExtension(filePath);
+                bool isSRT = string.Compare(extension, ".srt", true) == 0;
+                if (isSRT)
+                {
+                    SetFormTitleLoadingFile(filePath);
+                    Application.DoEvents();
+
+                    encoding = Encoding.UTF8;
+                    subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
+                    subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+                    originalSubtitles = subtitles.Clone();
+                    this.filePath = filePath;
+                    openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
+                    SetSubtitlesToEditor(subtitles);
+                    SelectFirstError();
+                    SetFormTitle(false);
+                    lstEditor.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error loading file " + filePath, ex);
             }
         }
 
@@ -211,6 +223,16 @@ namespace SubtitlesCleanerEditor
 
             this.Text =
                 Path.GetFileName(this.filePath) + (isDirty ? " *" : string.Empty) +
+                " - " + this.Text;
+        }
+
+        private void SetFormTitleLoadingFile(string filePath)
+        {
+            ResetFormTitle();
+
+            this.Text =
+                "Loading... " +
+                Path.GetFileName(filePath) +
                 " - " + this.Text;
         }
 
@@ -402,11 +424,16 @@ namespace SubtitlesCleanerEditor
 
         private void btnClean_Click(object sender, EventArgs e)
         {
+            CleanSubtitles();
+        }
+
+        private void CleanSubtitles()
+        {
             if (subtitles == null)
                 return;
 
             var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -417,11 +444,16 @@ namespace SubtitlesCleanerEditor
 
         private void btnReorder_Click(object sender, EventArgs e)
         {
+            Reorder();
+        }
+
+        private void Reorder()
+        {
             if (subtitles == null)
                 return;
 
             var newSubtitles = subtitles.Reorder();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -432,11 +464,16 @@ namespace SubtitlesCleanerEditor
 
         private void btnBalanceLines_Click(object sender, EventArgs e)
         {
+            BalanceLines();
+        }
+
+        private void BalanceLines()
+        {
             if (subtitles == null)
                 return;
 
             var newSubtitles = subtitles.BalanceLines();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -447,11 +484,16 @@ namespace SubtitlesCleanerEditor
 
         private void btnOriginalSubtitles_Click(object sender, EventArgs e)
         {
+            OriginalSubtitles();
+        }
+
+        private void OriginalSubtitles()
+        {
             if (originalSubtitles == null)
                 return;
 
             var newSubtitles = originalSubtitles.Clone();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(false);
         }
@@ -545,11 +587,11 @@ namespace SubtitlesCleanerEditor
 
             if (string.IsNullOrEmpty(cleanText))
             {
-                txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
-                txtSubtitle.SelectionLength = 0;
-                txtSubtitle.SelectionBackColor = textDeletedColor;
+                txtSubtitle.Text = text;
 
-                txtSubtitle.AppendText(text);
+                txtSubtitle.SelectionStart = 0;
+                txtSubtitle.SelectionLength = txtSubtitle.Text.Length;
+                txtSubtitle.SelectionBackColor = textDeletedColor;
 
                 txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
                 txtSubtitle.SelectionLength = 0;
@@ -580,14 +622,14 @@ namespace SubtitlesCleanerEditor
                     if (item.Obj1 != default(char) && item.Obj1 != '\r')
                     {
                         if (item.Obj1 != '\n')
-                            AppendText(txtSubtitle, textDeletedColor, selectionStart1);
+                            ColorChar(txtSubtitle, textDeletedColor, selectionStart1);
                         selectionStart1++;
                     }
 
                     if (item.Obj2 != default(char) && item.Obj2 != '\r')
                     {
                         if (item.Obj2 != '\n')
-                            AppendText(txtCleanSubtitle, textDeletedColor, selectionStart2);
+                            ColorChar(txtCleanSubtitle, textDeletedColor, selectionStart2);
                         selectionStart2++;
                     }
                 }
@@ -596,14 +638,14 @@ namespace SubtitlesCleanerEditor
                     if (item.Obj1 != default(char) && item.Obj1 != '\r')
                     {
                         if (item.Obj1 != '\n')
-                            AppendText(txtSubtitle, textInsertedColor, selectionStart1);
+                            ColorChar(txtSubtitle, textInsertedColor, selectionStart1);
                         selectionStart1++;
                     }
 
                     if (item.Obj2 != default(char) && item.Obj2 != '\r')
                     {
                         if (item.Obj2 != '\n')
-                            AppendText(txtCleanSubtitle, textInsertedColor, selectionStart2);
+                            ColorChar(txtCleanSubtitle, textInsertedColor, selectionStart2);
                         selectionStart2++;
                     }
                 }
@@ -614,14 +656,14 @@ namespace SubtitlesCleanerEditor
                         if (item.Obj1 != default(char) && item.Obj1 != '\r')
                         {
                             if (item.Obj1 != '\n')
-                                AppendText(txtSubtitle, textDeletedColor, selectionStart1);
+                                ColorChar(txtSubtitle, textDeletedColor, selectionStart1);
                             selectionStart1++;
                         }
 
                         if (item.Obj2 != default(char) && item.Obj2 != '\r')
                         {
                             if (item.Obj2 != '\n')
-                                AppendText(txtCleanSubtitle, textInsertedColor, selectionStart2);
+                                ColorChar(txtCleanSubtitle, textInsertedColor, selectionStart2);
                             selectionStart2++;
                         }
                     }
@@ -637,7 +679,7 @@ namespace SubtitlesCleanerEditor
             txtCleanSubtitle.SelectionBackColor = txtCleanSubtitle.BackColor;
         }
 
-        public void AppendText(System.Windows.Forms.RichTextBox box, Color backColor, int selectionStart)
+        public void ColorChar(System.Windows.Forms.RichTextBox box, Color backColor, int selectionStart)
         {
             box.SelectionStart = selectionStart;
             box.SelectionLength = 1;
@@ -912,7 +954,7 @@ namespace SubtitlesCleanerEditor
         private void ChangeHICaseSensitivity()
         {
             cleanHICaseInsensitive = rdbHIUpperLowerCases.Checked;
-            subtitles.CheckSubtitles(cleanHICaseInsensitive);
+            subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
             SetFormTitle(true);
         }
@@ -928,7 +970,7 @@ namespace SubtitlesCleanerEditor
 
         private void Save(bool withAlert)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (string.IsNullOrEmpty(filePath))
@@ -976,7 +1018,7 @@ namespace SubtitlesCleanerEditor
 
         private void SaveAs()
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             saveAsFileDialog.FileName = Path.GetFileName(filePath);
@@ -1069,7 +1111,7 @@ namespace SubtitlesCleanerEditor
 
         private void btnAdjustTiming_Click(object sender, EventArgs e)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             string initialDirectory = Path.GetDirectoryName(filePath);
@@ -1128,7 +1170,7 @@ namespace SubtitlesCleanerEditor
 
         private void SearchAndReplace()
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (searchAndReplaceDialog == null)
@@ -1147,7 +1189,7 @@ namespace SubtitlesCleanerEditor
 
         private void FindNext(Find find)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             int fromIndex = 0;
@@ -1171,7 +1213,7 @@ namespace SubtitlesCleanerEditor
 
         private void FindPrevious(Find find)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             int fromIndex = lstEditor.Rows.Count - 1;
@@ -1195,7 +1237,7 @@ namespace SubtitlesCleanerEditor
 
         private void ReplaceNext(FindAndReplace find)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             int fromIndex = 0;
@@ -1229,7 +1271,7 @@ namespace SubtitlesCleanerEditor
 
         private void ReplaceAll(FindAndReplace find)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             int fromIndex = 0;
@@ -1293,32 +1335,35 @@ namespace SubtitlesCleanerEditor
                 (find.MatchCase == false ? RegexOptions.IgnoreCase : RegexOptions.None)
             );
 
-            for (int i = 0; i < subtitle.Lines.Count; i++)
+            if (subtitle.Lines.HasAny())
             {
-                string line = subtitle.Lines[i];
-
-                if (regex.IsMatch(line))
+                for (int i = 0; i < subtitle.Lines.Count; i++)
                 {
-                    isFound = true;
+                    string line = subtitle.Lines[i];
 
-                    if (replace != null)
+                    if (regex.IsMatch(line))
                     {
-                        string newLine = regex.Replace(line, replace);
-                        if (line != newLine)
+                        isFound = true;
+
+                        if (replace != null)
                         {
-                            subtitle.Lines[i] = newLine;
-                            isReplaced = true;
+                            string newLine = regex.Replace(line, replace);
+                            if (line != newLine)
+                            {
+                                subtitle.Lines[i] = newLine;
+                                isReplaced = true;
+                            }
                         }
-                    }
-                    else
-                    {
-                        break;
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
             }
 
             if (isFound && isReplaced)
-                subtitle.CheckSubtitle(cleanHICaseInsensitive);
+                subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
         }
 
         #endregion
@@ -1335,7 +1380,7 @@ namespace SubtitlesCleanerEditor
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            subtitle.CheckSubtitle(cleanHICaseInsensitive);
+            subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
 
             SetSubtitleToEditor(editorRow, subtitle);
 
@@ -1350,7 +1395,9 @@ namespace SubtitlesCleanerEditor
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
 
-            Subtitle cleanSubtitle = SubtitlesHelper.CleanSubtitles(subtitle.Clone() as Subtitle, cleanHICaseInsensitive, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+            if (cleanSubtitle != null)
+                cleanSubtitle.SubtitleError = SubtitleError.None;
             editorRow.CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty);
             editorRow.CleanLines = (cleanSubtitle != null ? cleanSubtitle.ToString() : string.Empty);
             SetTextToTextBoxes(txtSubtitle.Text, editorRow.CleanLines);
@@ -1459,7 +1506,7 @@ namespace SubtitlesCleanerEditor
         private ErrorRow GetNextErrorRow()
         {
             List<ErrorRow> errorRows = lstErrors.DataSource as List<ErrorRow>;
-            if (errorRows == null || errorRows.Count == 0)
+            if (errorRows.IsNullOrEmpty())
                 return null;
 
             EditorRow editorRow = GetSelectedEditorRow();
@@ -1518,7 +1565,6 @@ namespace SubtitlesCleanerEditor
                 return new FixTextResult() { isFixed = false, Num = editorRow.Num, IsRowDeleted = false };
 
             if (editorRow.SubtitleError.IsSet(SubtitleError.Non_Subtitle) ||
-                editorRow.SubtitleError.IsSet(SubtitleError.Empty_Line) ||
                 string.IsNullOrEmpty(txtCleanSubtitle.Text))
             {
                 DeleteSubtitle(editorRow);
@@ -1646,7 +1692,9 @@ namespace SubtitlesCleanerEditor
         {
             EditorRow editorRow = GetEditorRowAt(rowIndex);
             Subtitle subtitle = subtitles[editorRow.Num - 1];
-            Subtitle cleanSubtitle = SubtitlesHelper.CleanSubtitles(subtitle.Clone() as Subtitle, cleanHICaseInsensitive, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+            if (cleanSubtitle != null)
+                cleanSubtitle.SubtitleError = SubtitleError.None;
 
             string[] lines = null;
             if (cleanSubtitle != null)
@@ -1750,7 +1798,6 @@ namespace SubtitlesCleanerEditor
                         Subtitle = subtitles[item.EditorRow.Num - 1],
                         IsToDeleteSubtitle =
                             item.EditorRow.SubtitleError.IsSet(SubtitleError.Non_Subtitle) ||
-                            item.EditorRow.SubtitleError.IsSet(SubtitleError.Empty_Line) ||
                             string.IsNullOrEmpty(item.EditorRow.CleanLines)
                     }
                 )
@@ -1829,7 +1876,7 @@ namespace SubtitlesCleanerEditor
 
         private void GoToSubtitle()
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (goToSubtitleDialog == null)
@@ -1861,7 +1908,7 @@ namespace SubtitlesCleanerEditor
 
         private void QuickActions()
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             List<QuickAction> quickActions = new List<QuickAction>()
@@ -1896,7 +1943,7 @@ namespace SubtitlesCleanerEditor
             var dialog = new QuickActionsForm(this.filePath, newSubtitles, quickActions);
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                newSubtitles.CheckSubtitles(cleanHICaseInsensitive);
+                newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
                 SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
                 SetFormTitle(true);
             }
@@ -2096,7 +2143,7 @@ namespace SubtitlesCleanerEditor
 
                         bool isSubtitlesChanged = false;
 
-                        if (isRemoveEmptyLines && subtitle.Lines.Count == 0)
+                        if (isRemoveEmptyLines && subtitle.Lines.IsNullOrEmpty())
                         {
                             isSubtitlesChanged = true;
                         }
@@ -2107,17 +2154,18 @@ namespace SubtitlesCleanerEditor
                             if (preCleaners != null && preCleaners.Length > 0)
                             {
                                 List<string> cleanLines = new List<string>(subtitle.Lines);
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     foreach (var cleaner in preCleaners)
                                     {
-                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
-                                        if (cleanLines == null || cleanLines.Count == 0)
+                                        SubtitleError subtitleError = SubtitleError.None;
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive, false, ref subtitleError, false);
+                                        if (cleanLines.IsNullOrEmpty())
                                             break;
                                     }
                                 }
 
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     for (int k = 0; k < cleanLines.Count; k++)
                                         cleanLines[k] = cleanLines[k].Trim();
@@ -2191,17 +2239,18 @@ namespace SubtitlesCleanerEditor
                             if (postCleaners != null && postCleaners.Length > 0)
                             {
                                 List<string> cleanLines = new List<string>(subtitle.Lines);
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     foreach (var cleaner in postCleaners)
                                     {
-                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
-                                        if (cleanLines == null || cleanLines.Count == 0)
+                                        SubtitleError subtitleError = SubtitleError.None;
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive, false, ref subtitleError, false);
+                                        if (cleanLines.IsNullOrEmpty())
                                             break;
                                     }
                                 }
 
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     for (int k = 0; k < cleanLines.Count; k++)
                                         cleanLines[k] = cleanLines[k].Trim();
@@ -2260,7 +2309,7 @@ namespace SubtitlesCleanerEditor
 
                         bool isSubtitlesChanged = false;
 
-                        if (isRemoveEmptyLines && subtitle.Lines.Count == 0)
+                        if (isRemoveEmptyLines && subtitle.Lines.IsNullOrEmpty())
                         {
                             subtitles.RemoveAt(i);
                             isSubtitlesChanged = true;
@@ -2273,17 +2322,18 @@ namespace SubtitlesCleanerEditor
                             if (preCleaners != null && preCleaners.Length > 0)
                             {
                                 List<string> cleanLines = new List<string>(subtitle.Lines);
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     foreach (var cleaner in preCleaners)
                                     {
-                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
-                                        if (cleanLines == null || cleanLines.Count == 0)
+                                        SubtitleError subtitleError = SubtitleError.None;
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive, false, ref subtitleError, false);
+                                        if (cleanLines.IsNullOrEmpty())
                                             break;
                                     }
                                 }
 
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     for (int k = 0; k < cleanLines.Count; k++)
                                         cleanLines[k] = cleanLines[k].Trim();
@@ -2365,17 +2415,18 @@ namespace SubtitlesCleanerEditor
                             if (postCleaners != null && postCleaners.Length > 0)
                             {
                                 List<string> cleanLines = new List<string>(subtitle.Lines);
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     foreach (var cleaner in postCleaners)
                                     {
-                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive);
-                                        if (cleanLines == null || cleanLines.Count == 0)
+                                        SubtitleError subtitleError = SubtitleError.None;
+                                        cleanLines = cleaner(cleanLines, cleanHICaseInsensitive, false, ref subtitleError, false);
+                                        if (cleanLines.IsNullOrEmpty())
                                             break;
                                     }
                                 }
 
-                                if (cleanLines != null && cleanLines.Count > 0)
+                                if (cleanLines.HasAny())
                                 {
                                     for (int k = 0; k < cleanLines.Count; k++)
                                         cleanLines[k] = cleanLines[k].Trim();

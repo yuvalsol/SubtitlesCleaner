@@ -62,5 +62,5 @@ namespace SubtitlesCleanerEditor
         public Subtitle CleanedSubtitle { get; set; }
     }
 
-    public delegate List<string> QuickActionCleanHandler(List<string> lines, bool cleanHICaseInsensitive);
+    public delegate List<string> QuickActionCleanHandler(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning);
 }

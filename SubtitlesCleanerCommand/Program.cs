@@ -159,10 +159,19 @@ namespace SubtitlesCleanerCommand
             catch (Exception ex)
             {
                 Console.WriteLine("_________________________________________");
-                while (ex != null)
+                string errorMessage = UnhandledException(ex);
+                if (string.IsNullOrEmpty(errorMessage))
                 {
-                    Console.WriteLine(string.Format("{0}\n{1}\n_________________________________________", ex.GetType().ToString(), ex.Message));
-                    ex = ex.InnerException;
+                    while (ex != null)
+                    {
+                        Console.WriteLine(string.Format("{0}\n{1}\n_________________________________________", ex.GetType().ToString(), ex.Message));
+                        ex = ex.InnerException;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(errorMessage);
+                    Console.WriteLine("_________________________________________");
                 }
                 Console.ReadKey(true);
             }
@@ -173,6 +182,22 @@ namespace SubtitlesCleanerCommand
                     Console.WriteLine("Press any key to continue . . .");
                     Console.ReadKey(true);
                 }
+            }
+        }
+
+        private static string UnhandledException(Exception ex)
+        {
+            try
+            {
+                return
+                    string.Format("Unhandled Error - {0} {1}",
+                        Assembly.GetExecutingAssembly().GetName().Name,
+                        Assembly.GetExecutingAssembly().GetName().Version.ToString(3)) + Environment.NewLine +
+                    ex.GetUnhandledExceptionErrorMessage();
+            }
+            catch
+            {
+                return null;
             }
         }
     }

@@ -70,7 +70,7 @@ namespace SubtitlesCleanerCommand
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles = subtitles.CleanEmptyAndNonSubtitles();
+                subtitles = subtitles.CleanEmptyAndNonSubtitles(IsPrintCleaning);
 
                 if (options.save)
                     Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);

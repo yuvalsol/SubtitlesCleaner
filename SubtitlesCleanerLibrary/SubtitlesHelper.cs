@@ -184,6 +184,8 @@ namespace SubtitlesCleanerLibrary
                 }
                 else if (subtitle != null)
                 {
+                    if (subtitle.Lines == null)
+                        subtitle.Lines = new List<string>();
                     subtitle.Lines.Add(line);
                 }
             }
@@ -203,7 +205,7 @@ namespace SubtitlesCleanerLibrary
 
         public static string[] ToLines(this List<Subtitle> subtitles)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return new string[0];
 
             return subtitles.SelectMany((subtitle, index) => subtitle.ToLines(index)).ToArray();
@@ -211,10 +213,11 @@ namespace SubtitlesCleanerLibrary
 
         public static string[] ToLines(this Subtitle subtitle, int index)
         {
-            string[] lines = new string[subtitle.Lines.Count + 3];
+            string[] lines = new string[(subtitle.Lines.HasAny() ? subtitle.Lines.Count : 0) + 3];
             lines[0] = (index + 1).ToString();
             lines[1] = subtitle.TimeToString();
-            subtitle.Lines.CopyTo(lines, 2);
+            if (subtitle.Lines.HasAny())
+                subtitle.Lines.CopyTo(lines, 2);
             lines[lines.Length - 1] = string.Empty;
             return lines;
         }
@@ -226,332 +229,472 @@ namespace SubtitlesCleanerLibrary
 
         #endregion
 
-        #region Clean & Check
+        #region Clean Subtitles
 
-        public static Subtitle CleanSubtitles(this Subtitle subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        public static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
-            return new List<Subtitle>() { subtitles }.CleanSubtitles(cleanHICaseInsensitive, isPrintCleaning).FirstOrDefault();
+            return CleanSubtitle(subtitle, cleanHICaseInsensitive, false, isPrintCleaning);
         }
 
         public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
         {
-            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isPrintCleaning);
+            return CleanSubtitles(subtitles, cleanHICaseInsensitive, false, isPrintCleaning);
+        }
+
+        private static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
+        {
+            return new List<Subtitle>() { subtitle }.CleanSubtitles(cleanHICaseInsensitive, isCheckMode, isPrintCleaning)?.FirstOrDefault();
+        }
+
+        private static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
+        {
+            if (subtitles.IsNullOrEmpty())
+                return null;
+
+            subtitles = IterateSubtitlesPre(subtitles, cleanHICaseInsensitive, isCheckMode, isPrintCleaning);
+            if (subtitles.IsNullOrEmpty())
+                return null;
 
             bool subtitlesChanged = false;
+            List<int> infiniteLoopProbableCulprits = new List<int>();
             int loopCount = 0;
             int loopThresh = 6;
             do
             {
                 subtitlesChanged = false;
-                subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, isPrintCleaning, ref subtitlesChanged);
+                int lastSubtitleToChange = -1;
+                subtitles = IterateSubtitles(subtitles, cleanHICaseInsensitive, isCheckMode, ref subtitlesChanged, ref lastSubtitleToChange, isPrintCleaning);
+                if (subtitles.IsNullOrEmpty())
+                    return null;
+
                 loopCount++;
 
-                if (subtitlesChanged && loopCount == loopThresh - 1)
+                if (subtitlesChanged && loopCount > 1) // most subtitles that need to be deleted, will do so on loop 1
                 {
-                    Console.WriteLine("Infinite Loop");
-                    Console.WriteLine();
-                    isPrintCleaning = true;
+                    if (lastSubtitleToChange != -1)
+                        infiniteLoopProbableCulprits.Add(lastSubtitleToChange);
                 }
-                else if (subtitlesChanged && loopCount == loopThresh)
+
+                if (subtitlesChanged && loopCount == loopThresh)
                 {
-                    Console.ReadKey(true);
-                    throw new Exception("Infinite Loop");
+                    Subtitle probableCulprit = null;
+
+                    var culprits = infiniteLoopProbableCulprits
+                        .GroupBy(n => n)
+                        .Select(g => new { Index = g.Key, Count = g.Count() })
+                        .OrderByDescending(x => x.Count)
+                        .ThenByDescending(x => x.Index);
+
+                    var probableCulpritItem = culprits.FirstOrDefault();
+                    if (probableCulpritItem != null)
+                    {
+                        if (0 <= probableCulpritItem.Index && probableCulpritItem.Index <= subtitles.Count - 1)
+                            probableCulprit = subtitles[probableCulpritItem.Index];
+                    }
+
+                    string errorMessage = "Subtitles Cleaning Infinite Loop";
+                    if (probableCulprit != null)
+                    {
+                        errorMessage +=
+                            Environment.NewLine + "Subtitle probable cause for infinite loop" +
+                            Environment.NewLine + probableCulprit.TimeToString() +
+                            Environment.NewLine + probableCulprit.ToString();
+                    }
+
+                    throw new Exception(errorMessage);
                 }
             } while (subtitlesChanged);
 
-            subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive);
-            return subtitles;
-        }
+            subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive, isCheckMode, isPrintCleaning);
+            if (subtitles.IsNullOrEmpty())
+                return null;
 
-        public static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles)
-        {
-            if (subtitles == null)
-                return new List<Subtitle>();
-
-            if (subtitles.Count == 0)
-                return subtitles;
-
-            for (int k = subtitles.Count - 1; k >= 0; k--)
+            foreach (var subtitle in subtitles)
             {
-                Subtitle subtitle = subtitles[k];
-
-                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
-                {
-                    string line = subtitle.Lines[i];
-
-                    if (IsEmptyLine(line))
-                    {
-                        subtitle.Lines.RemoveAt(i);
-                    }
-                    else if (IsNonSubtitle(line))
-                    {
-                        subtitle.Lines = null;
-                        break;
-                    }
-                }
-
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
-                    subtitles.RemoveAt(k);
+                if (subtitle.SubtitleError.IsSet(SubtitleError.Non_Subtitle))
+                    subtitle.SubtitleError = SubtitleError.Non_Subtitle;
             }
 
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        private static List<Subtitle> IterateSubtitlesPre(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
         {
-            if (subtitles == null)
-                return new List<Subtitle>();
-
-            if (subtitles.Count == 0)
-                return subtitles;
+            if (subtitles.IsNullOrEmpty())
+                return null;
 
             for (int k = subtitles.Count - 1; k >= 0; k--)
             {
                 Subtitle subtitle = subtitles[k];
+                SubtitleError subtitleError = SubtitleError.None;
 
-                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                if (subtitle.Lines.HasAny())
                 {
-                    string line = subtitle.Lines[i];
+                    for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                    {
+                        string line = subtitle.Lines[i];
 
-                    if (IsEmptyLine(line))
-                    {
-                        subtitle.Lines.RemoveAt(i);
-                    }
-                    else if (IsNonSubtitle(line))
-                    {
-                        subtitle.Lines = null;
-                        break;
-                    }
-                    else
-                    {
-                        string cleanLine = (CleanSubtitleLinePre(line, cleanHICaseInsensitive, isPrintCleaning) ?? string.Empty).Trim();
-
-                        if (IsEmptyLine(cleanLine))
+                        subtitleError = SubtitleError.None;
+                        bool isEmpty = string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, isCheckMode, ref subtitleError, isPrintCleaning));
+                        if (isEmpty)
+                        {
                             subtitle.Lines.RemoveAt(i);
+                            if (isCheckMode)
+                                subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                            if (subtitle.Lines.Count == 0)
+                            {
+                                subtitle.Lines = null;
+                                break;
+                            }
+                        }
                         else
-                            subtitle.Lines[i] = cleanLine;
+                        {
+                            subtitleError = SubtitleError.None;
+                            string cleanLine = (CleanLine(line, NonSubtitle, false, isCheckMode, ref subtitleError, isPrintCleaning) ?? string.Empty).Trim();
+                            bool isChanged = (line != cleanLine);
+                            if (isChanged)
+                            {
+                                subtitle.Lines = null;
+                                if (isCheckMode)
+                                    subtitle.SubtitleError |= SubtitleError.Non_Subtitle;
+                                break;
+                            }
+                            else
+                            {
+                                subtitleError = SubtitleError.None;
+                                cleanLine = (CleanLine(line, FindAndReplaceRulesPre, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning) ?? string.Empty).Trim();
+                                isChanged = (line != cleanLine);
+                                if (isChanged)
+                                {
+                                    if (isCheckMode)
+                                        subtitle.SubtitleError |= subtitleError;
+
+                                    if (string.IsNullOrEmpty(cleanLine))
+                                    {
+                                        subtitle.Lines.RemoveAt(i);
+                                        if (subtitle.Lines.Count == 0)
+                                        {
+                                            subtitle.Lines = null;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        subtitle.Lines[i] = cleanLine;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    // if the subtitle is complete without lines
+                    // this is the one and only block it will enter
+                    if (isCheckMode)
+                        subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                }
 
-                subtitle.Lines = CleanSubtitleMultipleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
+                if (subtitle.Lines.HasAny())
+                {
+                    subtitleError = SubtitleError.None;
+                    List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
+                    cleanLines = CleanSubtitleMultipleLinesPre(cleanLines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+                    bool isChanged =
+                        cleanLines == null ||
+                        subtitle.Lines.Count != cleanLines.Count ||
+                        subtitle.Lines.Zip(cleanLines, (l1, l2) => l1 != l2).Any(isLineChanged => isLineChanged);
+                    if (isChanged)
+                    {
+                        if (isCheckMode)
+                            subtitle.SubtitleError |= subtitleError;
 
-                if (subtitle.Lines == null || subtitle.Lines.Count == 0)
-                    subtitles.RemoveAt(k);
+                        if (cleanLines.IsNullOrEmpty())
+                        {
+                            if (isCheckMode)
+                                subtitle.Lines = null;
+                            else
+                                subtitles.RemoveAt(k);
+                        }
+                        else
+                        {
+                            subtitle.Lines = cleanLines;
+                        }
+                    }
+                }
+                else
+                {
+                    if (isCheckMode)
+                        subtitle.Lines = null;
+                    else
+                        subtitles.RemoveAt(k);
+                }
+
+                if (subtitles.Count == 0)
+                    return null;
             }
 
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning, ref bool subtitlesChanged)
+        private static List<Subtitle> IterateSubtitles(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, ref bool subtitlesChanged, ref int lastSubtitleToChange, bool isPrintCleaning)
         {
-            if (subtitles == null)
-                return new List<Subtitle>();
-
-            if (subtitles.Count == 0)
-                return subtitles;
+            if (subtitles.IsNullOrEmpty())
+                return null;
 
             for (int k = subtitles.Count - 1; k >= 0; k--)
             {
                 Subtitle subtitle = subtitles[k];
+                SubtitleError subtitleError = SubtitleError.None;
 
-                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                if (subtitle.Lines.HasAny())
                 {
-                    string line = subtitle.Lines[i];
+                    for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                    {
+                        string line = subtitle.Lines[i];
 
-                    if (IsEmptyLine(line))
-                    {
-                        subtitle.Lines.RemoveAt(i);
-                        subtitlesChanged = true;
-                    }
-                    else if (IsNonSubtitle(line))
-                    {
-                        subtitle.Lines = null;
-                        subtitlesChanged = true;
-                        break;
-                    }
-                    else
-                    {
-                        string cleanLine = (CleanSubtitleLine(line, cleanHICaseInsensitive, isPrintCleaning) ?? string.Empty).Trim();
-
-                        if (IsEmptyLine(cleanLine))
+                        subtitleError = SubtitleError.None;
+                        bool isEmpty = string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, isCheckMode, ref subtitleError, isPrintCleaning));
+                        if (isEmpty)
                         {
                             subtitle.Lines.RemoveAt(i);
                             subtitlesChanged = true;
+                            lastSubtitleToChange = k;
+                            if (isCheckMode)
+                                subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                            if (subtitle.Lines.Count == 0)
+                            {
+                                subtitle.Lines = null;
+                                break;
+                            }
                         }
                         else
                         {
-                            subtitlesChanged = subtitlesChanged || (subtitle.Lines[i] != cleanLine);
-                            subtitle.Lines[i] = cleanLine;
+                            subtitleError = SubtitleError.None;
+                            string cleanLine = (CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning) ?? string.Empty).Trim();
+                            bool isChanged = (line != cleanLine);
+                            if (isChanged)
+                            {
+                                subtitlesChanged = true;
+                                lastSubtitleToChange = k;
+                                if (isCheckMode)
+                                    subtitle.SubtitleError |= subtitleError;
+
+                                if (string.IsNullOrEmpty(cleanLine))
+                                {
+                                    subtitle.Lines.RemoveAt(i);
+                                    if (subtitle.Lines.Count == 0)
+                                    {
+                                        subtitle.Lines = null;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    subtitle.Lines[i] = cleanLine;
+                                }
+                            }
                         }
                     }
                 }
 
-                List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
-                cleanLines = CleanSubtitleMultipleLines(cleanLines, cleanHICaseInsensitive);
-
-                if (cleanLines == null || cleanLines.Count == 0)
+                if (subtitle.Lines.HasAny())
                 {
-                    subtitles.RemoveAt(k);
-                    subtitlesChanged = true;
+                    subtitleError = SubtitleError.None;
+                    List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
+                    cleanLines = CleanSubtitleMultipleLines(cleanLines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+                    bool isChanged =
+                        cleanLines == null ||
+                        subtitle.Lines.Count != cleanLines.Count ||
+                        subtitle.Lines.Zip(cleanLines, (l1, l2) => l1 != l2).Any(isLineChanged => isLineChanged);
+                    if (isChanged)
+                    {
+                        subtitlesChanged = true;
+                        lastSubtitleToChange = k;
+                        if (isCheckMode)
+                            subtitle.SubtitleError |= subtitleError;
+
+                        if (cleanLines.IsNullOrEmpty())
+                        {
+                            if (isCheckMode)
+                                subtitle.Lines = null;
+                            else
+                                subtitles.RemoveAt(k);
+                        }
+                        else
+                        {
+                            subtitle.Lines = cleanLines;
+                        }
+                    }
                 }
                 else
                 {
-                    subtitlesChanged =
-                        subtitlesChanged ||
-                        subtitle.Lines.Count != cleanLines.Count ||
-                        subtitle.Lines.Zip(cleanLines, (l1, l2) => l1 != l2).Any(isLineChanged => isLineChanged);
-
-                    subtitle.Lines = cleanLines;
+                    if (isCheckMode)
+                        subtitle.Lines = null;
+                    else
+                        subtitles.RemoveAt(k);
                 }
+
+                if (subtitles.Count == 0)
+                    return null;
             }
 
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive)
+        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
         {
-            if (subtitles == null)
-                return new List<Subtitle>();
-
-            if (subtitles.Count == 0)
-                return subtitles;
+            if (subtitles.IsNullOrEmpty())
+                return null;
 
             for (int k = subtitles.Count - 1; k >= 0; k--)
             {
                 Subtitle subtitle = subtitles[k];
+                SubtitleError subtitleError = SubtitleError.None;
 
-                for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                if (subtitle.Lines.HasAny())
                 {
-                    string cleanLine = (CleanSubtitleLinePost(subtitle.Lines[i]) ?? string.Empty).Trim();
+                    for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                    {
+                        string line = subtitle.Lines[i];
 
-                    if (IsEmptyLine(cleanLine))
-                        subtitle.Lines.RemoveAt(i);
-                    else
-                        subtitle.Lines[i] = cleanLine;
+                        subtitleError = SubtitleError.None;
+                        bool isEmpty = string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, isCheckMode, ref subtitleError, isPrintCleaning));
+                        if (isEmpty)
+                        {
+                            subtitle.Lines.RemoveAt(i);
+                            if (isCheckMode)
+                                subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                            if (subtitle.Lines.Count == 0)
+                            {
+                                subtitle.Lines = null;
+                                break;
+                            }
+                        }
+                    }
                 }
 
-                subtitle.Lines = CleanSubtitleMultipleLinesPost(subtitle.Lines, cleanHICaseInsensitive);
+                if (subtitle.Lines.HasAny())
+                {
+                    subtitleError = SubtitleError.None;
+                    List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
+                    cleanLines = CleanSubtitleMultipleLinesPost(cleanLines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+                    bool isChanged =
+                        cleanLines == null ||
+                        subtitle.Lines.Count != cleanLines.Count ||
+                        subtitle.Lines.Zip(cleanLines, (l1, l2) => l1 != l2).Any(isLineChanged => isLineChanged);
+                    if (isChanged)
+                    {
+                        if (isCheckMode)
+                            subtitle.SubtitleError |= subtitleError;
+
+                        if (cleanLines.IsNullOrEmpty())
+                        {
+                            if (isCheckMode)
+                                subtitle.Lines = null;
+                            else
+                                subtitles.RemoveAt(k);
+                        }
+                        else
+                        {
+                            subtitle.Lines = cleanLines;
+                        }
+                    }
+                }
+                else
+                {
+                    if (isCheckMode)
+                        subtitle.Lines = null;
+                    else
+                        subtitles.RemoveAt(k);
+                }
+
+                if (subtitles.Count == 0)
+                    return null;
             }
 
             return subtitles;
         }
 
-        public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive)
+        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (subtitles == null)
-                return;
-
-            if (subtitles.Count == 0)
-                return;
-
-            foreach (Subtitle subtitle in subtitles)
-                CheckSubtitle(subtitle, cleanHICaseInsensitive);
-        }
-
-        public static void CheckSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive)
-        {
-            subtitle.SubtitleError = SubtitleError.None;
-
-            if (subtitle.Lines == null || subtitle.Lines.Count == 0)
+            if (string.IsNullOrEmpty(line))
             {
-                subtitle.SubtitleError = SubtitleError.Empty_Line;
-                return;
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
+                return null;
             }
 
-            foreach (string line in subtitle.Lines)
+            int ruleCounter = 0;
+
+            foreach (var rule in rules)
             {
-                if (IsNonSubtitle(line))
+                string cleanLine = rule.CleanLine(line, cleanHICaseInsensitive);
+
+                if (line != cleanLine)
                 {
-                    subtitle.SubtitleError |= SubtitleError.Non_Subtitle;
-                }
-                else if (IsEmptyLine(line))
-                {
-                    subtitle.SubtitleError |= SubtitleError.Empty_Line;
-                }
-                else
-                {
-                    subtitle.SubtitleError |= CheckSubtitleLinePre(line, cleanHICaseInsensitive);
-                    subtitle.SubtitleError |= CheckSubtitleLine(line, cleanHICaseInsensitive);
-                    subtitle.SubtitleError |= CheckSubtitleLinePost(line);
+                    ruleCounter++;
+
+                    if (isPrintCleaning)
+                    {
+                        Console.WriteLine(ruleCounter);
+                        Console.WriteLine("Regex:  " + (cleanHICaseInsensitive ? rule.ToStringCI() : rule.ToString()));
+                        PrintCleaning(line, cleanLine, rule, cleanHICaseInsensitive);
+                    }
+
+                    line = cleanLine;
+
+                    if (isCheckMode)
+                        subtitleError |= rule.SubtitleError;
                 }
             }
 
-            if (subtitle.SubtitleError.IsSet(SubtitleError.Non_Subtitle))
+            if (isPrintCleaning && ruleCounter > 0)
             {
-                subtitle.SubtitleError = SubtitleError.Non_Subtitle;
+                Console.WriteLine("******************************************");
+                Console.WriteLine();
             }
-            else if (subtitle.SubtitleError.IsSet(SubtitleError.Empty_Line))
-            {
-                subtitle.SubtitleError = SubtitleError.Empty_Line;
-            }
-            else
-            {
-                subtitle.SubtitleError |= CheckSubtitleMultipleLinesPre(subtitle.Lines, cleanHICaseInsensitive);
-                subtitle.SubtitleError |= CheckSubtitleMultipleLines(subtitle.Lines, cleanHICaseInsensitive);
-                subtitle.SubtitleError |= CheckSubtitleMultipleLinesPost(subtitle.Lines, cleanHICaseInsensitive);
 
-                if (subtitle.SubtitleError.IsSet(SubtitleError.Non_Subtitle))
-                    subtitle.SubtitleError = SubtitleError.Non_Subtitle;
-                else if (subtitle.SubtitleError.IsSet(SubtitleError.Empty_Line))
-                    subtitle.SubtitleError = SubtitleError.Empty_Line;
-            }
+            return line;
         }
-
-        #region Single Line Pre
-
-        private static string CleanSubtitleLinePre(string line, bool cleanHICaseInsensitive, bool isPrintCleaning)
-        {
-            return CleanLine(line, FindAndReplaceRulesPre, cleanHICaseInsensitive, isPrintCleaning);
-        }
-
-        private static SubtitleError CheckSubtitleLinePre(string line, bool cleanHICaseInsensitive)
-        {
-            SubtitleError subtitleError = SubtitleError.None;
-            CleanLine(line, FindAndReplaceRulesPre, cleanHICaseInsensitive, false, ref subtitleError);
-            return subtitleError;
-        }
-
-        #endregion
 
         #region Multiple Lines Pre
 
-        private static List<string> CleanSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
+        private static List<string> CleanSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
-            /*lines = CleanMissingNewLineMultipleLines(lines, cleanHICaseInsensitive);*/
-            lines = CleanLyricsMultipleLines(lines, cleanHICaseInsensitive);
-            lines = CleanHIPrefixWithoutDialogDash(lines, cleanHICaseInsensitive);
+            /*lines = CleanMissingNewLineMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);*/
+            lines = CleanLyricsMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanHIPrefixWithoutDialogDash(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleMultipleLinesPre(List<string> lines, bool cleanHICaseInsensitive)
+        /*public static readonly Regex regexMissingNewLine = new Regex(@"[!?][A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled);
+
+        public static List<string> CleanMissingNewLineMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
-                return SubtitleError.Empty_Line;
-
-            SubtitleError subtitleError = SubtitleError.None;
-            /*subtitleError = CheckMissingNewLineMultipleLines(lines, cleanHICaseInsensitive, subtitleError);*/
-            subtitleError = CheckLyricsMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckHIPrefixWithoutDialogDash(lines, cleanHICaseInsensitive, subtitleError);
-
-            return subtitleError;
-        }
-
-        public static readonly Regex regexMissingNewLine = new Regex(@"[!?][A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled);
-
-        /*public static List<string> CleanMissingNewLineMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             for (int i = lines.Count - 1; i >= 0; i--)
             {
                 string line = lines[i];
                 if (regexMissingNewLine.IsMatch(line))
                 {
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Missing_New_Line;
+
                     int[] splitIndexes = regexMissingNewLine.Matches(line)
                         .Cast<Match>()
                         .Select(m => m.Index)
@@ -577,24 +720,6 @@ namespace SubtitlesCleanerLibrary
             }
 
             return lines;
-        }
-
-        private static SubtitleError CheckMissingNewLineMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            for (int i = lines.Count - 1; i >= 0; i--)
-            {
-                string line = lines[i];
-                if (regexMissingNewLine.IsMatch(line))
-                {
-                    subtitleError |= SubtitleError.Missing_New_Line;
-                    break;
-                }
-            }
-
-            return subtitleError;
         }*/
 
         public static readonly Regex regexNoteStart = new Regex(@"^(?:-\s*)?(?<Note>♪+)", RegexOptions.Compiled);
@@ -602,10 +727,14 @@ namespace SubtitlesCleanerLibrary
         public static readonly Regex regexQMStart = new Regex(@"^(?:-\s*)?(?<QM>\?+)", RegexOptions.Compiled);
         public static readonly Regex regexQMEnd = new Regex(@"\s+(?<QM>\?+)$", RegexOptions.Compiled);
 
-        public static List<string> CleanLyricsMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
+        public static List<string> CleanLyricsMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count > 1)
             {
@@ -637,15 +766,26 @@ namespace SubtitlesCleanerLibrary
                         if (itemsBetween.All(item => item.isStartsWithNote == false && item.isStartsWithQM == false && item.isEndsWithNote == false && item.isEndsWithQM == false))
                         {
                             if (startItem.isStartsWithQM)
+                            {
                                 lines[startItem.index] = regexQMStart.ReplaceGroup(startItem.line, "QM", "♪");
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Notes_Error;
+                            }
+
                             if (endItem.isEndsWithQM)
+                            {
                                 lines[endItem.index] = regexQMEnd.ReplaceGroup(endItem.line, "QM", "♪");
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Notes_Error;
+                            }
 
                             if (startItem.isStartsWithDash &&
                                 itemsBetween.All(item => item.isStartsWithDash == false) &&
                                 endItem.isStartsWithDash == false)
                             {
                                 lines[startItem.index] = lines[startItem.index].TrimStart('-');
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Notes_Error;
                             }
 
                             startItem = results
@@ -669,84 +809,19 @@ namespace SubtitlesCleanerLibrary
             return lines;
         }
 
-        private static SubtitleError CheckLyricsMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
+        public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-ZÀ-Ý]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefixCI = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-ZÀ-Ý]+[" + HI_CHARS_CI + @"]*:(?!\d\d)\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
+        public static readonly Regex regexHIPrefixWithoutDialogDashCI = new Regex(regexHIPrefixCI.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
 
-            if (lines.Count > 1)
+        public static List<string> CleanHIPrefixWithoutDialogDash(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
             {
-                var results = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-                    isStartsWithNote = regexNoteStart.IsMatch(line),
-                    isEndsWithNote = regexNoteEnd.IsMatch(line),
-                    isStartsWithQM = regexQMStart.IsMatch(line),
-                    isEndsWithQM = regexQMEnd.IsMatch(line),
-                    isStartsWithDash = line.StartsWith("-")
-                }).ToArray();
-
-                // ? start lyrics => ♪ start lyrics
-                // between lyrics
-                // end lyrics ? => end lyrics ♪
-                var startItem = results.FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
-                while (startItem != null)
-                {
-                    bool isStartItemStartsWithDash = startItem.isStartsWithDash;
-                    var endItem = results.Skip(startItem.index + 1).FirstOrDefault(item =>
-                        (item.isStartsWithNote == false && item.isStartsWithQM == false) &&
-                        (item.isEndsWithNote || item.isEndsWithQM) &&
-                        item.isStartsWithDash == isStartItemStartsWithDash);
-                    if (endItem != null)
-                    {
-                        var itemsBetween = results.Skip(startItem.index + 1).Take(endItem.index - startItem.index - 1);
-                        if (itemsBetween.All(item => item.isStartsWithNote == false && item.isStartsWithQM == false && item.isEndsWithNote == false && item.isEndsWithQM == false))
-                        {
-                            if (startItem.isStartsWithQM)
-                            {
-                                subtitleError |= SubtitleError.Notes_Error;
-                                break;
-                            }
-                            if (endItem.isEndsWithQM)
-                            {
-                                subtitleError |= SubtitleError.Notes_Error;
-                                break;
-                            }
-
-                            if (startItem.isStartsWithDash &&
-                                itemsBetween.All(item => item.isStartsWithDash == false) &&
-                                endItem.isStartsWithDash == false)
-                            {
-                                subtitleError |= SubtitleError.Notes_Error;
-                                break;
-                            }
-
-                            startItem = results
-                                .Skip(endItem.index + 1)
-                                .FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
-                        }
-                        else
-                        {
-                            startItem = results
-                                .Skip(endItem.index + 1)
-                                .FirstOrDefault(item => (item.isStartsWithNote || item.isStartsWithQM) && (item.isEndsWithNote == false && item.isEndsWithQM == false));
-                        }
-                    }
-                    else
-                    {
-                        startItem = null;
-                    }
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanHIPrefixWithoutDialogDash(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count > 1)
             {
@@ -767,100 +842,52 @@ namespace SubtitlesCleanerLibrary
                             lines[item.index] = (match.Groups["Prefix"].Value + " - " + match.Groups["Subtitle"].Value).Trim();
                         }
                     }
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Hearing_Impaired;
                 }
             }
 
             return lines;
-        }
-
-        private static SubtitleError CheckHIPrefixWithoutDialogDash(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count > 1)
-            {
-                var results = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
-                }).ToArray();
-
-                if (results.Count(x => x.isMatchHIPrefix) > 1)
-                {
-                    subtitleError |= SubtitleError.Hearing_Impaired;
-                }
-            }
-
-            return subtitleError;
-        }
-
-        #endregion
-
-        #region Single Line
-
-        private static string CleanSubtitleLine(string line, bool cleanHICaseInsensitive, bool isPrintCleaning)
-        {
-            return CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, isPrintCleaning);
-        }
-
-        private static SubtitleError CheckSubtitleLine(string line, bool cleanHICaseInsensitive)
-        {
-            SubtitleError subtitleError = SubtitleError.None;
-            CleanLine(line, FindAndReplaceRules, cleanHICaseInsensitive, false, ref subtitleError);
-            return subtitleError;
         }
 
         #endregion
 
         #region Multiple Lines
 
-        private static List<string> CleanSubtitleMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
+        private static List<string> CleanSubtitleMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
-            lines = CleanMergedLinesWithHIToSingleLine(lines, cleanHICaseInsensitive);
-            lines = CleanHearingImpairedMultipleLines(lines, cleanHICaseInsensitive);
-            lines = CleanItalicsThreeLines(lines, cleanHICaseInsensitive);
-            lines = CleanItalicsTwoLines(lines, cleanHICaseInsensitive);
-            lines = CleanDialogSingleLine(lines, cleanHICaseInsensitive);
-            lines = CleanHIPrefixSingleLine(lines, cleanHICaseInsensitive);
-            lines = CleanHIPrefixMultipleLines(lines, cleanHICaseInsensitive);
-            lines = CleanDialogMultipleLines(lines, cleanHICaseInsensitive);
-            lines = CleanNotesMultipleLines(lines, cleanHICaseInsensitive);
-            lines = CleanStartWithPunctuationSingleLine(lines, cleanHICaseInsensitive);
+            lines = CleanMergedLinesWithHIToSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanHearingImpairedMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanItalicsThreeLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanItalicsTwoLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanDialogSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanHIPrefixSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanHIPrefixMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanDialogMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanNotesMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanStartWithPunctuationSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
-                return SubtitleError.Empty_Line;
-
-            SubtitleError subtitleError = SubtitleError.None;
-            subtitleError = CheckMergedLinesWithHIToSingleLine(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckHearingImpairedMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckItalicsThreeLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckItalicsTwoLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckDialogSingleLine(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckHIPrefixSingleLine(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckHIPrefixMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckDialogMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckNotesMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckStartWithPunctuationSingleLine(lines, cleanHICaseInsensitive, subtitleError);
-
-            return subtitleError;
-        }
-
         public static readonly Regex regexMergedLinesWithHI = new Regex(@"(?<Line1>^-[^-]+)(?<Line2><i>-.*?</i>$)");
 
-        public static List<string> CleanMergedLinesWithHIToSingleLine(List<string> lines, bool cleanHICaseInsensitive)
+        public static List<string> CleanMergedLinesWithHIToSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count == 1)
             {
@@ -875,32 +902,30 @@ namespace SubtitlesCleanerLibrary
                     string line2 = match.Groups["Line2"].Value;
                     lines[0] = line1;
                     lines.Add(line2);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Hearing_Impaired;
                 }
             }
 
             return lines;
         }
 
-        private static SubtitleError CheckMergedLinesWithHIToSingleLine(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
+        // start (: ^ <i>? ♪? ( anything except () $
+        //   end ): ^ anything except () ) ♪? <i>? $
+        public static readonly Regex regexHI1Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\([^\(\)]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\[[^\[\]]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\]\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
 
-            if (lines.Count == 1)
+        public static List<string> CleanHearingImpairedMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
             {
-                if (regexMergedLinesWithHI.IsMatch(lines[0]))
-                {
-                    subtitleError |= SubtitleError.Hearing_Impaired;
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanHearingImpairedMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count > 1)
             {
@@ -910,10 +935,12 @@ namespace SubtitlesCleanerLibrary
                 // first line starts with (
                 // last line ends with )
                 // lines between don't have ()
-                if (IsHearingImpairedMultipleLines_RoundBrackets(firstLine, lastLine))
+                if (regexHI1Start.IsMatch(firstLine) && regexHI1End.IsMatch(lastLine))
                 {
                     if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("(") || line.Contains(")")) == false)
                     {
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Hearing_Impaired;
                         return null;
                     }
                 }
@@ -921,10 +948,12 @@ namespace SubtitlesCleanerLibrary
                 // first line starts with [
                 // last line ends with ]
                 // lines between don't have []
-                if (IsHearingImpairedMultipleLines_SquareBrackets(firstLine, lastLine))
+                if (regexHI2Start.IsMatch(firstLine) && regexHI2End.IsMatch(lastLine))
                 {
                     if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("[") || line.Contains("]")) == false)
                     {
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Hearing_Impaired;
                         return null;
                     }
                 }
@@ -935,11 +964,15 @@ namespace SubtitlesCleanerLibrary
                     string line1 = lines[i - 1];
                     string line2 = lines[i];
 
-                    if (IsHearingImpairedMultipleLines(line1, line2))
+                    if ((regexHI1Start.IsMatch(line1) && regexHI1End.IsMatch(line2)) ||
+                        (regexHI2Start.IsMatch(line1) && regexHI2End.IsMatch(line2)))
                     {
                         lines.RemoveAt(i);
                         lines.RemoveAt(i - 1);
                         i--;
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Hearing_Impaired;
                     }
                 }
             }
@@ -947,52 +980,14 @@ namespace SubtitlesCleanerLibrary
             return lines;
         }
 
-        private static SubtitleError CheckHearingImpairedMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanItalicsThreeLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count > 1)
+            if (lines.IsNullOrEmpty())
             {
-                string firstLine = lines[0];
-                string lastLine = lines[lines.Count - 1];
-
-                if (IsHearingImpairedMultipleLines_RoundBrackets(firstLine, lastLine))
-                {
-                    if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("(") || line.Contains(")")) == false)
-                    {
-                        subtitleError |= SubtitleError.Hearing_Impaired;
-                    }
-                }
-
-                if (IsHearingImpairedMultipleLines_SquareBrackets(firstLine, lastLine))
-                {
-                    if (lines.Skip(1).Take(lines.Count - 2).Any(line => line.Contains("[") || line.Contains("]")) == false)
-                    {
-                        subtitleError |= SubtitleError.Hearing_Impaired;
-                    }
-                }
-
-                for (int i = 1; i < lines.Count; i++)
-                {
-                    string line1 = lines[i - 1];
-                    string line2 = lines[i];
-
-                    if (IsHearingImpairedMultipleLines(line1, line2))
-                    {
-                        subtitleError |= SubtitleError.Hearing_Impaired;
-                        break;
-                    }
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanItalicsThreeLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count == 3)
             {
@@ -1012,6 +1007,9 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[1] = "<i>- " + line2;
                     lines.RemoveAt(0);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 // Line 1: <i>
                 // Line 2: Text 2
@@ -1025,6 +1023,9 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 // Line 1: - <i>
                 // Line 2: - Text 2
@@ -1038,6 +1039,9 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 // Line 1: <i>Text 1
                 // Line 2: Text 2
@@ -1052,56 +1056,23 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[1] = lines[1] + "</i>";
                     lines[2] = lines[2].Substring(4);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
             }
 
             return lines;
         }
 
-        private static SubtitleError CheckItalicsThreeLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanItalicsTwoLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count == 3)
+            if (lines.IsNullOrEmpty())
             {
-                string line1 = lines[0];
-                string line2 = lines[1];
-                string line3 = lines[2];
-
-                if (line1 == "<i>-" &&
-                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
-                    line3.StartsWith("- ") && line3.EndsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-                else if (line1 == "<i>" &&
-                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
-                    line3.StartsWith("<i>") == false && line3.EndsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-                else if (line1 == "- <i>" &&
-                    line2.StartsWith("- ") && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
-                    line3.StartsWith("- ") && line3.EndsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false &&
-                    line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
-                    line3.StartsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanItalicsTwoLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count == 2)
             {
@@ -1116,6 +1087,9 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[1] = "<i>" + line2.Substring(2);
                     lines.RemoveAt(0);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 // Line 1: <i>
                 // Line 2: Text</i>
@@ -1125,6 +1099,9 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 // Line 1: - <i>
                 // Line 2: - Text</i>
@@ -1134,6 +1111,9 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[1] = "<i>" + line2.Substring(2);
                     lines.RemoveAt(0);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 // Line 1: <i>Text 1
                 // Line 2: </i>
@@ -1143,6 +1123,9 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[0] = lines[0] + "</i>";
                     lines.RemoveAt(1);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
                 // Line 1: <i>Text 1
                 // Line 2: </i>Text 2
@@ -1153,51 +1136,23 @@ namespace SubtitlesCleanerLibrary
                 {
                     lines[0] = lines[0] + "</i>";
                     lines[1] = lines[1].Substring(4);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Redundant_Spaces;
                 }
             }
 
             return lines;
         }
 
-        private static SubtitleError CheckItalicsTwoLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanDialogSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count == 2)
+            if (lines.IsNullOrEmpty())
             {
-                string line1 = lines[0];
-                string line2 = lines[1];
-
-                if (line1 == "<i>-" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-                else if (line1 == "<i>" && line2.StartsWith("<i>") == false && line2.EndsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-                else if (line1 == "- <i>" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2 == "</i>")
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-                else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2.StartsWith("</i>"))
-                {
-                    subtitleError |= SubtitleError.Redundant_Spaces;
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanDialogSingleLine(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count == 1)
             {
@@ -1205,48 +1160,30 @@ namespace SubtitlesCleanerLibrary
                 {
                     Match match = regexDialog.Match(lines[0]);
                     lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dialog_Error;
                 }
 
-                if (lines[0] == "-")
+                if (lines[0] == "-" || lines[0] == "<i>" || lines[0] == "</i>")
+                {
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Empty_Line;
                     return null;
-
-                if (lines[0] == "<i>")
-                    return null;
-
-                if (lines[0] == "</i>")
-                    return null;
+                }
             }
 
             return lines;
         }
 
-        private static SubtitleError CheckDialogSingleLine(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanHIPrefixSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count == 1)
+            if (lines.IsNullOrEmpty())
             {
-                if (regexDialog.IsMatch(lines[0]))
-                    subtitleError |= SubtitleError.Dialog_Error;
-
-                if (lines[0] == "-")
-                    return SubtitleError.Empty_Line;
-
-                if (lines[0] == "<i>")
-                    return SubtitleError.Empty_Line;
-
-                if (lines[0] == "</i>")
-                    return SubtitleError.Empty_Line;
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanHIPrefixSingleLine(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count == 1)
             {
@@ -1254,99 +1191,49 @@ namespace SubtitlesCleanerLibrary
                 {
                     Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     lines[0] = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
-                }
 
-                if (lines[0] == "-")
-                    return null;
-
-                if (lines[0] == "<i>")
-                    return null;
-
-                if (lines[0] == "</i>")
-                    return null;
-            }
-
-            return lines;
-        }
-
-        private static SubtitleError CheckHIPrefixSingleLine(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count == 1)
-            {
-                if ((cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(lines[0]))
-                    subtitleError |= SubtitleError.Hearing_Impaired;
-
-                if (lines[0] == "-")
-                    return SubtitleError.Empty_Line;
-
-                if (lines[0] == "<i>")
-                    return SubtitleError.Empty_Line;
-
-                if (lines[0] == "</i>")
-                    return SubtitleError.Empty_Line;
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanHIPrefixMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
-                return null;
-
-            if (lines.Count > 1)
-            {
-                var resultsHIPrefix = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
-                }).ToArray();
-
-                if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
-                {
-                    Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
-                    lines[0] = match.Groups["Subtitle"].Value;
-                }
-                else if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
-                {
-                    foreach (var item in resultsHIPrefix)
-                    {
-                        if (item.isMatchHIPrefix)
-                        {
-                            Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[item.index]);
-                            lines[item.index] = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
-                        }
-                    }
-                }
-            }
-
-            return lines;
-        }
-
-        private static SubtitleError CheckHIPrefixMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count > 1)
-            {
-                var resultsHIPrefix = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
-                }).ToArray();
-
-                if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
-                {
-                    Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
-                    if (lines[0] != match.Groups["Subtitle"].Value)
+                    if (isCheckMode)
                         subtitleError |= SubtitleError.Hearing_Impaired;
                 }
+
+                if (lines[0] == "-" || lines[0] == "<i>" || lines[0] == "</i>")
+                {
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Empty_Line;
+                    return null;
+                }
+            }
+
+            return lines;
+        }
+
+        public static List<string> CleanHIPrefixMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
+                return null;
+            }
+
+            if (lines.Count > 1)
+            {
+                var resultsHIPrefix = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
+                }).ToArray();
+
+                if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
+                {
+                    Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
+                    string newLine = match.Groups["Subtitle"].Value;
+                    if (lines[0] != newLine)
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Hearing_Impaired;
+                    lines[0] = newLine;
+                }
                 else if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
                 {
                     foreach (var item in resultsHIPrefix)
@@ -1354,17 +1241,17 @@ namespace SubtitlesCleanerLibrary
                         if (item.isMatchHIPrefix)
                         {
                             Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[item.index]);
-                            if (lines[item.index] != match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value)
-                            {
-                                subtitleError |= SubtitleError.Hearing_Impaired;
-                                break;
-                            }
+                            string newLine = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[item.index] != newLine)
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Hearing_Impaired;
+                            lines[item.index] = newLine;
                         }
                     }
                 }
             }
 
-            return subtitleError;
+            return lines;
         }
 
         public static readonly Regex regexDialog = new Regex(@"^(?<Italic><i>)?-\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
@@ -1373,10 +1260,14 @@ namespace SubtitlesCleanerLibrary
         public static readonly Regex regexCapitalLetter = new Regex(@"[A-ZÀ-Ý]", RegexOptions.Compiled);
         public static readonly Regex regexLowerLetter = new Regex(@"[a-zà-ÿ]", RegexOptions.Compiled);
 
-        public static List<string> CleanDialogMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
+        public static List<string> CleanDialogMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count > 1)
             {
@@ -1406,6 +1297,9 @@ namespace SubtitlesCleanerLibrary
                     lines[0] = "- " + lines[0];
                     // - ...line 1
                     // - Line 2
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
@@ -1414,6 +1308,9 @@ namespace SubtitlesCleanerLibrary
                     lines[0] = "- " + lines[0];
                     // - ♪ Line 1
                     // - Line 2
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
@@ -1422,6 +1319,9 @@ namespace SubtitlesCleanerLibrary
                     lines[0] = "<i>- " + lines[0].Substring(3);
                     // <i>- ...line 1
                     // - Line 2
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
                 {
@@ -1431,6 +1331,9 @@ namespace SubtitlesCleanerLibrary
                         lines[i] = "- " + lines[i];
                     // - Line 1
                     // - ...line 2
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
                 {
@@ -1440,6 +1343,9 @@ namespace SubtitlesCleanerLibrary
                         lines[i] = "- " + lines[i];
                     // - Line 1
                     // - ♪ Line 2
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
@@ -1470,7 +1376,11 @@ namespace SubtitlesCleanerLibrary
                             // - Line 1,
                             // I'll Line 2
                             Match match = regexDialog.Match(lines[0]);
-                            lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[0] != newLine)
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            lines[0] = newLine;
                             // Line 1,
                             // I'll Line 2
                         }
@@ -1481,7 +1391,11 @@ namespace SubtitlesCleanerLibrary
                             // - Line 1 end with lower case letter
                             // I'll Line 2
                             Match match = regexDialog.Match(lines[0]);
-                            lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[0] != newLine)
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            lines[0] = newLine;
                             // Line 1 end with lower case letter
                             // I'll Line 2
                         }
@@ -1492,6 +1406,9 @@ namespace SubtitlesCleanerLibrary
                             lines[1] = "- " + lines[1];
                             // - Line 1
                             // - Line 2
+
+                            if (isCheckMode)
+                                subtitleError |= SubtitleError.Dialog_Error;
                         }
                     }
                     else
@@ -1509,7 +1426,11 @@ namespace SubtitlesCleanerLibrary
                             // - Line 1
                             // line 2
                             Match match = regexDialog.Match(lines[0]);
-                            lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[0] != newLine)
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            lines[0] = newLine;
                             // Line 1
                             // line 2
                         }
@@ -1537,6 +1458,9 @@ namespace SubtitlesCleanerLibrary
                         lines[0] = (isStartsWithItalics ? "<i>" : string.Empty) + "- " + line0;
                         // - line 1.
                         // - Line 2
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Dialog_Error;
                     }
                     else if (regexCapitalLetter.IsMatch(firstCharFirstLine))
                     {
@@ -1545,13 +1469,20 @@ namespace SubtitlesCleanerLibrary
                         lines[0] = (isStartsWithItalics ? "<i>" : string.Empty) + "- " + line0;
                         // - Line 1
                         // - Line 2
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Dialog_Error;
                     }
                     else
                     {
                         // Line 1
                         // - line 2
                         Match match = regexDialog.Match(lines[1]);
-                        lines[1] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                        string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                        if (lines[1] != newLine)
+                            if (isCheckMode)
+                                subtitleError |= SubtitleError.Dialog_Error;
+                        lines[1] = newLine;
                         // Line 1
                         // line 2
                     }
@@ -1563,7 +1494,11 @@ namespace SubtitlesCleanerLibrary
                         if (item.isMatchDialog)
                         {
                             Match match = regexDialog.Match(lines[item.index]);
-                            lines[item.index] = match.Groups["Italic"].Value + "- " + match.Groups["Subtitle"].Value;
+                            string newLine = match.Groups["Italic"].Value + "- " + match.Groups["Subtitle"].Value;
+                            if (lines[item.index] != newLine)
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            lines[item.index] = newLine;
                         }
                     }
                 }
@@ -1572,161 +1507,14 @@ namespace SubtitlesCleanerLibrary
             return lines;
         }
 
-        private static SubtitleError CheckDialogMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanNotesMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count > 1)
+            if (lines.IsNullOrEmpty())
             {
-                var resultsDialog = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-                    isMatchDialog = regexDialog.IsMatch(line),
-                    isContainsDialog_CapitalLetter = regexContainsDialog.IsMatch(line),
-                    isStartsWithDots = line.StartsWith("..."),
-                    isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
-                    isStartsWithI = line.StartsWith("I "),
-                    isStartsWithContractionI = line.StartsWith("I'"),
-                    isStartsWithNote = line.StartsWith("♪"),
-                    isEndsWithDots = line.EndsWith("..."),
-                    isEndsWithComma = line.EndsWith(","),
-                    isEndsWithPeriod = line.EndsWith("."),
-                    isEndsWithQuestionMark = line.EndsWith("?"),
-                    isEndsWithExclamationMark = line.EndsWith("!"),
-                    isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
-                }).ToArray();
-
-                if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
-                {
-                    subtitleError |= SubtitleError.Dialog_Error;
-                }
-                else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isMatchDialog))
-                {
-                    subtitleError |= SubtitleError.Dialog_Error;
-                }
-                else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isMatchDialog))
-                {
-                    subtitleError |= SubtitleError.Dialog_Error;
-                }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
-                {
-                    subtitleError |= SubtitleError.Dialog_Error;
-                }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
-                {
-                    subtitleError |= SubtitleError.Dialog_Error;
-                }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
-                {
-                    string firstCharSecondLine = (lines[1].Length > 0 ? lines[1][0].ToString() : string.Empty);
-
-                    if (regexCapitalLetter.IsMatch(firstCharSecondLine))
-                    {
-                        if (resultsDialog[0].isMatchDialog &&
-                            resultsDialog[0].isContainsDialog_CapitalLetter &&
-                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
-                        {
-                            // do nothing
-                        }
-                        else if (resultsDialog[0].isMatchDialog &&
-                            resultsDialog[0].isContainsDialog_CapitalLetter &&
-                            resultsDialog[0].isEndsWithDots)
-                        {
-                            // do nothing
-                        }
-                        else if (resultsDialog[0].isMatchDialog &&
-                            resultsDialog[0].isEndsWithComma &&
-                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
-                        {
-                            Match match = regexDialog.Match(lines[0]);
-                            if (lines[0] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
-                                subtitleError |= SubtitleError.Dialog_Error;
-                        }
-                        else if (resultsDialog[0].isMatchDialog &&
-                            resultsDialog[0].isEndsWithLowerCaseLetter &&
-                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
-                        {
-                            Match match = regexDialog.Match(lines[0]);
-                            if (lines[0] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
-                                subtitleError |= SubtitleError.Dialog_Error;
-                        }
-                        else
-                        {
-                            subtitleError |= SubtitleError.Dialog_Error;
-                        }
-                    }
-                    else
-                    {
-                        if (resultsDialog[0].isMatchDialog &&
-                            resultsDialog[0].isContainsDialog_CapitalLetter &&
-                            resultsDialog[1].isMatchDialog == false)
-                        {
-                            // do nothing
-                        }
-                        else
-                        {
-                            Match match = regexDialog.Match(lines[0]);
-                            if (lines[0] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
-                                subtitleError |= SubtitleError.Dialog_Error;
-                        }
-                    }
-                }
-                else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
-                {
-                    bool isStartsWithItalics = false;
-                    string line0 = lines[0];
-                    if (isStartsWithItalics = line0.StartsWith("<i>"))
-                        line0 = line0.Substring(3);
-
-                    string firstCharFirstLine = (lines[0].Length > 0 ? lines[0][0].ToString() : string.Empty);
-                    if (isStartsWithItalics)
-                        firstCharFirstLine = (lines[0].Length > 3 ? lines[0][3].ToString() : string.Empty);
-
-                    if (regexLowerLetter.IsMatch(firstCharFirstLine) && (
-                        resultsDialog[0].isEndsWithDots ||
-                        resultsDialog[0].isEndsWithPeriod ||
-                        resultsDialog[0].isEndsWithQuestionMark ||
-                        resultsDialog[0].isEndsWithExclamationMark))
-                    {
-                        subtitleError |= SubtitleError.Dialog_Error;
-                    }
-                    else if (regexCapitalLetter.IsMatch(firstCharFirstLine))
-                    {
-                        subtitleError |= SubtitleError.Dialog_Error;
-                    }
-                    else
-                    {
-                        Match match = regexDialog.Match(lines[1]);
-                        if (lines[1] != match.Groups["Italic"].Value + match.Groups["Subtitle"].Value)
-                            subtitleError |= SubtitleError.Dialog_Error;
-                    }
-                }
-                else if (resultsDialog.Count(x => x.isMatchDialog) > 1)
-                {
-                    foreach (var item in resultsDialog)
-                    {
-                        if (item.isMatchDialog)
-                        {
-                            Match match = regexDialog.Match(lines[item.index]);
-                            if (lines[item.index] != match.Groups["Italic"].Value + "- " + match.Groups["Subtitle"].Value)
-                            {
-                                subtitleError |= SubtitleError.Dialog_Error;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanNotesMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count > 1)
             {
@@ -2120,329 +1908,28 @@ namespace SubtitlesCleanerLibrary
                     else if (item.isEndsWithI4)
                         lines[index] = lines[index].Substring(0, lines[index].Length - 6) + "</i> ♪";
                 }
-            }
-
-            return lines;
-        }
-
-        private static SubtitleError CheckNotesMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count > 1)
-            {
-                var resultsNotes = lines.Select((line, index) => new
-                {
-                    line,
-                    index,
-
-                    isStartsWithNote1 = line.StartsWith("♪"),
-                    isStartsWithNote2 = line.StartsWith("-♪"),
-                    isStartsWithNote3 = line.StartsWith("- ♪"),
-                    isStartsWithNote4 = line.StartsWith("<i>♪"),
-                    isStartsWithNote5 = line.StartsWith("<i>-♪"),
-                    isStartsWithNote6 = line.StartsWith("<i>- ♪"),
-                    isStartsWithNote7 = line.StartsWith("-<i>♪"),
-                    isStartsWithNote8 = line.StartsWith("- <i>♪"),
-
-                    isEndsWithNote1 = line.EndsWith("♪"),
-                    isEndsWithNote2 = line.EndsWith("♪</i>"),
-                    isEndsWithNote3 = line.EndsWith("</i>♪"),
-                    isEndsWithNote4 = line.EndsWith("</i> ♪"),
-
-                    isStartsWithAmpersand1 = line.StartsWith("&"),
-                    isStartsWithAmpersand2 = line.StartsWith("-&"),
-                    isStartsWithAmpersand3 = line.StartsWith("- &"),
-                    isStartsWithAmpersand4 = line.StartsWith("<i>&"),
-                    isStartsWithAmpersand5 = line.StartsWith("<i>-&"),
-                    isStartsWithAmpersand6 = line.StartsWith("<i>- &"),
-                    isStartsWithAmpersand7 = line.StartsWith("-<i>&"),
-                    isStartsWithAmpersand8 = line.StartsWith("- <i>&"),
-
-                    isEndsWithAmpersand1 = line.EndsWith("&"),
-                    isEndsWithAmpersand2 = line.EndsWith("&</i>"),
-                    isEndsWithAmpersand3 = line.EndsWith("</i>&"),
-                    isEndsWithAmpersand4 = line.EndsWith("</i> &"),
-
-                    isStartsWithI1 = line.StartsWith("I "),
-                    isStartsWithI2 = line.StartsWith("-I "),
-                    isStartsWithI3 = line.StartsWith("- I "),
-                    isStartsWithI4 = line.StartsWith("<i>I "),
-                    isStartsWithI5 = line.StartsWith("<i>-I "),
-                    isStartsWithI6 = line.StartsWith("<i>- I "),
-                    isStartsWithI7 = line.StartsWith("-<i>I "),
-                    isStartsWithI8 = line.StartsWith("- <i>I "),
-
-                    isEndsWithI1 = line.EndsWith(" I"),
-                    isEndsWithI2 = line.EndsWith(" I</i>"),
-                    isEndsWithI3 = line.EndsWith(" </i>I"),
-                    isEndsWithI4 = line.EndsWith("</i> I")
-                }).Select(x => new
-                {
-                    x.line,
-                    x.index,
-
-                    x.isStartsWithNote1,
-                    x.isStartsWithNote2,
-                    x.isStartsWithNote3,
-                    x.isStartsWithNote4,
-                    x.isStartsWithNote5,
-                    x.isStartsWithNote6,
-                    x.isStartsWithNote7,
-                    x.isStartsWithNote8,
-                    isStartsWithNote =
-                        x.isStartsWithNote1 ||
-                        x.isStartsWithNote2 ||
-                        x.isStartsWithNote3 ||
-                        x.isStartsWithNote4 ||
-                        x.isStartsWithNote5 ||
-                        x.isStartsWithNote6 ||
-                        x.isStartsWithNote7 ||
-                        x.isStartsWithNote8,
-
-                    x.isEndsWithNote1,
-                    x.isEndsWithNote2,
-                    x.isEndsWithNote3,
-                    x.isEndsWithNote4,
-                    isEndsWithNote =
-                        x.isEndsWithNote1 ||
-                        x.isEndsWithNote2 ||
-                        x.isEndsWithNote3 ||
-                        x.isEndsWithNote4,
-
-                    x.isStartsWithAmpersand1,
-                    x.isStartsWithAmpersand2,
-                    x.isStartsWithAmpersand3,
-                    x.isStartsWithAmpersand4,
-                    x.isStartsWithAmpersand5,
-                    x.isStartsWithAmpersand6,
-                    x.isStartsWithAmpersand7,
-                    x.isStartsWithAmpersand8,
-                    isStartsWithAmpersand =
-                        x.isStartsWithAmpersand1 ||
-                        x.isStartsWithAmpersand2 ||
-                        x.isStartsWithAmpersand3 ||
-                        x.isStartsWithAmpersand4 ||
-                        x.isStartsWithAmpersand5 ||
-                        x.isStartsWithAmpersand6 ||
-                        x.isStartsWithAmpersand7 ||
-                        x.isStartsWithAmpersand8,
-
-                    x.isEndsWithAmpersand1,
-                    x.isEndsWithAmpersand2,
-                    x.isEndsWithAmpersand3,
-                    x.isEndsWithAmpersand4,
-                    isEndsWithAmpersand =
-                        x.isEndsWithAmpersand1 ||
-                        x.isEndsWithAmpersand2 ||
-                        x.isEndsWithAmpersand3 ||
-                        x.isEndsWithAmpersand4,
-
-                    x.isStartsWithI1,
-                    x.isStartsWithI2,
-                    x.isStartsWithI3,
-                    x.isStartsWithI4,
-                    x.isStartsWithI5,
-                    x.isStartsWithI6,
-                    x.isStartsWithI7,
-                    x.isStartsWithI8,
-                    isStartsWithI =
-                        x.isStartsWithI1 ||
-                        x.isStartsWithI2 ||
-                        x.isStartsWithI3 ||
-                        x.isStartsWithI4 ||
-                        x.isStartsWithI5 ||
-                        x.isStartsWithI6 ||
-                        x.isStartsWithI7 ||
-                        x.isStartsWithI8,
-
-                    x.isEndsWithI1,
-                    x.isEndsWithI2,
-                    x.isEndsWithI3,
-                    x.isEndsWithI4,
-                    isEndsWithI =
-                        x.isEndsWithI1 ||
-                        x.isEndsWithI2 ||
-                        x.isEndsWithI3 ||
-                        x.isEndsWithI4
-                }).Select(x => new
-                {
-                    x.line,
-                    x.index,
-
-                    x.isStartsWithNote1,
-                    x.isStartsWithNote2,
-                    x.isStartsWithNote3,
-                    x.isStartsWithNote4,
-                    x.isStartsWithNote5,
-                    x.isStartsWithNote6,
-                    x.isStartsWithNote7,
-                    x.isStartsWithNote8,
-                    x.isStartsWithNote,
-
-                    x.isEndsWithNote1,
-                    x.isEndsWithNote2,
-                    x.isEndsWithNote3,
-                    x.isEndsWithNote4,
-                    x.isEndsWithNote,
-
-                    x.isStartsWithAmpersand1,
-                    x.isStartsWithAmpersand2,
-                    x.isStartsWithAmpersand3,
-                    x.isStartsWithAmpersand4,
-                    x.isStartsWithAmpersand5,
-                    x.isStartsWithAmpersand6,
-                    x.isStartsWithAmpersand7,
-                    x.isStartsWithAmpersand8,
-                    x.isStartsWithAmpersand,
-
-                    x.isEndsWithAmpersand1,
-                    x.isEndsWithAmpersand2,
-                    x.isEndsWithAmpersand3,
-                    x.isEndsWithAmpersand4,
-                    x.isEndsWithAmpersand,
-
-                    x.isStartsWithI1,
-                    x.isStartsWithI2,
-                    x.isStartsWithI3,
-                    x.isStartsWithI4,
-                    x.isStartsWithI5,
-                    x.isStartsWithI6,
-                    x.isStartsWithI7,
-                    x.isStartsWithI8,
-                    x.isStartsWithI,
-
-                    x.isEndsWithI1,
-                    x.isEndsWithI2,
-                    x.isEndsWithI3,
-                    x.isEndsWithI4,
-                    x.isEndsWithI,
-
-                    // ♪ Line
-                    isStartsWithAndNotEndWithNote =
-                        x.isStartsWithNote &&
-                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
-                    //   Line ♪
-                    isNotStartWithAndEndsWithNote =
-                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
-                        x.isEndsWithNote,
-
-                    // & Line
-                    isStartsWithAndNotEndWithAmpersand =
-                        x.isStartsWithAmpersand &&
-                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
-                    //   Line &
-                    isNotStartWithAndEndsWithAmpersand =
-                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
-                        x.isEndsWithAmpersand,
-
-                    // I Line
-                    isStartsWithAndNotEndWithI =
-                        x.isStartsWithI &&
-                        x.isEndsWithNote == false && x.isEndsWithAmpersand == false && x.isEndsWithI == false,
-                    //   Line I
-                    isNotStartWithAndEndsWithI =
-                        x.isStartsWithNote == false && x.isStartsWithAmpersand == false && x.isStartsWithI == false &&
-                        x.isEndsWithI,
-
-                    isRegularLine =
-                        x.isStartsWithNote == false && x.isEndsWithNote == false &&
-                        x.isStartsWithAmpersand == false && x.isEndsWithAmpersand == false &&
-                        x.isStartsWithI == false && x.isEndsWithI == false
-                }).ToArray();
-
-                List<int> startsWithAmpersand = new List<int>();
-                List<int> startsWithI = new List<int>();
-                List<int> endsWithAmpersand = new List<int>();
-                List<int> endsWithI = new List<int>();
-
-                for (int i = 0; i < resultsNotes.Length; i++)
-                {
-                    // ♪ Line1
-                    //   Line2
-                    //   Line3 &/I
-                    if (resultsNotes[i].isStartsWithAndNotEndWithNote)
-                    {
-                        for (int j = i + 1; j < resultsNotes.Length; j++)
-                        {
-                            if (resultsNotes[j].isNotStartWithAndEndsWithAmpersand)
-                            {
-                                endsWithAmpersand.Add(j);
-                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
-                                break;
-                            }
-                            else if (resultsNotes[j].isNotStartWithAndEndsWithI)
-                            {
-                                endsWithI.Add(j);
-                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
-                                break;
-                            }
-                            else if (resultsNotes[j].isRegularLine == false)
-                            {
-                                i = j - 1; // -1 is to counter the i++
-                                break;
-                            }
-                        }
-                    }
-                    // & Line1
-                    //   Line2
-                    //   Line3 ♪
-                    else if (resultsNotes[i].isStartsWithAndNotEndWithAmpersand)
-                    {
-                        for (int j = i + 1; j < resultsNotes.Length; j++)
-                        {
-                            if (resultsNotes[j].isNotStartWithAndEndsWithNote)
-                            {
-                                startsWithAmpersand.Add(i);
-                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
-                                break;
-                            }
-                            else if (resultsNotes[j].isRegularLine == false)
-                            {
-                                i = j - 1; // -1 is to counter the i++
-                                break;
-                            }
-                        }
-                    }
-                    // I Line1
-                    //   Line2
-                    //   Line3 ♪
-                    else if (resultsNotes[i].isStartsWithAndNotEndWithI)
-                    {
-                        for (int j = i + 1; j < resultsNotes.Length; j++)
-                        {
-                            if (resultsNotes[j].isNotStartWithAndEndsWithNote)
-                            {
-                                startsWithI.Add(i);
-                                i = j; // j + 1 - 1, +1 is for the next line, -1 is to counter the i++
-                                break;
-                            }
-                            else if (resultsNotes[j].isRegularLine == false)
-                            {
-                                i = j - 1; // -1 is to counter the i++
-                                break;
-                            }
-                        }
-                    }
-                }
 
                 if (startsWithAmpersand.Count > 0 ||
                     startsWithI.Count > 0 ||
                     endsWithAmpersand.Count > 0 ||
                     endsWithI.Count > 0)
                 {
-                    subtitleError |= SubtitleError.Notes_Error;
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Notes_Error;
                 }
             }
 
-            return subtitleError;
+            return lines;
         }
 
-        public static List<string> CleanStartWithPunctuationSingleLine(List<string> lines, bool cleanHICaseInsensitive)
+        public static List<string> CleanStartWithPunctuationSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count == 1)
             {
@@ -2457,94 +1944,46 @@ namespace SubtitlesCleanerLibrary
                         lines.Clear();
                         lines.Add("- " + line.Substring(0, index + 1));
                         lines.Add(line.Substring(index + 2));
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Dialog_Error;
                     }
                 }
             }
 
             return lines;
-        }
-
-        private static SubtitleError CheckStartWithPunctuationSingleLine(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count == 1)
-            {
-                string line = lines[0];
-                if (line.StartsWith("- ") == false)
-                {
-                    int index = -1;
-                    if ((index = line.IndexOf(". - ")) != -1 ||
-                        (index = line.IndexOf("? - ")) != -1 ||
-                        (index = line.IndexOf("! - ")) != -1)
-                    {
-                        subtitleError |= SubtitleError.Dialog_Error;
-                    }
-                }
-            }
-
-            return subtitleError;
-        }
-
-        #endregion
-
-        #region Single Line Post
-
-        private static string CleanSubtitleLinePost(string line)
-        {
-            if (IsEmptyLine(line))
-                return null;
-
-            return line;
-        }
-
-        private static SubtitleError CheckSubtitleLinePost(string line)
-        {
-            if (IsEmptyLine(line))
-                return SubtitleError.Empty_Line;
-
-            SubtitleError subtitleError = SubtitleError.None;
-
-            return subtitleError;
         }
 
         #endregion
 
         #region Multiple Lines Post
 
-        private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive)
+        private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
-            lines = CleanMissingDialogDashSingleLine(lines, cleanHICaseInsensitive);
-            lines = CleanRedundantItalicsMultipleLines(lines, cleanHICaseInsensitive);
-            lines = CleanMergeLines(lines, cleanHICaseInsensitive);
-            lines = CleanMissingDialogDashMultipleLines(lines, cleanHICaseInsensitive);
-            lines = CleanLineEndWithApostropheAndQuestionMark(lines, cleanHICaseInsensitive);
+            lines = CleanMissingDialogDashSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanRedundantItalicsMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanMergeLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanMissingDialogDashMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanLineEndWithApostropheAndQuestionMark(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
             return lines;
         }
 
-        private static SubtitleError CheckSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive)
+        public static List<string> CleanMissingDialogDashSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
-                return SubtitleError.Empty_Line;
-
-            SubtitleError subtitleError = SubtitleError.None;
-            subtitleError = CheckMissingDialogDashSingleLine(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckRedundantItalicsMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckMergeLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckMissingDialogDashMultipleLines(lines, cleanHICaseInsensitive, subtitleError);
-            subtitleError = CheckLineEndWithApostropheAndQuestionMark(lines, cleanHICaseInsensitive, subtitleError);
-            return subtitleError;
-        }
-
-        public static List<string> CleanMissingDialogDashSingleLine(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             // Line 1 - Dialog
             // 
@@ -2559,35 +1998,23 @@ namespace SubtitlesCleanerLibrary
                         lines[0] = "<i>- " + lines[0].Substring(3);
                     else
                         lines[0] = "- " + lines[0];
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dialog_Error;
                 }
             }
 
             return lines;
         }
 
-        private static SubtitleError CheckMissingDialogDashSingleLine(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanRedundantItalicsMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            // Line 1 - Dialog
-            // 
-            // - Line 1 - Dialog
-            if (lines.Count > 0)
+            if (lines.IsNullOrEmpty())
             {
-                bool isMatchDialog = regexDialog.IsMatch(lines[0]);
-                bool isContainsDialog = regexContainsDialog.IsMatch(lines[0]);
-                if (isMatchDialog == false && isContainsDialog)
-                    subtitleError |= SubtitleError.Dialog_Error;
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanRedundantItalicsMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             // <i>Line 1</i>
             // <i>Line 2</i>
@@ -2601,52 +2028,31 @@ namespace SubtitlesCleanerLibrary
                     string prevLine = lines[i - 1];
                     string line = lines[i];
 
-                    if (IsRedundantItalics(prevLine, line))
+                    if (prevLine.EndsWith("</i>") && line.StartsWith("<i>"))
                     {
                         lines[i - 1] = prevLine.Substring(0, prevLine.Length - 4);
                         lines[i] = line.Substring("<i>".Length);
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Redundant_Italics;
                     }
                 }
             }
 
             return lines;
-        }
-
-        private static SubtitleError CheckRedundantItalicsMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            // <i>Line 1</i>
-            // <i>Line 2</i>
-            //
-            // <i>Line 1
-            // Line 2</i>
-            if (lines.Count > 1)
-            {
-                for (int i = 1; i < lines.Count; i++)
-                {
-                    string prevLine = lines[i - 1];
-                    string line = lines[i];
-
-                    if (IsRedundantItalics(prevLine, line))
-                    {
-                        subtitleError |= SubtitleError.Redundant_Italics;
-                        break;
-                    }
-                }
-            }
-
-            return subtitleError;
         }
 
         public static readonly Regex regexLine1WithSingleWord = new Regex(@"^\w+,?$");
         public static readonly Regex regexLine2WithSingleWord = new Regex(@"^\w+\.?$");
 
-        public static List<string> CleanMergeLines(List<string> lines, bool cleanHICaseInsensitive)
+        public static List<string> CleanMergeLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0)
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             if (lines.Count > 1)
             {
@@ -2706,6 +2112,9 @@ namespace SubtitlesCleanerLibrary
                             lines[i] = line1 + " " + line2;
                             lines.RemoveAt(i + 1);
                             i--;
+
+                            if (isCheckMode)
+                                subtitleError |= SubtitleError.Merge_Lines;
                         }
                     }
                 }
@@ -2714,80 +2123,14 @@ namespace SubtitlesCleanerLibrary
             return lines;
         }
 
-        private static SubtitleError CheckMergeLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanMissingDialogDashMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            if (lines.Count > 1)
+            if (lines.IsNullOrEmpty())
             {
-                bool isDialogFound = false;
-
-                for (int i = 0; i < lines.Count - 1; i++)
-                {
-                    string line1 = lines[i];
-                    string line2 = lines[i + 1];
-
-                    if (line1.Length + line2.Length + 1 <= SINGLE_LINE_MAX_LENGTH)
-                    {
-                        bool isMergeLines = false;
-
-                        if (regexDialog.IsMatch(line2) == false)
-                        {
-                            isDialogFound = isDialogFound || regexDialog.IsMatch(line1);
-
-                            // Word,
-                            // line
-                            //
-                            // Word, line
-                            isMergeLines = regexLine1WithSingleWord.IsMatch(line1);
-
-                            // Line,
-                            // Word
-                            //
-                            // Line, Word
-                            if (isMergeLines == false)
-                                isMergeLines = line1.EndsWith(",") && regexLine2WithSingleWord.IsMatch(line2);
-
-                            if (isMergeLines == false)
-                            {
-                                // - Line 1
-                                // line 2
-                                // - Line 3
-                                // 
-                                // - Line 1 line 2
-                                // - Line 3
-                                // or
-                                // - Line
-                                // - Line 1
-                                // line 2
-                                // 
-                                // - Line
-                                // - Line 1 line 2
-                                string line3 = (i + 2 < lines.Count ? lines[i + 2] : null);
-                                isMergeLines =
-                                    regexDialog.IsMatch(line1) &&
-                                    regexLowerLetter.IsMatch(line2.Length > 0 ? line2[0].ToString() : string.Empty) &&
-                                    (isDialogFound || (string.IsNullOrEmpty(line3) == false && regexDialog.IsMatch(line3)));
-                            }
-                        }
-
-                        if (isMergeLines)
-                        {
-                            subtitleError |= SubtitleError.Merge_Lines;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanMissingDialogDashMultipleLines(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
+            }
 
             // Line 1
             // Line 2 - Text
@@ -2809,6 +2152,10 @@ namespace SubtitlesCleanerLibrary
                             else
                                 line0 = "- " + line0;
                             lines[0] = line0;
+
+                            if (isCheckMode)
+                                subtitleError |= SubtitleError.Dialog_Error;
+
                             break;
                         }
                     }
@@ -2818,70 +2165,14 @@ namespace SubtitlesCleanerLibrary
             return lines;
         }
 
-        private static SubtitleError CheckMissingDialogDashMultipleLines(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
+        public static List<string> CleanLineEndWithApostropheAndQuestionMark(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
-
-            // Line 1
-            // Line 2 - Text
-            //
-            // - Line 1
-            // Line 2 - Text
-            if (lines.Count > 1)
+            if (lines.IsNullOrEmpty())
             {
-                string line0 = lines[0];
-                if ((line0.StartsWith("- ") || line0.StartsWith("<i>- ") || line0.StartsWith("- <i>")) == false)
-                {
-                    for (int i = 1; i < lines.Count; i++)
-                    {
-                        string line = lines[i];
-                        if (line.Contains(" - "))
-                        {
-                            subtitleError |= SubtitleError.Dialog_Error;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return subtitleError;
-        }
-
-        public static List<string> CleanLineEndWithApostropheAndQuestionMark(List<string> lines, bool cleanHICaseInsensitive)
-        {
-            if (lines == null || lines.Count == 0)
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
                 return null;
-
-            // ends with '?
-            for (int i = 0; i < lines.Count; i++)
-            {
-                string line = lines[i];
-                if (line.EndsWith("'?") && line.EndsWith("in'?") == false)
-                {
-                    string str = string.Join(" ", lines.Take(i + 1))
-                        .Replace("Can't", string.Empty).Replace("can't", string.Empty)
-                        .Replace("Didn't", string.Empty).Replace("didn't", string.Empty)
-                        .Replace("Doesn't", string.Empty).Replace("doesn't", string.Empty)
-                        .Replace("Don't", string.Empty).Replace("don't", string.Empty)
-                        .Replace("Hadn't", string.Empty).Replace("hadn't", string.Empty)
-                        .Replace("Isn't", string.Empty).Replace("isn't", string.Empty)
-                        .Replace("Won't", string.Empty).Replace("won't", string.Empty)
-                        .Replace("Wouldn't", string.Empty).Replace("wouldn't", string.Empty)
-                        .Replace("in'", string.Empty);
-
-                    if (str.IndexOf("'") == str.Length - 2) // there is no ' before '?
-                        lines[i] = line.Replace("'?", "?");
-                }
             }
-
-            return lines;
-        }
-
-        private static SubtitleError CheckLineEndWithApostropheAndQuestionMark(List<string> lines, bool cleanHICaseInsensitive, SubtitleError subtitleError)
-        {
-            if (lines == null || lines.Count == 0 || subtitleError == SubtitleError.Empty_Line)
-                return SubtitleError.Empty_Line;
 
             // ends with '?
             for (int i = 0; i < lines.Count; i++)
@@ -2902,16 +2193,118 @@ namespace SubtitlesCleanerLibrary
 
                     if (str.IndexOf("'") == str.Length - 2) // there is no ' before '?
                     {
-                        subtitleError |= SubtitleError.OCR_Error;
-                        break;
+                        lines[i] = line.Replace("'?", "?");
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.OCR_Error;
                     }
                 }
             }
 
-            return subtitleError;
+            return lines;
         }
 
         #endregion
+
+        #endregion
+
+        #region Clean Empty And Non-Subtitles
+
+        public static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles, bool isPrintCleaning)
+        {
+            return CleanEmptyAndNonSubtitles(subtitles, false, isPrintCleaning);
+        }
+
+        private static List<Subtitle> CleanEmptyAndNonSubtitles(this List<Subtitle> subtitles, bool isCheckMode, bool isPrintCleaning)
+        {
+            if (subtitles.IsNullOrEmpty())
+                return null;
+
+            for (int k = subtitles.Count - 1; k >= 0; k--)
+            {
+                Subtitle subtitle = subtitles[k];
+                SubtitleError subtitleError = SubtitleError.None;
+
+                if (subtitle.Lines.HasAny())
+                {
+                    for (int i = subtitle.Lines.Count - 1; i >= 0; i--)
+                    {
+                        string line = subtitle.Lines[i];
+
+                        subtitleError = SubtitleError.None;
+                        bool isEmpty = string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, isCheckMode, ref subtitleError, isPrintCleaning));
+                        if (isEmpty)
+                        {
+                            subtitle.Lines.RemoveAt(i);
+                            if (isCheckMode)
+                                subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                            if (subtitle.Lines.Count == 0)
+                            {
+                                subtitle.Lines = null;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            subtitleError = SubtitleError.None;
+                            string cleanLine = (CleanLine(line, NonSubtitle, false, isCheckMode, ref subtitleError, isPrintCleaning) ?? string.Empty).Trim();
+                            bool isChanged = (line != cleanLine);
+                            if (isChanged)
+                            {
+                                subtitle.Lines = null;
+                                if (isCheckMode)
+                                    subtitle.SubtitleError |= SubtitleError.Non_Subtitle;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (isCheckMode)
+                        subtitle.SubtitleError |= SubtitleError.Empty_Line;
+                }
+
+                if (subtitle.Lines.IsNullOrEmpty())
+                {
+                    if (isCheckMode)
+                        subtitle.Lines = null;
+                    else
+                        subtitles.RemoveAt(k);
+                }
+
+                if (subtitles.Count == 0)
+                    return null;
+            }
+
+            return subtitles;
+        }
+
+        #endregion
+
+        #region Check Subtitles
+
+        public static void CheckSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        {
+            new List<Subtitle>() { subtitle }.CheckSubtitles(cleanHICaseInsensitive, isPrintCleaning);
+        }
+
+        public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        {
+            if (subtitles.IsNullOrEmpty())
+                return;
+
+            var tempSubtitles = subtitles.Clone();
+            foreach (var subtitle in tempSubtitles)
+                subtitle.SubtitleError = SubtitleError.None;
+            tempSubtitles = tempSubtitles.CleanSubtitles(cleanHICaseInsensitive, true, isPrintCleaning);
+
+            if (subtitles.Count != tempSubtitles.Count)
+                throw new Exception("Checking subtitles failed. Number of subtitles is different before and after the cleaning");
+
+            foreach (var item in subtitles.Zip(tempSubtitles, (s, t) => new { Subtitle = s, t.SubtitleError }))
+                item.Subtitle.SubtitleError = item.SubtitleError;
+        }
 
         #endregion
 
@@ -3781,63 +3174,7 @@ namespace SubtitlesCleanerLibrary
 
         #endregion
 
-        #region Clean Line
-
-        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, bool isPrintCleaning)
-        {
-            SubtitleError subtitleError = SubtitleError.None;
-            return CleanLine(line, rules, cleanHICaseInsensitive, isPrintCleaning, ref subtitleError);
-        }
-
-        private static string CleanLine(string line, FindAndReplace[] rules, bool cleanHICaseInsensitive, bool isPrintCleaning, ref SubtitleError subtitleError)
-        {
-            if (string.IsNullOrEmpty(line))
-            {
-                subtitleError = SubtitleError.Empty_Line;
-                return null;
-            }
-
-            int ruleCounter = 0;
-
-            foreach (var rule in rules)
-            {
-                string cleanLine = rule.CleanLine(line, cleanHICaseInsensitive);
-
-                if (line != cleanLine)
-                {
-                    ruleCounter++;
-
-                    if (isPrintCleaning)
-                    {
-                        Console.WriteLine(ruleCounter);
-                        Console.WriteLine("Regex:  " + (cleanHICaseInsensitive ? rule.ToStringCI() : rule.ToString()));
-                        PrintColorfulLines(line, cleanLine, rule, cleanHICaseInsensitive);
-                    }
-
-                    line = cleanLine;
-                    subtitleError |= rule.SubtitleError;
-
-                    if (subtitleError.IsSet(SubtitleError.Empty_Line))
-                    {
-                        subtitleError = SubtitleError.Empty_Line;
-                        return null;
-                    }
-                    else if (subtitleError.IsSet(SubtitleError.Non_Subtitle))
-                    {
-                        subtitleError = SubtitleError.Non_Subtitle;
-                        return null;
-                    }
-                }
-            }
-
-            if (isPrintCleaning && ruleCounter > 0)
-            {
-                Console.WriteLine("******************************************");
-                Console.WriteLine();
-            }
-
-            return line;
-        }
+        #region Print Cleaning
 
         private class LineSegment
         {
@@ -3846,7 +3183,14 @@ namespace SubtitlesCleanerLibrary
             internal bool IsCapture;
         }
 
-        private static void PrintColorfulLines(string line, string cleanLine, FindAndReplace rule, bool cleanHICaseInsensitive)
+        private static void PrintCleaning(string line, string cleanLine, Regex regexCleaning)
+        {
+            Console.WriteLine("Regex:  " + regexCleaning);
+            Console.WriteLine("Before: " + line);
+            Console.WriteLine("After:  " + cleanLine);
+        }
+
+        private static void PrintCleaning(string line, string cleanLine, FindAndReplace rule, bool cleanHICaseInsensitive)
         {
             if ((string.IsNullOrEmpty(rule.Replacement) && rule.Evaluator != null) || rule.Replacement.Contains("${"))
             {
@@ -3932,12 +3276,12 @@ namespace SubtitlesCleanerLibrary
             segments.Sort((x, y) => x.Index.CompareTo(y.Index));
 
             Console.Write("Before: ");
-            PrintColorfulLines(line, segments, false);
+            PrintCleaning(line, segments, false);
             Console.Write("After:  ");
-            PrintColorfulLines(line, segments, true, rule.Replacement);
+            PrintCleaning(line, segments, true, rule.Replacement);
         }
 
-        private static void PrintColorfulLines(string line, List<LineSegment> segments, bool withReplacement, string replacement = null)
+        private static void PrintCleaning(string line, List<LineSegment> segments, bool withReplacement, string replacement = null)
         {
             foreach (LineSegment segment in segments)
             {
@@ -3957,52 +3301,6 @@ namespace SubtitlesCleanerLibrary
             Console.WriteLine();
         }
 
-        /************************************************************************/
-
-        private static bool IsEmptyLine(string line)
-        {
-            return string.IsNullOrEmpty(CleanLine(line, EmptyLine, false, false));
-        }
-
-        private static bool IsNonSubtitle(string line)
-        {
-            return string.IsNullOrEmpty(CleanLine(line, NonSubtitle, false, false));
-        }
-
-        public static readonly Regex regexHIPrefix = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS + @"]*[A-ZÀ-Ý]+[" + HI_CHARS + @"]*:\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        public static readonly Regex regexHIPrefixCI = new Regex(@"^(?<Prefix>(?:<i>)?-?\s*|-?\s*(?:<i>)?\s*)[" + HI_CHARS_CI + @"]*[A-ZÀ-Ý]+[" + HI_CHARS_CI + @"]*:(?!\d\d)\s*(?<Subtitle>.*?)$", RegexOptions.Compiled);
-        public static readonly Regex regexHIPrefixWithoutDialogDash = new Regex(regexHIPrefix.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
-        public static readonly Regex regexHIPrefixWithoutDialogDashCI = new Regex(regexHIPrefixCI.ToString().Replace("-?", string.Empty), RegexOptions.Compiled);
-
-        // start (: ^ <i>? ♪? ( anything except () $
-        //   end ): ^ anything except () ) ♪? <i>? $
-        public static readonly Regex regexHI1Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\([^\(\)]*?$", RegexOptions.Compiled);
-        public static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
-        public static readonly Regex regexHI2Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\[[^\[\]]*?$", RegexOptions.Compiled);
-        public static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\]\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
-
-        private static bool IsHearingImpairedMultipleLines_RoundBrackets(string line1, string line2)
-        {
-            return regexHI1Start.IsMatch(line1) && regexHI1End.IsMatch(line2);
-        }
-
-        private static bool IsHearingImpairedMultipleLines_SquareBrackets(string line1, string line2)
-        {
-            return regexHI2Start.IsMatch(line1) && regexHI2End.IsMatch(line2);
-        }
-
-        private static bool IsHearingImpairedMultipleLines(string line1, string line2)
-        {
-            return
-                IsHearingImpairedMultipleLines_RoundBrackets(line1, line2) ||
-                IsHearingImpairedMultipleLines_SquareBrackets(line1, line2);
-        }
-
-        private static bool IsRedundantItalics(string line1, string line2)
-        {
-            return line1.EndsWith("</i>") && line2.StartsWith("<i>");
-        }
-
         #endregion
 
         #region Add Time
@@ -4017,7 +3315,7 @@ namespace SubtitlesCleanerLibrary
 
         public static void AddTime(this List<Subtitle> subtitles, TimeSpan span, int? subtitleNumber = null)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (span == TimeSpan.Zero)
@@ -4076,7 +3374,7 @@ namespace SubtitlesCleanerLibrary
 
         public static void SetShowTime(this List<Subtitle> subtitles, DateTime show, int? subtitleNumber = 1)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (show == DateTime.MinValue)
@@ -4123,7 +3421,7 @@ namespace SubtitlesCleanerLibrary
 
         public static void AdjustTiming(this List<Subtitle> subtitles, DateTime x1Show, DateTime x2Show, DateTime y1Show, DateTime y2Show)
         {
-            if (subtitles == null || subtitles.Count == 0)
+            if (subtitles.IsNullOrEmpty())
                 return;
 
             if (x1Show == DateTime.MinValue || x2Show == DateTime.MinValue || y1Show == DateTime.MinValue || y2Show == DateTime.MinValue)
@@ -4212,7 +3510,7 @@ namespace SubtitlesCleanerLibrary
             {
                 Subtitle subtitle = subtitles[k];
 
-                if (subtitle.Lines.Count > 1)
+                if (subtitle.Lines != null && subtitle.Lines.Count > 1)
                 {
                     var results = subtitle.Lines.Select(line => new LineBalance()
                     {
@@ -4388,20 +3686,23 @@ namespace SubtitlesCleanerLibrary
                 bool hasError = false;
                 List<string> errorDescriptions = new List<string>();
 
-                foreach (var error in ErrorList)
+                if (subtitle.Lines.HasAny())
                 {
-                    foreach (string line in subtitle.Lines)
+                    foreach (var error in ErrorList)
                     {
-                        if (error.HasError(line))
+                        foreach (string line in subtitle.Lines)
                         {
-                            if (errorDescriptions.Contains(error.Description) == false)
+                            if (error.HasError(line))
                             {
-                                errorLines.Add("- " + error.Description);
-                                //errorLines.Add(error.GetErrors(line));
-                                errorDescriptions.Add(error.Description);
-                            }
+                                if (errorDescriptions.Contains(error.Description) == false)
+                                {
+                                    errorLines.Add("- " + error.Description);
+                                    //errorLines.Add(error.GetErrors(line));
+                                    errorDescriptions.Add(error.Description);
+                                }
 
-                            hasError = true;
+                                hasError = true;
+                            }
                         }
                     }
                 }

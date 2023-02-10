@@ -15,7 +15,7 @@ namespace SubtitlesCleanerLibrary
         {
             Show = DateTime.MinValue;
             Hide = DateTime.MinValue;
-            Lines = new List<string>();
+            Lines = null;
             SubtitleError = SubtitleError.None;
         }
 
@@ -25,7 +25,7 @@ namespace SubtitlesCleanerLibrary
             {
                 Show = Show,
                 Hide = Hide,
-                Lines = new List<string>(Lines),
+                Lines = (Lines.HasAny() ? new List<string>(Lines) : null),
                 SubtitleError = SubtitleError
             };
         }
@@ -68,12 +68,12 @@ namespace SubtitlesCleanerLibrary
 
         public string ToStringWithPipe()
         {
-            return string.Join("|", Lines);
+            return (Lines.HasAny() ? string.Join("|", Lines) : string.Empty);
         }
 
         public override string ToString()
         {
-            return string.Join(Environment.NewLine, Lines);
+            return (Lines.HasAny() ? string.Join(Environment.NewLine, Lines) : string.Empty);
         }
 
         #endregion

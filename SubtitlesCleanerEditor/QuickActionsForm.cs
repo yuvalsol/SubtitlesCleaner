@@ -95,7 +95,7 @@ namespace SubtitlesCleanerEditor
         {
             StringBuilder sb = new StringBuilder();
 
-            if (preview != null && preview.Count > 0)
+            if (preview.HasAny())
             {
                 var lastItem = preview.Last();
 

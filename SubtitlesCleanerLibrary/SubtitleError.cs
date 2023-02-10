@@ -94,6 +94,16 @@ namespace SubtitlesCleanerLibrary
             return (enumValue & flag) == flag;
         }
 
+        public static bool IsOnlySet(this SubtitleError enumValue, SubtitleError flag)
+        {
+            return (enumValue & ~flag) == SubtitleError.None;
+        }
+
+        public static SubtitleError RemoveFlag(this SubtitleError enumValue, SubtitleError flag)
+        {
+            return enumValue & ~flag;
+        }
+
         public static Color BackErrorColor(this SubtitleError enumValue)
         {
             var field = typeof(SubtitleError).GetField(enumValue.ToString());

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -6,6 +7,32 @@ namespace System
 {
     public static partial class ExceptionExtensions
     {
+        public static string GetUnhandledExceptionErrorMessage(this Exception ex)
+        {
+            if (ex == null)
+                return null;
+
+            string errorMessage = string.Format("An unhandled error occurred.{0}The application will terminate now.{0}{0}{1}{0}{0}{2}",
+                "\n",
+                ex.Message,
+                ex.GetFormattedStackTrace()
+            );
+
+            while (ex.InnerException != null)
+            {
+                ex = ex.InnerException;
+                errorMessage += string.Format("{0}{1}{0}{0}{2}",
+                    "\n",
+                    ex.Message,
+                    ex.GetFormattedStackTrace()
+                );
+            }
+
+            errorMessage = errorMessage.Trim();
+
+            return errorMessage;
+        }
+
         public static string GetFormattedStackTrace(this Exception ex)
         {
             StringBuilder sb = new StringBuilder();
@@ -30,6 +57,7 @@ namespace System
                                 MethodInfo mi = method as MethodInfo;
                                 if (mi != null)
                                 {
+                                    sb.Append((i + 1) + ". ");
                                     sb.Append(mi.GetSignature());
 
                                     int lineNumber = sf.GetFileLineNumber();
