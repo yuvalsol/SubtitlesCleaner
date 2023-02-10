@@ -27,8 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{6E119C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{91012046-59A0-4EB1-A64A-F550FC21C55D}"
 	ProjectSection(SolutionItems) = preProject
-		Solution Items\Icons\cleaning-brush.ico = Solution Items\Icons\cleaning-brush.ico
-		Solution Items\Icons\cleaning-brush.png = Solution Items\Icons\cleaning-brush.png
+		Solution Items\Icons\SubtitlesCleaner.ico = Solution Items\Icons\SubtitlesCleaner.ico
+		Solution Items\Icons\SubtitlesCleaner.png = Solution Items\Icons\SubtitlesCleaner.png
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleaner.Utils", "SubtitlesCleaner.Utils\SubtitlesCleaner.Utils.csproj", "{3B1896B1-AF5F-433D-9D36-DCA95EB9FCE8}"
