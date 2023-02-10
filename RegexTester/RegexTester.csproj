@@ -58,13 +58,13 @@
     <Compile Include="RegexHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SubtitlesCleanerLibrary\SubtitlesCleaner.Library.csproj">
+    <ProjectReference Include="..\SubtitlesCleaner.Library\SubtitlesCleaner.Library.csproj">
       <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
       <Name>SubtitlesCleaner.Library</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

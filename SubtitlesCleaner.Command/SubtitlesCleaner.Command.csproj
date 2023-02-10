@@ -70,13 +70,13 @@
     <Content Include="cleaning-brush.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SubtitlesCleaner.Library\SubtitlesCleaner.Library.csproj">
+      <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
+      <Name>SubtitlesCleaner.Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SubtitlesCleaner.Utils\SubtitlesCleaner.Utils.csproj">
       <Project>{3b1896b1-af5f-433d-9d36-dca95eb9fce8}</Project>
       <Name>SubtitlesCleaner.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SubtitlesCleanerLibrary\SubtitlesCleaner.Library.csproj">
-      <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
-      <Name>SubtitlesCleaner.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
