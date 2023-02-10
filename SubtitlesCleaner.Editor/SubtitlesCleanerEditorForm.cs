@@ -190,6 +190,7 @@ namespace SubtitlesCleaner.Editor
                 if (isSRT)
                 {
                     SetFormTitleLoadingFile(filePath);
+                    this.Cursor = Cursors.WaitCursor;
                     Application.DoEvents();
 
                     encoding = Encoding.UTF8;
@@ -201,7 +202,9 @@ namespace SubtitlesCleaner.Editor
                     SetSubtitlesToEditor(subtitles);
                     SelectFirstError();
                     SetFormTitle(false);
+
                     lstEditor.Focus();
+                    this.Cursor = Cursors.Default;
                 }
             }
             catch (Exception ex)
@@ -977,6 +980,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             string message = string.Empty;
+            bool isFileSaveHasErrors = false;
 
             if (chkBackupSRT.Checked)
             {
@@ -989,7 +993,22 @@ namespace SubtitlesCleaner.Editor
                 }
                 catch (Exception ex)
                 {
-                    message = "Failed to save " + Path.GetFileName(backPath) + Environment.NewLine + ex.Message + Environment.NewLine;
+                    bool isReadOnly = false;
+                    try
+                    {
+                        if (ex is UnauthorizedAccessException)
+                        {
+                            FileAttributes fileAttributes = File.GetAttributes(backPath);
+                            isReadOnly = (fileAttributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly;
+                        }
+                    }
+                    catch { }
+
+                    message +=
+                        "Failed to save " + Path.GetFileName(backPath) + "." + Environment.NewLine + ex.Message +
+                        (isReadOnly ? Environment.NewLine + "File attribute is set to read-only." : string.Empty) + Environment.NewLine;
+
+                    isFileSaveHasErrors = true;
                 }
             }
 
@@ -1001,13 +1020,28 @@ namespace SubtitlesCleaner.Editor
             }
             catch (Exception ex)
             {
-                message += "Failed to save " + Path.GetFileName(filePath) + Environment.NewLine + ex.Message;
+                bool isReadOnly = false;
+                try
+                {
+                    if (ex is UnauthorizedAccessException)
+                    {
+                        FileAttributes fileAttributes = File.GetAttributes(filePath);
+                        isReadOnly = (fileAttributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly;
+                    }
+                }
+                catch { }
+
+                message +=
+                    "Failed to save " + Path.GetFileName(filePath) + "." + Environment.NewLine + ex.Message +
+                    (isReadOnly ? Environment.NewLine + "File attribute is set to read-only." : string.Empty);
+
+                isFileSaveHasErrors = true;
             }
 
             if (withAlert)
             {
                 message = message.Trim();
-                MessageBox.Show(this, message, "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, message, "File Save", MessageBoxButtons.OK, isFileSaveHasErrors ? MessageBoxIcon.Error : MessageBoxIcon.Information);
             }
         }
 
