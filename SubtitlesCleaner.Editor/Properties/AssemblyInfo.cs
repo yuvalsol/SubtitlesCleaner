@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SubtitlesCleaner.Utils")]
+[assembly: AssemblyTitle("SubtitlesCleaner.Editor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("SubtitlesCleaner.Utils")]
+[assembly: AssemblyProduct("SubtitlesCleaner.Editor")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3b1896b1-af5f-433d-9d36-dca95eb9fce8")]
+[assembly: Guid("445e239a-da9d-4864-a1b5-01b299ae12df")]

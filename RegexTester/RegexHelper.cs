@@ -1,7 +1,8 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Text.RegularExpressions;
 
-namespace System
+namespace RegexTester
 {
     public static class RegexHelper
     {
