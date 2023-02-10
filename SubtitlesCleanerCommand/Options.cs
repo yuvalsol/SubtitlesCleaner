@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace SubtitlesCleanerCommand
+namespace SubtitlesCleaner.Command
 {
     class SharedOptions
     {

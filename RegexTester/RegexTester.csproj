@@ -61,9 +61,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SubtitlesCleanerLibrary\SubtitlesCleanerLibrary.csproj">
+    <ProjectReference Include="..\SubtitlesCleanerLibrary\SubtitlesCleaner.Library.csproj">
       <Project>{fa664445-f006-42d6-a94c-dddf82ed7167}</Project>
-      <Name>SubtitlesCleanerLibrary</Name>
+      <Name>SubtitlesCleaner.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Solution Items\SolutionAssemblyInfo.cs = Solution Items\SolutionAssemblyInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerLibrary", "SubtitlesCleanerLibrary\SubtitlesCleanerLibrary.csproj", "{FA664445-F006-42D6-A94C-DDDF82ED7167}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleaner.Library", "SubtitlesCleanerLibrary\SubtitlesCleaner.Library.csproj", "{FA664445-F006-42D6-A94C-DDDF82ED7167}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerCommand", "SubtitlesCleanerCommand\SubtitlesCleanerCommand.csproj", "{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleaner.Command", "SubtitlesCleanerCommand\SubtitlesCleaner.Command.csproj", "{5FD309EF-4055-49BA-9B0F-E7F8ED7430F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleanerEditor", "SubtitlesCleanerEditor\SubtitlesCleanerEditor.csproj", "{445E239A-DA9D-4864-A1B5-01B299AE12DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlesCleaner.Editor", "SubtitlesCleanerEditor\SubtitlesCleaner.Editor.csproj", "{445E239A-DA9D-4864-A1B5-01B299AE12DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{6E119C67-7B5E-4C3A-A18E-EAFEEEBFDAB7}"
 	ProjectSection(SolutionItems) = preProject

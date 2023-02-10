@@ -8,9 +8,9 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using SubtitlesCleanerLibrary;
+using SubtitlesCleaner.Library;
 
-namespace SubtitlesCleanerEditor
+namespace SubtitlesCleaner.Editor
 {
     public partial class SubtitlesCleanerEditorForm : Form
     {
@@ -2109,7 +2109,7 @@ namespace SubtitlesCleanerEditor
 
         private QuickActionResult QuickActionFindAndReplace(
             List<Subtitle> subtitles,
-            SubtitlesCleanerLibrary.FindAndReplace[] rules,
+            SubtitlesCleaner.Library.FindAndReplace[] rules,
             bool isPreview,
             bool isRemoveEmptyLines = false,
             bool isRemoveNonSubtitles = false)
@@ -2125,7 +2125,7 @@ namespace SubtitlesCleanerEditor
         private QuickActionResult QuickActionFindAndReplace(
             List<Subtitle> subtitles,
             QuickActionCleanHandler[] preCleaners,
-            SubtitlesCleanerLibrary.FindAndReplace[] rules,
+            SubtitlesCleaner.Library.FindAndReplace[] rules,
             QuickActionCleanHandler[] postCleaners,
             bool isPreview,
             bool isRemoveEmptyLines = false,

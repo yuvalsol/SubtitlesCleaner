@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using SubtitlesCleanerLibrary;
+using SubtitlesCleaner.Library;
 
-namespace SubtitlesCleanerEditor
+namespace SubtitlesCleaner.Editor
 {
     public delegate QuickActionResult DoQuickActionHandler(List<Subtitle> subtitles, bool isPreview);
 

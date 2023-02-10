@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using SubtitlesCleanerLibrary;
+using SubtitlesCleaner.Library;
 
-namespace SubtitlesCleanerEditor
+namespace SubtitlesCleaner.Editor
 {
     public partial class AdjustTimingForm : Form
     {

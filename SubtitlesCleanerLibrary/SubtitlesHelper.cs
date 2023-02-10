@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SubtitlesCleanerLibrary
+namespace SubtitlesCleaner.Library
 {
     public static class SubtitlesHelper
     {

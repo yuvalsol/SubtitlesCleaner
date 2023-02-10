@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using SubtitlesCleanerLibrary;
+using SubtitlesCleaner.Library;
 
-namespace SubtitlesCleanerCommand
+namespace SubtitlesCleaner.Command
 {
     static class SubtitlesHandler
     {

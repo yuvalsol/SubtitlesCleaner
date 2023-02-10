@@ -1,7 +1,7 @@
 ﻿using System;
-using SubtitlesCleanerLibrary;
+using SubtitlesCleaner.Library;
 
-namespace SubtitlesCleanerEditor
+namespace SubtitlesCleaner.Editor
 {
     public class ErrorRow
     {

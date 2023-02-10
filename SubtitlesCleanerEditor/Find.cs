@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SubtitlesCleanerEditor
+namespace SubtitlesCleaner.Editor
 {
     public class Find
     {

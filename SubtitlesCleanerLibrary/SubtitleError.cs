@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace SubtitlesCleanerLibrary
+namespace SubtitlesCleaner.Library
 {
     [Flags]
     public enum SubtitleError

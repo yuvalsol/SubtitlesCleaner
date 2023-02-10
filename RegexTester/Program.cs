@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using SubtitlesCleanerLibrary;
+using SubtitlesCleaner.Library;
 
 namespace RegexTester
 {

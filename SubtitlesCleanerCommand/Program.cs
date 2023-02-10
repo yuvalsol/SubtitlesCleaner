@@ -4,7 +4,7 @@ using System.Text;
 using CommandLine;
 using CommandLine.Text;
 
-namespace SubtitlesCleanerCommand
+namespace SubtitlesCleaner.Command
 {
     class Program
     {
@@ -49,7 +49,7 @@ namespace SubtitlesCleanerCommand
                             if (options.clean)
                             {
                                 Console.WriteLine("Clean");
-                                Console.WriteLine("SubtitlesCleanerCommand clean [--cleanHICaseInsensitive]");
+                                Console.WriteLine("SubtitlesCleaner.Command clean [--cleanHICaseInsensitive]");
                                 Console.WriteLine("                              [--firstSubtitlesCount N]");
                                 Console.WriteLine("                              --path fileOrFolder");
                                 Console.WriteLine("                              (--print|--save [--outputFile file] [--outputFolder folder])");
@@ -61,7 +61,7 @@ namespace SubtitlesCleanerCommand
                             if (options.cleanEmptyAndNonSubtitles)
                             {
                                 Console.WriteLine("Clean Empty And Non-Subtitles");
-                                Console.WriteLine("SubtitlesCleanerCommand cleanEmptyAndNonSubtitles [--firstSubtitlesCount N]");
+                                Console.WriteLine("SubtitlesCleaner.Command cleanEmptyAndNonSubtitles [--firstSubtitlesCount N]");
                                 Console.WriteLine("                                                  --path fileOrFolder");
                                 Console.WriteLine("                                                  (--print|--save [--outputFile file] [--outputFolder folder])");
                                 Console.WriteLine("                                                  [--suppressBackupFile]");
@@ -71,7 +71,7 @@ namespace SubtitlesCleanerCommand
                             if (options.addTime)
                             {
                                 Console.WriteLine("Add Time");
-                                Console.WriteLine("SubtitlesCleanerCommand addTime --timeAdded (+00:00:00,000|-00:00:00,000)");
+                                Console.WriteLine("SubtitlesCleaner.Command addTime --timeAdded (+00:00:00,000|-00:00:00,000)");
                                 Console.WriteLine("                                [--subtitleNumber N]");
                                 Console.WriteLine("                                [--firstSubtitlesCount N]");
                                 Console.WriteLine("                                --path fileOrFolder");
@@ -83,7 +83,7 @@ namespace SubtitlesCleanerCommand
                             if (options.setShowTime)
                             {
                                 Console.WriteLine("Set Show Time");
-                                Console.WriteLine("SubtitlesCleanerCommand setShowTime --showTime 00:00:00,000");
+                                Console.WriteLine("SubtitlesCleaner.Command setShowTime --showTime 00:00:00,000");
                                 Console.WriteLine("                                    [--subtitleNumber N]");
                                 Console.WriteLine("                                    [--firstSubtitlesCount N]");
                                 Console.WriteLine("                                    --path fileOrFolder");
@@ -95,7 +95,7 @@ namespace SubtitlesCleanerCommand
                             if (options.adjustTiming)
                             {
                                 Console.WriteLine("Adjust Timing");
-                                Console.WriteLine("SubtitlesCleanerCommand adjustTiming --firstShowTime 00:00:00,000");
+                                Console.WriteLine("SubtitlesCleaner.Command adjustTiming --firstShowTime 00:00:00,000");
                                 Console.WriteLine("                                     --lastShowTime 00:00:00,000");
                                 Console.WriteLine("                                     [--firstSubtitlesCount N]");
                                 Console.WriteLine("                                     --path fileOrFolder");
@@ -107,7 +107,7 @@ namespace SubtitlesCleanerCommand
                             if (options.reorder)
                             {
                                 Console.WriteLine("Reorder");
-                                Console.WriteLine("SubtitlesCleanerCommand reorder --path fileOrFolder");
+                                Console.WriteLine("SubtitlesCleaner.Command reorder --path fileOrFolder");
                                 Console.WriteLine("                                (--print|--save)");
                                 Console.WriteLine("                                [--suppressBackupFile]");
                                 Console.WriteLine();
@@ -116,7 +116,7 @@ namespace SubtitlesCleanerCommand
                             if (options.balanceLines)
                             {
                                 Console.WriteLine("Balance Lines");
-                                Console.WriteLine("SubtitlesCleanerCommand balanceLines --path fileOrFolder");
+                                Console.WriteLine("SubtitlesCleaner.Command balanceLines --path fileOrFolder");
                                 Console.WriteLine("                                     (--print|--save)");
                                 Console.WriteLine("                                     [--suppressBackupFile]");
                                 Console.WriteLine();
@@ -142,7 +142,7 @@ namespace SubtitlesCleanerCommand
                                     h.Copyright = string.Empty;
                                     h.AdditionalNewLineAfterOption = false;
                                     h.MaximumDisplayWidth = 120;
-                                    h.AddPreOptionsLine("Execute 'SubtitlesCleanerCommand usage --clean' to print usage for clean");
+                                    h.AddPreOptionsLine("Execute 'SubtitlesCleaner.Command usage --clean' to print usage for clean");
                                     h.AddNewLineBetweenHelpSections = true;
                                     return HelpText.DefaultParsingErrorsHandler(parserResult, h);
                                 }, e => e);

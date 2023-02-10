@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SubtitlesCleanerLibrary
+namespace SubtitlesCleaner.Library
 {
     public class FindAndReplace
     {

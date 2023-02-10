@@ -1,5 +1,5 @@
 ﻿
-namespace SubtitlesCleanerEditor
+namespace SubtitlesCleaner.Editor
 {
     partial class TimeCalculatorForm
     {
@@ -35,10 +35,10 @@ namespace SubtitlesCleanerEditor
             this.btnClose = new System.Windows.Forms.Button();
             this.lblSwitch1And2 = new System.Windows.Forms.Label();
             this.lblSwitch2And3 = new System.Windows.Forms.Label();
-            this.timePicker4 = new SubtitlesCleanerEditor.TimePicker();
-            this.timePicker3 = new SubtitlesCleanerEditor.TimePicker();
-            this.timePicker2 = new SubtitlesCleanerEditor.TimePicker();
-            this.timePicker1 = new SubtitlesCleanerEditor.TimePicker();
+            this.timePicker4 = new SubtitlesCleaner.Editor.TimePicker();
+            this.timePicker3 = new SubtitlesCleaner.Editor.TimePicker();
+            this.timePicker2 = new SubtitlesCleaner.Editor.TimePicker();
+            this.timePicker1 = new SubtitlesCleaner.Editor.TimePicker();
             this.SuspendLayout();
             // 
             // label1

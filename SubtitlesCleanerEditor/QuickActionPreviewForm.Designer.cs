@@ -1,5 +1,5 @@
 ﻿
-namespace SubtitlesCleanerEditor
+namespace SubtitlesCleaner.Editor
 {
     partial class QuickActionPreviewForm
     {

@@ -1,4 +1,4 @@
-﻿namespace SubtitlesCleanerEditor
+﻿namespace SubtitlesCleaner.Editor
 {
     partial class AdjustTimingForm
     {
@@ -32,10 +32,10 @@
             this.lblArrow1 = new System.Windows.Forms.Label();
             this.lblArrow2 = new System.Windows.Forms.Label();
             this.btnAdjust = new System.Windows.Forms.Button();
-            this.timePickerY2 = new SubtitlesCleanerEditor.TimePicker();
-            this.timePickerY1 = new SubtitlesCleanerEditor.TimePicker();
-            this.timePickerX2 = new SubtitlesCleanerEditor.TimePicker();
-            this.timePickerX1 = new SubtitlesCleanerEditor.TimePicker();
+            this.timePickerY2 = new SubtitlesCleaner.Editor.TimePicker();
+            this.timePickerY1 = new SubtitlesCleaner.Editor.TimePicker();
+            this.timePickerX2 = new SubtitlesCleaner.Editor.TimePicker();
+            this.timePickerX1 = new SubtitlesCleaner.Editor.TimePicker();
             this.btnLoadFromFile = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();

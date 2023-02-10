@@ -1,4 +1,4 @@
-﻿namespace SubtitlesCleanerEditor
+﻿namespace SubtitlesCleaner.Editor
 {
     partial class TimePicker
     {
@@ -31,18 +31,18 @@
             this.components = new System.ComponentModel.Container();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSign = new System.Windows.Forms.Label();
-            this.numericUpDownHH = new SubtitlesCleanerEditor.CustomNumericUpDown();
+            this.numericUpDownHH = new SubtitlesCleaner.Editor.CustomNumericUpDown();
             this.lblSeperator1 = new System.Windows.Forms.Label();
-            this.numericUpDownMM = new SubtitlesCleanerEditor.CustomNumericUpDown();
+            this.numericUpDownMM = new SubtitlesCleaner.Editor.CustomNumericUpDown();
             this.lblSeperator2 = new System.Windows.Forms.Label();
-            this.numericUpDownSS = new SubtitlesCleanerEditor.CustomNumericUpDown();
+            this.numericUpDownSS = new SubtitlesCleaner.Editor.CustomNumericUpDown();
             this.lblSeperator3 = new System.Windows.Forms.Label();
-            this.numericUpDownMS = new SubtitlesCleanerEditor.CustomNumericUpDown();
-            this.btnPlus = new SubtitlesCleanerEditor.RepeatButton();
-            this.btnMinus = new SubtitlesCleanerEditor.RepeatButton();
-            this.btnReset = new SubtitlesCleanerEditor.RepeatButton();
-            this.btnCopy = new SubtitlesCleanerEditor.RepeatButton();
-            this.btnPaste = new SubtitlesCleanerEditor.RepeatButton();
+            this.numericUpDownMS = new SubtitlesCleaner.Editor.CustomNumericUpDown();
+            this.btnPlus = new SubtitlesCleaner.Editor.RepeatButton();
+            this.btnMinus = new SubtitlesCleaner.Editor.RepeatButton();
+            this.btnReset = new SubtitlesCleaner.Editor.RepeatButton();
+            this.btnCopy = new SubtitlesCleaner.Editor.RepeatButton();
+            this.btnPaste = new SubtitlesCleaner.Editor.RepeatButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHH)).BeginInit();

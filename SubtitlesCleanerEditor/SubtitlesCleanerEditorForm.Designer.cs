@@ -1,4 +1,4 @@
-﻿namespace SubtitlesCleanerEditor
+﻿namespace SubtitlesCleaner.Editor
 {
     partial class SubtitlesCleanerEditorForm
     {
@@ -63,7 +63,7 @@
             this.copyCleanSubtitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.txtCleanSubtitle = new System.Windows.Forms.RichTextBox();
-            this.txtSubtitle = new SubtitlesCleanerEditor.RichTextBox();
+            this.txtSubtitle = new SubtitlesCleaner.Editor.RichTextBox();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnFixAndAdvance = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
@@ -85,7 +85,7 @@
             this.btnTimeCalculator = new System.Windows.Forms.Button();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAddTime = new System.Windows.Forms.Button();
-            this.diffTimePicker = new SubtitlesCleanerEditor.TimePicker();
+            this.diffTimePicker = new SubtitlesCleaner.Editor.TimePicker();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
@@ -95,7 +95,7 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSetShowTime = new System.Windows.Forms.Button();
-            this.timePicker = new SubtitlesCleanerEditor.TimePicker();
+            this.timePicker = new SubtitlesCleaner.Editor.TimePicker();
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -455,7 +455,7 @@
             this.txtSubtitle.Size = new System.Drawing.Size(425, 82);
             this.txtSubtitle.TabIndex = 11;
             this.txtSubtitle.Text = "";
-            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<SubtitlesCleanerEditor.LeaveWithChangedTextEventArgs>(this.txtSubtitle_LeaveWithChangedText);
+            this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<SubtitlesCleaner.Editor.LeaveWithChangedTextEventArgs>(this.txtSubtitle_LeaveWithChangedText);
             // 
             // flowLayoutPanel6
             // 
@@ -1024,7 +1024,7 @@
         private System.Windows.Forms.Button btnQuickActions;
         private System.Windows.Forms.CheckBox chkSyncErrorsAndSubtitles;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
-        private SubtitlesCleanerEditor.RichTextBox txtSubtitle;
+        private SubtitlesCleaner.Editor.RichTextBox txtSubtitle;
         private System.Windows.Forms.RichTextBox txtCleanSubtitle;
     }
 }
