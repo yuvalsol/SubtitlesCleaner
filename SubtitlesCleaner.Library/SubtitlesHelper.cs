@@ -3624,7 +3624,7 @@ namespace SubtitlesCleaner.Library
             }
             , new ComplexError() {
                 Regex = new Regex(@"^[A-ZÀ-Ýa-zà-ÿ0-9#\-'.]+:", RegexOptions.Compiled),
-                // not time
+                // exclude time
                 ExcludeRegex = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled),
                 Description = "Possible hearing-impaired"
             }
@@ -3634,14 +3634,14 @@ namespace SubtitlesCleaner.Library
             }
             , new ComplexError() {
                 Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
-                // A... I... OK. 100. 123.45.
-                ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+)\.*$", RegexOptions.Compiled),
+                // exclude:                        A...    I...    OK                         123.45      555-12345  12  A-B-C-D
+                ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+|[A-Z](-[A-Z]){2,})[!?.]*$", RegexOptions.Compiled),
                 Description = "Possible miswritten line"
             }
-            , new Error() {
+            /*, new Error() {
                 Regex = new Regex(@"(?<!""[A-ZÀ-Ýa-zà-ÿ0-9 #\-'.]+)(""[!?])(\s|$)", RegexOptions.Compiled),
                 Description = "Punctuation outside of quotation marks"
-            }
+            }*/
             , new Error() {
                 Regex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
                 Description = "Ending with comma and question mark"
