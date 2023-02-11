@@ -634,7 +634,6 @@ namespace SubtitlesCleaner.Library
                 {
                     if (isPrintCleaning)
                     {
-                        PrintCleaningRule(rule, cleanHICaseInsensitive);
                         PrintCleaning(line, cleanLine, rule, cleanHICaseInsensitive);
                         Console.WriteLine();
                     }
@@ -3825,7 +3824,7 @@ namespace SubtitlesCleaner.Library
             }
         }
 
-        private static void PrintCleaningRule(FindAndReplace rule, bool cleanHICaseInsensitive = false)
+        private static void PrintCleaningRule(FindAndReplace rule, bool cleanHICaseInsensitive)
         {
             Console.WriteLine("Error:  " + rule.SubtitleError);
             PrintCleaningRegex(cleanHICaseInsensitive ? rule.RegexCI : rule.Regex, rule.GroupName, rule.Replacement);
@@ -3847,131 +3846,139 @@ namespace SubtitlesCleaner.Library
             Console.WriteLine("After:  " + cleanLine);
         }
 
-        private static void PrintCleaning(string line, string cleanLine, Regex regexCleaning = null, string replacement = null)
-        {
-            PrintCleaning(line, cleanLine, regexCleaning, null, replacement);
-        }
-
-        private static void PrintCleaning(string line, string cleanLine, Regex regexCleaning, string groupName, string replacement)
-        {
-            PrintCleaningBefore(line, regexCleaning, groupName, replacement);
-            PrintCleaningAfter(cleanLine);
-        }
-
-        private class LineSegment
-        {
-            internal int Index;
-            internal int Length;
-            internal bool IsCapture;
-        }
-
         private static void PrintCleaning(string line, string cleanLine, FindAndReplace rule, bool cleanHICaseInsensitive)
         {
-            if ((string.IsNullOrEmpty(rule.Replacement) && rule.Evaluator != null) || rule.Replacement.Contains("${"))
-            {
-                PrintCleaning(line, cleanLine);
-                return;
-            }
+            PrintCleaningRule(rule, cleanHICaseInsensitive);
+            PrintCleaningBeforeAndAfter(line, cleanLine);
+        }
 
-            List<LineSegment> segments = new List<LineSegment>();
+        private static readonly Color textDeletedColor = Color.Red;
+        private static readonly Color textInsertedColor = Color.LightGreen;
 
-            Regex regex = (cleanHICaseInsensitive ? rule.RegexCI : rule.Regex);
-            var matches = regex.Matches(line);
-            foreach (Match match in matches)
+        private static void PrintCleaningBeforeAndAfter(string text, string cleanText)
+        {
+            var results = NetDiff.DiffUtil.Diff(text ?? string.Empty, cleanText ?? string.Empty);
+
+            Console.Write("Before: ");
+            foreach (var item in results)
             {
-                if (match.Success)
+                if (item.Status == NetDiff.DiffStatus.Equal)
                 {
-                    var groups = match.Groups.Cast<Group>();
-                    if (match.Groups.Count > 1)
-                        groups = groups.Skip(1);
-
-                    foreach (Group group in groups)
+                    if (item.Obj1 != '\r')
+                        Console.Write(item.Obj1);
+                    if (item.Obj1 == '\n')
+                        Console.Write("Before: ");
+                }
+                else if (item.Status == NetDiff.DiffStatus.Deleted)
+                {
+                    if (item.Obj1 != default(char) && item.Obj1 != '\r')
                     {
-                        if (group.Success)
+                        if (item.Obj1 != '\n')
                         {
-                            foreach (Capture capture in group.Captures)
+                            Colorful.Console.Write(item.Obj1, textDeletedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("Before: ");
+                        }
+                    }
+                }
+                else if (item.Status == NetDiff.DiffStatus.Inserted)
+                {
+                    if (item.Obj1 != default(char) && item.Obj1 != '\r')
+                    {
+                        if (item.Obj1 != '\n')
+                        {
+                            Colorful.Console.Write(item.Obj1, textInsertedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("Before: ");
+                        }
+                    }
+                }
+                else if (item.Status == NetDiff.DiffStatus.Modified)
+                {
+                    if (item.Obj1 != item.Obj2)
+                    {
+                        if (item.Obj1 != default(char) && item.Obj1 != '\r')
+                        {
+                            if (item.Obj1 != '\n')
                             {
-                                bool isDuplicate = false;
-                                foreach (LineSegment segment in segments)
-                                {
-                                    if (segment.Index == capture.Index && segment.Length == capture.Length)
-                                    {
-                                        isDuplicate = true;
-                                        break;
-                                    }
-                                }
-
-                                if (isDuplicate == false)
-                                {
-                                    segments.Add(new LineSegment()
-                                    {
-                                        Index = capture.Index,
-                                        Length = capture.Length,
-                                        IsCapture = true
-                                    });
-                                }
+                                Colorful.Console.Write(item.Obj1, textDeletedColor);
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                Console.Write("Before: ");
                             }
                         }
                     }
                 }
             }
+            Console.WriteLine();
 
-            segments.Sort((x, y) => x.Index.CompareTo(y.Index));
-
-            int index = 0;
-            int count = segments.Count;
-            for (int i = 0; i < count; i++)
-            {
-                LineSegment segment = segments[i];
-
-                if (index < segment.Index)
-                {
-                    segments.Add(new LineSegment()
-                    {
-                        Index = index,
-                        Length = segment.Index - index,
-                        IsCapture = false
-                    });
-                }
-
-                index = segment.Index + segment.Length;
-            }
-
-            if (index < line.Length)
-            {
-                segments.Add(new LineSegment()
-                {
-                    Index = index,
-                    Length = line.Length - index,
-                    IsCapture = false
-                });
-            }
-
-            segments.Sort((x, y) => x.Index.CompareTo(y.Index));
-
-            Console.Write("Before: ");
-            PrintCleaning(line, segments, false);
             Console.Write("After:  ");
-            PrintCleaning(line, segments, true, rule.Replacement);
-        }
-
-        private static void PrintCleaning(string line, List<LineSegment> segments, bool withReplacement, string replacement = null)
-        {
-            foreach (LineSegment segment in segments)
+            foreach (var item in results)
             {
-                if (segment.IsCapture)
+                if (item.Status == NetDiff.DiffStatus.Equal)
                 {
-                    if (withReplacement)
-                        Colorful.Console.Write(replacement, Color.Red);
-                    else
-                        Colorful.Console.Write(line.Substring(segment.Index, segment.Length), Color.Red);
+                    if (item.Obj2 != '\r')
+                        Console.Write(item.Obj2);
+                    if (item.Obj2 == '\n')
+                        Console.Write("After:  ");
                 }
-                else
+                else if (item.Status == NetDiff.DiffStatus.Deleted)
                 {
-                    Console.Write(line.Substring(segment.Index, segment.Length));
+                    if (item.Obj2 != default(char) && item.Obj2 != '\r')
+                    {
+                        if (item.Obj2 != '\n')
+                        {
+                            Colorful.Console.Write(item.Obj2, textDeletedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("After:  ");
+                        }
+                    }
+                }
+                else if (item.Status == NetDiff.DiffStatus.Inserted)
+                {
+                    if (item.Obj2 != default(char) && item.Obj2 != '\r')
+                    {
+                        if (item.Obj2 != '\n')
+                        {
+                            Colorful.Console.Write(item.Obj2, textInsertedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("After:  ");
+                        }
+                    }
+                }
+                else if (item.Status == NetDiff.DiffStatus.Modified)
+                {
+                    if (item.Obj1 != item.Obj2)
+                    {
+                        if (item.Obj2 != default(char) && item.Obj2 != '\r')
+                        {
+                            if (item.Obj2 != '\n')
+                            {
+                                Colorful.Console.Write(item.Obj2, textInsertedColor);
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                Console.Write("After:  ");
+                            }
+                        }
+                    }
                 }
             }
-
             Console.WriteLine();
         }
 
