@@ -704,7 +704,7 @@ namespace SubtitlesCleaner.Library
                     lines.InsertRange(i, splitLines);
 
                     if (isPrintCleaning)
-                        PrintCleaning(lineBefore, splitLines, regexMissingNewLine, string.Empty);
+                        PrintCleaning(lineBefore, splitLines, regexMissingNewLine, null);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Missing_New_Line;
@@ -762,7 +762,7 @@ namespace SubtitlesCleaner.Library
                                 lines[startItem.index] = regexQMStart.ReplaceGroup(startItem.line, "QM", "♪");
 
                                 if (isPrintCleaning)
-                                    PrintCleaning(startItem.line, lines[startItem.index], regexQMStart, "QM", "♪");
+                                    PrintCleaning(startItem.line, lines[startItem.index], regexQMStart, groupName: "QM", replacement: "♪");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Notes_Error;
@@ -773,7 +773,7 @@ namespace SubtitlesCleaner.Library
                                 lines[endItem.index] = regexQMEnd.ReplaceGroup(endItem.line, "QM", "♪");
 
                                 if (isPrintCleaning)
-                                    PrintCleaning(endItem.line, lines[endItem.index], regexQMEnd, "QM", "♪");
+                                    PrintCleaning(endItem.line, lines[endItem.index], regexQMEnd, groupName: "QM", replacement: "♪");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Notes_Error;
@@ -2213,7 +2213,7 @@ namespace SubtitlesCleaner.Library
                         lines[0] = "- " + lines[0];
 
                     if (isPrintCleaning)
-                        PrintCleaning(lineBefore, lines[0], regexContainsDialog);
+                        PrintCleaning(lineBefore, lines[0], regexContainsDialog, null);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
@@ -3425,7 +3425,7 @@ namespace SubtitlesCleaner.Library
                     "Regex:  " +
                     regexCleaning.ToString() +
                     (string.IsNullOrEmpty(groupName) ? string.Empty : " -> " + groupName) +
-                    (string.IsNullOrEmpty(replacement) ? string.Empty : " -> " + (replacement.StartsWith(" ") || replacement.EndsWith(" ") ? "\"" + replacement + "\"" : replacement))
+                    (replacement == null ? string.Empty : " -> " + (replacement == string.Empty || replacement.StartsWith(" ") || replacement.EndsWith(" ") ? "\"" + replacement + "\"" : replacement))
                 );
             }
         }
@@ -3436,9 +3436,9 @@ namespace SubtitlesCleaner.Library
             PrintCleaning(text, cleanText, cleanHICaseInsensitive ? rule.RegexCI : rule.Regex, rule.GroupName, rule.Replacement, null);
         }
 
-        private static void PrintCleaning(string text, string cleanText, [CallerMemberName] string name = null)
+        private static void PrintCleaning(IEnumerable<string> text, string cleanText, [CallerMemberName] string name = null)
         {
-            PrintCleaning(text, cleanText, null, null, null, name);
+            PrintCleaning(string.Join(Environment.NewLine, text), cleanText, null, null, null, name);
         }
 
         private static void PrintCleaning(string text, IEnumerable<string> cleanText, [CallerMemberName] string name = null)
@@ -3446,9 +3446,9 @@ namespace SubtitlesCleaner.Library
             PrintCleaning(text, string.Join(Environment.NewLine, cleanText), null, null, null, name);
         }
 
-        private static void PrintCleaning(IEnumerable<string> text, string cleanText, [CallerMemberName] string name = null)
+        private static void PrintCleaning(string text, IEnumerable<string> cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
         {
-            PrintCleaning(string.Join(Environment.NewLine, text), cleanText, null, null, null, name);
+            PrintCleaning(text, string.Join(Environment.NewLine, cleanText), regexCleaning, null, replacement, name);
         }
 
         private static void PrintCleaning(IEnumerable<string> text, IEnumerable<string> cleanText, [CallerMemberName] string name = null)
@@ -3456,24 +3456,19 @@ namespace SubtitlesCleaner.Library
             PrintCleaning(string.Join(Environment.NewLine, text), string.Join(Environment.NewLine, cleanText), null, null, null, name);
         }
 
-        private static void PrintCleaning(string text, string cleanText, Regex regexCleaning, [CallerMemberName] string name = null)
+        private static void PrintCleaning(IEnumerable<string> text, IEnumerable<string> cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
         {
-            PrintCleaning(text, cleanText, regexCleaning, null, null, name);
+            PrintCleaning(string.Join(Environment.NewLine, text), string.Join(Environment.NewLine, cleanText), regexCleaning, null, replacement, name);
+        }
+
+        private static void PrintCleaning(string text, string cleanText, [CallerMemberName] string name = null)
+        {
+            PrintCleaning(text, cleanText, null, null, null, name);
         }
 
         private static void PrintCleaning(string text, string cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
         {
             PrintCleaning(text, cleanText, regexCleaning, null, replacement, name);
-        }
-
-        private static void PrintCleaning(string text, IEnumerable<string> cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
-        {
-            PrintCleaning(text, string.Join(Environment.NewLine, cleanText), regexCleaning, null, replacement, name);
-        }
-
-        private static void PrintCleaning(IEnumerable<string> text, IEnumerable<string> cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
-        {
-            PrintCleaning(string.Join(Environment.NewLine, text), string.Join(Environment.NewLine, cleanText), regexCleaning, null, replacement, name);
         }
 
         private static void PrintCleaning(string text, string cleanText, Regex regexCleaning, string groupName, string replacement, [CallerMemberName] string name = null)
