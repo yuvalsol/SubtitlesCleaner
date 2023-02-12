@@ -3486,7 +3486,7 @@ namespace SubtitlesCleaner.Library
         }
 
         private static readonly Color textDeletedColor = Color.Red;
-        private static readonly Color textInsertedColor = Color.LightGreen;
+        private static readonly Color textInsertedColor = Color.FromArgb(171, 242, 188);
 
         private static void PrintCleaningBeforeAndAfter(string text, string cleanText)
         {
@@ -3500,7 +3500,7 @@ namespace SubtitlesCleaner.Library
                     if (item.Obj1 != '\r')
                         Console.Write(item.Obj1);
                     if (item.Obj1 == '\n')
-                        Console.Write("Before: ");
+                        Console.Write("        ");
                 }
                 else if (item.Status == NetDiff.DiffStatus.Deleted)
                 {
@@ -3513,7 +3513,7 @@ namespace SubtitlesCleaner.Library
                         else
                         {
                             Console.WriteLine();
-                            Console.Write("Before: ");
+                            Console.Write("        ");
                         }
                     }
                 }
@@ -3528,7 +3528,7 @@ namespace SubtitlesCleaner.Library
                         else
                         {
                             Console.WriteLine();
-                            Console.Write("Before: ");
+                            Console.Write("        ");
                         }
                     }
                 }
@@ -3545,7 +3545,7 @@ namespace SubtitlesCleaner.Library
                             else
                             {
                                 Console.WriteLine();
-                                Console.Write("Before: ");
+                                Console.Write("        ");
                             }
                         }
                     }
@@ -3561,7 +3561,7 @@ namespace SubtitlesCleaner.Library
                     if (item.Obj2 != '\r')
                         Console.Write(item.Obj2);
                     if (item.Obj2 == '\n')
-                        Console.Write("After:  ");
+                        Console.Write("        ");
                 }
                 else if (item.Status == NetDiff.DiffStatus.Deleted)
                 {
@@ -3574,7 +3574,7 @@ namespace SubtitlesCleaner.Library
                         else
                         {
                             Console.WriteLine();
-                            Console.Write("After:  ");
+                            Console.Write("        ");
                         }
                     }
                 }
@@ -3589,7 +3589,7 @@ namespace SubtitlesCleaner.Library
                         else
                         {
                             Console.WriteLine();
-                            Console.Write("After:  ");
+                            Console.Write("        ");
                         }
                     }
                 }
@@ -3606,7 +3606,7 @@ namespace SubtitlesCleaner.Library
                             else
                             {
                                 Console.WriteLine();
-                                Console.Write("After:  ");
+                                Console.Write("        ");
                             }
                         }
                     }
