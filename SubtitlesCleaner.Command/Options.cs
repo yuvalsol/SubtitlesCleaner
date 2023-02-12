@@ -34,6 +34,9 @@ namespace SubtitlesCleaner.Command
 
         [Option("suppressErrorFile", Required = false, HelpText = "Do not create error file with possible errors")]
         public bool suppressErrorFile { get; set; }
+
+        [Option("printCleaning", Required = false, HelpText = "Print to console what the cleaning process does")]
+        public bool printCleaning { get; set; }
     }
 
     [Verb("cleanEmptyAndNonSubtitles", HelpText = "Clean empty and non-subtitles")]
@@ -41,6 +44,9 @@ namespace SubtitlesCleaner.Command
     {
         [Option("firstSubtitlesCount", Required = false, HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
+
+        [Option("printCleaning", Required = false, HelpText = "Print to console what the cleaning process does")]
+        public bool printCleaning { get; set; }
     }
 
     [Verb("addTime", HelpText = "Add time to subtitles")]

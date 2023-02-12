@@ -55,6 +55,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                              (--print|--save [--outputFile file] [--outputFolder folder])");
                                 Console.WriteLine("                              [--suppressBackupFile]");
                                 Console.WriteLine("                              [--suppressErrorFile]");
+                                Console.WriteLine("                              [--printCleaning]");
                                 Console.WriteLine();
                             }
 
@@ -65,6 +66,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                                  --path fileOrFolder");
                                 Console.WriteLine("                                                  (--print|--save [--outputFile file] [--outputFolder folder])");
                                 Console.WriteLine("                                                  [--suppressBackupFile]");
+                                Console.WriteLine("                                                  [--printCleaning]");
                                 Console.WriteLine();
                             }
 
