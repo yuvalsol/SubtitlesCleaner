@@ -3408,7 +3408,7 @@ namespace SubtitlesCleaner.Library
         private static void PrintCleaningMethodName([CallerMemberName] string name = null)
         {
             if (string.IsNullOrEmpty(name) == false)
-                Console.WriteLine(name);
+                Console.WriteLine("Method: " + name);
         }
 
         private static void PrintCleaningRegex(Regex regexCleaning1, Regex regexCleaning2)
@@ -3473,8 +3473,7 @@ namespace SubtitlesCleaner.Library
 
         private static void PrintCleaning(string text, string cleanText, Regex regexCleaning, string groupName, string replacement, [CallerMemberName] string name = null)
         {
-            if (string.IsNullOrEmpty(name) == false)
-                Console.WriteLine(name);
+            PrintCleaningMethodName(name);
             PrintCleaningRegex(regexCleaning, groupName, replacement);
             PrintCleaningBeforeAndAfter(text, cleanText);
             Console.WriteLine();
