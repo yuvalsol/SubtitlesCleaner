@@ -63,6 +63,7 @@ SubtitlesCleanerCommand clean [--cleanHICaseInsensitive]
                               (--print|--save [--outputFile file] [--outputFolder folder])
                               [--suppressBackupFile]
                               [--suppressErrorFile]
+                              [--printCleaning]
 ```
 
 By default, Subtitles Cleaner Command identifies hearing-impaired line, which is not in any brackets, when the line is all in capital letters. Use this parameter to clean hearing-impaired lines when they are both upper and lower letters (sentence-like).
@@ -109,43 +110,57 @@ Subtitles Cleaner Command creates an error file with extension .error.srt. This 
 --suppressErrorFile         Do not create error file with possible errors
 ```
 
+Print to console the cleaning process.
+
+```console
+--printCleaning             Print to console what the cleaning process does
+```
+
 **Examples:**
 
-Clean subtitle file
+Clean subtitle file.
 
 ```console
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save
 ```
 
-Clean subtitle file and save results in another folder
+Clean subtitle file and save results in another folder.
 
 ```console
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --outputFolder "C:\My Documents\Subtitles"
 ```
 
-Clean hearing-impaired case-insensitive
+Clean hearing-impaired case-insensitive.
 
 ```console
 SubtitlesCleanerCommand clean --cleanHICaseInsensitive --path "C:\My Documents\Subtitle.srt" --save
 ```
 
-Clean subtitle file and suppress backup & error files
+Clean subtitle file and suppress backup & error files.
 
 ```console
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --suppressBackupFile --suppressErrorFile
 ```
 
-Clean all subtitle files in the folder
+Clean all subtitle files in the folder.
 
 ```console
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitles" --save
 ```
 
-Print to console
+Print to console.
 
 ```console
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --print
 ```
+
+Print to console the subtitle file and the cleaning process. Very useful when tracking cleaning errors.
+
+```console
+SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --print --printCleaning
+```
+
+![Print Cleaning](./Solution%20Items/Images/PrintCleaning.jpg "Print Cleaning")
 
 ### Clean Empty And Non-Subtitles
 
@@ -156,6 +171,7 @@ SubtitlesCleanerCommand cleanEmptyAndNonSubtitles [--firstSubtitlesCount N]
                                                   --path fileOrFolder
                                                   (--print|--save [--outputFile file] [--outputFolder folder])
                                                   [--suppressBackupFile]
+                                                  [--printCleaning]
 ```
 
 ### Add Time

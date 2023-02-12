@@ -606,7 +606,7 @@ namespace SubtitlesCleaner.Editor
             txtSubtitle.Text = text;
             txtCleanSubtitle.Text = cleanText;
 
-            var results = NetDiff.DiffUtil.Diff(text, cleanText);
+            var results = NetDiff.DiffUtil.Diff(text ?? string.Empty, cleanText ?? string.Empty);
 
             int selectionStart1 = 0;
             int selectionStart2 = 0;

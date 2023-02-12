@@ -11,7 +11,7 @@ namespace SubtitlesCleaner.Command
     static class SubtitlesHandler
     {
         public static readonly bool IsProduction = true;
-        private static readonly bool IsPrintCleaning = false;
+        private static readonly bool PrintCleaning = false;
         private static readonly bool CleanHICaseInsensitive = false;
         private static readonly int? FirstSubtitlesCount = null;
 
@@ -45,7 +45,7 @@ namespace SubtitlesCleaner.Command
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, IsPrintCleaning);
+                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, options.printCleaning || PrintCleaning);
 
                 if (options.save)
                     Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressErrorFile);
@@ -70,7 +70,7 @@ namespace SubtitlesCleaner.Command
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles = subtitles.CleanEmptyAndNonSubtitles(IsPrintCleaning);
+                subtitles = subtitles.CleanEmptyAndNonSubtitles(options.printCleaning || PrintCleaning);
 
                 if (options.save)
                     Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
