@@ -633,10 +633,7 @@ namespace SubtitlesCleaner.Library
                 if (line != cleanLine)
                 {
                     if (isPrintCleaning)
-                    {
                         PrintCleaning(line, cleanLine, rule, cleanHICaseInsensitive);
-                        Console.WriteLine();
-                    }
 
                     line = cleanLine;
 
@@ -682,11 +679,7 @@ namespace SubtitlesCleaner.Library
                 string line = lines[i];
                 if (regexMissingNewLine.IsMatch(line))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line, regexMissingNewLine);
-                    }
+                    string lineBefore = (isPrintCleaning ? line : null);
 
                     int[] splitIndexes = regexMissingNewLine.Matches(line)
                         .Cast<Match>()
@@ -711,11 +704,7 @@ namespace SubtitlesCleaner.Library
                     lines.InsertRange(i, splitLines);
 
                     if (isPrintCleaning)
-                    {
-                        foreach (var splitLine in splitLines)
-                            PrintCleaningAfter(splitLine);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(lineBefore, splitLines, regexMissingNewLine, string.Empty);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Missing_New_Line;
@@ -770,19 +759,10 @@ namespace SubtitlesCleaner.Library
                         {
                             if (startItem.isStartsWithQM)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(startItem.line, regexQMStart, "QM", "♪");
-                                }
-
                                 lines[startItem.index] = regexQMStart.ReplaceGroup(startItem.line, "QM", "♪");
 
                                 if (isPrintCleaning)
-                                {
-                                    PrintCleaningAfter(lines[startItem.index]);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(startItem.line, lines[startItem.index], regexQMStart, "QM", "♪");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Notes_Error;
@@ -790,19 +770,10 @@ namespace SubtitlesCleaner.Library
 
                             if (endItem.isEndsWithQM)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(endItem.line, regexQMEnd, "QM", "♪");
-                                }
-
                                 lines[endItem.index] = regexQMEnd.ReplaceGroup(endItem.line, "QM", "♪");
 
                                 if (isPrintCleaning)
-                                {
-                                    PrintCleaningAfter(lines[endItem.index]);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(endItem.line, lines[endItem.index], regexQMEnd, "QM", "♪");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Notes_Error;
@@ -812,19 +783,12 @@ namespace SubtitlesCleaner.Library
                                 itemsBetween.All(item => item.isStartsWithDash == false) &&
                                 endItem.isStartsWithDash == false)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(lines[startItem.index]);
-                                }
+                                string lineBefore = (isPrintCleaning ? lines[startItem.index] : null);
 
                                 lines[startItem.index] = lines[startItem.index].TrimStart('-');
 
                                 if (isPrintCleaning)
-                                {
-                                    PrintCleaningAfter(lines[startItem.index]);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(lineBefore, lines[startItem.index]);
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Notes_Error;
@@ -880,20 +844,13 @@ namespace SubtitlesCleaner.Library
                     {
                         if (item.isMatchHIPrefix)
                         {
-                            if (isPrintCleaning)
-                            {
-                                PrintCleaningMethodName();
-                                PrintCleaningBefore(lines[item.index], (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash), "${Prefix} - ${Subtitle}");
-                            }
+                            string lineBefore = (isPrintCleaning ? lines[item.index] : null);
 
                             Match match = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).Match(lines[item.index]);
                             lines[item.index] = (match.Groups["Prefix"].Value + " - " + match.Groups["Subtitle"].Value).Trim();
 
                             if (isPrintCleaning)
-                            {
-                                PrintCleaningAfter(lines[item.index]);
-                                Console.WriteLine();
-                            }
+                                PrintCleaning(lineBefore, lines[item.index], (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash), "${Prefix} - ${Subtitle}");
                         }
                     }
 
@@ -951,11 +908,7 @@ namespace SubtitlesCleaner.Library
                 // <i>- Line 2</i>
                 if (regexMergedLinesWithHI.IsMatch(lines[0]))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(lines[0], regexMergedLinesWithHI, "${Line1}|${Line2}");
-                    }
+                    string lineBefore = (isPrintCleaning ? lines[0] : null);
 
                     Match match = regexMergedLinesWithHI.Match(lines[0]);
                     string line1 = match.Groups["Line1"].Value;
@@ -964,11 +917,7 @@ namespace SubtitlesCleaner.Library
                     lines.Add(line2);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(line1);
-                        PrintCleaningAfter(line2);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(lineBefore, new string[] { line1, line2 }, regexMergedLinesWithHI, "${Line1}|${Line2}");
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Hearing_Impaired;
@@ -1009,12 +958,8 @@ namespace SubtitlesCleaner.Library
                         if (isPrintCleaning)
                         {
                             PrintCleaningMethodName();
-                            PrintCleaningBefore(firstLine, regexHI1Start);
-                            for (int i = 1; i < lines.Count - 1; i++)
-                                PrintCleaningBefore(lines[i]);
-                            PrintCleaningBefore(lastLine, regexHI1End);
-                            PrintCleaningAfter(string.Empty);
-                            Console.WriteLine();
+                            PrintCleaningRegex(regexHI1Start, regexHI1End);
+                            PrintCleaning(lines, string.Empty, name: null);
                         }
 
                         if (isCheckMode)
@@ -1033,12 +978,8 @@ namespace SubtitlesCleaner.Library
                         if (isPrintCleaning)
                         {
                             PrintCleaningMethodName();
-                            PrintCleaningBefore(firstLine, regexHI2Start);
-                            for (int i = 1; i < lines.Count - 1; i++)
-                                PrintCleaningBefore(lines[i]);
-                            PrintCleaningBefore(lastLine, regexHI2End);
-                            PrintCleaningAfter(string.Empty);
-                            Console.WriteLine();
+                            PrintCleaningRegex(regexHI2Start, regexHI2End);
+                            PrintCleaning(lines, string.Empty, name: null);
                         }
 
                         if (isCheckMode)
@@ -1062,10 +1003,8 @@ namespace SubtitlesCleaner.Library
                         if (isPrintCleaning)
                         {
                             PrintCleaningMethodName();
-                            PrintCleaningBefore(line1, regexHI1Start);
-                            PrintCleaningBefore(line2, regexHI1End);
-                            PrintCleaningAfter(string.Empty);
-                            Console.WriteLine();
+                            PrintCleaningRegex(regexHI1Start, regexHI1End);
+                            PrintCleaning(new string[] { line1, line2 }, string.Empty, name: null);
                         }
 
                         if (isCheckMode)
@@ -1080,10 +1019,8 @@ namespace SubtitlesCleaner.Library
                         if (isPrintCleaning)
                         {
                             PrintCleaningMethodName();
-                            PrintCleaningBefore(line1, regexHI2Start);
-                            PrintCleaningBefore(line2, regexHI2End);
-                            PrintCleaningAfter(string.Empty);
-                            Console.WriteLine();
+                            PrintCleaningRegex(regexHI2Start, regexHI2End);
+                            PrintCleaning(new string[] { line1, line2 }, string.Empty, name: null);
                         }
 
                         if (isCheckMode)
@@ -1120,23 +1057,11 @@ namespace SubtitlesCleaner.Library
                     line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
                     line3.StartsWith("- ") && line3.EndsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                        PrintCleaningBefore(line3);
-                    }
-
                     lines[1] = "<i>- " + line2;
                     lines.RemoveAt(0);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[1]);
-                        PrintCleaningAfter(line3);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2, line3 }, new string[] { lines[1], line3 });
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1151,23 +1076,11 @@ namespace SubtitlesCleaner.Library
                     line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
                     line3.StartsWith("<i>") == false && line3.EndsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                        PrintCleaningBefore(line3);
-                    }
-
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[1]);
-                        PrintCleaningAfter(line3);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2, line3 }, new string[] { lines[1], line3 });
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1182,23 +1095,11 @@ namespace SubtitlesCleaner.Library
                     line2.StartsWith("- ") && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
                     line3.StartsWith("- ") && line3.EndsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                        PrintCleaningBefore(line3);
-                    }
-
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[1]);
-                        PrintCleaningAfter(line3);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2, line3 }, new string[] { lines[1], line3 });
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1214,24 +1115,11 @@ namespace SubtitlesCleaner.Library
                     line2.StartsWith("- ") == false && line2.StartsWith("<i>") == false && line2.EndsWith("</i>") == false &&
                     line3.StartsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                        PrintCleaningBefore(line3);
-                    }
-
                     lines[1] = lines[1] + "</i>";
                     lines[2] = lines[2].Substring(4);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(line1);
-                        PrintCleaningAfter(lines[1]);
-                        PrintCleaningAfter(lines[2]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2, line3 }, new string[] { line1, lines[1], lines[2] });
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1261,21 +1149,11 @@ namespace SubtitlesCleaner.Library
                 // Line 2: <i>- Text</i>
                 if (line1 == "<i>-" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                    }
-
                     lines[1] = "<i>" + line2.Substring(2);
                     lines.RemoveAt(0);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[1]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2 }, lines[1]);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1286,21 +1164,11 @@ namespace SubtitlesCleaner.Library
                 // Line 2: <i>Text</i>
                 else if (line1 == "<i>" && line2.StartsWith("<i>") == false && line2.EndsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                    }
-
                     lines[1] = "<i>" + line2;
                     lines.RemoveAt(0);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[1]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2 }, lines[1]);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1311,21 +1179,11 @@ namespace SubtitlesCleaner.Library
                 // Line 2: <i>Text</i>
                 else if (line1 == "- <i>" && line2.StartsWith("- ") && line2.EndsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                    }
-
                     lines[1] = "<i>" + line2.Substring(2);
                     lines.RemoveAt(0);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[1]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2 }, lines[1]);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1336,21 +1194,11 @@ namespace SubtitlesCleaner.Library
                 // Line 1: <i>Text 1</i>
                 else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2 == "</i>")
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                    }
-
                     lines[0] = lines[0] + "</i>";
                     lines.RemoveAt(1);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[0]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2 }, lines[0]);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1362,22 +1210,11 @@ namespace SubtitlesCleaner.Library
                 // Line 2: Text 2
                 else if (line1.StartsWith("<i>") && line1.EndsWith("</i>") == false && line2.StartsWith("</i>"))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(line1);
-                        PrintCleaningBefore(line2);
-                    }
-
                     lines[0] = lines[0] + "</i>";
                     lines[1] = lines[1].Substring(4);
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[0]);
-                        PrintCleaningAfter(lines[1]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(new string[] { line1, line2 }, new string[] { lines[0], lines[1] });
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Redundant_Spaces;
@@ -1400,20 +1237,13 @@ namespace SubtitlesCleaner.Library
             {
                 if (regexDialog.IsMatch(lines[0]))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(lines[0], regexDialog, "${Italic}${Subtitle}");
-                    }
+                    string lineBefore = (isPrintCleaning ? lines[0] : null);
 
                     Match match = regexDialog.Match(lines[0]);
                     lines[0] = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[0]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(lineBefore, lines[0], regexDialog, "${Italic}${Subtitle}");
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
@@ -1422,12 +1252,7 @@ namespace SubtitlesCleaner.Library
                 if (lines[0] == "-" || lines[0] == "<i>" || lines[0] == "</i>")
                 {
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(lines[0]);
-                        PrintCleaningAfter(string.Empty);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(lines[0], string.Empty);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Empty_Line;
@@ -1451,20 +1276,13 @@ namespace SubtitlesCleaner.Library
             {
                 if ((cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(lines[0]))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(lines[0], (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix), "${Prefix}${Subtitle}");
-                    }
+                    string lineBefore = (isPrintCleaning ? lines[0] : null);
 
                     Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     lines[0] = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[0]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(lineBefore, lines[0], (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix), "${Prefix}${Subtitle}");
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Hearing_Impaired;
@@ -1473,12 +1291,7 @@ namespace SubtitlesCleaner.Library
                 if (lines[0] == "-" || lines[0] == "<i>" || lines[0] == "</i>")
                 {
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(lines[0]);
-                        PrintCleaningAfter(string.Empty);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(lines[0], string.Empty);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Empty_Line;
@@ -1513,19 +1326,12 @@ namespace SubtitlesCleaner.Library
                     string newLine = match.Groups["Subtitle"].Value;
                     if (lines[0] != newLine)
                     {
-                        if (isPrintCleaning)
-                        {
-                            PrintCleaningMethodName();
-                            PrintCleaningBefore(lines[0], (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix), "${Subtitle}");
-                        }
+                        string lineBefore = (isPrintCleaning ? lines[0] : null);
 
                         lines[0] = newLine;
 
                         if (isPrintCleaning)
-                        {
-                            PrintCleaningAfter(lines[0]);
-                            Console.WriteLine();
-                        }
+                            PrintCleaning(lineBefore, lines[0], (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix), "${Subtitle}");
 
                         if (isCheckMode)
                             subtitleError |= SubtitleError.Hearing_Impaired;
@@ -1541,19 +1347,12 @@ namespace SubtitlesCleaner.Library
                             string newLine = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
                             if (lines[item.index] != newLine)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(lines[item.index], (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix), "${Prefix}${Subtitle}");
-                                }
+                                string lineBefore = (isPrintCleaning ? lines[item.index] : null);
 
                                 lines[item.index] = newLine;
 
                                 if (isPrintCleaning)
-                                {
-                                    PrintCleaningAfter(newLine);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(lineBefore, lines[item.index], (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix), "${Prefix}${Subtitle}");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Hearing_Impaired;
@@ -1604,12 +1403,7 @@ namespace SubtitlesCleaner.Library
 
                 if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningBefore(lines[i]);
-                    }
+                    List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                     // ...line 1
                     // - Line 2
@@ -1619,23 +1413,14 @@ namespace SubtitlesCleaner.Library
                     lines[0] = "- " + lines[0];
 
                     if (isPrintCleaning)
-                    {
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningAfter(lines[i]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(linesBefore, lines);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningBefore(lines[i]);
-                    }
+                    List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                     // ♪ Line 1
                     // - Line 2
@@ -1645,23 +1430,14 @@ namespace SubtitlesCleaner.Library
                     lines[0] = "- " + lines[0];
 
                     if (isPrintCleaning)
-                    {
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningAfter(lines[i]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(linesBefore, lines);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isMatchDialog))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningBefore(lines[i]);
-                    }
+                    List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                     // <i>...line 1
                     // - Line 2
@@ -1671,23 +1447,14 @@ namespace SubtitlesCleaner.Library
                     lines[0] = "<i>- " + lines[0].Substring(3);
 
                     if (isPrintCleaning)
-                    {
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningAfter(lines[i]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(linesBefore, lines);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningBefore(lines[i]);
-                    }
+                    List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                     // - Line 1
                     // ...line 2
@@ -1698,23 +1465,14 @@ namespace SubtitlesCleaner.Library
                         lines[i] = "- " + lines[i];
 
                     if (isPrintCleaning)
-                    {
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningAfter(lines[i]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(linesBefore, lines);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
                 else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningBefore(lines[i]);
-                    }
+                    List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                     // - Line 1
                     // ♪ Line 2
@@ -1725,11 +1483,7 @@ namespace SubtitlesCleaner.Library
                         lines[i] = "- " + lines[i];
 
                     if (isPrintCleaning)
-                    {
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningAfter(lines[i]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(linesBefore, lines);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
@@ -1771,22 +1525,12 @@ namespace SubtitlesCleaner.Library
                             string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
                             if (lines[0] != newLine)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(lines[0], regexDialog, "${Italic}${Subtitle}");
-                                    for (int i = 1; i < lines.Count; i++)
-                                        PrintCleaningBefore(lines[i]);
-                                }
+                                List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                                 lines[0] = newLine;
 
                                 if (isPrintCleaning)
-                                {
-                                    for (int i = 0; i < lines.Count; i++)
-                                        PrintCleaningAfter(lines[i]);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Dialog_Error;
@@ -1805,22 +1549,12 @@ namespace SubtitlesCleaner.Library
                             string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
                             if (lines[0] != newLine)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(lines[0], regexDialog, "${Italic}${Subtitle}");
-                                    for (int i = 1; i < lines.Count; i++)
-                                        PrintCleaningBefore(lines[i]);
-                                }
+                                List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                                 lines[0] = newLine;
 
                                 if (isPrintCleaning)
-                                {
-                                    for (int i = 0; i < lines.Count; i++)
-                                        PrintCleaningAfter(lines[i]);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Dialog_Error;
@@ -1828,12 +1562,7 @@ namespace SubtitlesCleaner.Library
                         }
                         else
                         {
-                            if (isPrintCleaning)
-                            {
-                                PrintCleaningMethodName();
-                                for (int i = 0; i < lines.Count; i++)
-                                    PrintCleaningBefore(lines[i]);
-                            }
+                            List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                             // - Line 1
                             // Line 2
@@ -1843,11 +1572,7 @@ namespace SubtitlesCleaner.Library
                             lines[1] = "- " + lines[1];
 
                             if (isPrintCleaning)
-                            {
-                                for (int i = 0; i < lines.Count; i++)
-                                    PrintCleaningAfter(lines[i]);
-                                Console.WriteLine();
-                            }
+                                PrintCleaning(linesBefore, lines);
 
                             if (isCheckMode)
                                 subtitleError |= SubtitleError.Dialog_Error;
@@ -1875,22 +1600,12 @@ namespace SubtitlesCleaner.Library
                             string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
                             if (lines[0] != newLine)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(lines[0], regexDialog, "${Italic}${Subtitle}");
-                                    for (int i = 1; i < lines.Count; i++)
-                                        PrintCleaningBefore(lines[i]);
-                                }
+                                List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                                 lines[0] = newLine;
 
                                 if (isPrintCleaning)
-                                {
-                                    for (int i = 0; i < lines.Count; i++)
-                                        PrintCleaningAfter(lines[i]);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Dialog_Error;
@@ -1915,12 +1630,7 @@ namespace SubtitlesCleaner.Library
                         resultsDialog[0].isEndsWithQuestionMark ||
                         resultsDialog[0].isEndsWithExclamationMark))
                     {
-                        if (isPrintCleaning)
-                        {
-                            PrintCleaningMethodName();
-                            for (int i = 0; i < lines.Count; i++)
-                                PrintCleaningBefore(lines[i]);
-                        }
+                        List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                         // line 1.
                         // - Line 2
@@ -1930,23 +1640,14 @@ namespace SubtitlesCleaner.Library
                         lines[0] = (isStartsWithItalics ? "<i>" : string.Empty) + "- " + line0;
 
                         if (isPrintCleaning)
-                        {
-                            for (int i = 0; i < lines.Count; i++)
-                                PrintCleaningAfter(lines[i]);
-                            Console.WriteLine();
-                        }
+                            PrintCleaning(linesBefore, lines);
 
                         if (isCheckMode)
                             subtitleError |= SubtitleError.Dialog_Error;
                     }
                     else if (regexCapitalLetter.IsMatch(firstCharFirstLine))
                     {
-                        if (isPrintCleaning)
-                        {
-                            PrintCleaningMethodName();
-                            for (int i = 0; i < lines.Count; i++)
-                                PrintCleaningBefore(lines[i]);
-                        }
+                        List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                         // Line 1
                         // - Line 2
@@ -1956,11 +1657,7 @@ namespace SubtitlesCleaner.Library
                         lines[0] = (isStartsWithItalics ? "<i>" : string.Empty) + "- " + line0;
 
                         if (isPrintCleaning)
-                        {
-                            for (int i = 0; i < lines.Count; i++)
-                                PrintCleaningAfter(lines[i]);
-                            Console.WriteLine();
-                        }
+                            PrintCleaning(linesBefore, lines);
 
                         if (isCheckMode)
                             subtitleError |= SubtitleError.Dialog_Error;
@@ -1976,22 +1673,12 @@ namespace SubtitlesCleaner.Library
                         string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
                         if (lines[1] != newLine)
                         {
-                            if (isPrintCleaning)
-                            {
-                                PrintCleaningMethodName();
-                                PrintCleaningRegex(regexDialog, "${Italic}${Subtitle}");
-                                for (int i = 0; i < lines.Count; i++)
-                                    PrintCleaningBefore(lines[i]);
-                            }
+                            List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                             lines[1] = newLine;
 
                             if (isPrintCleaning)
-                            {
-                                for (int i = 0; i < lines.Count; i++)
-                                    PrintCleaningAfter(lines[i]);
-                                Console.WriteLine();
-                            }
+                                PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
 
                             if (isCheckMode)
                                 subtitleError |= SubtitleError.Dialog_Error;
@@ -2008,19 +1695,12 @@ namespace SubtitlesCleaner.Library
                             string newLine = match.Groups["Italic"].Value + "- " + match.Groups["Subtitle"].Value;
                             if (lines[item.index] != newLine)
                             {
-                                if (isPrintCleaning)
-                                {
-                                    PrintCleaningMethodName();
-                                    PrintCleaningBefore(lines[item.index], regexDialog, "${Italic} - ${Subtitle}");
-                                }
+                                string lineBefore = (isPrintCleaning ? lines[item.index] : null);
 
                                 lines[item.index] = newLine;
 
                                 if (isPrintCleaning)
-                                {
-                                    PrintCleaningAfter(newLine);
-                                    Console.WriteLine();
-                                }
+                                    PrintCleaning(lineBefore, lines[item.index], regexDialog, "${Italic} - ${Subtitle}");
 
                                 if (isCheckMode)
                                     subtitleError |= SubtitleError.Dialog_Error;
@@ -2339,18 +2019,7 @@ namespace SubtitlesCleaner.Library
                     }
                 }
 
-                if (startsWithAmpersand.Count > 0 ||
-                    startsWithI.Count > 0 ||
-                    endsWithAmpersand.Count > 0 ||
-                    endsWithI.Count > 0)
-                {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningBefore(lines[i]);
-                    }
-                }
+                List<string> linesBefore = (startsWithAmpersand.HasAny() && startsWithI.HasAny() && endsWithAmpersand.HasAny() && endsWithI.HasAny() ? new List<string>(lines) : null);
 
                 foreach (int index in startsWithAmpersand)
                 {
@@ -2448,17 +2117,10 @@ namespace SubtitlesCleaner.Library
                         lines[index] = lines[index].Substring(0, lines[index].Length - 6) + "</i> ♪";
                 }
 
-                if (startsWithAmpersand.Count > 0 ||
-                    startsWithI.Count > 0 ||
-                    endsWithAmpersand.Count > 0 ||
-                    endsWithI.Count > 0)
+                if (startsWithAmpersand.HasAny() && startsWithI.HasAny() && endsWithAmpersand.HasAny() && endsWithI.HasAny())
                 {
                     if (isPrintCleaning)
-                    {
-                        for (int i = 0; i < lines.Count; i++)
-                            PrintCleaningAfter(lines[i]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(linesBefore, lines);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Notes_Error;
@@ -2487,22 +2149,12 @@ namespace SubtitlesCleaner.Library
                         (index = line.IndexOf("? - ")) != -1 ||
                         (index = line.IndexOf("! - ")) != -1)
                     {
-                        if (isPrintCleaning)
-                        {
-                            PrintCleaningMethodName();
-                            PrintCleaningBefore(line);
-                        }
-
                         lines.Clear();
                         lines.Add("- " + line.Substring(0, index + 1));
                         lines.Add(line.Substring(index + 2));
 
                         if (isPrintCleaning)
-                        {
-                            for (int i = 0; i < lines.Count; i++)
-                                PrintCleaningAfter(lines[i]);
-                            Console.WriteLine();
-                        }
+                            PrintCleaning(line, lines);
 
                         if (isCheckMode)
                             subtitleError |= SubtitleError.Dialog_Error;
@@ -2553,11 +2205,7 @@ namespace SubtitlesCleaner.Library
                 bool isContainsDialog = regexContainsDialog.IsMatch(lines[0]);
                 if (isMatchDialog == false && isContainsDialog)
                 {
-                    if (isPrintCleaning)
-                    {
-                        PrintCleaningMethodName();
-                        PrintCleaningBefore(lines[0], regexContainsDialog);
-                    }
+                    string lineBefore = (isPrintCleaning ? lines[0] : null);
 
                     if (lines[0].StartsWith("<i>"))
                         lines[0] = "<i>- " + lines[0].Substring(3);
@@ -2565,10 +2213,7 @@ namespace SubtitlesCleaner.Library
                         lines[0] = "- " + lines[0];
 
                     if (isPrintCleaning)
-                    {
-                        PrintCleaningAfter(lines[0]);
-                        Console.WriteLine();
-                    }
+                        PrintCleaning(lineBefore, lines[0], regexContainsDialog);
 
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
@@ -2601,22 +2246,11 @@ namespace SubtitlesCleaner.Library
 
                     if (prevLine.EndsWith("</i>") && line.StartsWith("<i>"))
                     {
-                        if (isPrintCleaning)
-                        {
-                            PrintCleaningMethodName();
-                            PrintCleaningBefore(prevLine);
-                            PrintCleaningBefore(line);
-                        }
-
                         lines[i - 1] = prevLine.Substring(0, prevLine.Length - 4);
                         lines[i] = line.Substring("<i>".Length);
 
                         if (isPrintCleaning)
-                        {
-                            PrintCleaningAfter(lines[i - 1]);
-                            PrintCleaningAfter(lines[i]);
-                            Console.WriteLine();
-                        }
+                            PrintCleaning(new string[] { prevLine, line }, new string[] { lines[i - 1], lines[i] });
 
                         if (isCheckMode)
                             subtitleError |= SubtitleError.Redundant_Italics;
@@ -2694,22 +2328,12 @@ namespace SubtitlesCleaner.Library
 
                         if (isMergeLines)
                         {
-                            if (isPrintCleaning)
-                            {
-                                PrintCleaningMethodName();
-                                PrintCleaningBefore(line1);
-                                PrintCleaningBefore(line2);
-                            }
-
                             lines[i] = line1 + " " + line2;
                             lines.RemoveAt(i + 1);
                             i--;
 
                             if (isPrintCleaning)
-                            {
-                                PrintCleaningAfter(lines[i + 1]); // i-- before
-                                Console.WriteLine();
-                            }
+                                PrintCleaning(new string[] { line1, line2 }, lines[i + 1]); // i-- before
 
                             if (isCheckMode)
                                 subtitleError |= SubtitleError.Merge_Lines;
@@ -2745,25 +2369,15 @@ namespace SubtitlesCleaner.Library
                         string line = lines[i];
                         if (line.Contains(" - "))
                         {
-                            if (isPrintCleaning)
-                            {
-                                PrintCleaningMethodName();
-                                for (int j = 0; j < lines.Count && j <= i; j++)
-                                    PrintCleaningBefore(lines[j]);
-                            }
+                            List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
                             if (line0.StartsWith("<i>"))
-                                line0 = "<i>- " + line0.Substring(3);
+                                lines[0] = "<i>- " + line0.Substring(3);
                             else
-                                line0 = "- " + line0;
-                            lines[0] = line0;
+                                lines[0] = "- " + line0;
 
                             if (isPrintCleaning)
-                            {
-                                for (int j = 0; j < lines.Count && j <= i; j++)
-                                    PrintCleaningAfter(lines[j]);
-                                Console.WriteLine();
-                            }
+                                PrintCleaning(linesBefore, lines);
 
                             if (isCheckMode)
                                 subtitleError |= SubtitleError.Dialog_Error;
@@ -2805,19 +2419,10 @@ namespace SubtitlesCleaner.Library
 
                     if (str.IndexOf("'") == str.Length - 2) // there is no ' before '?
                     {
-                        if (isPrintCleaning)
-                        {
-                            PrintCleaningMethodName();
-                            PrintCleaningBefore(line);
-                        }
-
                         lines[i] = line.Replace("'?", "?");
 
                         if (isPrintCleaning)
-                        {
-                            PrintCleaningAfter(lines[i]);
-                            Console.WriteLine();
-                        }
+                            PrintCleaning(line, lines[i]);
 
                         if (isCheckMode)
                             subtitleError |= SubtitleError.OCR_Error;
@@ -3806,9 +3411,10 @@ namespace SubtitlesCleaner.Library
                 Console.WriteLine(name);
         }
 
-        private static void PrintCleaningRegex(Regex regexCleaning, string replacement = null)
+        private static void PrintCleaningRegex(Regex regexCleaning1, Regex regexCleaning2)
         {
-            PrintCleaningRegex(regexCleaning, null, replacement);
+            PrintCleaningRegex(regexCleaning1, null, null);
+            PrintCleaningRegex(regexCleaning2, null, null);
         }
 
         private static void PrintCleaningRegex(Regex regexCleaning, string groupName, string replacement)
@@ -3824,32 +3430,59 @@ namespace SubtitlesCleaner.Library
             }
         }
 
-        private static void PrintCleaningRule(FindAndReplace rule, bool cleanHICaseInsensitive)
+        private static void PrintCleaning(string text, string cleanText, FindAndReplace rule, bool cleanHICaseInsensitive)
         {
             Console.WriteLine("Error:  " + rule.SubtitleError);
-            PrintCleaningRegex(cleanHICaseInsensitive ? rule.RegexCI : rule.Regex, rule.GroupName, rule.Replacement);
+            PrintCleaning(text, cleanText, cleanHICaseInsensitive ? rule.RegexCI : rule.Regex, rule.GroupName, rule.Replacement, null);
         }
 
-        private static void PrintCleaningBefore(string line, Regex regexCleaning = null, string replacement = null)
+        private static void PrintCleaning(string text, string cleanText, [CallerMemberName] string name = null)
         {
-            PrintCleaningBefore(line, regexCleaning, null, replacement);
+            PrintCleaning(text, cleanText, null, null, null, name);
         }
 
-        private static void PrintCleaningBefore(string line, Regex regexCleaning, string groupName, string replacement)
+        private static void PrintCleaning(string text, IEnumerable<string> cleanText, [CallerMemberName] string name = null)
         {
+            PrintCleaning(text, string.Join(Environment.NewLine, cleanText), null, null, null, name);
+        }
+
+        private static void PrintCleaning(IEnumerable<string> text, string cleanText, [CallerMemberName] string name = null)
+        {
+            PrintCleaning(string.Join(Environment.NewLine, text), cleanText, null, null, null, name);
+        }
+
+        private static void PrintCleaning(IEnumerable<string> text, IEnumerable<string> cleanText, [CallerMemberName] string name = null)
+        {
+            PrintCleaning(string.Join(Environment.NewLine, text), string.Join(Environment.NewLine, cleanText), null, null, null, name);
+        }
+
+        private static void PrintCleaning(string text, string cleanText, Regex regexCleaning, [CallerMemberName] string name = null)
+        {
+            PrintCleaning(text, cleanText, regexCleaning, null, null, name);
+        }
+
+        private static void PrintCleaning(string text, string cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
+        {
+            PrintCleaning(text, cleanText, regexCleaning, null, replacement, name);
+        }
+
+        private static void PrintCleaning(string text, IEnumerable<string> cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
+        {
+            PrintCleaning(text, string.Join(Environment.NewLine, cleanText), regexCleaning, null, replacement, name);
+        }
+
+        private static void PrintCleaning(IEnumerable<string> text, IEnumerable<string> cleanText, Regex regexCleaning, string replacement, [CallerMemberName] string name = null)
+        {
+            PrintCleaning(string.Join(Environment.NewLine, text), string.Join(Environment.NewLine, cleanText), regexCleaning, null, replacement, name);
+        }
+
+        private static void PrintCleaning(string text, string cleanText, Regex regexCleaning, string groupName, string replacement, [CallerMemberName] string name = null)
+        {
+            if (string.IsNullOrEmpty(name) == false)
+                Console.WriteLine(name);
             PrintCleaningRegex(regexCleaning, groupName, replacement);
-            Console.WriteLine("Before: " + line);
-        }
-
-        private static void PrintCleaningAfter(string cleanLine)
-        {
-            Console.WriteLine("After:  " + cleanLine);
-        }
-
-        private static void PrintCleaning(string line, string cleanLine, FindAndReplace rule, bool cleanHICaseInsensitive)
-        {
-            PrintCleaningRule(rule, cleanHICaseInsensitive);
-            PrintCleaningBeforeAndAfter(line, cleanLine);
+            PrintCleaningBeforeAndAfter(text, cleanText);
+            Console.WriteLine();
         }
 
         private static readonly Color textDeletedColor = Color.Red;
@@ -3875,7 +3508,7 @@ namespace SubtitlesCleaner.Library
                     {
                         if (item.Obj1 != '\n')
                         {
-                            Colorful.Console.Write(item.Obj1, textDeletedColor);
+                            ColorChar(item.Obj1, textDeletedColor);
                         }
                         else
                         {
@@ -3890,7 +3523,7 @@ namespace SubtitlesCleaner.Library
                     {
                         if (item.Obj1 != '\n')
                         {
-                            Colorful.Console.Write(item.Obj1, textInsertedColor);
+                            ColorChar(item.Obj1, textInsertedColor);
                         }
                         else
                         {
@@ -3907,7 +3540,7 @@ namespace SubtitlesCleaner.Library
                         {
                             if (item.Obj1 != '\n')
                             {
-                                Colorful.Console.Write(item.Obj1, textDeletedColor);
+                                ColorChar(item.Obj1, textDeletedColor);
                             }
                             else
                             {
@@ -3936,7 +3569,7 @@ namespace SubtitlesCleaner.Library
                     {
                         if (item.Obj2 != '\n')
                         {
-                            Colorful.Console.Write(item.Obj2, textDeletedColor);
+                            ColorChar(item.Obj2, textDeletedColor);
                         }
                         else
                         {
@@ -3951,7 +3584,7 @@ namespace SubtitlesCleaner.Library
                     {
                         if (item.Obj2 != '\n')
                         {
-                            Colorful.Console.Write(item.Obj2, textInsertedColor);
+                            ColorChar(item.Obj2, textInsertedColor);
                         }
                         else
                         {
@@ -3968,7 +3601,7 @@ namespace SubtitlesCleaner.Library
                         {
                             if (item.Obj2 != '\n')
                             {
-                                Colorful.Console.Write(item.Obj2, textInsertedColor);
+                                ColorChar(item.Obj2, textInsertedColor);
                             }
                             else
                             {
@@ -3980,6 +3613,15 @@ namespace SubtitlesCleaner.Library
                 }
             }
             Console.WriteLine();
+        }
+
+        private static void ColorChar(char chr, Color backColor)
+        {
+            Console.ForegroundColor = ConsoleColor.Black;
+            Colorful.Console.BackgroundColor = backColor;
+            Console.Write(chr);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
         #endregion
