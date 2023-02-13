@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubtitlesCleanerEditorForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lstErrors = new System.Windows.Forms.DataGridView();
@@ -64,6 +64,12 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.txtCleanSubtitle = new System.Windows.Forms.RichTextBox();
             this.txtSubtitle = new SubtitlesCleaner.Editor.RichTextBox();
+            this.contextMenuStripTxtSubtitle = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.txtSubtitle_cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtSubtitle_copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtSubtitle_pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtSubtitle_deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtSubtitle_selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnFixAndAdvance = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
@@ -99,6 +105,9 @@
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.contextMenuStripTxtCleanSubtitle = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.txtCleanSubtitle_copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtCleanSubtitle_selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -113,12 +122,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).BeginInit();
             this.contextMenuStripEditor.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.contextMenuStripTxtSubtitle.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
+            this.contextMenuStripTxtCleanSubtitle.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -171,8 +182,8 @@
             // ColumnNum1
             // 
             this.ColumnNum1.DataPropertyName = "Num";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum1.DefaultCellStyle = dataGridViewCellStyle10;
             this.ColumnNum1.HeaderText = "#";
             this.ColumnNum1.Name = "ColumnNum1";
             this.ColumnNum1.ReadOnly = true;
@@ -183,8 +194,8 @@
             // 
             this.ColumnError1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnError1.DataPropertyName = "Error";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnError1.DefaultCellStyle = dataGridViewCellStyle11;
             this.ColumnError1.HeaderText = "Error";
             this.ColumnError1.Name = "ColumnError1";
             this.ColumnError1.ReadOnly = true;
@@ -266,14 +277,14 @@
             this.lstEditor.AllowUserToResizeColumns = false;
             this.lstEditor.AllowUserToResizeRows = false;
             this.lstEditor.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.lstEditor.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.lstEditor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lstEditor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNum,
@@ -301,8 +312,8 @@
             // ColumnNum
             // 
             this.ColumnNum.DataPropertyName = "Num";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnNum.DefaultCellStyle = dataGridViewCellStyle13;
             this.ColumnNum.HeaderText = "#";
             this.ColumnNum.Name = "ColumnNum";
             this.ColumnNum.ReadOnly = true;
@@ -312,8 +323,8 @@
             // ColumnShow
             // 
             this.ColumnShow.DataPropertyName = "Show";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnShow.DefaultCellStyle = dataGridViewCellStyle14;
             this.ColumnShow.HeaderText = "Show";
             this.ColumnShow.Name = "ColumnShow";
             this.ColumnShow.ReadOnly = true;
@@ -323,8 +334,8 @@
             // ColumnHide
             // 
             this.ColumnHide.DataPropertyName = "Hide";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnHide.DefaultCellStyle = dataGridViewCellStyle15;
             this.ColumnHide.HeaderText = "Hide";
             this.ColumnHide.Name = "ColumnHide";
             this.ColumnHide.ReadOnly = true;
@@ -334,8 +345,8 @@
             // ColumnDuration
             // 
             this.ColumnDuration.DataPropertyName = "Duration";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ColumnDuration.DefaultCellStyle = dataGridViewCellStyle16;
             this.ColumnDuration.HeaderText = "Duration";
             this.ColumnDuration.Name = "ColumnDuration";
             this.ColumnDuration.ReadOnly = true;
@@ -346,8 +357,8 @@
             // 
             this.ColumnText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnText.DataPropertyName = "Text";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnText.DefaultCellStyle = dataGridViewCellStyle17;
             this.ColumnText.HeaderText = "Text";
             this.ColumnText.Name = "ColumnText";
             this.ColumnText.ReadOnly = true;
@@ -357,8 +368,8 @@
             // 
             this.ColumnCleanText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnCleanText.DataPropertyName = "CleanText";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.ColumnCleanText.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.ColumnCleanText.DefaultCellStyle = dataGridViewCellStyle18;
             this.ColumnCleanText.HeaderText = "Clean Text";
             this.ColumnCleanText.Name = "ColumnCleanText";
             this.ColumnCleanText.ReadOnly = true;
@@ -429,6 +440,7 @@
             // 
             this.txtCleanSubtitle.BackColor = System.Drawing.Color.White;
             this.txtCleanSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtCleanSubtitle.ContextMenuStrip = this.contextMenuStripTxtCleanSubtitle;
             this.txtCleanSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtCleanSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtCleanSubtitle.ForeColor = System.Drawing.Color.Black;
@@ -445,6 +457,7 @@
             // 
             this.txtSubtitle.BackColor = System.Drawing.Color.White;
             this.txtSubtitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSubtitle.ContextMenuStrip = this.contextMenuStripTxtSubtitle;
             this.txtSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSubtitle.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtSubtitle.ForeColor = System.Drawing.Color.Black;
@@ -456,6 +469,56 @@
             this.txtSubtitle.TabIndex = 11;
             this.txtSubtitle.Text = "";
             this.txtSubtitle.LeaveWithChangedText += new System.EventHandler<SubtitlesCleaner.Editor.LeaveWithChangedTextEventArgs>(this.txtSubtitle_LeaveWithChangedText);
+            // 
+            // contextMenuStripTxtSubtitle
+            // 
+            this.contextMenuStripTxtSubtitle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.txtSubtitle_cutToolStripMenuItem,
+            this.txtSubtitle_copyToolStripMenuItem,
+            this.txtSubtitle_pasteToolStripMenuItem,
+            this.txtSubtitle_deleteToolStripMenuItem,
+            this.txtSubtitle_selectAllToolStripMenuItem});
+            this.contextMenuStripTxtSubtitle.Name = "contextMenuStripTextBoxes";
+            this.contextMenuStripTxtSubtitle.Size = new System.Drawing.Size(123, 114);
+            // 
+            // txtSubtitle_cutToolStripMenuItem
+            // 
+            this.txtSubtitle_cutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_cutToolStripMenuItem.Image")));
+            this.txtSubtitle_cutToolStripMenuItem.Name = "txtSubtitle_cutToolStripMenuItem";
+            this.txtSubtitle_cutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_cutToolStripMenuItem.Text = "Cut";
+            this.txtSubtitle_cutToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_cutToolStripMenuItem_Click);
+            // 
+            // txtSubtitle_copyToolStripMenuItem
+            // 
+            this.txtSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_copyToolStripMenuItem.Image")));
+            this.txtSubtitle_copyToolStripMenuItem.Name = "txtSubtitle_copyToolStripMenuItem";
+            this.txtSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_copyToolStripMenuItem.Text = "Copy";
+            this.txtSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_copyToolStripMenuItem_Click);
+            // 
+            // txtSubtitle_pasteToolStripMenuItem
+            // 
+            this.txtSubtitle_pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_pasteToolStripMenuItem.Image")));
+            this.txtSubtitle_pasteToolStripMenuItem.Name = "txtSubtitle_pasteToolStripMenuItem";
+            this.txtSubtitle_pasteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_pasteToolStripMenuItem.Text = "Paste";
+            this.txtSubtitle_pasteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_pasteToolStripMenuItem_Click);
+            // 
+            // txtSubtitle_deleteToolStripMenuItem
+            // 
+            this.txtSubtitle_deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_deleteToolStripMenuItem.Image")));
+            this.txtSubtitle_deleteToolStripMenuItem.Name = "txtSubtitle_deleteToolStripMenuItem";
+            this.txtSubtitle_deleteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_deleteToolStripMenuItem.Text = "Delete";
+            this.txtSubtitle_deleteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_deleteToolStripMenuItem_Click);
+            // 
+            // txtSubtitle_selectAllToolStripMenuItem
+            // 
+            this.txtSubtitle_selectAllToolStripMenuItem.Name = "txtSubtitle_selectAllToolStripMenuItem";
+            this.txtSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_selectAllToolStripMenuItem.Text = "Select All";
+            this.txtSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_selectAllToolStripMenuItem_Click);
             // 
             // flowLayoutPanel6
             // 
@@ -911,6 +974,29 @@
             this.saveAsFileDialog.DefaultExt = "srt";
             this.saveAsFileDialog.Filter = "SubRip Subtitle|*.srt";
             // 
+            // contextMenuStripTxtCleanSubtitle
+            // 
+            this.contextMenuStripTxtCleanSubtitle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.txtCleanSubtitle_copyToolStripMenuItem,
+            this.txtCleanSubtitle_selectAllToolStripMenuItem});
+            this.contextMenuStripTxtCleanSubtitle.Name = "contextMenuStripTxtCleanSubtitle";
+            this.contextMenuStripTxtCleanSubtitle.Size = new System.Drawing.Size(181, 70);
+            // 
+            // txtCleanSubtitle_copyToolStripMenuItem
+            // 
+            this.txtCleanSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtCleanSubtitle_copyToolStripMenuItem.Image")));
+            this.txtCleanSubtitle_copyToolStripMenuItem.Name = "txtCleanSubtitle_copyToolStripMenuItem";
+            this.txtCleanSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtCleanSubtitle_copyToolStripMenuItem.Text = "Copy";
+            this.txtCleanSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_copyToolStripMenuItem_Click);
+            // 
+            // txtCleanSubtitle_selectAllToolStripMenuItem
+            // 
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Name = "txtCleanSubtitle_selectAllToolStripMenuItem";
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Text = "Select All";
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_selectAllToolStripMenuItem_Click);
+            // 
             // SubtitlesCleanerEditorForm
             // 
             this.AllowDrop = true;
@@ -948,6 +1034,7 @@
             this.contextMenuStripEditor.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.contextMenuStripTxtSubtitle.ResumeLayout(false);
             this.flowLayoutPanel6.ResumeLayout(false);
             this.flowLayoutPanel6.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
@@ -960,6 +1047,7 @@
             this.flowLayoutPanel5.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
+            this.contextMenuStripTxtCleanSubtitle.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1026,6 +1114,15 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
         private SubtitlesCleaner.Editor.RichTextBox txtSubtitle;
         private System.Windows.Forms.RichTextBox txtCleanSubtitle;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripTxtSubtitle;
+        private System.Windows.Forms.ToolStripMenuItem txtSubtitle_cutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem txtSubtitle_copyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem txtSubtitle_pasteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem txtSubtitle_selectAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem txtSubtitle_deleteToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripTxtCleanSubtitle;
+        private System.Windows.Forms.ToolStripMenuItem txtCleanSubtitle_copyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem txtCleanSubtitle_selectAllToolStripMenuItem;
     }
 }
 

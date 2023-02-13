@@ -1907,6 +1907,49 @@ namespace SubtitlesCleaner.Editor
 
         #endregion
 
+        #region txtSubtitle Context Menu
+
+        private void txtSubtitle_cutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSubtitle.Cut();
+        }
+
+        private void txtSubtitle_copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSubtitle.Copy();
+        }
+
+        private void txtSubtitle_pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSubtitle.Paste();
+        }
+
+        private void txtSubtitle_deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSubtitle.SelectedText = string.Empty;
+        }
+
+        private void txtSubtitle_selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSubtitle.SelectAll();
+        }
+
+        #endregion
+
+        #region txtCleanSubtitle Context Menu
+
+        private void txtCleanSubtitle_copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtCleanSubtitle.Copy();
+        }
+
+        private void txtCleanSubtitle_selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtCleanSubtitle.SelectAll();
+        }
+
+        #endregion
+
         #region Go To Subtitle
 
         private GoToSubtitleForm goToSubtitleDialog;
