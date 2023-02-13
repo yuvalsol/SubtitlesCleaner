@@ -2874,8 +2874,16 @@ namespace SubtitlesCleaner.Library
         #region Hearing Impaired
 
         public static readonly FindAndReplace[] HearingImpaired = new FindAndReplace[] {
+            // ^<i>(laughting)</i> Text => Text
+            new FindAndReplace(new Regex(@"^<i>\s*\(.*?\)\s*</i>\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^<i>\s*\[.*?\]\s*</i>\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+
+            // Text <i>(laughting)</i>$ => Text
+            ,new FindAndReplace(new Regex(@"\s*<i>\s*\(.*?\)\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"\s*<i>\s*\[.*?\]\s*</i>$", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+
             // <i>- (laughting)</i> =>
-            new FindAndReplace(new Regex(@"<i>-\s*\(.*?\)</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"<i>-\s*\(.*?\)</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"<i>-\s*\[.*?\]</i>", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
             // <i>- (laughting) => <i>
@@ -2887,12 +2895,12 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"^-\s*\[.*?\]</i>$", RegexOptions.Compiled), "</i>", SubtitleError.Hearing_Impaired)
 
             // - (MAN): Text => - Text
-            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\(.*?\)(:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\[.*?\](:\s*)?(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\(.*?\):?\s*(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>- )?\[.*?\]:?\s*(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // <i>- MAN (laughting): Text</i> => <i>- Text</i>
-            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-ZÀ-Ý]*\s*\(.*?\)(:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-ZÀ-Ý]*\s*\[.*?\](:\s*)?(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-ZÀ-Ý]*\s*\(.*?\):?\s*(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix><i>\s*-?\s*)[A-ZÀ-Ý]*\s*\[.*?\]:?\s*(?<Subtitle>.+?)(?<Suffix></i>)$", RegexOptions.Compiled), "${Prefix}${Subtitle}${Suffix}", SubtitleError.Hearing_Impaired)
 
             // <i>MAN (laughting): => <i>
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)[A-ZÀ-Ý]*\s*\(.*?\):$", RegexOptions.Compiled), "${Prefix}", SubtitleError.Hearing_Impaired)
@@ -2903,8 +2911,8 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"^(?<Prefix><i>)\s*\[.*?\]\s*(?<Subtitle>.+)$", RegexOptions.Compiled), "${Prefix}${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // Text (laughting) => Text
-            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\(.*?\)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\[.*?\]$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\s*\(.*?\)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\s*\[.*?\]$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // MAN #1: Text => Text
             ,new FindAndReplace(new Regex(@"^[A-ZÀ-Ý0-9 #\'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*[A-ZÀ-Ý#'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
@@ -2918,9 +2926,9 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\s+\(.*?\)</i>", RegexOptions.Compiled), "</i>", SubtitleError.Hearing_Impaired)
             ,new FindAndReplace(new Regex(@"\s+\[.*?\]</i>", RegexOptions.Compiled), "</i>", SubtitleError.Hearing_Impaired)
 
-            // Text <i>(laughting)</i> => Text
-            ,new FindAndReplace(new Regex(@"(?:<i>\s*)\(.*?\)(?:\s*</i>)", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
-            ,new FindAndReplace(new Regex(@"(?:<i>\s*)\[.*?\](?:\s*</i>)", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            // Some <i>(laughting)</i> Text => Some Text
+            ,new FindAndReplace(new Regex(@"\s*<i>\s*\(.*?\)\s*</i>\s*", RegexOptions.Compiled), " ", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace(new Regex(@"\s*<i>\s*\[.*?\]\s*</i>\s*", RegexOptions.Compiled), " ", SubtitleError.Hearing_Impaired)
 
             // (?!\d\d) prevents cleaning time, like 13:00, in CI mode
 
@@ -2947,8 +2955,9 @@ namespace SubtitlesCleaner.Library
             // <i>: Text => Text
             ,new FindAndReplace(new Regex(@"^(?:\s*<i>)?\s*:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
 
-            // {MAN} {MAN) {MAN] (MAN} [MAN}
+            // {Text) {Text] {Text}
             ,new FindAndReplace(new Regex(@"\{[^\{\[\(\)\]\}]+[\)\]\}]", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            // {Text} [Text} (Text}
             ,new FindAndReplace(new Regex(@"[\{\[\(][^\{\[\(\)\]\}]+\}", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
         };
 
@@ -3023,9 +3032,10 @@ namespace SubtitlesCleaner.Library
         #region Trim Spaces
 
         public static readonly FindAndReplace[] TrimSpaces = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"\s{2,}", RegexOptions.Compiled), " ", SubtitleError.Redundant_Spaces)
+            new FindAndReplace(new Regex(@"^\s+$", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"^\s+", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace(new Regex(@"\s+$", RegexOptions.Compiled), "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"\s{2,}", RegexOptions.Compiled), " ", SubtitleError.Redundant_Spaces)
         };
 
         #endregion
