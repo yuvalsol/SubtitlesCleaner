@@ -3352,6 +3352,13 @@ namespace SubtitlesCleaner.Library
 
             // -</i> => ...</i>  -" => ..."
             ,new FindAndReplace("Three Dots", new Regex(@"(?<OCR>\s*-\s*)(?:</i>|"")$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+
+            // T- Text => T... Text (the capital letter is the same)
+            ,new FindAndReplace("Three Dots", new Regex(@"\b(?<C>[A-ZÀ-Ý])(?:(?<OCR>-)\s\k<C>)+", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+
+            // ... V- T => ... V... T
+            ,new FindAndReplace("Three Dots", new Regex(@"\.{3}\s[A-ZÀ-Ý](?<OCR>-)\s[A-ZÀ-Ý]", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
+
             // Text - $ => Text...$
             // doesn't match un-fuckin-$reasonable
             ,new FindAndReplace("Three Dots", new Regex(@"(?<![A-ZÀ-Ýa-zà-ÿ]+-[A-ZÀ-Ýa-zà-ÿ]+)(?<OCR>\s*-\s*)$", RegexOptions.Compiled), "OCR", "...", SubtitleError.OCR_Error)
