@@ -929,9 +929,9 @@ namespace SubtitlesCleaner.Library
 
         // start (: ^ <i>? ♪? ( anything except () $
         //   end ): ^ anything except () ) ♪? <i>? $
-        public static readonly Regex regexHI1Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\([^\(\)]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI1Start = new Regex(@"^(?:-|<i>|♪|\s)*\([^\(\)]*?$", RegexOptions.Compiled);
         public static readonly Regex regexHI1End = new Regex(@"^[^\(\)]*?\)\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
-        public static readonly Regex regexHI2Start = new Regex(@"^(?:\s*<i>)?(?:\s*♪)?\s*\[[^\[\]]*?$", RegexOptions.Compiled);
+        public static readonly Regex regexHI2Start = new Regex(@"^(?:-|<i>|♪|\s)*\[[^\[\]]*?$", RegexOptions.Compiled);
         public static readonly Regex regexHI2End = new Regex(@"^[^\[\]]*?\]\s*(?:\s*♪)?(?:\s*</i>)?$", RegexOptions.Compiled);
 
         public static List<string> CleanHearingImpairedMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
