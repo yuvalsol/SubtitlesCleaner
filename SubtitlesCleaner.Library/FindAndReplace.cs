@@ -99,6 +99,8 @@ namespace SubtitlesCleaner.Library
             public string IgnoreIfCaseInsensitiveEqualsTo { get; set; }
             public string IgnoreIfCaseInsensitiveStartsWith { get; set; }
             public string IgnoreIfCaseInsensitiveEndsWith { get; set; }
+            public string IgnoreIfMatchsWithRegex { get; set; }
+            public string IgnoreIfCaseInsensitiveMatchsWithRegex { get; set; }
         }
 
         public string CleanLine(string line, bool cleanHICaseInsensitive = false)
@@ -147,6 +149,10 @@ namespace SubtitlesCleaner.Library
                             if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveStartsWith) == false && value.ToLowerInvariant().StartsWith(rule.IgnoreIfCaseInsensitiveStartsWith.ToLowerInvariant()))
                                 return false;
                             if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveEndsWith) == false && value.ToLowerInvariant().EndsWith(rule.IgnoreIfCaseInsensitiveEndsWith.ToLowerInvariant()))
+                                return false;
+                            if (string.IsNullOrEmpty(rule.IgnoreIfMatchsWithRegex) == false && new Regex(rule.IgnoreIfMatchsWithRegex).IsMatch(value))
+                                return false;
+                            if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveMatchsWithRegex) == false && new Regex(rule.IgnoreIfCaseInsensitiveMatchsWithRegex, RegexOptions.IgnoreCase).IsMatch(value))
                                 return false;
                         }
 

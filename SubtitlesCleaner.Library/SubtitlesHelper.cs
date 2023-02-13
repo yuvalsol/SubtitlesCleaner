@@ -3218,7 +3218,12 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\b(?<!l-)(?<OCR>l)(?!-l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
                 new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
             )
-
+            
+            // i-i-i => I-I-I (but not i-i-it or i-i-is)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>i)(?:-(?<OCR>i))+\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfMatchsWithRegex = @"-i\B" }
+            )
+            
 			// Replace single i with I, but not <i> or </i> and not with following -i (i-i-is)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>(?<!<|/)i(?!>|-i))\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
 
