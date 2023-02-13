@@ -1412,8 +1412,16 @@ namespace SubtitlesCleaner.Editor
             ChangeSubtitleText(e.EditorRow, e.Text);
         }
 
+        private void ChangeSubtitleText()
+        {
+            ChangeSubtitleText(GetSelectedEditorRow(), txtSubtitle.Text);
+        }
+
         private void ChangeSubtitleText(EditorRow editorRow, string text)
         {
+            if (editorRow == null)
+                return;
+
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -1909,9 +1917,19 @@ namespace SubtitlesCleaner.Editor
 
         #region txtSubtitle Context Menu
 
+        private void contextMenuStripTxtSubtitle_Opening(object sender, CancelEventArgs e)
+        {
+            txtSubtitle_cutToolStripMenuItem.Enabled =
+            txtSubtitle_copyToolStripMenuItem.Enabled =
+            txtSubtitle_deleteToolStripMenuItem.Enabled = txtSubtitle.SelectionLength > 0;
+            txtSubtitle_pasteToolStripMenuItem.Enabled = Clipboard.ContainsText();
+            txtSubtitle_selectAllToolStripMenuItem.Enabled = txtSubtitle.TextLength > 0;
+        }
+
         private void txtSubtitle_cutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSubtitle.Cut();
+            ChangeSubtitleText();
         }
 
         private void txtSubtitle_copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1922,21 +1940,30 @@ namespace SubtitlesCleaner.Editor
         private void txtSubtitle_pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSubtitle.Paste();
+            ChangeSubtitleText();
         }
 
         private void txtSubtitle_deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSubtitle.SelectedText = string.Empty;
+            ChangeSubtitleText();
         }
 
         private void txtSubtitle_selectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSubtitle.SelectAll();
+            txtSubtitle.Focus();
         }
 
         #endregion
 
         #region txtCleanSubtitle Context Menu
+
+        private void contextMenuStripTxtCleanSubtitle_Opening(object sender, CancelEventArgs e)
+        {
+            txtCleanSubtitle_copyToolStripMenuItem.Enabled = txtCleanSubtitle.SelectionLength > 0;
+            txtCleanSubtitle_selectAllToolStripMenuItem.Enabled = txtCleanSubtitle.TextLength > 0;
+        }
 
         private void txtCleanSubtitle_copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1946,6 +1973,7 @@ namespace SubtitlesCleaner.Editor
         private void txtCleanSubtitle_selectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtCleanSubtitle.SelectAll();
+            txtCleanSubtitle.Focus();
         }
 
         #endregion

@@ -63,12 +63,17 @@
             this.copyCleanSubtitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.txtCleanSubtitle = new System.Windows.Forms.RichTextBox();
+            this.contextMenuStripTxtCleanSubtitle = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.txtCleanSubtitle_copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.txtCleanSubtitle_selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txtSubtitle = new SubtitlesCleaner.Editor.RichTextBox();
             this.contextMenuStripTxtSubtitle = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.txtSubtitle_cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txtSubtitle_copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txtSubtitle_pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txtSubtitle_deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.txtSubtitle_selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnFixAndAdvance = new System.Windows.Forms.Button();
@@ -105,9 +110,6 @@
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.contextMenuStripTxtCleanSubtitle = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.txtCleanSubtitle_copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtCleanSubtitle_selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -122,6 +124,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.lstEditor)).BeginInit();
             this.contextMenuStripEditor.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.contextMenuStripTxtCleanSubtitle.SuspendLayout();
             this.contextMenuStripTxtSubtitle.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -129,7 +132,6 @@
             this.flowLayoutPanel4.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
-            this.contextMenuStripTxtCleanSubtitle.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -453,6 +455,36 @@
             this.txtCleanSubtitle.TabIndex = 4;
             this.txtCleanSubtitle.Text = "";
             // 
+            // contextMenuStripTxtCleanSubtitle
+            // 
+            this.contextMenuStripTxtCleanSubtitle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.txtCleanSubtitle_copyToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.txtCleanSubtitle_selectAllToolStripMenuItem});
+            this.contextMenuStripTxtCleanSubtitle.Name = "contextMenuStripTxtCleanSubtitle";
+            this.contextMenuStripTxtCleanSubtitle.Size = new System.Drawing.Size(181, 76);
+            this.contextMenuStripTxtCleanSubtitle.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTxtCleanSubtitle_Opening);
+            // 
+            // txtCleanSubtitle_copyToolStripMenuItem
+            // 
+            this.txtCleanSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtCleanSubtitle_copyToolStripMenuItem.Image")));
+            this.txtCleanSubtitle_copyToolStripMenuItem.Name = "txtCleanSubtitle_copyToolStripMenuItem";
+            this.txtCleanSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtCleanSubtitle_copyToolStripMenuItem.Text = "Copy";
+            this.txtCleanSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_copyToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(119, 6);
+            // 
+            // txtCleanSubtitle_selectAllToolStripMenuItem
+            // 
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Name = "txtCleanSubtitle_selectAllToolStripMenuItem";
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Text = "Select All";
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_selectAllToolStripMenuItem_Click);
+            // 
             // txtSubtitle
             // 
             this.txtSubtitle.BackColor = System.Drawing.Color.White;
@@ -477,15 +509,17 @@
             this.txtSubtitle_copyToolStripMenuItem,
             this.txtSubtitle_pasteToolStripMenuItem,
             this.txtSubtitle_deleteToolStripMenuItem,
+            this.toolStripSeparator1,
             this.txtSubtitle_selectAllToolStripMenuItem});
             this.contextMenuStripTxtSubtitle.Name = "contextMenuStripTextBoxes";
-            this.contextMenuStripTxtSubtitle.Size = new System.Drawing.Size(123, 114);
+            this.contextMenuStripTxtSubtitle.Size = new System.Drawing.Size(123, 120);
+            this.contextMenuStripTxtSubtitle.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTxtSubtitle_Opening);
             // 
             // txtSubtitle_cutToolStripMenuItem
             // 
             this.txtSubtitle_cutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_cutToolStripMenuItem.Image")));
             this.txtSubtitle_cutToolStripMenuItem.Name = "txtSubtitle_cutToolStripMenuItem";
-            this.txtSubtitle_cutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.txtSubtitle_cutToolStripMenuItem.Text = "Cut";
             this.txtSubtitle_cutToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_cutToolStripMenuItem_Click);
             // 
@@ -493,7 +527,7 @@
             // 
             this.txtSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_copyToolStripMenuItem.Image")));
             this.txtSubtitle_copyToolStripMenuItem.Name = "txtSubtitle_copyToolStripMenuItem";
-            this.txtSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.txtSubtitle_copyToolStripMenuItem.Text = "Copy";
             this.txtSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_copyToolStripMenuItem_Click);
             // 
@@ -501,7 +535,7 @@
             // 
             this.txtSubtitle_pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_pasteToolStripMenuItem.Image")));
             this.txtSubtitle_pasteToolStripMenuItem.Name = "txtSubtitle_pasteToolStripMenuItem";
-            this.txtSubtitle_pasteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.txtSubtitle_pasteToolStripMenuItem.Text = "Paste";
             this.txtSubtitle_pasteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_pasteToolStripMenuItem_Click);
             // 
@@ -509,14 +543,19 @@
             // 
             this.txtSubtitle_deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_deleteToolStripMenuItem.Image")));
             this.txtSubtitle_deleteToolStripMenuItem.Name = "txtSubtitle_deleteToolStripMenuItem";
-            this.txtSubtitle_deleteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.txtSubtitle_deleteToolStripMenuItem.Text = "Delete";
             this.txtSubtitle_deleteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_deleteToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // txtSubtitle_selectAllToolStripMenuItem
             // 
             this.txtSubtitle_selectAllToolStripMenuItem.Name = "txtSubtitle_selectAllToolStripMenuItem";
-            this.txtSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.txtSubtitle_selectAllToolStripMenuItem.Text = "Select All";
             this.txtSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_selectAllToolStripMenuItem_Click);
             // 
@@ -974,29 +1013,6 @@
             this.saveAsFileDialog.DefaultExt = "srt";
             this.saveAsFileDialog.Filter = "SubRip Subtitle|*.srt";
             // 
-            // contextMenuStripTxtCleanSubtitle
-            // 
-            this.contextMenuStripTxtCleanSubtitle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.txtCleanSubtitle_copyToolStripMenuItem,
-            this.txtCleanSubtitle_selectAllToolStripMenuItem});
-            this.contextMenuStripTxtCleanSubtitle.Name = "contextMenuStripTxtCleanSubtitle";
-            this.contextMenuStripTxtCleanSubtitle.Size = new System.Drawing.Size(181, 70);
-            // 
-            // txtCleanSubtitle_copyToolStripMenuItem
-            // 
-            this.txtCleanSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtCleanSubtitle_copyToolStripMenuItem.Image")));
-            this.txtCleanSubtitle_copyToolStripMenuItem.Name = "txtCleanSubtitle_copyToolStripMenuItem";
-            this.txtCleanSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.txtCleanSubtitle_copyToolStripMenuItem.Text = "Copy";
-            this.txtCleanSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_copyToolStripMenuItem_Click);
-            // 
-            // txtCleanSubtitle_selectAllToolStripMenuItem
-            // 
-            this.txtCleanSubtitle_selectAllToolStripMenuItem.Name = "txtCleanSubtitle_selectAllToolStripMenuItem";
-            this.txtCleanSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.txtCleanSubtitle_selectAllToolStripMenuItem.Text = "Select All";
-            this.txtCleanSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_selectAllToolStripMenuItem_Click);
-            // 
             // SubtitlesCleanerEditorForm
             // 
             this.AllowDrop = true;
@@ -1034,6 +1050,7 @@
             this.contextMenuStripEditor.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.contextMenuStripTxtCleanSubtitle.ResumeLayout(false);
             this.contextMenuStripTxtSubtitle.ResumeLayout(false);
             this.flowLayoutPanel6.ResumeLayout(false);
             this.flowLayoutPanel6.PerformLayout();
@@ -1047,7 +1064,6 @@
             this.flowLayoutPanel5.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
-            this.contextMenuStripTxtCleanSubtitle.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1123,6 +1139,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStripTxtCleanSubtitle;
         private System.Windows.Forms.ToolStripMenuItem txtCleanSubtitle_copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem txtCleanSubtitle_selectAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 
