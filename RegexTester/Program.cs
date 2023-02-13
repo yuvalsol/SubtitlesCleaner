@@ -11,27 +11,41 @@ namespace RegexTester
         {
             Console.OutputEncoding = Encoding.UTF8;
 
+            string input = @"Lyrics♪</i>";
+
+            Regex regex = new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$");
+
             FindAndReplace far = new FindAndReplace(
-                new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$"), 
-                "${Lyrics} ${Suffix}", 
+                regex,
+                "${Lyrics} ${Suffix}",
                 SubtitleError.Missing_Spaces
             );
 
-            string input = @"Lyrics♪</i>";
+            Print(input, far);
+        }
+
+        static void Print(string input, FindAndReplace far)
+        {
+            Print(input, far.Regex);
+
+            Console.WriteLine("Clean Input:");
+            string cleanInput = far.CleanLine(input);
+            Console.WriteLine(cleanInput);
+            Console.WriteLine();
+        }
+
+        static void Print(string input, Regex regex)
+        {
             Console.WriteLine("Input:");
             RegexHelper.PrintInput(input);
 
             Console.WriteLine("Is Match With Regex:");
-            RegexHelper.PrintIsMatch(input, far.Regex);
+            RegexHelper.PrintIsMatch(input, regex);
 
             Console.WriteLine("Has Errors:");
             bool hasErrors = SubtitlesHelper.HasErrors(input);
             Console.WriteLine(hasErrors ? "Has Errors" : "No Errors");
             Console.WriteLine();
-
-            Console.WriteLine("Clean Input:");
-            string cleanInput = far.CleanLine(input);
-            Console.WriteLine(cleanInput);
         }
     }
 }
