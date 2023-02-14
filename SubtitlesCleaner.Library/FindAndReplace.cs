@@ -56,7 +56,7 @@ namespace SubtitlesCleaner.Library
         #region Case Insensitive
 
         public Regex RegexCI { get; private set; }
-        private bool HasRegexCI;
+        public bool HasRegexCI { get; private set; }
 
         public FindAndReplace SetRegexCI(Regex regexCI)
         {
