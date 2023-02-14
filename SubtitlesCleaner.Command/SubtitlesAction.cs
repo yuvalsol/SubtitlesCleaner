@@ -48,12 +48,16 @@ namespace SubtitlesCleaner.Command
                 try
                 {
                     File.Copy(filePath, backupFile, true);
-                    WriteLog(DateTime.Now, fileName, "Save backup subtitles file {0}", backupFile);
+                    if (sharedOptions.quiet == false)
+                        WriteLog(DateTime.Now, fileName, "Save backup subtitles file {0}", backupFile);
                 }
                 catch (Exception ex)
                 {
-                    WriteLog(DateTime.Now, fileName, "Save backup subtitles file failed {0}", backupFile);
-                    WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                    if (sharedOptions.quiet == false)
+                    {
+                        WriteLog(DateTime.Now, fileName, "Save backup subtitles file failed {0}", backupFile);
+                        WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                    }
                 }
             }
 
@@ -61,12 +65,16 @@ namespace SubtitlesCleaner.Command
             {
                 string[] lines = subtitles.ToLines();
                 File.WriteAllLines(outputFilePath, lines.Take(lines.Length - 1), encoding);
-                WriteLog(DateTime.Now, fileName, "Save subtitles file {0}", outputFilePath);
+                if (sharedOptions.quiet == false)
+                    WriteLog(DateTime.Now, fileName, "Save subtitles file {0}", outputFilePath);
             }
             catch (Exception ex)
             {
-                WriteLog(DateTime.Now, fileName, "Save subtitles file failed {0}", outputFilePath);
-                WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                if (sharedOptions.quiet == false)
+                {
+                    WriteLog(DateTime.Now, fileName, "Save subtitles file failed {0}", outputFilePath);
+                    WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
             }
 
             if (suppressErrorFile == false)
@@ -80,12 +88,16 @@ namespace SubtitlesCleaner.Command
                     try
                     {
                         File.WriteAllLines(errorFile, errors, encoding);
-                        WriteLog(DateTime.Now, fileName, "Save subtitles error file {0}", errorFile);
+                        if (sharedOptions.quiet == false)
+                            WriteLog(DateTime.Now, fileName, "Save subtitles error file {0}", errorFile);
                     }
                     catch (Exception ex)
                     {
-                        WriteLog(DateTime.Now, fileName, "Save subtitles error file failed {0}", errorFile);
-                        WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                        if (sharedOptions.quiet == false)
+                        {
+                            WriteLog(DateTime.Now, fileName, "Save subtitles error file failed {0}", errorFile);
+                            WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                        }
                     }
                 }
             }
@@ -114,12 +126,16 @@ namespace SubtitlesCleaner.Command
             try
             {
                 Directory.CreateDirectory(folder);
-                WriteLog(DateTime.Now, fileName, "Create output folder {0}", folder);
+                if (sharedOptions.quiet == false)
+                    WriteLog(DateTime.Now, fileName, "Create output folder {0}", folder);
             }
             catch (Exception ex)
             {
-                WriteLog(DateTime.Now, fileName, "Create output folder failed {0}", folder);
-                WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                if (sharedOptions.quiet == false)
+                {
+                    WriteLog(DateTime.Now, fileName, "Create output folder failed {0}", folder);
+                    WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
             }
         }
 
