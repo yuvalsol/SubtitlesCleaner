@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -38,6 +39,11 @@ namespace SubtitlesCleaner.Command
 
             foreach (var filePath in filePaths)
             {
+                string fileName = Path.GetFileName(filePath);
+
+                PrintLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
+                PrintLog(DateTime.Now, fileName, "Read subtitles start");
+
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
                     filePath,
@@ -45,13 +51,41 @@ namespace SubtitlesCleaner.Command
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, options.printCleaning || PrintCleaning);
+                PrintLog(DateTime.Now, fileName, "Read subtitles end");
+
+                PrintLog(DateTime.Now, fileName, "Clean hearing-impaired case insensitive is {0}", (options.cleanHICaseInsensitive || CleanHICaseInsensitive ? "enabled" : "disabled"));
+                PrintLog(DateTime.Now, fileName, "Print cleaning is {0}", (options.printCleaning || PrintCleaning ? "enabled" : "disabled"));
+                PrintLog(DateTime.Now, fileName, "Clean subtitles start");
+
+                bool thrownException = false;
+                var stopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, options.printCleaning || PrintCleaning);
+                }
+                catch (Exception ex)
+                {
+                    thrownException = true;
+                    PrintLog(DateTime.Now, fileName, "Clean subtitles failed");
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                if (thrownException)
+                    return;
+
+                PrintLog(DateTime.Now, fileName, "Clean subtitles end");
+                PrintLog(DateTime.Now, fileName, "Clean subtitles completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressErrorFile);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressErrorFile);
 
                 if (options.print)
-                    Print(subtitles);
+                    PrintSubtitles(subtitles);
             }
         }
 
@@ -63,6 +97,11 @@ namespace SubtitlesCleaner.Command
 
             foreach (var filePath in filePaths)
             {
+                string fileName = Path.GetFileName(filePath);
+
+                PrintLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
+                PrintLog(DateTime.Now, fileName, "Read subtitles start");
+
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
                     filePath,
@@ -70,13 +109,40 @@ namespace SubtitlesCleaner.Command
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles = subtitles.CleanEmptyAndNonSubtitles(options.printCleaning || PrintCleaning);
+                PrintLog(DateTime.Now, fileName, "Read subtitles end");
+
+                PrintLog(DateTime.Now, fileName, "Print cleaning is {0}", (options.printCleaning || PrintCleaning ? "enabled" : "disabled"));
+                PrintLog(DateTime.Now, fileName, "Clean empty and non-subtitles start");
+
+                bool thrownException = false;
+                var stopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    subtitles = subtitles.CleanEmptyAndNonSubtitles(options.printCleaning || PrintCleaning);
+                }
+                catch (Exception ex)
+                {
+                    thrownException = true;
+                    PrintLog(DateTime.Now, fileName, "Clean empty and non-subtitles failed");
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                if (thrownException)
+                    return;
+
+                PrintLog(DateTime.Now, fileName, "Clean empty and non-subtitles end");
+                PrintLog(DateTime.Now, fileName, "Clean empty and non-subtitles completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
-                    Print(subtitles);
+                    PrintSubtitles(subtitles);
             }
         }
 
@@ -88,6 +154,11 @@ namespace SubtitlesCleaner.Command
 
             foreach (var filePath in filePaths)
             {
+                string fileName = Path.GetFileName(filePath);
+
+                PrintLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
+                PrintLog(DateTime.Now, fileName, "Read subtitles start");
+
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
                     filePath,
@@ -95,13 +166,43 @@ namespace SubtitlesCleaner.Command
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles.AddTime(options.timeAdded, options.subtitleNumber);
+                PrintLog(DateTime.Now, fileName, "Read subtitles end");
+
+                PrintLog(DateTime.Now, fileName, "Time added {0}", options.timeAdded);
+                if (options.subtitleNumber != null)
+                    PrintLog(DateTime.Now, fileName, "Add time from subtitle number {0}", options.subtitleNumber);
+
+                PrintLog(DateTime.Now, fileName, "Add time start");
+
+                bool thrownException = false;
+                var stopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    subtitles.AddTime(options.timeAdded, options.subtitleNumber);
+                }
+                catch (Exception ex)
+                {
+                    thrownException = true;
+                    PrintLog(DateTime.Now, fileName, "Add time failed");
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                if (thrownException)
+                    return;
+
+                PrintLog(DateTime.Now, fileName, "Add time end");
+                PrintLog(DateTime.Now, fileName, "Add time completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
-                    Print(subtitles);
+                    PrintSubtitles(subtitles);
             }
         }
 
@@ -113,6 +214,11 @@ namespace SubtitlesCleaner.Command
 
             foreach (var filePath in filePaths)
             {
+                string fileName = Path.GetFileName(filePath);
+
+                PrintLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
+                PrintLog(DateTime.Now, fileName, "Read subtitles start");
+
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
                     filePath,
@@ -120,13 +226,43 @@ namespace SubtitlesCleaner.Command
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles.SetShowTime(options.showTime, options.subtitleNumber);
+                PrintLog(DateTime.Now, fileName, "Read subtitles end");
+
+                PrintLog(DateTime.Now, fileName, "Show time {0}", options.showTime);
+                if (options.subtitleNumber != null)
+                    PrintLog(DateTime.Now, fileName, "Set show time from subtitle number {0}", options.subtitleNumber);
+
+                PrintLog(DateTime.Now, fileName, "Set show time start");
+
+                bool thrownException = false;
+                var stopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    subtitles.SetShowTime(options.showTime, options.subtitleNumber);
+                }
+                catch (Exception ex)
+                {
+                    thrownException = true;
+                    PrintLog(DateTime.Now, fileName, "Set show time failed");
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                if (thrownException)
+                    return;
+
+                PrintLog(DateTime.Now, fileName, "Set show time end");
+                PrintLog(DateTime.Now, fileName, "Set show time completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
-                    Print(subtitles);
+                    PrintSubtitles(subtitles);
             }
         }
 
@@ -138,6 +274,11 @@ namespace SubtitlesCleaner.Command
 
             foreach (var filePath in filePaths)
             {
+                string fileName = Path.GetFileName(filePath);
+
+                PrintLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
+                PrintLog(DateTime.Now, fileName, "Read subtitles start");
+
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
                     filePath,
@@ -145,13 +286,42 @@ namespace SubtitlesCleaner.Command
                     options.firstSubtitlesCount ?? FirstSubtitlesCount
                 );
 
-                subtitles.AdjustTiming(options.firstShowTime, options.lastShowTime);
+                PrintLog(DateTime.Now, fileName, "Read subtitles end");
+
+                PrintLog(DateTime.Now, fileName, "First show time {0}", options.firstShowTime);
+                PrintLog(DateTime.Now, fileName, "Last show time {0}", options.lastShowTime);
+
+                PrintLog(DateTime.Now, fileName, "Adjust timing start");
+
+                bool thrownException = false;
+                var stopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    subtitles.AdjustTiming(options.firstShowTime, options.lastShowTime);
+                }
+                catch (Exception ex)
+                {
+                    thrownException = true;
+                    PrintLog(DateTime.Now, fileName, "Adjust timing failed");
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                if (thrownException)
+                    return;
+
+                PrintLog(DateTime.Now, fileName, "Adjust timing end");
+                PrintLog(DateTime.Now, fileName, "Adjust timing completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
-                    Print(subtitles);
+                    PrintSubtitles(subtitles);
             }
         }
 
@@ -163,16 +333,47 @@ namespace SubtitlesCleaner.Command
 
             foreach (var filePath in filePaths)
             {
+                string fileName = Path.GetFileName(filePath);
+
+                PrintLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
+                PrintLog(DateTime.Now, fileName, "Read subtitles start");
+
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
 
-                subtitles = subtitles.Reorder();
+                PrintLog(DateTime.Now, fileName, "Read subtitles end");
+
+                PrintLog(DateTime.Now, fileName, "Reorder start");
+
+                bool thrownException = false;
+                var stopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    subtitles = subtitles.Reorder();
+                }
+                catch (Exception ex)
+                {
+                    thrownException = true;
+                    PrintLog(DateTime.Now, fileName, "Reorder failed");
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                if (thrownException)
+                    return;
+
+                PrintLog(DateTime.Now, fileName, "Reorder end");
+                PrintLog(DateTime.Now, fileName, "Reorder completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
-                    Print(subtitles);
+                    PrintSubtitles(subtitles);
             }
         }
 
@@ -184,16 +385,47 @@ namespace SubtitlesCleaner.Command
 
             foreach (var filePath in filePaths)
             {
+                string fileName = Path.GetFileName(filePath);
+
+                PrintLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
+                PrintLog(DateTime.Now, fileName, "Read subtitles start");
+
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
 
-                subtitles = subtitles.BalanceLines();
+                PrintLog(DateTime.Now, fileName, "Read subtitles end");
+
+                PrintLog(DateTime.Now, fileName, "Balance lines start");
+
+                bool thrownException = false;
+                var stopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    subtitles = subtitles.BalanceLines();
+                }
+                catch (Exception ex)
+                {
+                    thrownException = true;
+                    PrintLog(DateTime.Now, fileName, "Balance lines failed");
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                if (thrownException)
+                    return;
+
+                PrintLog(DateTime.Now, fileName, "Balance lines end");
+                PrintLog(DateTime.Now, fileName, "Balance lines completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
 
                 if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
 
                 if (options.print)
-                    Print(subtitles);
+                    PrintSubtitles(subtitles);
             }
         }
 
@@ -237,7 +469,7 @@ namespace SubtitlesCleaner.Command
             return filePaths;
         }
 
-        private static void Save(
+        private static void SaveSubtitles(
             List<Subtitle> subtitles,
             Encoding encoding,
             string filePath,
@@ -246,9 +478,11 @@ namespace SubtitlesCleaner.Command
             bool suppressBackupFile,
             bool suppressErrorFile)
         {
+            string fileName = Path.GetFileName(filePath);
+
             string outputFilePath = GetOutputFilePath(filePath, outputFile, outputFolder);
 
-            CreateOutputFolder(outputFilePath);
+            CreateOutputFolder(outputFilePath, fileName);
 
             if (suppressBackupFile == false)
             {
@@ -257,10 +491,12 @@ namespace SubtitlesCleaner.Command
                 try
                 {
                     File.Copy(filePath, backupFile, true);
+                    PrintLog(DateTime.Now, fileName, "Save backup subtitles file {0}", backupFile);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to save backup file " + backupFile, ex);
+                    PrintLog(DateTime.Now, fileName, "Save backup subtitles file failed {0}", backupFile);
+                    PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
                 }
             }
 
@@ -268,10 +504,12 @@ namespace SubtitlesCleaner.Command
             {
                 string[] lines = subtitles.ToLines();
                 File.WriteAllLines(outputFilePath, lines.Take(lines.Length - 1), encoding);
+                PrintLog(DateTime.Now, fileName, "Save subtitles file {0}", outputFilePath);
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to save subtitles file " + outputFilePath, ex);
+                PrintLog(DateTime.Now, fileName, "Save subtitles file failed {0}", outputFilePath);
+                PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
             }
 
             if (suppressErrorFile == false)
@@ -285,10 +523,12 @@ namespace SubtitlesCleaner.Command
                     try
                     {
                         File.WriteAllLines(errorFile, errors, encoding);
+                        PrintLog(DateTime.Now, fileName, "Save subtitles error file {0}", errorFile);
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception("Failed to save error file" + errorFile, ex);
+                        PrintLog(DateTime.Now, fileName, "Save subtitles error file failed {0}", errorFile);
+                        PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
                     }
                 }
             }
@@ -308,7 +548,7 @@ namespace SubtitlesCleaner.Command
             return Path.GetFullPath(Path.Combine(outputFolder, outputFile));
         }
 
-        private static void CreateOutputFolder(string outputFilePath)
+        private static void CreateOutputFolder(string outputFilePath, string fileName)
         {
             string folder = Path.GetDirectoryName(outputFilePath);
             if (Directory.Exists(folder))
@@ -317,17 +557,35 @@ namespace SubtitlesCleaner.Command
             try
             {
                 Directory.CreateDirectory(folder);
+                PrintLog(DateTime.Now, fileName, "Create output folder {0}", folder);
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to create folder " + folder, ex);
+                PrintLog(DateTime.Now, fileName, "Create output folder failed {0}", folder);
+                PrintLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
             }
         }
 
-        private static void Print(List<Subtitle> subtitles)
+        private static void PrintSubtitles(List<Subtitle> subtitles)
         {
             foreach (var line in subtitles.ToLines())
                 Console.WriteLine(line);
+        }
+
+        private static void PrintLog(DateTime time, string fileName, string format, params object[] args)
+        {
+            PrintLog(time, fileName, string.Format(format, args));
+        }
+
+        private static void PrintLog(DateTime time, string fileName, string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            string[] lines = (message ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            Console.WriteLine("{0:yyy-MM-dd HH:mm:ss.fff}\t{1}\t{2}", time, fileName, lines[0]);
+            for (int i = 1; i < lines.Length; i++)
+                Console.WriteLine("                          \t   \t{0}", lines[i]);
         }
     }
 }
