@@ -831,16 +831,101 @@ namespace SubtitlesCleaner.Library
 
             if (lines.Count > 1)
             {
-                var results = lines.Select((line, index) => new
+                FindAndReplace[] regexInlineHIWithoutDialog = HearingImpaired.ByGroup("Inline HI Without Dialog");
+                var results1 = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+                    isMatchDialog = regexDialog.IsMatch(line),
+                    isInlineHIWithoutDialog = regexInlineHIWithoutDialog.Any(far => (cleanHICaseInsensitive && far.HasRegexCI ? far.RegexCI : far.Regex).IsMatch(line))
+                }).ToArray();
+
+                for (int i = 1; i < results1.Length; i++)
+                {
+                    var prevItem = results1[i - 1];
+                    var item = results1[i];
+
+                    // Line 1. (or - Line 1.)
+                    // MAN: Line 2.
+                    //
+                    // - Line 1.
+                    // - MAN: Line 2.
+                    if (item.isMatchDialog == false &&
+                        prevItem.isInlineHIWithoutDialog == false &&
+                        item.isInlineHIWithoutDialog)
+                    {
+                        if (prevItem.isMatchDialog == false)
+                            lines[i - 1] = "- " + prevItem.line;
+                        lines[i] = "- " + item.line;
+
+                        if (isPrintCleaning)
+                            PrintCleaning(new string[] { prevItem.line, item.line }, new string[] { lines[i - 1], lines[i] });
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                }
+
+                FindAndReplace[] regexHIFullLine = HearingImpairedFullLine.ByGroup("HI Full Line");
+
+                var results2 = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+                    isMatchDialog = regexDialog.IsMatch(line),
+                    isHIFullLine = regexHIFullLine.Any(far => (cleanHICaseInsensitive && far.HasRegexCI ? far.RegexCI : far.Regex).IsMatch(line))
+                }).ToArray();
+
+                List<int> toDeleeIndexes = new List<int>();
+
+                for (int i = 2; i < results2.Length; i++)
+                {
+                    var prevItem2 = results2[i - 2];
+                    var prevItem1 = results2[i - 1];
+                    var item = results2[i];
+
+                    // Line 1. (or - Line 1.)
+                    // MAN:
+                    // Line 3.
+                    //
+                    // - Line 1.
+                    // - MAN: Line 3.
+                    if (prevItem1.isMatchDialog == false &&
+                        item.isMatchDialog == false &&
+                        prevItem2.isHIFullLine == false &&
+                        prevItem1.isHIFullLine &&
+                        item.isHIFullLine == false)
+                    {
+                        if (prevItem2.isMatchDialog == false)
+                            lines[i - 2] = "- " + prevItem2.line;
+                        lines[i - 1] = "- " + prevItem1.line + " " + item.line;
+                        toDeleeIndexes.Add(i);
+
+                        if (isPrintCleaning)
+                            PrintCleaning(new string[] { prevItem2.line, prevItem1.line, item.line }, new string[] { lines[i - 2], lines[i - 1] });
+
+                        i += 2; // 3 (the next 3) - 1 (counter the i++)
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                }
+
+                for (int i = toDeleeIndexes.Count - 1; i >= 0; i--)
+                {
+                    lines.RemoveAt(toDeleeIndexes[i]);
+                }
+
+                var results3 = lines.Select((line, index) => new
                 {
                     line,
                     index,
                     isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
                 }).ToArray();
 
-                if (results.Count(x => x.isMatchHIPrefix) > 1)
+                if (results3.Count(x => x.isMatchHIPrefix) > 1)
                 {
-                    foreach (var item in results)
+                    foreach (var item in results3)
                     {
                         if (item.isMatchHIPrefix)
                         {
@@ -2915,7 +3000,8 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\s*\[.*?\]$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // MAN #1: Text => Text
-            ,new FindAndReplace(new Regex(@"^[A-ZÀ-Ý0-9 #\'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*[A-ZÀ-Ý#'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("Inline HI Without Dialog",
+                                new Regex(@"^[A-ZÀ-Ý0-9 #\'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*[A-ZÀ-Ý#'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^[A-ZÀ-Ýa-zà-ÿ0-9 #\'\[\]][A-ZÀ-Ýa-zà-ÿ0-9 #\-'\[\]]*[A-ZÀ-Ýa-zà-ÿ#'\[\]][A-ZÀ-Ýa-zà-ÿ0-9 #\-'\[\]]*:(?!\d\d)\s*(?<Subtitle>.+?)$", RegexOptions.Compiled))
 
             // Some (laughting) text => Some text
@@ -2933,7 +3019,8 @@ namespace SubtitlesCleaner.Library
             // (?!\d\d) prevents cleaning time, like 13:00, in CI mode
 
             // MAN (laughting): Text => Text
-            ,new FindAndReplace(new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\(.*?\):\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
+            ,new FindAndReplace("Inline HI Without Dialog",
+                                new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\(.*?\):\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\(.*?\):(?!\d\d)\s*", RegexOptions.Compiled))
             ,new FindAndReplace(new Regex(@"^[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "", SubtitleError.Hearing_Impaired)
                     .SetRegexCI(new Regex(@"^[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:(?!\d\d)\s*", RegexOptions.Compiled))
