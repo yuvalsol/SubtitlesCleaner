@@ -18,7 +18,7 @@ namespace SubtitlesCleaner.Command
                 {
                     var parser = new Parser(with => with.HelpWriter = null);
                     var parserResult = parser.ParseArguments<
-                        CleanOptions,
+                        CleanSubtitlesOptions,
                         CleanEmptyAndNonSubtitlesOptions,
                         AddTimeOptions,
                         SetShowTimeOptions,
@@ -28,7 +28,7 @@ namespace SubtitlesCleaner.Command
                         UsageOptions>(args);
 
                     parserResult
-                        .WithParsed<CleanOptions>(SubtitlesHandler.Clean)
+                        .WithParsed<CleanSubtitlesOptions>(SubtitlesHandler.CleanSubtitles)
                         .WithParsed<CleanEmptyAndNonSubtitlesOptions>(SubtitlesHandler.CleanEmptyAndNonSubtitles)
                         .WithParsed<AddTimeOptions>(SubtitlesHandler.AddTime)
                         .WithParsed<SetShowTimeOptions>(SubtitlesHandler.SetShowTime)

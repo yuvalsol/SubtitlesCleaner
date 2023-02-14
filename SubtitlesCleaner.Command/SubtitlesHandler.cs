@@ -18,7 +18,7 @@ namespace SubtitlesCleaner.Command
 
         public static void Debug()
         {
-            Clean(new CleanOptions()
+            CleanSubtitles(new CleanSubtitlesOptions()
             {
                 path = Path.GetFullPath(Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
@@ -31,7 +31,7 @@ namespace SubtitlesCleaner.Command
             });
         }
 
-        public static void Clean(CleanOptions options)
+        public static void CleanSubtitles(CleanSubtitlesOptions options)
         {
             string[] filePaths = GetFilePaths(options.path);
             if (filePaths == null || filePaths.Length == 0)

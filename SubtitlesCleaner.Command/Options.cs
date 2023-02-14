@@ -24,7 +24,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("clean", HelpText = "Clean subtitles")]
-    class CleanOptions : SharedOptions
+    class CleanSubtitlesOptions : SharedOptions
     {
         [Option("cleanHICaseInsensitive", Required = false, HelpText = "Clean HI case-insensitive")]
         public bool cleanHICaseInsensitive { get; set; }
