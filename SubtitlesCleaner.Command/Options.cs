@@ -21,6 +21,15 @@ namespace SubtitlesCleaner.Command
 
         [Option("suppressBackupFile", Required = false, HelpText = "Do not create backup file of the original subtitles")]
         public bool suppressBackupFile { get; set; }
+
+        [Option("log", Required = false, HelpText = "Write to log file. Overwrites existing log file")]
+        public string log { get; set; }
+
+        [Option("log+", Required = false, HelpText = "Write to log file. Appends to existing log file")]
+        public string logAppend { get; set; }
+
+        [Option("quiet", Required = false, HelpText = "Do not write informative messages")]
+        public bool quiet { get; set; }
     }
 
     [Verb("clean", HelpText = "Clean subtitles")]
