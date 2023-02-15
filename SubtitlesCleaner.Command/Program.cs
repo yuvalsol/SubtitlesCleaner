@@ -18,7 +18,13 @@ namespace SubtitlesCleaner.Command
 
                 if (SubtitlesHandler.IsProduction)
                 {
-                    var parser = new Parser(with => with.HelpWriter = null);
+                    var parser = new Parser(with =>
+                    {
+                        with.CaseSensitive = false;
+                        with.IgnoreUnknownArguments = true;
+                        with.HelpWriter = null;
+                    });
+
                     var parserResult = parser.ParseArguments<
                         CleanSubtitlesOptions,
                         CleanEmptyAndNonSubtitlesOptions,
@@ -180,7 +186,7 @@ namespace SubtitlesCleaner.Command
                             }
                             else
                             {
-                                HelpText helpText = HelpText.AutoBuild(parserResult, h =>
+                                var helpText = HelpText.AutoBuild(parserResult, h =>
                                 {
                                     h.Heading =
                                         "Subtitles Cleaner Command, Version" + " " +
@@ -191,7 +197,7 @@ namespace SubtitlesCleaner.Command
                                     h.AddPreOptionsLine("Execute 'SubtitlesCleanerCommand usage --clean' to print usage for clean");
                                     h.AddNewLineBetweenHelpSections = true;
                                     return HelpText.DefaultParsingErrorsHandler(parserResult, h);
-                                }, e => e);
+                                }, e => e, verbsIndex: true);
 
                                 Console.WriteLine(helpText);
                             }
