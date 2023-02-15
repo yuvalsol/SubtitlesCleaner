@@ -69,6 +69,7 @@ SubtitlesCleanerCommand clean --path <fileOrFolder>
                               [--log+ <logFile>]
                               [--csv]
                               [--quiet]
+                              [--sequential]
 ```
 
 If the path points to a folder, it will clean all the subtitle files in that folder.
@@ -140,6 +141,12 @@ Quiet mode will not print any informative messages, to console or log file.
 
 ```console
 --quiet                     Do not write informative messages
+```
+
+By default, the program handles multiple files concurrently (`Task`). The `sequential` switch forces the program to process each file one at a time.
+
+```console
+--sequential                Process subtitle files in sequential order, one after another, instead of concurrently
 ```
 
 **Examples:**
@@ -221,6 +228,7 @@ SubtitlesCleanerCommand cleanEmptyAndNonSubtitles --path <fileOrFolder>
                                                   [--log+ <logFile>]
                                                   [--csv]
                                                   [--quiet]
+                                                  [--sequential]
 ```
 
 ### Add Time
@@ -239,6 +247,7 @@ SubtitlesCleanerCommand addTime --timeAdded <+00:00:00,000|-00:00:00,000>
                                 [--log+ <logFile>]
                                 [--csv]
                                 [--quiet]
+                                [--sequential]
 ```
 
 ```console
@@ -267,6 +276,7 @@ SubtitlesCleanerCommand setShowTime --showTime <00:00:00,000>
                                     [--log+ <logFile>]
                                     [--csv]
                                     [--quiet]
+                                    [--sequential]
 ```
 
 ```console
@@ -293,6 +303,7 @@ SubtitlesCleanerCommand adjustTiming --firstShowTime <00:00:00,000>
                                      [--log+ <logFile>]
                                      [--csv]
                                      [--quiet]
+                                     [--sequential]
 ```
 
 ```console
@@ -313,6 +324,7 @@ SubtitlesCleanerCommand reorder --path <fileOrFolder>
                                 [--log+ <logFile>]
                                 [--csv]
                                 [--quiet]
+                                [--sequential]
 ```
 
 If the path points to a folder, it will reorder all the subtitle files in that folder.
@@ -334,6 +346,7 @@ SubtitlesCleanerCommand balanceLines --path <fileOrFolder>
                                      [--log+ <logFile>]
                                      [--csv]
                                      [--quiet]
+                                     [--sequential]
 ```
 
 If the path points to a folder, it will balance the lines of all the subtitle files in that folder.

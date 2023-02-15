@@ -33,6 +33,9 @@ namespace SubtitlesCleaner.Command
 
         [Option("quiet", Required = false, HelpText = "Do not write informative messages")]
         public bool quiet { get; set; }
+
+        [Option("sequential", Required = false, HelpText = "Process subtitle files in sequential order, one after another, instead of concurrently")]
+        public bool sequential { get; set; }
     }
 
     [Verb("clean", HelpText = "Clean subtitles")]

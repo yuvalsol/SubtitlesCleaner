@@ -63,6 +63,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                              [--log+ <logFile>]");
                                 Console.WriteLine("                              [--csv]");
                                 Console.WriteLine("                              [--quiet]");
+                                Console.WriteLine("                              [--sequential]");
                                 Console.WriteLine();
                             }
 
@@ -79,6 +80,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                                  [--log+ <logFile>]");
                                 Console.WriteLine("                                                  [--csv]");
                                 Console.WriteLine("                                                  [--quiet]");
+                                Console.WriteLine("                                                  [--sequential]");
                                 Console.WriteLine();
                             }
 
@@ -96,6 +98,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                [--log+ <logFile>]");
                                 Console.WriteLine("                                [--csv]");
                                 Console.WriteLine("                                [--quiet]");
+                                Console.WriteLine("                                [--sequential]");
                                 Console.WriteLine();
                             }
 
@@ -113,6 +116,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                    [--log+ <logFile>]");
                                 Console.WriteLine("                                    [--csv]");
                                 Console.WriteLine("                                    [--quiet]");
+                                Console.WriteLine("                                    [--sequential]");
                                 Console.WriteLine();
                             }
 
@@ -130,6 +134,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                     [--log+ <logFile>]");
                                 Console.WriteLine("                                     [--csv]");
                                 Console.WriteLine("                                     [--quiet]");
+                                Console.WriteLine("                                     [--sequential]");
                                 Console.WriteLine();
                             }
 
@@ -144,6 +149,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                [--log+ <logFile>]");
                                 Console.WriteLine("                                [--csv]");
                                 Console.WriteLine("                                [--quiet]");
+                                Console.WriteLine("                                [--sequential]");
                                 Console.WriteLine();
                             }
 
@@ -158,6 +164,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                     [--log+ <logFile>]");
                                 Console.WriteLine("                                     [--csv]");
                                 Console.WriteLine("                                     [--quiet]");
+                                Console.WriteLine("                                     [--sequential]");
                                 Console.WriteLine();
                             }
                         })

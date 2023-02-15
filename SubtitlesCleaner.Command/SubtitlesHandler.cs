@@ -29,105 +29,136 @@ namespace SubtitlesCleaner.Command
                 cleanHICaseInsensitive = CleanHICaseInsensitive,
                 firstSubtitlesCount = FirstSubtitlesCount,
                 print = true,
-                quiet = true
+                quiet = true,
+                sequential = true
             });
         }
 
         public void CleanSubtitles(CleanSubtitlesOptions options)
         {
-            if (options.quiet)
-            {
-                Task.WaitAll(GetTasksQuiet<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray());
-            }
-            else
-            {
-                PreTasks(options);
-                Task.WaitAll(GetTasks<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray());
-                SaveLog(options);
-            }
+            Do<CleanSubtitles, CleanSubtitlesOptions>(options);
         }
 
         public void CleanEmptyAndNonSubtitles(CleanEmptyAndNonSubtitlesOptions options)
         {
-            if (options.quiet)
-            {
-                Task.WaitAll(GetTasksQuiet<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray());
-            }
-            else
-            {
-                PreTasks(options);
-                Task.WaitAll(GetTasks<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray());
-                SaveLog(options);
-            }
+            Do<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options);
         }
 
         public void AddTime(AddTimeOptions options)
         {
-            if (options.quiet)
-            {
-                Task.WaitAll(GetTasksQuiet<AddTime, AddTimeOptions>(options).ToArray());
-            }
-            else
-            {
-                PreTasks(options);
-                Task.WaitAll(GetTasks<AddTime, AddTimeOptions>(options).ToArray());
-                SaveLog(options);
-            }
+            Do<AddTime, AddTimeOptions>(options);
         }
 
         public void SetShowTime(SetShowTimeOptions options)
         {
-            if (options.quiet)
-            {
-                Task.WaitAll(GetTasksQuiet<SetShowTime, SetShowTimeOptions>(options).ToArray());
-            }
-            else
-            {
-                PreTasks(options);
-                Task.WaitAll(GetTasks<SetShowTime, SetShowTimeOptions>(options).ToArray());
-                SaveLog(options);
-            }
+            Do<SetShowTime, SetShowTimeOptions>(options);
         }
 
         public void AdjustTiming(AdjustTimingOptions options)
         {
-            if (options.quiet)
-            {
-                Task.WaitAll(GetTasksQuiet<AdjustTiming, AdjustTimingOptions>(options).ToArray());
-            }
-            else
-            {
-                PreTasks(options);
-                Task.WaitAll(GetTasks<AdjustTiming, AdjustTimingOptions>(options).ToArray());
-                SaveLog(options);
-            }
+            Do<AdjustTiming, AdjustTimingOptions>(options);
         }
 
         public void Reorder(ReorderOptions options)
         {
-            if (options.quiet)
-            {
-                Task.WaitAll(GetTasksQuiet<Reorder, ReorderOptions>(options).ToArray());
-            }
-            else
-            {
-                PreTasks(options);
-                Task.WaitAll(GetTasks<Reorder, ReorderOptions>(options).ToArray());
-                SaveLog(options);
-            }
+            Do<Reorder, ReorderOptions>(options);
         }
 
         public void BalanceLines(BalanceLinesOptions options)
         {
-            if (options.quiet)
+            Do<BalanceLines, BalanceLinesOptions>(options);
+        }
+
+        #endregion
+
+        #region Do
+
+        private void Do<TSubtitlesAction, TSharedOptions>(TSharedOptions options)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            if (options.sequential)
             {
-                Task.WaitAll(GetTasksQuiet<BalanceLines, BalanceLinesOptions>(options).ToArray());
+                if (options.quiet)
+                {
+                    DoSequentially<TSubtitlesAction, TSharedOptions>(options).ToArray();
+                }
+                else
+                {
+                    foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(options))
+                        WriteLogSequentially(result);
+                    SaveLog(options);
+                }
             }
             else
             {
-                PreTasks(options);
-                Task.WaitAll(GetTasks<BalanceLines, BalanceLinesOptions>(options).ToArray());
-                SaveLog(options);
+                if (options.quiet)
+                {
+                    Task.WaitAll(DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(options).ToArray());
+                }
+                else
+                {
+                    PreTasks(options);
+                    Task.WaitAll(DoConcurrently<TSubtitlesAction, TSharedOptions>(options).ToArray());
+                    SaveLog(options);
+                }
+            }
+        }
+
+        private IEnumerable<Task> DoConcurrently<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            string[] filePaths = GetFilePaths(sharedOptions.path);
+            if (filePaths == null || filePaths.Length == 0)
+                yield break;
+
+            int fileIndex = 0;
+            foreach (var filePath in filePaths)
+            {
+                yield return Task<SubtitlesActionResult>.Factory.StartNew((object obj) =>
+                {
+                    var action = new TSubtitlesAction();
+                    action.Init(filePath, sharedOptions);
+                    SubtitlesActionResult result = action.Do();
+                    result.FileIndex = (int)obj;
+                    return result;
+                }, fileIndex++).ContinueWith(antecedent =>
+                {
+                    WriteLog(antecedent.Result);
+                });
+            }
+        }
+
+        private IEnumerable<Task<SubtitlesActionResult>> DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            string[] filePaths = GetFilePaths(sharedOptions.path);
+            if (filePaths == null || filePaths.Length == 0)
+                yield break;
+
+            foreach (var filePath in filePaths)
+            {
+                var action = new TSubtitlesAction();
+                action.Init(filePath, sharedOptions);
+                yield return Task<SubtitlesActionResult>.Factory.StartNew(action.Do);
+            }
+        }
+
+        private IEnumerable<SubtitlesActionResult> DoSequentially<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            string[] filePaths = GetFilePaths(sharedOptions.path);
+            if (filePaths == null || filePaths.Length == 0)
+                yield break;
+
+            foreach (var filePath in filePaths)
+            {
+                var action = new TSubtitlesAction();
+                action.Init(filePath, sharedOptions);
+                yield return action.Do();
             }
         }
 
@@ -177,51 +208,6 @@ namespace SubtitlesCleaner.Command
 
         #endregion
 
-        #region Tasks
-
-        private IEnumerable<Task> GetTasks<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
-            where TSubtitlesAction : SubtitlesAction, new()
-            where TSharedOptions : SharedOptions
-        {
-            string[] filePaths = GetFilePaths(sharedOptions.path);
-            if (filePaths == null || filePaths.Length == 0)
-                yield break;
-
-            int fileIndex = 0;
-            foreach (var filePath in filePaths)
-            {
-                yield return Task<SubtitlesActionResult>.Factory.StartNew((object obj) =>
-                {
-                    var action = new TSubtitlesAction();
-                    action.Init(filePath, sharedOptions);
-                    SubtitlesActionResult result = action.Do();
-                    result.FileIndex = (int)obj;
-                    return result;
-                }, fileIndex++).ContinueWith(antecedent =>
-                {
-                    WriteLog(antecedent.Result);
-                });
-            }
-        }
-
-        private IEnumerable<Task<SubtitlesActionResult>> GetTasksQuiet<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
-            where TSubtitlesAction : SubtitlesAction, new()
-            where TSharedOptions : SharedOptions
-        {
-            string[] filePaths = GetFilePaths(sharedOptions.path);
-            if (filePaths == null || filePaths.Length == 0)
-                yield break;
-
-            foreach (var filePath in filePaths)
-            {
-                var action = new TSubtitlesAction();
-                action.Init(filePath, sharedOptions);
-                yield return Task<SubtitlesActionResult>.Factory.StartNew(action.Do);
-            }
-        }
-
-        #endregion
-
         #region Log
 
         private object syncObject = new object();
@@ -246,15 +232,34 @@ namespace SubtitlesCleaner.Command
                 {
                     if (result.FileIndex == fileIndex)
                     {
-                        if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
-                            Console.WriteLine(result.Log);
-                        else
-                            log.Append(result.Log);
-                        fileIndex++;
+                        try
+                        {
+                            if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
+                                Console.WriteLine(result.Log);
+                            else
+                                log.Append(result.Log);
+                        }
+                        catch { }
+                        finally
+                        {
+                            fileIndex++;
+                        }
+
                         return;
                     }
                 }
             }
+        }
+
+        private void WriteLogSequentially(SubtitlesActionResult result)
+        {
+            if (result.SharedOptions.quiet)
+                return;
+
+            if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
+                Console.WriteLine(result.Log);
+            else
+                log.Append(result.Log);
         }
 
         private void SaveLog(SharedOptions sharedOptions)
@@ -264,11 +269,19 @@ namespace SubtitlesCleaner.Command
 
             if (string.IsNullOrEmpty(sharedOptions.log) == false)
             {
+                string folder = Path.GetDirectoryName(sharedOptions.log);
+                if (Directory.Exists(folder) == false)
+                    Directory.CreateDirectory(folder);
+
                 File.WriteAllText(sharedOptions.log, log.ToString(), Encoding.UTF8);
                 log = null;
             }
             else if (string.IsNullOrEmpty(sharedOptions.logAppend) == false)
             {
+                string folder = Path.GetDirectoryName(sharedOptions.logAppend);
+                if (Directory.Exists(folder) == false)
+                    Directory.CreateDirectory(folder);
+
                 File.AppendAllText(sharedOptions.logAppend, log.ToString(), Encoding.UTF8);
                 log = null;
             }
