@@ -157,16 +157,28 @@ namespace SubtitlesCleaner.Command
 
             string[] lines = (message ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            Log.AppendFormat("{0:yyy-MM-dd HH:mm:ss.fff}", time);
-            Log.Append("\t");
-            Log.Append(fileName);
-            Log.Append("\t");
-            Log.AppendLine(lines[0]);
-
-            for (int i = 1; i < lines.Length; i++)
+            if (sharedOptions.csv)
             {
-                Log.Append("                          \t   \t");
-                Log.AppendLine(lines[i]);
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    Log.AppendFormat("\"{0:yyyy-MM-dd HH:mm:ss.fffZ}\"", time);
+                    Log.Append(",\"");
+                    Log.Append(fileName);
+                    Log.Append("\",\"");
+                    Log.Append(lines[i].Replace("\"", "\"\""));
+                    Log.AppendLine("\"");
+                }
+            }
+            else
+            {
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    Log.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}", time);
+                    Log.Append("\t");
+                    Log.Append(fileName);
+                    Log.Append("\t");
+                    Log.AppendLine(lines[i]);
+                }
             }
         }
     }

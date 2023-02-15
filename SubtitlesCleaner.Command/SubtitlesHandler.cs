@@ -22,10 +22,10 @@ namespace SubtitlesCleaner.Command
             CleanSubtitles(new CleanSubtitlesOptions()
             {
                 path = Path.GetFullPath(Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "..", "..", "..", "Subtitles",
-                    "Test.srt"
-                )),
+                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                     "..", "..", "..", "Subtitles",
+                     "Test.srt"
+                 )),
                 cleanHICaseInsensitive = CleanHICaseInsensitive,
                 firstSubtitlesCount = FirstSubtitlesCount,
                 print = true
@@ -35,56 +35,49 @@ namespace SubtitlesCleaner.Command
         public void CleanSubtitles(CleanSubtitlesOptions options)
         {
             PreTasks(options);
-            var tasks = GetTasks<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray();
-            Task.WaitAll(tasks);
+            Task.WaitAll(GetTasks<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray());
             SaveLog(options);
         }
 
         public void CleanEmptyAndNonSubtitles(CleanEmptyAndNonSubtitlesOptions options)
         {
             PreTasks(options);
-            var tasks = GetTasks<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray();
-            Task.WaitAll(tasks);
+            Task.WaitAll(GetTasks<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray());
             SaveLog(options);
         }
 
         public void AddTime(AddTimeOptions options)
         {
             PreTasks(options);
-            var tasks = GetTasks<AddTime, AddTimeOptions>(options).ToArray();
-            Task.WaitAll(tasks);
+            Task.WaitAll(GetTasks<AddTime, AddTimeOptions>(options).ToArray());
             SaveLog(options);
         }
 
         public void SetShowTime(SetShowTimeOptions options)
         {
             PreTasks(options);
-            var tasks = GetTasks<SetShowTime, SetShowTimeOptions>(options).ToArray();
-            Task.WaitAll(tasks);
+            Task.WaitAll(GetTasks<SetShowTime, SetShowTimeOptions>(options).ToArray());
             SaveLog(options);
         }
 
         public void AdjustTiming(AdjustTimingOptions options)
         {
             PreTasks(options);
-            var tasks = GetTasks<AdjustTiming, AdjustTimingOptions>(options).ToArray();
-            Task.WaitAll(tasks);
+            Task.WaitAll(GetTasks<AdjustTiming, AdjustTimingOptions>(options).ToArray());
             SaveLog(options);
         }
 
         public void Reorder(ReorderOptions options)
         {
             PreTasks(options);
-            var tasks = GetTasks<Reorder, ReorderOptions>(options).ToArray();
-            Task.WaitAll(tasks);
+            Task.WaitAll(GetTasks<Reorder, ReorderOptions>(options).ToArray());
             SaveLog(options);
         }
 
         public void BalanceLines(BalanceLinesOptions options)
         {
             PreTasks(options);
-            var tasks = GetTasks<BalanceLines, BalanceLinesOptions>(options).ToArray();
-            Task.WaitAll(tasks);
+            Task.WaitAll(GetTasks<BalanceLines, BalanceLinesOptions>(options).ToArray());
             SaveLog(options);
         }
 
@@ -188,14 +181,10 @@ namespace SubtitlesCleaner.Command
                     if (result.FileIndex == fileIndex)
                     {
                         if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
-                        {
                             Console.WriteLine(result.Log);
-                        }
                         else
-                        {
                             log.Append(result.Log);
-                            fileIndex++;
-                        }
+                        fileIndex++;
                         return;
                     }
                 }
