@@ -51,12 +51,9 @@ namespace SubtitlesCleaner.Command
                             );
 
                             Console.WriteLine();
-                            Console.WriteLine("USAGE:");
-                            Console.WriteLine();
 
                             if (options.clean)
                             {
-                                Console.WriteLine("Clean");
                                 Console.WriteLine("SubtitlesCleanerCommand clean --path <fileOrFolder>");
                                 Console.WriteLine("                              [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                              [--print]");
@@ -75,7 +72,6 @@ namespace SubtitlesCleaner.Command
 
                             if (options.cleanEmptyAndNonSubtitles)
                             {
-                                Console.WriteLine("Clean Empty And Non-Subtitles");
                                 Console.WriteLine("SubtitlesCleanerCommand cleanEmptyAndNonSubtitles --path <fileOrFolder>");
                                 Console.WriteLine("                                                  [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                                                  [--print]");
@@ -92,7 +88,6 @@ namespace SubtitlesCleaner.Command
 
                             if (options.addTime)
                             {
-                                Console.WriteLine("Add Time");
                                 Console.WriteLine("SubtitlesCleanerCommand addTime --timeAdded <+00:00:00,000|-00:00:00,000>");
                                 Console.WriteLine("                                --path <fileOrFolder>");
                                 Console.WriteLine("                                [--save [--outputFile <file>] [--outputFolder <folder>]]");
@@ -110,7 +105,6 @@ namespace SubtitlesCleaner.Command
 
                             if (options.setShowTime)
                             {
-                                Console.WriteLine("Set Show Time");
                                 Console.WriteLine("SubtitlesCleanerCommand setShowTime --showTime <00:00:00,000>");
                                 Console.WriteLine("                                    --path <fileOrFolder>");
                                 Console.WriteLine("                                    [--save [--outputFile <file>] [--outputFolder <folder>]]");
@@ -128,7 +122,6 @@ namespace SubtitlesCleaner.Command
 
                             if (options.adjustTiming)
                             {
-                                Console.WriteLine("Adjust Timing");
                                 Console.WriteLine("SubtitlesCleanerCommand adjustTiming --firstShowTime <00:00:00,000>");
                                 Console.WriteLine("                                     --lastShowTime <00:00:00,000>");
                                 Console.WriteLine("                                     --path <fileOrFolder>");
@@ -146,7 +139,6 @@ namespace SubtitlesCleaner.Command
 
                             if (options.reorder)
                             {
-                                Console.WriteLine("Reorder");
                                 Console.WriteLine("SubtitlesCleanerCommand reorder --path <fileOrFolder>");
                                 Console.WriteLine("                                [--save]");
                                 Console.WriteLine("                                [--print]");
@@ -161,7 +153,6 @@ namespace SubtitlesCleaner.Command
 
                             if (options.balanceLines)
                             {
-                                Console.WriteLine("Balance Lines");
                                 Console.WriteLine("SubtitlesCleanerCommand balanceLines --path <fileOrFolder>");
                                 Console.WriteLine("                                     [--save]");
                                 Console.WriteLine("                                     [--print]");
@@ -194,7 +185,6 @@ namespace SubtitlesCleaner.Command
                                     h.Copyright = string.Empty;
                                     h.AdditionalNewLineAfterOption = false;
                                     h.MaximumDisplayWidth = 120;
-                                    h.AddPreOptionsLine("Execute 'SubtitlesCleanerCommand usage --clean' to print usage for clean");
                                     h.AddNewLineBetweenHelpSections = true;
                                     return HelpText.DefaultParsingErrorsHandler(parserResult, h);
                                 }, e => e, verbsIndex: true);

@@ -116,25 +116,25 @@ namespace SubtitlesCleaner.Command
     [Verb("usage", HelpText = "Command usage")]
     class UsageOptions
     {
-        [Option("clean", HelpText = "Print usage for clean")]
+        [Option("clean", HelpText = "Print usage for clean", Group = "verb")]
         public bool clean { get; set; }
 
-        [Option("cleanEmptyAndNonSubtitles", HelpText = "Print usage for cleanEmptyAndNonSubtitles")]
+        [Option("cleanEmptyAndNonSubtitles", HelpText = "Print usage for cleanEmptyAndNonSubtitles", Group = "verb")]
         public bool cleanEmptyAndNonSubtitles { get; set; }
 
-        [Option("addTime", HelpText = "Print usage for addTime")]
+        [Option("addTime", HelpText = "Print usage for addTime", Group = "verb")]
         public bool addTime { get; set; }
 
-        [Option("setShowTime", HelpText = "Print usage for setShowTime")]
+        [Option("setShowTime", HelpText = "Print usage for setShowTime", Group = "verb")]
         public bool setShowTime { get; set; }
 
-        [Option("adjustTiming", HelpText = "Print usage for adjustTiming")]
+        [Option("adjustTiming", HelpText = "Print usage for adjustTiming", Group = "verb")]
         public bool adjustTiming { get; set; }
 
-        [Option("reorder", HelpText = "Print usage for reorder")]
+        [Option("reorder", HelpText = "Print usage for reorder", Group = "verb")]
         public bool reorder { get; set; }
 
-        [Option("balanceLines", HelpText = "Print usage for balanceLines")]
+        [Option("balanceLines", HelpText = "Print usage for balanceLines", Group = "verb")]
         public bool balanceLines { get; set; }
     }
 }
