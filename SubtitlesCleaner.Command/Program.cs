@@ -67,7 +67,8 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                              [--csv]");
                                 Console.WriteLine("                              [--quiet]");
                                 Console.WriteLine("                              [--sequential]");
-                                Console.WriteLine();
+
+                                PrintVerbHelp<CleanSubtitlesOptions>("clean");
                             }
 
                             if (options.cleanEmptyAndNonSubtitles)
@@ -83,7 +84,8 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                                  [--csv]");
                                 Console.WriteLine("                                                  [--quiet]");
                                 Console.WriteLine("                                                  [--sequential]");
-                                Console.WriteLine();
+
+                                PrintVerbHelp<CleanEmptyAndNonSubtitlesOptions>("cleanEmptyAndNonSubtitles");
                             }
 
                             if (options.addTime)
@@ -100,7 +102,8 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                [--csv]");
                                 Console.WriteLine("                                [--quiet]");
                                 Console.WriteLine("                                [--sequential]");
-                                Console.WriteLine();
+
+                                PrintVerbHelp<AddTimeOptions>("addTime");
                             }
 
                             if (options.setShowTime)
@@ -117,7 +120,8 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                    [--csv]");
                                 Console.WriteLine("                                    [--quiet]");
                                 Console.WriteLine("                                    [--sequential]");
-                                Console.WriteLine();
+
+                                PrintVerbHelp<SetShowTimeOptions>("setShowTime");
                             }
 
                             if (options.adjustTiming)
@@ -134,7 +138,8 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                     [--csv]");
                                 Console.WriteLine("                                     [--quiet]");
                                 Console.WriteLine("                                     [--sequential]");
-                                Console.WriteLine();
+
+                                PrintVerbHelp<AdjustTimingOptions>("adjustTiming");
                             }
 
                             if (options.reorder)
@@ -148,7 +153,8 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                [--csv]");
                                 Console.WriteLine("                                [--quiet]");
                                 Console.WriteLine("                                [--sequential]");
-                                Console.WriteLine();
+
+                                PrintVerbHelp<ReorderOptions>("reorder");
                             }
 
                             if (options.balanceLines)
@@ -162,7 +168,8 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                     [--csv]");
                                 Console.WriteLine("                                     [--quiet]");
                                 Console.WriteLine("                                     [--sequential]");
-                                Console.WriteLine();
+
+                                PrintVerbHelp<BalanceLinesOptions>("balanceLines");
                             }
                         })
                         .WithNotParsed(errors =>
@@ -225,6 +232,34 @@ namespace SubtitlesCleaner.Command
                     Console.ReadKey(true);
                 }
             }
+        }
+
+        private static void PrintVerbHelp<TSharedOptions>(string verb)
+            where TSharedOptions : SharedOptions
+        {
+            var parser = new Parser(with =>
+            {
+                with.CaseSensitive = false;
+                with.IgnoreUnknownArguments = true;
+                with.HelpWriter = null;
+            });
+
+            var parserResult = parser.ParseArguments<TSharedOptions>(new string[] { "--help", verb });
+
+            parserResult.WithNotParsed(errors =>
+            {
+                var helpText = HelpText.AutoBuild(parserResult, h =>
+                {
+                    h.Heading = string.Empty;
+                    h.Copyright = string.Empty;
+                    h.AdditionalNewLineAfterOption = false;
+                    h.MaximumDisplayWidth = 120;
+                    h.AddNewLineBetweenHelpSections = true;
+                    return HelpText.DefaultParsingErrorsHandler(parserResult, h);
+                }, e => e);
+
+                Console.WriteLine(helpText);
+            });
         }
 
         private static string UnhandledException(Exception ex)

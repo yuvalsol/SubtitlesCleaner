@@ -7,10 +7,10 @@ namespace SubtitlesCleaner.Command
         [Option("path", Required = true, HelpText = "Path to subtitle file or folder")]
         public string path { get; set; }
 
-        [Option("print", HelpText = "Print to console", Group = "Output")]
+        [Option("print", HelpText = "Print to console")]
         public bool print { get; set; }
 
-        [Option("save", HelpText = "Save to file", Group = "Output")]
+        [Option("save", HelpText = "Save to file")]
         public bool save { get; set; }
 
         [Option("outputFile", HelpText = "Output file. If omitted, the program outputs on the original file")]
@@ -80,7 +80,7 @@ namespace SubtitlesCleaner.Command
     [Verb("setShowTime", HelpText = "Move subtitles to show time")]
     class SetShowTimeOptions : SharedOptions
     {
-        [Option("showTime", HelpText = "Show time")]
+        [Option("showTime", Required = true, HelpText = "Show time")]
         public string showTime { get; set; }
 
         [Option("subtitleNumber", HelpText = "Start operation from specified subtitle. If omitted, starts with first subtitle")]
