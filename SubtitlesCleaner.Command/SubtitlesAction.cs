@@ -12,7 +12,7 @@ namespace SubtitlesCleaner.Command
         protected string filePath;
         protected SharedOptions sharedOptions;
 
-        public SubtitlesAction(string filePath, SharedOptions sharedOptions)
+        public virtual void Init(string filePath, SharedOptions sharedOptions)
         {
             this.filePath = filePath;
             this.sharedOptions = sharedOptions;
@@ -24,7 +24,7 @@ namespace SubtitlesCleaner.Command
         public virtual StringBuilder Log { get; protected set; }
         public virtual Exception Error { get; protected set; }
 
-        public abstract void Do();
+        public abstract SubtitlesActionResult Do();
 
         protected virtual void SaveSubtitles(
             List<Subtitle> subtitles,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SubtitlesCleaner.Command
 {
@@ -30,72 +31,66 @@ namespace SubtitlesCleaner.Command
 
         public static void CleanSubtitles(CleanSubtitlesOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
+            var tasks = GetTasks<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray();
+            Task.WaitAll(tasks);
+        }
 
+        public static IEnumerable<Task<SubtitlesActionResult>> GetTasks<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            string[] filePaths = GetFilePaths(sharedOptions.path);
+            if (filePaths == null || filePaths.Length == 0)
+                yield break;
+
+            int fileIndex = 0;
             foreach (var filePath in filePaths)
-                new CleanSubtitles(filePath, options).Do();
+            {
+                yield return Task.Factory.StartNew((object obj) =>
+                {
+                    var action = new TSubtitlesAction();
+                    action.Init(filePath, sharedOptions);
+                    var result = action.Do();
+                    result.FileIndex = (int)obj;
+                    return result;
+                }, fileIndex++);
+            }
         }
 
         public static void CleanEmptyAndNonSubtitles(CleanEmptyAndNonSubtitlesOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-                new CleanEmptyAndNonSubtitles(filePath, options).Do();
+            var tasks = GetTasks<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray();
+            Task.WaitAll(tasks);
         }
 
         public static void AddTime(AddTimeOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-                new AddTime(filePath, options).Do();
+            var tasks = GetTasks<AddTime, AddTimeOptions>(options).ToArray();
+            Task.WaitAll(tasks);
         }
 
         public static void SetShowTime(SetShowTimeOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-                new SetShowTime(filePath, options).Do();
+            var tasks = GetTasks<SetShowTime, SetShowTimeOptions>(options).ToArray();
+            Task.WaitAll(tasks);
         }
 
         public static void AdjustTiming(AdjustTimingOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-                new AdjustTiming(filePath, options).Do();
+            var tasks = GetTasks<AdjustTiming, AdjustTimingOptions>(options).ToArray();
+            Task.WaitAll(tasks);
         }
 
         public static void Reorder(ReorderOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-                new Reorder(filePath, options).Do();
+            var tasks = GetTasks<Reorder, ReorderOptions>(options).ToArray();
+            Task.WaitAll(tasks);
         }
 
         public static void BalanceLines(BalanceLinesOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-                new BalanceLines(filePath, options).Do();
+            var tasks = GetTasks<BalanceLines, BalanceLinesOptions>(options).ToArray();
+            Task.WaitAll(tasks);
         }
 
         private static string[] GetFilePaths(string path)

@@ -11,12 +11,13 @@ namespace SubtitlesCleaner.Command
     {
         private CleanSubtitlesOptions options;
 
-        public CleanSubtitles(string filePath, CleanSubtitlesOptions options) : base(filePath, options)
+        public override void Init(string filePath, SharedOptions sharedOptions)
         {
-            this.options = options;
+            base.Init(filePath, sharedOptions);
+            this.options = (CleanSubtitlesOptions)sharedOptions;
         }
 
-        public override void Do()
+        public override SubtitlesActionResult Do()
         {
             try
             {
@@ -53,6 +54,7 @@ namespace SubtitlesCleaner.Command
                 }
                 catch (Exception ex)
                 {
+                    Error = ex;
                     thrownException = true;
                     if (options.quiet == false)
                     {
@@ -66,7 +68,7 @@ namespace SubtitlesCleaner.Command
                 }
 
                 if (thrownException)
-                    return;
+                    return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Succeeded = false, Log = Log, Error = Error };
 
                 if (options.quiet == false)
                 {
@@ -79,10 +81,13 @@ namespace SubtitlesCleaner.Command
 
                 if (options.print)
                     PrintSubtitles(subtitles);
+
+                return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Succeeded = true, Log = Log, Error = Error };
             }
             catch (Exception ex)
             {
                 Error = ex;
+                return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Succeeded = false, Log = Log, Error = Error };
             }
         }
     }

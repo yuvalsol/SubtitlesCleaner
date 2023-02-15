@@ -69,6 +69,7 @@
     <Compile Include="Reorder.cs" />
     <Compile Include="SetShowTime.cs" />
     <Compile Include="SubtitlesAction.cs" />
+    <Compile Include="SubtitlesActionResult.cs" />
     <Compile Include="SubtitlesHandler.cs" />
   </ItemGroup>
   <ItemGroup>
