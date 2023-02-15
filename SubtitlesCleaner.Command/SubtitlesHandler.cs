@@ -34,51 +34,100 @@ namespace SubtitlesCleaner.Command
 
         public void CleanSubtitles(CleanSubtitlesOptions options)
         {
-            PreTasks(options);
-            Task.WaitAll(GetTasks<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray());
-            SaveLog(options);
+            if (options.quiet)
+            {
+                Task.WaitAll(GetTasksQuiet<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray());
+            }
+            else
+            {
+                PreTasks(options);
+                Task.WaitAll(GetTasks<CleanSubtitles, CleanSubtitlesOptions>(options).ToArray());
+                SaveLog(options);
+            }
         }
 
         public void CleanEmptyAndNonSubtitles(CleanEmptyAndNonSubtitlesOptions options)
         {
-            PreTasks(options);
-            Task.WaitAll(GetTasks<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray());
-            SaveLog(options);
+            if (options.quiet)
+            {
+                Task.WaitAll(GetTasksQuiet<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray());
+            }
+            else
+            {
+                PreTasks(options);
+                Task.WaitAll(GetTasks<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options).ToArray());
+                SaveLog(options);
+            }
         }
 
         public void AddTime(AddTimeOptions options)
         {
-            PreTasks(options);
-            Task.WaitAll(GetTasks<AddTime, AddTimeOptions>(options).ToArray());
-            SaveLog(options);
+            if (options.quiet)
+            {
+                Task.WaitAll(GetTasksQuiet<AddTime, AddTimeOptions>(options).ToArray());
+            }
+            else
+            {
+                PreTasks(options);
+                Task.WaitAll(GetTasks<AddTime, AddTimeOptions>(options).ToArray());
+                SaveLog(options);
+            }
         }
 
         public void SetShowTime(SetShowTimeOptions options)
         {
-            PreTasks(options);
-            Task.WaitAll(GetTasks<SetShowTime, SetShowTimeOptions>(options).ToArray());
-            SaveLog(options);
+            if (options.quiet)
+            {
+                Task.WaitAll(GetTasksQuiet<SetShowTime, SetShowTimeOptions>(options).ToArray());
+            }
+            else
+            {
+                PreTasks(options);
+                Task.WaitAll(GetTasks<SetShowTime, SetShowTimeOptions>(options).ToArray());
+                SaveLog(options);
+            }
         }
 
         public void AdjustTiming(AdjustTimingOptions options)
         {
-            PreTasks(options);
-            Task.WaitAll(GetTasks<AdjustTiming, AdjustTimingOptions>(options).ToArray());
-            SaveLog(options);
+            if (options.quiet)
+            {
+                Task.WaitAll(GetTasksQuiet<AdjustTiming, AdjustTimingOptions>(options).ToArray());
+            }
+            else
+            {
+                PreTasks(options);
+                Task.WaitAll(GetTasks<AdjustTiming, AdjustTimingOptions>(options).ToArray());
+                SaveLog(options);
+            }
         }
 
         public void Reorder(ReorderOptions options)
         {
-            PreTasks(options);
-            Task.WaitAll(GetTasks<Reorder, ReorderOptions>(options).ToArray());
-            SaveLog(options);
+            if (options.quiet)
+            {
+                Task.WaitAll(GetTasksQuiet<Reorder, ReorderOptions>(options).ToArray());
+            }
+            else
+            {
+                PreTasks(options);
+                Task.WaitAll(GetTasks<Reorder, ReorderOptions>(options).ToArray());
+                SaveLog(options);
+            }
         }
 
         public void BalanceLines(BalanceLinesOptions options)
         {
-            PreTasks(options);
-            Task.WaitAll(GetTasks<BalanceLines, BalanceLinesOptions>(options).ToArray());
-            SaveLog(options);
+            if (options.quiet)
+            {
+                Task.WaitAll(GetTasksQuiet<BalanceLines, BalanceLinesOptions>(options).ToArray());
+            }
+            else
+            {
+                PreTasks(options);
+                Task.WaitAll(GetTasks<BalanceLines, BalanceLinesOptions>(options).ToArray());
+                SaveLog(options);
+            }
         }
 
         #endregion
@@ -129,7 +178,7 @@ namespace SubtitlesCleaner.Command
 
         #region Tasks
 
-        public IEnumerable<Task> GetTasks<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+        private IEnumerable<Task> GetTasks<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
             where TSubtitlesAction : SubtitlesAction, new()
             where TSharedOptions : SharedOptions
         {
@@ -151,6 +200,22 @@ namespace SubtitlesCleaner.Command
                 {
                     WriteLog(antecedent.Result);
                 });
+            }
+        }
+
+        private IEnumerable<Task<SubtitlesActionResult>> GetTasksQuiet<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            string[] filePaths = GetFilePaths(sharedOptions.path);
+            if (filePaths == null || filePaths.Length == 0)
+                yield break;
+
+            foreach (var filePath in filePaths)
+            {
+                var action = new TSubtitlesAction();
+                action.Init(filePath, sharedOptions);
+                yield return Task<SubtitlesActionResult>.Factory.StartNew(action.Do);
             }
         }
 
