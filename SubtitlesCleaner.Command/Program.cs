@@ -14,6 +14,8 @@ namespace SubtitlesCleaner.Command
             {
                 Console.OutputEncoding = Encoding.UTF8;
 
+                var subtitlesHandler = new SubtitlesHandler();
+
                 if (SubtitlesHandler.IsProduction)
                 {
                     var parser = new Parser(with => with.HelpWriter = null);
@@ -28,13 +30,13 @@ namespace SubtitlesCleaner.Command
                         UsageOptions>(args);
 
                     parserResult
-                        .WithParsed<CleanSubtitlesOptions>(SubtitlesHandler.CleanSubtitles)
-                        .WithParsed<CleanEmptyAndNonSubtitlesOptions>(SubtitlesHandler.CleanEmptyAndNonSubtitles)
-                        .WithParsed<AddTimeOptions>(SubtitlesHandler.AddTime)
-                        .WithParsed<SetShowTimeOptions>(SubtitlesHandler.SetShowTime)
-                        .WithParsed<AdjustTimingOptions>(SubtitlesHandler.AdjustTiming)
-                        .WithParsed<ReorderOptions>(SubtitlesHandler.Reorder)
-                        .WithParsed<BalanceLinesOptions>(SubtitlesHandler.BalanceLines)
+                        .WithParsed<CleanSubtitlesOptions>(subtitlesHandler.CleanSubtitles)
+                        .WithParsed<CleanEmptyAndNonSubtitlesOptions>(subtitlesHandler.CleanEmptyAndNonSubtitles)
+                        .WithParsed<AddTimeOptions>(subtitlesHandler.AddTime)
+                        .WithParsed<SetShowTimeOptions>(subtitlesHandler.SetShowTime)
+                        .WithParsed<AdjustTimingOptions>(subtitlesHandler.AdjustTiming)
+                        .WithParsed<ReorderOptions>(subtitlesHandler.Reorder)
+                        .WithParsed<BalanceLinesOptions>(subtitlesHandler.BalanceLines)
                         .WithParsed<UsageOptions>(options =>
                         {
                             Console.WriteLine(
@@ -155,7 +157,7 @@ namespace SubtitlesCleaner.Command
                 }
                 else
                 {
-                    SubtitlesHandler.Debug();
+                    subtitlesHandler.Debug();
                 }
             }
             catch (Exception ex)
