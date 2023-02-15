@@ -51,78 +51,113 @@ namespace SubtitlesCleaner.Command
                             if (options.clean)
                             {
                                 Console.WriteLine("Clean");
-                                Console.WriteLine("SubtitlesCleanerCommand clean [--cleanHICaseInsensitive]");
-                                Console.WriteLine("                              [--firstSubtitlesCount N]");
-                                Console.WriteLine("                              --path fileOrFolder");
-                                Console.WriteLine("                              (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("SubtitlesCleanerCommand clean --path <fileOrFolder>");
+                                Console.WriteLine("                              [--save [--outputFile <file>] [--outputFolder <folder>]]");
+                                Console.WriteLine("                              [--print]");
+                                Console.WriteLine("                              [--cleanHICaseInsensitive]");
+                                Console.WriteLine("                              [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                              [--suppressBackupFile]");
                                 Console.WriteLine("                              [--suppressErrorFile]");
                                 Console.WriteLine("                              [--printCleaning]");
+                                Console.WriteLine("                              [--log <logFile>]");
+                                Console.WriteLine("                              [--log+ <logFile>]");
+                                Console.WriteLine("                              [--csv]");
+                                Console.WriteLine("                              [--quiet]");
                                 Console.WriteLine();
                             }
 
                             if (options.cleanEmptyAndNonSubtitles)
                             {
                                 Console.WriteLine("Clean Empty And Non-Subtitles");
-                                Console.WriteLine("SubtitlesCleanerCommand cleanEmptyAndNonSubtitles [--firstSubtitlesCount N]");
-                                Console.WriteLine("                                                  --path fileOrFolder");
-                                Console.WriteLine("                                                  (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("SubtitlesCleanerCommand cleanEmptyAndNonSubtitles --path <fileOrFolder>");
+                                Console.WriteLine("                                                  [--save [--outputFile <file>] [--outputFolder <folder>]]");
+                                Console.WriteLine("                                                  [--print]");
+                                Console.WriteLine("                                                  [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                                  [--suppressBackupFile]");
                                 Console.WriteLine("                                                  [--printCleaning]");
+                                Console.WriteLine("                                                  [--log <logFile>]");
+                                Console.WriteLine("                                                  [--log+ <logFile>]");
+                                Console.WriteLine("                                                  [--csv]");
+                                Console.WriteLine("                                                  [--quiet]");
                                 Console.WriteLine();
                             }
 
                             if (options.addTime)
                             {
                                 Console.WriteLine("Add Time");
-                                Console.WriteLine("SubtitlesCleanerCommand addTime --timeAdded (+00:00:00,000|-00:00:00,000)");
-                                Console.WriteLine("                                [--subtitleNumber N]");
-                                Console.WriteLine("                                [--firstSubtitlesCount N]");
-                                Console.WriteLine("                                --path fileOrFolder");
-                                Console.WriteLine("                                (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("SubtitlesCleanerCommand addTime --timeAdded <+00:00:00,000|-00:00:00,000>");
+                                Console.WriteLine("                                --path <fileOrFolder>");
+                                Console.WriteLine("                                [--save [--outputFile <file>] [--outputFolder <folder>]]");
+                                Console.WriteLine("                                [--print]");
+                                Console.WriteLine("                                [--subtitleNumber <N>]");
+                                Console.WriteLine("                                [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                [--suppressBackupFile]");
+                                Console.WriteLine("                                [--log <logFile>]");
+                                Console.WriteLine("                                [--log+ <logFile>]");
+                                Console.WriteLine("                                [--csv]");
+                                Console.WriteLine("                                [--quiet]");
                                 Console.WriteLine();
                             }
 
                             if (options.setShowTime)
                             {
                                 Console.WriteLine("Set Show Time");
-                                Console.WriteLine("SubtitlesCleanerCommand setShowTime --showTime 00:00:00,000");
-                                Console.WriteLine("                                    [--subtitleNumber N]");
-                                Console.WriteLine("                                    [--firstSubtitlesCount N]");
-                                Console.WriteLine("                                    --path fileOrFolder");
-                                Console.WriteLine("                                    (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("SubtitlesCleanerCommand setShowTime --showTime <00:00:00,000>");
+                                Console.WriteLine("                                    --path <fileOrFolder>");
+                                Console.WriteLine("                                    [--save [--outputFile <file>] [--outputFolder <folder>]]");
+                                Console.WriteLine("                                    [--print]");
+                                Console.WriteLine("                                    [--subtitleNumber <N>]");
+                                Console.WriteLine("                                    [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                    [--suppressBackupFile]");
+                                Console.WriteLine("                                    [--log <logFile>]");
+                                Console.WriteLine("                                    [--log+ <logFile>]");
+                                Console.WriteLine("                                    [--csv]");
+                                Console.WriteLine("                                    [--quiet]");
                                 Console.WriteLine();
                             }
 
                             if (options.adjustTiming)
                             {
                                 Console.WriteLine("Adjust Timing");
-                                Console.WriteLine("SubtitlesCleanerCommand adjustTiming --firstShowTime 00:00:00,000");
-                                Console.WriteLine("                                     --lastShowTime 00:00:00,000");
-                                Console.WriteLine("                                     [--firstSubtitlesCount N]");
-                                Console.WriteLine("                                     --path fileOrFolder");
-                                Console.WriteLine("                                     (--print|--save [--outputFile file] [--outputFolder folder])");
+                                Console.WriteLine("SubtitlesCleanerCommand adjustTiming --firstShowTime <00:00:00,000>");
+                                Console.WriteLine("                                     --lastShowTime <00:00:00,000>");
+                                Console.WriteLine("                                     --path <fileOrFolder>");
+                                Console.WriteLine("                                     [--save [--outputFile <file>] [--outputFolder <folder>]]");
+                                Console.WriteLine("                                     [--print]");
+                                Console.WriteLine("                                     [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                     [--suppressBackupFile]");
+                                Console.WriteLine("                                     [--log <logFile>]");
+                                Console.WriteLine("                                     [--log+ <logFile>]");
+                                Console.WriteLine("                                     [--csv]");
+                                Console.WriteLine("                                     [--quiet]");
                                 Console.WriteLine();
                             }
 
                             if (options.reorder)
                             {
                                 Console.WriteLine("Reorder");
-                                Console.WriteLine("SubtitlesCleanerCommand reorder --path fileOrFolder");
-                                Console.WriteLine("                                (--print|--save)");
+                                Console.WriteLine("SubtitlesCleanerCommand reorder --path <fileOrFolder>");
+                                Console.WriteLine("                                [--save]");
+                                Console.WriteLine("                                [--print]");
                                 Console.WriteLine("                                [--suppressBackupFile]");
+                                Console.WriteLine("                                [--log <logFile>]");
+                                Console.WriteLine("                                [--log+ <logFile>]");
+                                Console.WriteLine("                                [--csv]");
+                                Console.WriteLine("                                [--quiet]");
                                 Console.WriteLine();
                             }
 
                             if (options.balanceLines)
                             {
                                 Console.WriteLine("Balance Lines");
-                                Console.WriteLine("SubtitlesCleanerCommand balanceLines --path fileOrFolder");
-                                Console.WriteLine("                                     (--print|--save)");
+                                Console.WriteLine("SubtitlesCleanerCommand balanceLines --path <fileOrFolder>");
+                                Console.WriteLine("                                     [--save]");
+                                Console.WriteLine("                                     [--print]");
                                 Console.WriteLine("                                     [--suppressBackupFile]");
+                                Console.WriteLine("                                     [--log <logFile>]");
+                                Console.WriteLine("                                     [--log+ <logFile>]");
+                                Console.WriteLine("                                     [--csv]");
+                                Console.WriteLine("                                     [--quiet]");
                                 Console.WriteLine();
                             }
                         })
