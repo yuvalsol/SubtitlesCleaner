@@ -28,7 +28,8 @@ namespace SubtitlesCleaner.Command
                  )),
                 cleanHICaseInsensitive = CleanHICaseInsensitive,
                 firstSubtitlesCount = FirstSubtitlesCount,
-                print = true
+                print = true,
+                quiet = true
             });
         }
 
