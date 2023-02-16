@@ -27,9 +27,10 @@ namespace SubtitlesCleaner.Command
                      "..", "..", "..", "Subtitles",
                      "Test.srt"
                  )),
+                print = true,
+                printCleaning = PrintCleaning,
                 cleanHICaseInsensitive = CleanHICaseInsensitive,
                 firstSubtitlesCount = FirstSubtitlesCount,
-                print = true,
                 quiet = true,
                 sequential = true
             });

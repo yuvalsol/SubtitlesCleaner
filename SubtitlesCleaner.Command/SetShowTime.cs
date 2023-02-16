@@ -30,11 +30,7 @@ namespace SubtitlesCleaner.Command
                 }
 
                 Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? DebugOptions.Instance.FirstSubtitlesCount
-                );
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding, options.firstSubtitlesCount);
 
                 if (options.quiet == false)
                 {
@@ -92,7 +88,7 @@ namespace SubtitlesCleaner.Command
                     WriteLog(DateTime.Now, fileName, "Set show time failed");
                     WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
                 }
-                
+
                 return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Log = Log };
             }
         }

@@ -30,11 +30,7 @@ namespace SubtitlesCleaner.Command
                 }
 
                 Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? DebugOptions.Instance.FirstSubtitlesCount
-                );
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding, options.firstSubtitlesCount);
 
                 if (options.quiet == false)
                 {

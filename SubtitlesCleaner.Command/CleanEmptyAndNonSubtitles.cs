@@ -30,17 +30,13 @@ namespace SubtitlesCleaner.Command
                 }
 
                 Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? DebugOptions.Instance.FirstSubtitlesCount
-                );
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding, options.firstSubtitlesCount);
 
                 if (options.quiet == false)
                 {
                     WriteLog(DateTime.Now, fileName, "Read subtitles end");
 
-                    WriteLog(DateTime.Now, fileName, "Print cleaning is {0}", (options.printCleaning || DebugOptions.Instance.PrintCleaning ? "enabled" : "disabled"));
+                    WriteLog(DateTime.Now, fileName, "Print cleaning is {0}", (options.printCleaning ? "enabled" : "disabled"));
                     WriteLog(DateTime.Now, fileName, "Clean empty and non-subtitles start");
                 }
 
@@ -49,7 +45,7 @@ namespace SubtitlesCleaner.Command
 
                 try
                 {
-                    subtitles = subtitles.CleanEmptyAndNonSubtitles(options.printCleaning || DebugOptions.Instance.PrintCleaning);
+                    subtitles = subtitles.CleanEmptyAndNonSubtitles(options.printCleaning);
                 }
                 catch (Exception ex)
                 {

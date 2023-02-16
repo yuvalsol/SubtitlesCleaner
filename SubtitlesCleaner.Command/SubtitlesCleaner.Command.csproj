@@ -62,7 +62,6 @@
     <Compile Include="BalanceLines.cs" />
     <Compile Include="CleanEmptyAndNonSubtitles.cs" />
     <Compile Include="CleanSubtitles.cs" />
-    <Compile Include="DebugOptions.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
