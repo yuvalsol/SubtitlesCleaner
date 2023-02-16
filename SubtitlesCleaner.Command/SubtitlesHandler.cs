@@ -12,9 +12,9 @@ namespace SubtitlesCleaner.Command
     internal class SubtitlesHandler
     {
         public static readonly bool IsProduction = true;
-        public static readonly bool PrintCleaning = false;
-        public static readonly bool CleanHICaseInsensitive = false;
-        public static readonly int? FirstSubtitlesCount = null;
+        private static readonly bool PrintCleaning = false;
+        private static readonly bool CleanHICaseInsensitive = false;
+        private static readonly int? FirstSubtitlesCount = null;
 
         #region Actions
 
