@@ -207,20 +207,20 @@ namespace SubtitlesCleaner.Command
             }
             catch (Exception ex)
             {
-                Console.WriteLine("_________________________________________");
+                Console.Error.WriteLine("_________________________________________");
                 string errorMessage = UnhandledException(ex);
                 if (string.IsNullOrEmpty(errorMessage))
                 {
                     while (ex != null)
                     {
-                        Console.WriteLine(string.Format("{0}\n{1}\n_________________________________________", ex.GetType().ToString(), ex.Message));
+                        Console.Error.WriteLine(string.Format("{0}\n{1}\n_________________________________________", ex.GetType().ToString(), ex.Message));
                         ex = ex.InnerException;
                     }
                 }
                 else
                 {
-                    Console.WriteLine(errorMessage);
-                    Console.WriteLine("_________________________________________");
+                    Console.Error.WriteLine(errorMessage);
+                    Console.Error.WriteLine("_________________________________________");
                 }
                 Console.ReadKey(true);
             }

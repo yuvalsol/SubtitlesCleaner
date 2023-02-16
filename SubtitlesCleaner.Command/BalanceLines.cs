@@ -49,7 +49,16 @@ namespace SubtitlesCleaner.Command
                 catch (Exception ex)
                 {
                     thrownException = true;
-                    if (options.quiet == false)
+                    if (options.quiet)
+                    {
+                        lock (Console.Error)
+                        {
+                            Console.Error.WriteLine(filePath);
+                            Console.Error.WriteLine("Balance lines failed");
+                            Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                        }
+                    }
+                    else
                     {
                         WriteLog(DateTime.Now, fileName, "Balance lines failed");
                         WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
@@ -79,12 +88,21 @@ namespace SubtitlesCleaner.Command
             }
             catch (Exception ex)
             {
-                if (options.quiet == false)
+                if (options.quiet)
+                {
+                    lock (Console.Error)
+                    {
+                        Console.Error.WriteLine(filePath);
+                        Console.Error.WriteLine("Balance lines failed");
+                        Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                    }
+                }
+                else
                 {
                     WriteLog(DateTime.Now, fileName, "Balance lines failed");
                     WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
                 }
-                
+
                 return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Log = Log };
             }
         }

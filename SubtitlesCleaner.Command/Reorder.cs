@@ -49,7 +49,16 @@ namespace SubtitlesCleaner.Command
                 catch (Exception ex)
                 {
                     thrownException = true;
-                    if (options.quiet == false)
+                    if (options.quiet)
+                    {
+                        lock (Console.Error)
+                        {
+                            Console.Error.WriteLine(filePath);
+                            Console.Error.WriteLine("Reorder failed");
+                            Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                        }
+                    }
+                    else
                     {
                         WriteLog(DateTime.Now, fileName, "Reorder failed");
                         WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
@@ -79,7 +88,16 @@ namespace SubtitlesCleaner.Command
             }
             catch (Exception ex)
             {
-                if (options.quiet == false)
+                if (options.quiet)
+                {
+                    lock (Console.Error)
+                    {
+                        Console.Error.WriteLine(filePath);
+                        Console.Error.WriteLine("Reorder failed");
+                        Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                    }
+                }
+                else
                 {
                     WriteLog(DateTime.Now, fileName, "Reorder failed");
                     WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());

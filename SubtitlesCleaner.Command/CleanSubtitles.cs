@@ -51,7 +51,16 @@ namespace SubtitlesCleaner.Command
                 catch (Exception ex)
                 {
                     thrownException = true;
-                    if (options.quiet == false)
+                    if (options.quiet)
+                    {
+                        lock (Console.Error)
+                        {
+                            Console.Error.WriteLine(filePath);
+                            Console.Error.WriteLine("Clean subtitles failed");
+                            Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                        }
+                    }
+                    else
                     {
                         WriteLog(DateTime.Now, fileName, "Clean subtitles failed");
                         WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
@@ -81,7 +90,16 @@ namespace SubtitlesCleaner.Command
             }
             catch (Exception ex)
             {
-                if (options.quiet == false)
+                if (options.quiet)
+                {
+                    lock (Console.Error)
+                    {
+                        Console.Error.WriteLine(filePath);
+                        Console.Error.WriteLine("Clean subtitles failed");
+                        Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                    }
+                }
+                else
                 {
                     WriteLog(DateTime.Now, fileName, "Clean subtitles failed");
                     WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());

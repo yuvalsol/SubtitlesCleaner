@@ -52,7 +52,16 @@ namespace SubtitlesCleaner.Command
                 }
                 catch (Exception ex)
                 {
-                    if (sharedOptions.quiet == false)
+                    if (sharedOptions.quiet)
+                    {
+                        lock (Console.Error)
+                        {
+                            Console.Error.WriteLine(filePath);
+                            Console.Error.WriteLine("Save subtitles backup file failed {0}", backupFile);
+                            Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                        }
+                    }
+                    else
                     {
                         WriteLog(DateTime.Now, fileName, "Save subtitles backup file failed {0}", backupFile);
                         WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
@@ -69,7 +78,16 @@ namespace SubtitlesCleaner.Command
             }
             catch (Exception ex)
             {
-                if (sharedOptions.quiet == false)
+                if (sharedOptions.quiet)
+                {
+                    lock (Console.Error)
+                    {
+                        Console.Error.WriteLine(filePath);
+                        Console.Error.WriteLine("Save subtitles file failed {0}", outputFilePath);
+                        Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                    }
+                }
+                else
                 {
                     WriteLog(DateTime.Now, fileName, "Save subtitles file failed {0}", outputFilePath);
                     WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
@@ -92,7 +110,16 @@ namespace SubtitlesCleaner.Command
                     }
                     catch (Exception ex)
                     {
-                        if (sharedOptions.quiet == false)
+                        if (sharedOptions.quiet)
+                        {
+                            lock (Console.Error)
+                            {
+                                Console.Error.WriteLine(filePath);
+                                Console.Error.WriteLine("Save subtitles error file failed {0}", errorFile);
+                                Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                            }
+                        }
+                        else
                         {
                             WriteLog(DateTime.Now, fileName, "Save subtitles error file failed {0}", errorFile);
                             WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
@@ -130,7 +157,16 @@ namespace SubtitlesCleaner.Command
             }
             catch (Exception ex)
             {
-                if (sharedOptions.quiet == false)
+                if (sharedOptions.quiet)
+                {
+                    lock (Console.Error)
+                    {
+                        Console.Error.WriteLine(filePath);
+                        Console.Error.WriteLine("Create output folder failed {0}", folder);
+                        Console.Error.WriteLine(ex.GetExceptionErrorMessage());
+                    }
+                }
+                else
                 {
                     WriteLog(DateTime.Now, fileName, "Create output folder failed {0}", folder);
                     WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
