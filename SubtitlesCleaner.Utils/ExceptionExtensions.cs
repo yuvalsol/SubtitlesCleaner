@@ -21,7 +21,7 @@ namespace System
 
             string errorMessage = mainMessage;
 
-            errorMessage += string.Format("{0}{1}{0}{0}{2}",
+            errorMessage += string.Format("{0}ERROR: {1}{0}STACK TRACE:{0}{2}",
                 "\n",
                 ex.Message,
                 ex.GetFormattedStackTrace()
@@ -30,7 +30,7 @@ namespace System
             while (ex.InnerException != null)
             {
                 ex = ex.InnerException;
-                errorMessage += string.Format("{0}{1}{0}{0}{2}",
+                errorMessage += string.Format("{0}ERROR: {1}{0}STACK TRACE:{0}{2}",
                     "\n",
                     ex.Message,
                     ex.GetFormattedStackTrace()

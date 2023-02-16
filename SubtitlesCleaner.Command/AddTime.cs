@@ -19,10 +19,10 @@ namespace SubtitlesCleaner.Command
 
         public override SubtitlesActionResult Do()
         {
+            string fileName = Path.GetFileName(filePath);
+
             try
             {
-                string fileName = Path.GetFileName(filePath);
-
                 if (options.quiet == false)
                 {
                     WriteLog(DateTime.Now, fileName, "Subtitles file {0}", filePath);
@@ -56,7 +56,6 @@ namespace SubtitlesCleaner.Command
                 }
                 catch (Exception ex)
                 {
-                    Error = ex;
                     thrownException = true;
                     if (options.quiet == false)
                     {
@@ -70,7 +69,7 @@ namespace SubtitlesCleaner.Command
                 }
 
                 if (thrownException)
-                    return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Succeeded = false, Log = Log, Error = Error };
+                    return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Log = Log };
 
                 if (options.quiet == false)
                 {
@@ -84,12 +83,17 @@ namespace SubtitlesCleaner.Command
                 if (options.print)
                     PrintSubtitles(subtitles);
 
-                return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Succeeded = true, Log = Log, Error = Error };
+                return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Log = Log };
             }
             catch (Exception ex)
             {
-                Error = ex;
-                return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Succeeded = false, Log = Log, Error = Error };
+                if (options.quiet == false)
+                {
+                    WriteLog(DateTime.Now, fileName, "Add time failed");
+                    WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
+                }
+
+                return new SubtitlesActionResult() { FilePath = filePath, SharedOptions = sharedOptions, Log = Log };
             }
         }
     }

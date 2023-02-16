@@ -22,7 +22,6 @@ namespace SubtitlesCleaner.Command
         }
 
         public virtual StringBuilder Log { get; protected set; }
-        public virtual Exception Error { get; protected set; }
 
         public abstract SubtitlesActionResult Do();
 
