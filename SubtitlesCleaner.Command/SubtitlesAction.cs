@@ -49,13 +49,13 @@ namespace SubtitlesCleaner.Command
                 {
                     File.Copy(filePath, backupFile, true);
                     if (sharedOptions.quiet == false)
-                        WriteLog(DateTime.Now, fileName, "Save backup subtitles file {0}", backupFile);
+                        WriteLog(DateTime.Now, fileName, "Save subtitles backup file {0}", backupFile);
                 }
                 catch (Exception ex)
                 {
                     if (sharedOptions.quiet == false)
                     {
-                        WriteLog(DateTime.Now, fileName, "Save backup subtitles file failed {0}", backupFile);
+                        WriteLog(DateTime.Now, fileName, "Save subtitles backup file failed {0}", backupFile);
                         WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
                     }
                 }
@@ -161,7 +161,7 @@ namespace SubtitlesCleaner.Command
             {
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    Log.AppendFormat("\"{0:yyyy-MM-dd HH:mm:ss.fffZ}\"", time);
+                    Log.AppendFormat("\"{0:yyyy-MM-ddTHH:mm:ss.fffZ}\"", time);
                     Log.Append(",\"");
                     Log.Append(fileName);
                     Log.Append("\",\"");

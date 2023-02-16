@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Text;
+using CommandLine;
 
 namespace SubtitlesCleaner.Command
 {
@@ -36,6 +37,66 @@ namespace SubtitlesCleaner.Command
 
         [Option("sequential", HelpText = "Process subtitle files in sequential order, one after another, instead of concurrently")]
         public bool sequential { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (string.IsNullOrEmpty(path) == false)
+            {
+                sb.Append(" --path \"");
+                sb.Append(path);
+                sb.Append("\"");
+            }
+
+            if (print)
+                sb.Append(" --print");
+
+            if (save)
+                sb.Append(" --save");
+
+            if (string.IsNullOrEmpty(outputFile) == false)
+            {
+                sb.Append(" --outputFile \"");
+                sb.Append(outputFile);
+                sb.Append("\"");
+            }
+
+            if (string.IsNullOrEmpty(outputFolder) == false)
+            {
+                sb.Append(" --outputFolder \"");
+                sb.Append(outputFolder);
+                sb.Append("\"");
+            }
+
+            if (suppressBackupFile)
+                sb.Append(" --suppressBackupFile");
+
+            if (string.IsNullOrEmpty(log) == false)
+            {
+                sb.Append(" --log \"");
+                sb.Append(log);
+                sb.Append("\"");
+            }
+
+            if (string.IsNullOrEmpty(logAppend) == false)
+            {
+                sb.Append(" --log+ \"");
+                sb.Append(logAppend);
+                sb.Append("\"");
+            }
+
+            if (csv)
+                sb.Append(" --csv");
+
+            if (quiet)
+                sb.Append(" --quiet");
+
+            if (sequential)
+                sb.Append(" --sequential");
+
+            return sb.ToString();
+        }
     }
 
     [Verb("clean", HelpText = "Clean subtitles")]
@@ -52,6 +113,32 @@ namespace SubtitlesCleaner.Command
 
         [Option("printCleaning", HelpText = "Print to console what the cleaning process does")]
         public bool printCleaning { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("clean");
+
+            if (cleanHICaseInsensitive)
+                sb.Append(" --cleanHICaseInsensitive");
+
+            if (firstSubtitlesCount != null)
+            {
+                sb.Append(" --firstSubtitlesCount ");
+                sb.Append(firstSubtitlesCount.Value);
+            }
+
+            if (suppressErrorFile)
+                sb.Append(" --suppressErrorFile");
+
+            if (printCleaning)
+                sb.Append(" --printCleaning");
+
+            sb.Append(base.ToString());
+
+            return sb.ToString();
+        }
     }
 
     [Verb("cleanEmptyAndNonSubtitles", HelpText = "Clean empty and non-subtitles")]
@@ -62,6 +149,26 @@ namespace SubtitlesCleaner.Command
 
         [Option("printCleaning", HelpText = "Print to console what the cleaning process does")]
         public bool printCleaning { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("cleanEmptyAndNonSubtitles");
+
+            if (firstSubtitlesCount != null)
+            {
+                sb.Append(" --firstSubtitlesCount ");
+                sb.Append(firstSubtitlesCount.Value);
+            }
+
+            if (printCleaning)
+                sb.Append(" --printCleaning");
+
+            sb.Append(base.ToString());
+
+            return sb.ToString();
+        }
     }
 
     [Verb("addTime", HelpText = "Add time to subtitles")]
@@ -75,6 +182,35 @@ namespace SubtitlesCleaner.Command
 
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("addTime");
+
+            if (string.IsNullOrEmpty(timeAdded) == false)
+            {
+                sb.Append(" --timeAdded ");
+                sb.Append(timeAdded);
+            }
+
+            if (subtitleNumber != null)
+            {
+                sb.Append(" --subtitleNumber ");
+                sb.Append(subtitleNumber.Value);
+            }
+
+            if (firstSubtitlesCount != null)
+            {
+                sb.Append(" --firstSubtitlesCount ");
+                sb.Append(firstSubtitlesCount.Value);
+            }
+
+            sb.Append(base.ToString());
+
+            return sb.ToString();
+        }
     }
 
     [Verb("setShowTime", HelpText = "Move subtitles to show time")]
@@ -88,6 +224,35 @@ namespace SubtitlesCleaner.Command
 
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("setShowTime");
+
+            if (string.IsNullOrEmpty(showTime) == false)
+            {
+                sb.Append(" --showTime ");
+                sb.Append(showTime);
+            }
+
+            if (subtitleNumber != null)
+            {
+                sb.Append(" --subtitleNumber ");
+                sb.Append(subtitleNumber.Value);
+            }
+
+            if (firstSubtitlesCount != null)
+            {
+                sb.Append(" --firstSubtitlesCount ");
+                sb.Append(firstSubtitlesCount.Value);
+            }
+
+            sb.Append(base.ToString());
+
+            return sb.ToString();
+        }
     }
 
     [Verb("adjustTiming", HelpText = "Adjust subtitles timing by 2 sync points")]
@@ -101,16 +266,65 @@ namespace SubtitlesCleaner.Command
 
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("adjustTiming");
+
+            if (string.IsNullOrEmpty(firstShowTime) == false)
+            {
+                sb.Append(" --firstShowTime ");
+                sb.Append(firstShowTime);
+            }
+
+            if (string.IsNullOrEmpty(lastShowTime) == false)
+            {
+                sb.Append(" --lastShowTime ");
+                sb.Append(lastShowTime);
+            }
+
+            if (firstSubtitlesCount != null)
+            {
+                sb.Append(" --firstSubtitlesCount ");
+                sb.Append(firstSubtitlesCount.Value);
+            }
+
+            sb.Append(base.ToString());
+
+            return sb.ToString();
+        }
     }
 
     [Verb("reorder", HelpText = "Reorder subtitles based on their show time")]
     class ReorderOptions : SharedOptions
     {
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("reorder");
+
+            sb.Append(base.ToString());
+
+            return sb.ToString();
+        }
     }
 
     [Verb("balanceLines", HelpText = "Merge short line with long line")]
     class BalanceLinesOptions : SharedOptions
     {
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("balanceLines");
+
+            sb.Append(base.ToString());
+
+            return sb.ToString();
+        }
     }
 
     [Verb("usage", HelpText = "Command usage")]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -85,9 +86,18 @@ namespace SubtitlesCleaner.Command
                 }
                 else
                 {
+                    PreDo(options);
+                    var stopwatch = Stopwatch.StartNew();
+
+                    int fileCount = 0;
                     foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(options))
+                    {
                         WriteLogSequentially(result);
-                    SaveLog(options);
+                        fileCount++;
+                    }
+
+                    stopwatch.Stop();
+                    PostDo(options, fileCount, stopwatch);
                 }
             }
             else
@@ -98,11 +108,34 @@ namespace SubtitlesCleaner.Command
                 }
                 else
                 {
-                    PreTasks(options);
-                    Task.WaitAll(DoConcurrently<TSubtitlesAction, TSharedOptions>(options).ToArray());
-                    SaveLog(options);
+                    PreDo(options);
+                    var stopwatch = Stopwatch.StartNew();
+
+                    var tasks = DoConcurrently<TSubtitlesAction, TSharedOptions>(options).ToArray();
+                    Task.WaitAll(tasks);
+
+                    stopwatch.Stop();
+                    int fileCount = tasks.Length;
+                    PostDo(options, fileCount, stopwatch);
                 }
             }
+        }
+
+        private void PreDo<TSharedOptions>(TSharedOptions options)
+            where TSharedOptions : SharedOptions
+        {
+            log = new StringBuilder();
+            fileIndex = 0;
+            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
+        }
+
+        private void PostDo<TSharedOptions>(TSharedOptions options, int fileCount, Stopwatch stopwatch)
+            where TSharedOptions : SharedOptions
+        {
+            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+            SaveLog(options);
         }
 
         private IEnumerable<Task> DoConcurrently<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
@@ -175,35 +208,30 @@ namespace SubtitlesCleaner.Command
                 path = path.Replace(":\"", ":");
 
             bool isRecursive = false;
-            string[] filePaths = GetFiles(path, isRecursive);
-
-            return filePaths;
+            return GetFiles(path, isRecursive);
         }
 
         private string[] GetFiles(string path, bool isRecursive)
         {
-            string[] filePaths = null;
-
-            string extension = Path.GetExtension(path);
-            bool isSRTFile = string.Compare(extension, ".srt", true) == 0;
+            bool isSRTFile = string.Compare(Path.GetExtension(path), ".srt", true) == 0;
             if (isSRTFile)
             {
                 if (File.Exists(path))
-                    filePaths = new string[] { path };
+                    return new string[] { path };
             }
             else if (Directory.Exists(path))
             {
-                List<string> lst = new List<string>(Directory.GetFiles(path, "*.srt", (isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)));
-                var bakFiles = lst.Where(x => x.EndsWith(".bak.srt")).ToArray();
+                List<string> files = new List<string>(Directory.GetFiles(path, "*.srt", (isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)));
+                var bakFiles = files.Where(x => x.EndsWith(".bak.srt")).ToArray();
                 foreach (var bakFile in bakFiles)
                 {
-                    lst.Remove(bakFile);
-                    lst.Remove(bakFile.Replace(".bak.srt", ".srt"));
+                    files.Remove(bakFile);
+                    files.Remove(bakFile.Replace(".bak.srt", ".srt"));
                 }
-                filePaths = lst.ToArray();
+                return files.ToArray();
             }
 
-            return filePaths;
+            return null;
         }
 
         #endregion
@@ -214,11 +242,56 @@ namespace SubtitlesCleaner.Command
         private StringBuilder log;
         private int fileIndex;
 
-        private void PreTasks(SharedOptions sharedOptions)
+        protected virtual void WriteLog(DateTime time, SharedOptions sharedOptions, string name, string format, params object[] args)
         {
-            if (sharedOptions.quiet == false)
-                log = new StringBuilder();
-            fileIndex = 0;
+            WriteLog(time, sharedOptions, name, string.Format(format, args));
+        }
+
+        private void WriteLog(DateTime time, SharedOptions sharedOptions, string name, string message)
+        {
+            if (string.IsNullOrEmpty(sharedOptions.log) && string.IsNullOrEmpty(sharedOptions.logAppend))
+            {
+                StringBuilder log = new StringBuilder();
+                WriteLog(log, time, sharedOptions, name, message);
+                Console.WriteLine(log.ToString().Trim());
+                log = null;
+            }
+            else
+            {
+                WriteLog(log, time, sharedOptions, name, message);
+            }
+        }
+
+        private void WriteLog(StringBuilder log, DateTime time, SharedOptions sharedOptions, string name, string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            string[] lines = (message ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+            if (sharedOptions.csv)
+            {
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    log.AppendFormat("\"{0:yyyy-MM-ddTHH:mm:ss.fffZ}\"", time);
+                    log.Append(",\"");
+                    log.Append(name);
+                    log.Append("\",\"");
+                    log.Append(lines[i].Replace("\"", "\"\""));
+                    log.AppendLine("\"");
+                }
+            }
+            else
+            {
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    log.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}", time);
+                    log.Append("\t");
+                    log.Append(name);
+                    log.Append("\t");
+                    log.AppendLine(lines[i]);
+                }
+            }
         }
 
         private void WriteLog(SubtitlesActionResult result)
@@ -235,7 +308,7 @@ namespace SubtitlesCleaner.Command
                         try
                         {
                             if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
-                                Console.WriteLine(result.Log);
+                                Console.WriteLine(result.Log.ToString().Trim());
                             else
                                 log.Append(result.Log);
                         }
@@ -257,7 +330,7 @@ namespace SubtitlesCleaner.Command
                 return;
 
             if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
-                Console.WriteLine(result.Log);
+                Console.WriteLine(result.Log.ToString().Trim());
             else
                 log.Append(result.Log);
         }
