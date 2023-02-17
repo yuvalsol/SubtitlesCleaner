@@ -143,7 +143,7 @@ Quiet mode will not print any informative messages, to console or log file.
 --quiet                     Do not write informative messages
 ```
 
-By default, the program handles multiple files concurrently (`Task`). The `sequential` switch forces the program to process each file one at a time.
+By default, the program handles multiple files concurrently. The `sequential` switch forces the program to process each file one at a time. Sequential processing takes considerable less resources from the CPU and memory. Concurrent processing will use as much CPU as it can. Sequential processing will take significant longer to process multiple files.
 
 ```console
 --sequential                Process subtitle files in sequential order, one after another, instead of concurrently
@@ -195,22 +195,28 @@ SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --print --pr
 
 ![Print Cleaning](./Solution%20Items/Images/PrintCleaning.jpg "Print Cleaning")
 
-Clean all subtitle files in the folder. Write informative messages to text log file log.txt.
+Clean all subtitle files in the folder. Write informative messages to text log file log_clean.txt.
 
 ```console
-SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitles" --save --log "C:\My Documents\Subtitles\log.txt"
+SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitles" --save --log "C:\My Documents\Subtitles\log_clean.txt"
 ```
 
-Clean all subtitle files in the folder. Write informative messages to csv log file log.csv. If the file already exists, append to it.
+Clean all subtitle files in the folder. Write informative messages to csv log file log_clean.csv. If the file already exists, append to it.
 
 ```console
-SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitles" --save --log+ "C:\My Documents\Subtitles\log.csv" --csv
+SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitles" --save --log+ "C:\My Documents\Subtitles\log_clean.csv" --csv
 ```
 
 Clean all subtitle files in the folder. Don't write informative messages.
 
 ```console
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitles" --save --quiet
+```
+
+Clean all subtitle files in the folder, one after the other, in sequential order. Don't write informative messages.
+
+```console
+SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitles" --save --quiet --sequential
 ```
 
 ### Clean Empty And Non-Subtitles
