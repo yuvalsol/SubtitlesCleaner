@@ -3,7 +3,7 @@ using CommandLine;
 
 namespace SubtitlesCleaner.Command
 {
-    class SharedOptions
+    abstract class SharedOptions
     {
         [Option("path", Required = true, HelpText = "Path to subtitle file or folder")]
         public string path { get; set; }
@@ -37,6 +37,8 @@ namespace SubtitlesCleaner.Command
 
         [Option("sequential", HelpText = "Process subtitle files in sequential order, one after another, instead of concurrently")]
         public bool sequential { get; set; }
+
+        public abstract string Verb { get; }
 
         public override string ToString()
         {
@@ -114,11 +116,13 @@ namespace SubtitlesCleaner.Command
         [Option("printCleaning", HelpText = "Print to console what the cleaning process does")]
         public bool printCleaning { get; set; }
 
+        public override string Verb { get { return "clean"; } }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("clean");
+            sb.Append(Verb);
 
             if (cleanHICaseInsensitive)
                 sb.Append(" --cleanHICaseInsensitive");
@@ -150,11 +154,13 @@ namespace SubtitlesCleaner.Command
         [Option("printCleaning", HelpText = "Print to console what the cleaning process does")]
         public bool printCleaning { get; set; }
 
+        public override string Verb { get { return "cleanEmptyAndNonSubtitles"; } }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("cleanEmptyAndNonSubtitles");
+            sb.Append(Verb);
 
             if (firstSubtitlesCount != null)
             {
@@ -183,11 +189,13 @@ namespace SubtitlesCleaner.Command
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
 
+        public override string Verb { get { return "addTime"; } }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("addTime");
+            sb.Append(Verb);
 
             if (string.IsNullOrEmpty(timeAdded) == false)
             {
@@ -225,11 +233,13 @@ namespace SubtitlesCleaner.Command
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
 
+        public override string Verb { get { return "setShowTime"; } }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("setShowTime");
+            sb.Append(Verb);
 
             if (string.IsNullOrEmpty(showTime) == false)
             {
@@ -267,11 +277,13 @@ namespace SubtitlesCleaner.Command
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
 
+        public override string Verb { get { return "adjustTiming"; } }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("adjustTiming");
+            sb.Append(Verb);
 
             if (string.IsNullOrEmpty(firstShowTime) == false)
             {
@@ -300,11 +312,13 @@ namespace SubtitlesCleaner.Command
     [Verb("reorder", HelpText = "Reorder subtitles based on their show time")]
     class ReorderOptions : SharedOptions
     {
+        public override string Verb { get { return "reorder"; } }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("reorder");
+            sb.Append(Verb);
 
             sb.Append(base.ToString());
 
@@ -315,11 +329,13 @@ namespace SubtitlesCleaner.Command
     [Verb("balanceLines", HelpText = "Merge short line with long line")]
     class BalanceLinesOptions : SharedOptions
     {
+        public override string Verb { get { return "balanceLines"; } }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("balanceLines");
+            sb.Append(Verb);
 
             sb.Append(base.ToString());
 

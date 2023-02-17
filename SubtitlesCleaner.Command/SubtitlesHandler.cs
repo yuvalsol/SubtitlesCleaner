@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -83,137 +84,261 @@ namespace SubtitlesCleaner.Command
             {
                 if (options.quiet)
                 {
-                    DoSequentially<TSubtitlesAction, TSharedOptions>(options).ToArray();
+                    string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                    if (filePaths != null && filePaths.Length > 0)
+                        DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray();
                 }
                 else
                 {
-                    PreDo(options);
-                    var stopwatch = Stopwatch.StartNew();
-
-                    int fileCount = 0;
-                    foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(options))
+                    string logFilePath = GetLogFilePath(options);
+                    if (string.IsNullOrEmpty(logFilePath))
                     {
-                        WriteLogSequentially(result);
-                        fileCount++;
-                    }
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
 
-                    stopwatch.Stop();
-                    PostDo(options, fileCount, stopwatch);
+                        var stopwatch = Stopwatch.StartNew();
+
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options))
+                            {
+                                OutputLogToConsole(result.Log);
+                                fileCount++;
+                            }
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
+
+                        stopwatch.Stop();
+
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
+                    else
+                    {
+                        CreateLogFile(logFilePath);
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
+
+                        var stopwatch = Stopwatch.StartNew();
+
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options))
+                            {
+                                OutputLogToFile(logFilePath, result.Log);
+                                fileCount++;
+                            }
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
+
+                        stopwatch.Stop();
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
                 }
             }
             else
             {
                 if (options.quiet)
                 {
-                    Task.WaitAll(DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(options).ToArray());
+                    string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                    if (filePaths != null && filePaths.Length > 0)
+                        Task.WaitAll(DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray());
                 }
                 else
                 {
-                    PreDo(options);
-                    var stopwatch = Stopwatch.StartNew();
+                    string logFilePath = GetLogFilePath(options);
+                    if (string.IsNullOrEmpty(logFilePath))
+                    {
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
 
-                    var tasks = DoConcurrently<TSubtitlesAction, TSharedOptions>(options).ToArray();
-                    Task.WaitAll(tasks);
+                        var stopwatch = Stopwatch.StartNew();
 
-                    stopwatch.Stop();
-                    int fileCount = tasks.Length;
-                    PostDo(options, fileCount, stopwatch);
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            queue = new ConcurrentQueue<SubtitlesActionResult>();
+
+                            using (blockingQueue = new BlockingCollection<SubtitlesActionResult>(queue, filePaths.Length))
+                            {
+                                var queueTask = Task.Run(ConsumeLogQueueToConsole);
+
+                                var tasks = DoConcurrently<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray();
+                                Task.WaitAll(tasks);
+
+                                blockingQueue.CompleteAdding();
+                                queueTask.Wait();
+
+                                fileCount = tasks.Length;
+                            }
+
+                            blockingQueue = null;
+                            queue = null;
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
+
+                        stopwatch.Stop();
+
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
+                    else
+                    {
+                        CreateLogFile(logFilePath);
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
+
+                        var stopwatch = Stopwatch.StartNew();
+
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            queue = new ConcurrentQueue<SubtitlesActionResult>();
+
+                            using (blockingQueue = new BlockingCollection<SubtitlesActionResult>(queue, filePaths.Length))
+                            {
+                                var queueTask = Task.Run(() => ConsumeLogQueueToFile(logFilePath));
+
+                                var tasks = DoConcurrently<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray();
+                                Task.WaitAll(tasks);
+
+                                blockingQueue.CompleteAdding();
+                                queueTask.Wait();
+
+                                fileCount = tasks.Length;
+                            }
+
+                            blockingQueue = null;
+                            queue = null;
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
+
+                        stopwatch.Stop();
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
                 }
             }
         }
 
-        private void PreDo<TSharedOptions>(TSharedOptions options)
-            where TSharedOptions : SharedOptions
-        {
-            log = new StringBuilder();
-            fileIndex = 0;
-            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
-            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
-        }
-
-        private void PostDo<TSharedOptions>(TSharedOptions options, int fileCount, Stopwatch stopwatch)
-            where TSharedOptions : SharedOptions
-        {
-            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
-            WriteLog(DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
-            SaveLog(options);
-        }
-
-        private IEnumerable<Task> DoConcurrently<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+        private IEnumerable<Task> DoConcurrently<TSubtitlesAction, TSharedOptions>(string[] filePaths, TSharedOptions options)
             where TSubtitlesAction : SubtitlesAction, new()
             where TSharedOptions : SharedOptions
         {
-            string[] filePaths = GetFilePaths(sharedOptions.path);
-            if (filePaths == null || filePaths.Length == 0)
-                yield break;
-
-            int fileIndex = 0;
-            foreach (var filePath in filePaths)
-            {
-                yield return Task<SubtitlesActionResult>.Factory.StartNew((object obj) =>
-                {
-                    var action = new TSubtitlesAction();
-                    action.Init(filePath, sharedOptions);
-                    SubtitlesActionResult result = action.Do();
-                    result.FileIndex = (int)obj;
-                    return result;
-                }, fileIndex++).ContinueWith(antecedent =>
-                {
-                    WriteLog(antecedent.Result);
-                });
-            }
-        }
-
-        private IEnumerable<Task<SubtitlesActionResult>> DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
-            where TSubtitlesAction : SubtitlesAction, new()
-            where TSharedOptions : SharedOptions
-        {
-            string[] filePaths = GetFilePaths(sharedOptions.path);
-            if (filePaths == null || filePaths.Length == 0)
-                yield break;
-
             foreach (var filePath in filePaths)
             {
                 var action = new TSubtitlesAction();
-                action.Init(filePath, sharedOptions);
-                yield return Task<SubtitlesActionResult>.Factory.StartNew(action.Do);
+                action.Init(filePath, options);
+                yield return Task.Run(() => { blockingQueue.Add(action.Do()); });
             }
         }
 
-        private IEnumerable<SubtitlesActionResult> DoSequentially<TSubtitlesAction, TSharedOptions>(TSharedOptions sharedOptions)
+        private IEnumerable<Task<SubtitlesActionResult>> DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(string[] filePaths, TSharedOptions options)
             where TSubtitlesAction : SubtitlesAction, new()
             where TSharedOptions : SharedOptions
         {
-            string[] filePaths = GetFilePaths(sharedOptions.path);
-            if (filePaths == null || filePaths.Length == 0)
-                yield break;
-
             foreach (var filePath in filePaths)
             {
                 var action = new TSubtitlesAction();
-                action.Init(filePath, sharedOptions);
+                action.Init(filePath, options);
+                yield return Task.Run(action.Do);
+            }
+        }
+
+        private IEnumerable<SubtitlesActionResult> DoSequentially<TSubtitlesAction, TSharedOptions>(string[] filePaths, TSharedOptions options)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            foreach (var filePath in filePaths)
+            {
+                var action = new TSubtitlesAction();
+                action.Init(filePath, options);
                 yield return action.Do();
             }
         }
 
         #endregion
 
-        #region Path and Files
+        #region Files
 
-        private string[] GetFilePaths(string path)
+        private string[] GetFilePaths(string path, out bool isPathExists)
         {
             if (string.IsNullOrEmpty(path))
+            {
+                isPathExists = false;
                 return null;
+            }
 
             if (path.EndsWith(":\""))
                 path = path.Replace(":\"", ":");
 
             bool isRecursive = false;
-            return GetFiles(path, isRecursive);
+            return GetFiles(path, isRecursive, out isPathExists);
         }
 
-        private string[] GetFiles(string path, bool isRecursive)
+        private string[] GetFiles(string path, bool isRecursive, out bool isPathExists)
         {
+            isPathExists = File.Exists(path) || Directory.Exists(path);
+
             bool isSRTFile = string.Compare(Path.GetExtension(path), ".srt", true) == 0;
             if (isSRTFile)
             {
@@ -239,38 +364,98 @@ namespace SubtitlesCleaner.Command
 
         #region Log
 
-        private object syncObject = new object();
-        private StringBuilder log;
-        private int fileIndex;
+        private static readonly Encoding encoding = Encoding.UTF8;
 
-        protected virtual void WriteLog(DateTime time, SharedOptions sharedOptions, string name, string format, params object[] args)
+        private string GetLogFilePath(SharedOptions options)
         {
-            WriteLog(time, sharedOptions, name, string.Format(format, args));
+            string logFilePath = null;
+            if (string.IsNullOrEmpty(options.log) == false)
+                logFilePath = options.log;
+            else if (string.IsNullOrEmpty(options.logAppend) == false)
+                logFilePath = options.logAppend;
+
+            if (string.IsNullOrEmpty(logFilePath) == false)
+            {
+                if (Directory.Exists(logFilePath) || logFilePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                {
+                    if (options.csv)
+                        logFilePath = Path.Combine(logFilePath, options.Verb + "_log.csv");
+                    else
+                        logFilePath = Path.Combine(logFilePath, options.Verb + "_log.txt");
+                }
+                else if (string.IsNullOrEmpty(Path.GetExtension(logFilePath)))
+                {
+                    if (options.csv)
+                        logFilePath += ".csv";
+                    else
+                        logFilePath += ".txt";
+                }
+            }
+
+            return logFilePath;
         }
 
-        private void WriteLog(DateTime time, SharedOptions sharedOptions, string name, string message)
+        private void CreateLogFile(string logFilePath)
         {
-            if (string.IsNullOrEmpty(sharedOptions.log) && string.IsNullOrEmpty(sharedOptions.logAppend))
-            {
-                StringBuilder log = new StringBuilder();
-                WriteLog(log, time, sharedOptions, name, message);
-                Console.WriteLine(log.ToString().Trim());
-                log = null;
-            }
-            else
-            {
-                WriteLog(log, time, sharedOptions, name, message);
-            }
+            string folder = Path.GetDirectoryName(logFilePath);
+            if (Directory.Exists(folder) == false)
+                Directory.CreateDirectory(folder);
+
+            File.WriteAllText(logFilePath, string.Empty, encoding);
         }
 
-        private void WriteLog(StringBuilder log, DateTime time, SharedOptions sharedOptions, string name, string message)
-        {
-            if (string.IsNullOrEmpty(message))
-                return;
+        private ConcurrentQueue<SubtitlesActionResult> queue;
+        private BlockingCollection<SubtitlesActionResult> blockingQueue;
 
+        private void ConsumeLogQueueToFile(string logFilePath)
+        {
+            foreach (var result in blockingQueue.GetConsumingEnumerable())
+                OutputLogToFile(logFilePath, result.Log);
+        }
+
+        private void ConsumeLogQueueToConsole()
+        {
+            foreach (var result in blockingQueue.GetConsumingEnumerable())
+                OutputLogToConsole(result.Log);
+        }
+
+        private void WriteLogToFile(string path, DateTime time, SharedOptions options, string name, string format, params object[] args)
+        {
+            OutputLogToFile(path, GetLog(time, options, name, string.Format(format, args)));
+        }
+
+        private void WriteLogToConsole(DateTime time, SharedOptions options, string name, string format, params object[] args)
+        {
+            OutputLogToConsole(GetLog(time, options, name, string.Format(format, args)));
+        }
+
+        private void WriteLogToFile(string path, DateTime time, SharedOptions options, string name, string message)
+        {
+            OutputLogToFile(path, GetLog(time, options, name, message));
+        }
+
+        private void WriteLogToConsole(DateTime time, SharedOptions options, string name, string message)
+        {
+            OutputLogToConsole(GetLog(time, options, name, message));
+        }
+
+        private void OutputLogToFile(string logFilePath, StringBuilder log)
+        {
+            File.AppendAllText(logFilePath, log.ToString(), encoding);
+        }
+
+        private void OutputLogToConsole(StringBuilder log)
+        {
+            Console.WriteLine(log.ToString().Trim());
+        }
+
+        private StringBuilder GetLog(DateTime time, SharedOptions options, string name, string message)
+        {
             string[] lines = (message ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            if (sharedOptions.csv)
+            StringBuilder log = new StringBuilder();
+
+            if (options.csv)
             {
                 for (int i = 0; i < lines.Length; i++)
                 {
@@ -293,72 +478,8 @@ namespace SubtitlesCleaner.Command
                     log.AppendLine(lines[i]);
                 }
             }
-        }
 
-        private void WriteLog(SubtitlesActionResult result)
-        {
-            if (result.SharedOptions.quiet)
-                return;
-
-            while (true)
-            {
-                lock (syncObject)
-                {
-                    if (result.FileIndex == fileIndex)
-                    {
-                        try
-                        {
-                            if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
-                                Console.WriteLine(result.Log.ToString().Trim());
-                            else
-                                log.Append(result.Log);
-                        }
-                        catch { }
-                        finally
-                        {
-                            fileIndex++;
-                        }
-
-                        return;
-                    }
-                }
-            }
-        }
-
-        private void WriteLogSequentially(SubtitlesActionResult result)
-        {
-            if (result.SharedOptions.quiet)
-                return;
-
-            if (string.IsNullOrEmpty(result.SharedOptions.log) && string.IsNullOrEmpty(result.SharedOptions.logAppend))
-                Console.WriteLine(result.Log.ToString().Trim());
-            else
-                log.Append(result.Log);
-        }
-
-        private void SaveLog(SharedOptions sharedOptions)
-        {
-            if (sharedOptions.quiet)
-                return;
-
-            if (string.IsNullOrEmpty(sharedOptions.log) == false)
-            {
-                string folder = Path.GetDirectoryName(sharedOptions.log);
-                if (Directory.Exists(folder) == false)
-                    Directory.CreateDirectory(folder);
-
-                File.WriteAllText(sharedOptions.log, log.ToString(), Encoding.UTF8);
-                log = null;
-            }
-            else if (string.IsNullOrEmpty(sharedOptions.logAppend) == false)
-            {
-                string folder = Path.GetDirectoryName(sharedOptions.logAppend);
-                if (Directory.Exists(folder) == false)
-                    Directory.CreateDirectory(folder);
-
-                File.AppendAllText(sharedOptions.logAppend, log.ToString(), Encoding.UTF8);
-                log = null;
-            }
+            return log;
         }
 
         #endregion
