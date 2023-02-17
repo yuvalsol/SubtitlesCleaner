@@ -187,9 +187,6 @@ namespace SubtitlesCleaner.Command
 
         protected virtual void WriteLog(DateTime time, string fileName, string message)
         {
-            if (string.IsNullOrEmpty(message))
-                return;
-
             string[] lines = (message ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
             if (sharedOptions.csv)

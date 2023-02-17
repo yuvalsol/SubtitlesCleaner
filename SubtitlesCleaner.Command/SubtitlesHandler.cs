@@ -378,17 +378,12 @@ namespace SubtitlesCleaner.Command
             {
                 if (Directory.Exists(logFilePath) || logFilePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 {
-                    if (options.csv)
-                        logFilePath = Path.Combine(logFilePath, options.Verb + "_log.csv");
-                    else
-                        logFilePath = Path.Combine(logFilePath, options.Verb + "_log.txt");
+                    logFilePath = Path.Combine(logFilePath,
+                        string.Format("log_{0}.{1}", options.Verb, options.csv ? "csv" : "txt"));
                 }
                 else if (string.IsNullOrEmpty(Path.GetExtension(logFilePath)))
                 {
-                    if (options.csv)
-                        logFilePath += ".csv";
-                    else
-                        logFilePath += ".txt";
+                    logFilePath += options.csv ? ".csv" : ".txt";
                 }
             }
 

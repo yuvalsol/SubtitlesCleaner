@@ -3,7 +3,7 @@ using CommandLine;
 
 namespace SubtitlesCleaner.Command
 {
-    abstract class SharedOptions
+    internal abstract class SharedOptions
     {
         [Option("path", Required = true, HelpText = "Path to subtitle file or folder")]
         public string path { get; set; }
@@ -102,7 +102,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("clean", HelpText = "Clean subtitles")]
-    class CleanSubtitlesOptions : SharedOptions
+    internal class CleanSubtitlesOptions : SharedOptions
     {
         [Option("cleanHICaseInsensitive", HelpText = "Clean HI case-insensitive")]
         public bool cleanHICaseInsensitive { get; set; }
@@ -146,7 +146,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("cleanEmptyAndNonSubtitles", HelpText = "Clean empty and non-subtitles")]
-    class CleanEmptyAndNonSubtitlesOptions : SharedOptions
+    internal class CleanEmptyAndNonSubtitlesOptions : SharedOptions
     {
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
@@ -178,7 +178,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("addTime", HelpText = "Add time to subtitles")]
-    class AddTimeOptions : SharedOptions
+    internal class AddTimeOptions : SharedOptions
     {
         [Option("timeAdded", Required = true, HelpText = "Added time to subtitles")]
         public string timeAdded { get; set; }
@@ -222,7 +222,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("setShowTime", HelpText = "Move subtitles to show time")]
-    class SetShowTimeOptions : SharedOptions
+    internal class SetShowTimeOptions : SharedOptions
     {
         [Option("showTime", Required = true, HelpText = "Show time")]
         public string showTime { get; set; }
@@ -266,7 +266,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("adjustTiming", HelpText = "Adjust subtitles timing by 2 sync points")]
-    class AdjustTimingOptions : SharedOptions
+    internal class AdjustTimingOptions : SharedOptions
     {
         [Option("firstShowTime", Required = true, HelpText = "First subtitle's show time")]
         public string firstShowTime { get; set; }
@@ -310,7 +310,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("reorder", HelpText = "Reorder subtitles based on their show time")]
-    class ReorderOptions : SharedOptions
+    internal class ReorderOptions : SharedOptions
     {
         public override string Verb { get { return "reorder"; } }
 
@@ -327,7 +327,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("balanceLines", HelpText = "Merge short line with long line")]
-    class BalanceLinesOptions : SharedOptions
+    internal class BalanceLinesOptions : SharedOptions
     {
         public override string Verb { get { return "balanceLines"; } }
 
@@ -344,7 +344,7 @@ namespace SubtitlesCleaner.Command
     }
 
     [Verb("usage", HelpText = "Command usage")]
-    class UsageOptions
+    internal class UsageOptions
     {
         [Option("clean", HelpText = "Print usage for clean", Group = "verb")]
         public bool clean { get; set; }
