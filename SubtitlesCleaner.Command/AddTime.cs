@@ -32,6 +32,10 @@ namespace SubtitlesCleaner.Command
                 Encoding encoding = Encoding.UTF8;
                 List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding, options.firstSubtitlesCount);
 
+                List<Subtitle> originalSubtitles = null;
+                if (options.suppressBackupFileOnSame)
+                    originalSubtitles = subtitles.Clone();
+
                 if (options.quiet == false)
                 {
                     WriteLog(DateTime.Now, fileName, "Read subtitles end");
@@ -83,7 +87,7 @@ namespace SubtitlesCleaner.Command
                 }
 
                 if (options.save)
-                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressBackupFileOnSame, true, originalSubtitles);
 
                 if (options.print)
                     PrintSubtitles(subtitles);

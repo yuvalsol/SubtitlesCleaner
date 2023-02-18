@@ -63,6 +63,7 @@ SubtitlesCleanerCommand clean --path <fileOrFolder>
                               [--cleanHICaseInsensitive]
                               [--firstSubtitlesCount <N>]
                               [--suppressBackupFile]
+                              [--suppressBackupFileOnSame]
                               [--suppressErrorFile]
                               [--printCleaning]
                               [--log <logFile>]
@@ -107,7 +108,13 @@ Use this parameter to read the first N subtitles out of the file (not the first 
 Subtitles Cleaner Command saves a backup file, of the original file, with extension .bak.srt. This parameter suppresses the backup file.
 
 ```console
---suppressBackupFile        Do not create backup file of the original subtitles
+--suppressBackupFile        Do not create backup file of the original subtitles file
+```
+
+Suppress creating a backup file if the subtitles after processing are the same as the original subtitles.
+
+```console
+--suppressBackupFileOnSame  Do not create backup file if processing results the same file
 ```
 
 Subtitles Cleaner Command creates an error file with extension .error.srt. This file includes all the **_possible_** errors the program encountered but didn't cleaned up. These are meant to be viewed by a human eye and fix accordingly. This parameter suppresses the error file.
@@ -175,6 +182,12 @@ Clean subtitle file and suppress backup & error files.
 SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --suppressBackupFile --suppressErrorFile
 ```
 
+Clean subtitle file and suppress error file. Create backup file if the cleaned subtitles are not the same as the original subtitles.
+
+```console
+SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --suppressBackupFileOnSame --suppressErrorFile
+```
+
 Clean all subtitle files in the folder.
 
 ```console
@@ -229,6 +242,7 @@ SubtitlesCleanerCommand cleanEmptyAndNonSubtitles --path <fileOrFolder>
                                                   [--print]
                                                   [--firstSubtitlesCount <N>]
                                                   [--suppressBackupFile]
+                                                  [--suppressBackupFileOnSame]
                                                   [--printCleaning]
                                                   [--log <logFile>]
                                                   [--log+ <logFile>]
@@ -249,6 +263,7 @@ SubtitlesCleanerCommand addTime --timeAdded <+00:00:00,000|-00:00:00,000>
                                 [--subtitleNumber <N>]
                                 [--firstSubtitlesCount <N>]
                                 [--suppressBackupFile]
+                                [--suppressBackupFileOnSame]
                                 [--log <logFile>]
                                 [--log+ <logFile>]
                                 [--csv]
@@ -278,6 +293,7 @@ SubtitlesCleanerCommand setShowTime --showTime <00:00:00,000>
                                     [--subtitleNumber <N>]
                                     [--firstSubtitlesCount <N>]
                                     [--suppressBackupFile]
+                                    [--suppressBackupFileOnSame]
                                     [--log <logFile>]
                                     [--log+ <logFile>]
                                     [--csv]
@@ -305,6 +321,7 @@ SubtitlesCleanerCommand adjustTiming --firstShowTime <00:00:00,000>
                                      [--print]
                                      [--firstSubtitlesCount <N>]
                                      [--suppressBackupFile]
+                                     [--suppressBackupFileOnSame]
                                      [--log <logFile>]
                                      [--log+ <logFile>]
                                      [--csv]
@@ -326,6 +343,7 @@ SubtitlesCleanerCommand reorder --path <fileOrFolder>
                                 [--save]
                                 [--print]
                                 [--suppressBackupFile]
+                                [--suppressBackupFileOnSame]
                                 [--log <logFile>]
                                 [--log+ <logFile>]
                                 [--csv]
@@ -348,6 +366,7 @@ SubtitlesCleanerCommand balanceLines --path <fileOrFolder>
                                      [--save]
                                      [--print]
                                      [--suppressBackupFile]
+                                     [--suppressBackupFileOnSame]
                                      [--log <logFile>]
                                      [--log+ <logFile>]
                                      [--csv]

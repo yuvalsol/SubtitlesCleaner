@@ -20,8 +20,11 @@ namespace SubtitlesCleaner.Command
         [Option("outputFolder", HelpText = "Output folder. If omitted, the program outputs in the original folder")]
         public string outputFolder { get; set; }
 
-        [Option("suppressBackupFile", HelpText = "Do not create backup file of the original subtitles")]
+        [Option("suppressBackupFile", HelpText = "Do not create backup file of the original subtitles file")]
         public bool suppressBackupFile { get; set; }
+
+        [Option("suppressBackupFileOnSame", HelpText = "Do not create backup file if processing results the same file")]
+        public bool suppressBackupFileOnSame { get; set; }
 
         [Option("log", HelpText = "Write informative messages to log file. Overwrites existing log file")]
         public string log { get; set; }
@@ -73,6 +76,9 @@ namespace SubtitlesCleaner.Command
 
             if (suppressBackupFile)
                 sb.Append(" --suppressBackupFile");
+
+            if (suppressBackupFileOnSame)
+                sb.Append(" --suppressBackupFileOnSame");
 
             if (string.IsNullOrEmpty(log) == false)
             {

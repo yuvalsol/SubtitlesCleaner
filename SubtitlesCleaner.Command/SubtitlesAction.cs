@@ -32,13 +32,25 @@ namespace SubtitlesCleaner.Command
             string outputFile,
             string outputFolder,
             bool suppressBackupFile,
-            bool suppressErrorFile)
+            bool suppressBackupFileOnSame,
+            bool suppressErrorFile,
+            List<Subtitle> originalSubtitles)
         {
             string fileName = Path.GetFileName(filePath);
 
             string outputFilePath = GetOutputFilePath(filePath, outputFile, outputFolder);
 
             CreateOutputFolder(outputFilePath, fileName);
+
+            if (suppressBackupFile == false && suppressBackupFileOnSame)
+            {
+                suppressBackupFile = (
+                    subtitles.Count != originalSubtitles.Count ||
+                    subtitles.Zip(originalSubtitles, (s, os) =>
+                        s.Lines.Count != os.Lines.Count ||
+                        s.Lines.Zip(os.Lines, (l, ol) => l != ol).Any(isChanged => isChanged)
+                    ).Any(isChanged => isChanged)) == false;
+            }
 
             if (suppressBackupFile == false)
             {

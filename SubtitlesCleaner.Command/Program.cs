@@ -60,6 +60,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                              [--cleanHICaseInsensitive]");
                                 Console.WriteLine("                              [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                              [--suppressBackupFile]");
+                                Console.WriteLine("                              [--suppressBackupFileOnSame]");
                                 Console.WriteLine("                              [--suppressErrorFile]");
                                 Console.WriteLine("                              [--printCleaning]");
                                 Console.WriteLine("                              [--log <logFile>]");
@@ -78,6 +79,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                                  [--print]");
                                 Console.WriteLine("                                                  [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                                  [--suppressBackupFile]");
+                                Console.WriteLine("                                                  [--suppressBackupFileOnSame]");
                                 Console.WriteLine("                                                  [--printCleaning]");
                                 Console.WriteLine("                                                  [--log <logFile>]");
                                 Console.WriteLine("                                                  [--log+ <logFile>]");
@@ -97,6 +99,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                [--subtitleNumber <N>]");
                                 Console.WriteLine("                                [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                [--suppressBackupFile]");
+                                Console.WriteLine("                                [--suppressBackupFileOnSame]");
                                 Console.WriteLine("                                [--log <logFile>]");
                                 Console.WriteLine("                                [--log+ <logFile>]");
                                 Console.WriteLine("                                [--csv]");
@@ -115,6 +118,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                    [--subtitleNumber <N>]");
                                 Console.WriteLine("                                    [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                    [--suppressBackupFile]");
+                                Console.WriteLine("                                    [--suppressBackupFileOnSame]");
                                 Console.WriteLine("                                    [--log <logFile>]");
                                 Console.WriteLine("                                    [--log+ <logFile>]");
                                 Console.WriteLine("                                    [--csv]");
@@ -133,6 +137,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                     [--print]");
                                 Console.WriteLine("                                     [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                                     [--suppressBackupFile]");
+                                Console.WriteLine("                                     [--suppressBackupFileOnSame]");
                                 Console.WriteLine("                                     [--log <logFile>]");
                                 Console.WriteLine("                                     [--log+ <logFile>]");
                                 Console.WriteLine("                                     [--csv]");
@@ -148,6 +153,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                [--save]");
                                 Console.WriteLine("                                [--print]");
                                 Console.WriteLine("                                [--suppressBackupFile]");
+                                Console.WriteLine("                                [--suppressBackupFileOnSame]");
                                 Console.WriteLine("                                [--log <logFile>]");
                                 Console.WriteLine("                                [--log+ <logFile>]");
                                 Console.WriteLine("                                [--csv]");
@@ -163,6 +169,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                                     [--save]");
                                 Console.WriteLine("                                     [--print]");
                                 Console.WriteLine("                                     [--suppressBackupFile]");
+                                Console.WriteLine("                                     [--suppressBackupFileOnSame]");
                                 Console.WriteLine("                                     [--log <logFile>]");
                                 Console.WriteLine("                                     [--log+ <logFile>]");
                                 Console.WriteLine("                                     [--csv]");
