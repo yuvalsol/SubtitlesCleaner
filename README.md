@@ -79,7 +79,7 @@ If the path points to a folder, it will clean all the subtitle files in that fol
 --path <fileOrFolder>       Path to subtitle file or folder
 ```
 
-Outputs the cleaned subtitles to a file. By default, Subtitles Cleaner Command will save the cleaned subtitles to the same subtitle file, overwriting it. Use `--outputFile` to write to a new subtitle file with different name. use `--outputFolder` to write to a different folder than the original subtitle file.
+Outputs the cleaned subtitles to a file. By default, Subtitles Cleaner Command will save the cleaned subtitles to the same subtitle file, overwriting it. Use `outputFile` switch to write to a new subtitle file with different name. use `outputFolder` switch to write to a different folder than the original subtitle file.
 
 ```console
 --save                      Save to file
@@ -131,7 +131,7 @@ Print to console the cleaning process.
 
 The program outputs informative messages about what it does, like reading and saving files, cleaning subtitles, etc. By default, it will print them to the console. The following switches control where and how these informative messages show.
 
-If log or log+ switch is present, informative messages will be written to the specified log file.
+Write informative messages to a log file. If a folder path is specified instead of a file path, the program will name its own log file and create it in that folder.
 
 ```console
 --log <logFile>             Write informative messages to log file. Overwrites existing log file
