@@ -9,10 +9,19 @@ namespace System
     {
         public static string GetUnhandledExceptionErrorMessage(this Exception ex)
         {
+            return GetExceptionErrorMessage(ex,
+                string.Format("An unhandled error occurred.{0}The application will terminate now.{0}", "\n")
+            );
+        }
+
+        public static string GetExceptionErrorMessage(this Exception ex, string mainMessage = null)
+        {
             if (ex == null)
                 return null;
 
-            string errorMessage = string.Format("An unhandled error occurred.{0}The application will terminate now.{0}{0}{1}{0}{0}{2}",
+            string errorMessage = mainMessage;
+
+            errorMessage += string.Format("{0}ERROR: {1}{0}STACK TRACE:{0}{2}",
                 "\n",
                 ex.Message,
                 ex.GetFormattedStackTrace()
@@ -21,7 +30,7 @@ namespace System
             while (ex.InnerException != null)
             {
                 ex = ex.InnerException;
-                errorMessage += string.Format("{0}{1}{0}{0}{2}",
+                errorMessage += string.Format("{0}ERROR: {1}{0}STACK TRACE:{0}{2}",
                     "\n",
                     ex.Message,
                     ex.GetFormattedStackTrace()

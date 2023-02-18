@@ -1,333 +1,482 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using SubtitlesCleaner.Library;
+using System.Threading.Tasks;
 
 namespace SubtitlesCleaner.Command
 {
-    static class SubtitlesHandler
+    internal class SubtitlesHandler
     {
         public static readonly bool IsProduction = true;
         private static readonly bool PrintCleaning = false;
         private static readonly bool CleanHICaseInsensitive = false;
         private static readonly int? FirstSubtitlesCount = null;
 
-        public static void Debug()
+        #region Actions
+
+        public void Debug()
         {
-            Clean(new CleanOptions()
+            CleanSubtitles(new CleanSubtitlesOptions()
             {
                 path = Path.GetFullPath(Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "..", "..", "..", "Subtitles",
-                    "Test.srt"
-                )),
+                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                     "..", "..", "..", "Subtitles",
+                     "Test.srt"
+                 )),
+                print = true,
+                printCleaning = PrintCleaning,
                 cleanHICaseInsensitive = CleanHICaseInsensitive,
                 firstSubtitlesCount = FirstSubtitlesCount,
-                print = true
+                quiet = true,
+                sequential = true
             });
         }
 
-        public static void Clean(CleanOptions options)
+        public void CleanSubtitles(CleanSubtitlesOptions options)
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
+            Do<CleanSubtitles, CleanSubtitlesOptions>(options);
+        }
 
-            foreach (var filePath in filePaths)
+        public void CleanEmptyAndNonSubtitles(CleanEmptyAndNonSubtitlesOptions options)
+        {
+            Do<CleanEmptyAndNonSubtitles, CleanEmptyAndNonSubtitlesOptions>(options);
+        }
+
+        public void AddTime(AddTimeOptions options)
+        {
+            Do<AddTime, AddTimeOptions>(options);
+        }
+
+        public void SetShowTime(SetShowTimeOptions options)
+        {
+            Do<SetShowTime, SetShowTimeOptions>(options);
+        }
+
+        public void AdjustTiming(AdjustTimingOptions options)
+        {
+            Do<AdjustTiming, AdjustTimingOptions>(options);
+        }
+
+        public void Reorder(ReorderOptions options)
+        {
+            Do<Reorder, ReorderOptions>(options);
+        }
+
+        public void BalanceLines(BalanceLinesOptions options)
+        {
+            Do<BalanceLines, BalanceLinesOptions>(options);
+        }
+
+        #endregion
+
+        #region Do
+
+        private void Do<TSubtitlesAction, TSharedOptions>(TSharedOptions options)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
+        {
+            if (options.sequential)
             {
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? FirstSubtitlesCount
-                );
+                if (options.quiet)
+                {
+                    string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                    if (filePaths != null && filePaths.Length > 0)
+                        DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray();
+                }
+                else
+                {
+                    string logFilePath = GetLogFilePath(options);
+                    if (string.IsNullOrEmpty(logFilePath))
+                    {
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
 
-                subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive || CleanHICaseInsensitive, options.printCleaning || PrintCleaning);
+                        var stopwatch = Stopwatch.StartNew();
 
-                if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressErrorFile);
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options))
+                            {
+                                OutputLogToConsole(result.Log);
+                                fileCount++;
+                            }
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
 
-                if (options.print)
-                    Print(subtitles);
+                        stopwatch.Stop();
+
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
+                    else
+                    {
+                        CreateLogFile(logFilePath);
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
+
+                        var stopwatch = Stopwatch.StartNew();
+
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options))
+                            {
+                                OutputLogToFile(logFilePath, result.Log);
+                                fileCount++;
+                            }
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
+
+                        stopwatch.Stop();
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (options.quiet)
+                {
+                    string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                    if (filePaths != null && filePaths.Length > 0)
+                        Task.WaitAll(DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray());
+                }
+                else
+                {
+                    string logFilePath = GetLogFilePath(options);
+                    if (string.IsNullOrEmpty(logFilePath))
+                    {
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
+
+                        var stopwatch = Stopwatch.StartNew();
+
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            queue = new ConcurrentQueue<SubtitlesActionResult>();
+
+                            using (blockingQueue = new BlockingCollection<SubtitlesActionResult>(queue, filePaths.Length))
+                            {
+                                var queueTask = Task.Run(ConsumeLogQueueToConsole);
+
+                                var tasks = DoConcurrently<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray();
+                                Task.WaitAll(tasks);
+
+                                blockingQueue.CompleteAdding();
+                                queueTask.Wait();
+
+                                fileCount = tasks.Length;
+                            }
+
+                            blockingQueue = null;
+                            queue = null;
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
+
+                        stopwatch.Stop();
+
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToConsole(DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
+                    else
+                    {
+                        CreateLogFile(logFilePath);
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", options.ToString());
+
+                        var stopwatch = Stopwatch.StartNew();
+
+                        int fileCount = 0;
+                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        if (filePaths != null && filePaths.Length > 0)
+                        {
+                            queue = new ConcurrentQueue<SubtitlesActionResult>();
+
+                            using (blockingQueue = new BlockingCollection<SubtitlesActionResult>(queue, filePaths.Length))
+                            {
+                                var queueTask = Task.Run(() => ConsumeLogQueueToFile(logFilePath));
+
+                                var tasks = DoConcurrently<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray();
+                                Task.WaitAll(tasks);
+
+                                blockingQueue.CompleteAdding();
+                                queueTask.Wait();
+
+                                fileCount = tasks.Length;
+                            }
+
+                            blockingQueue = null;
+                            queue = null;
+                        }
+                        else if (isPathExists)
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "No subtitle files were found at path {0}", options.path);
+                        }
+                        else
+                        {
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Path doesn't exist {0}", options.path);
+                        }
+
+                        stopwatch.Stop();
+
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Processed {0} file{1}", fileCount, (fileCount == 1 ? string.Empty : "s"));
+                        WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Completion time {0:mm}:{0:ss}.{0:fff} ({1} ms)", stopwatch.Elapsed, stopwatch.ElapsedMilliseconds);
+                        if (fileCount > 0)
+                        {
+                            var averageTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / fileCount);
+                            WriteLogToFile(logFilePath, DateTime.Now, options, "SubtitlesCleanerCommand", "Average time {0:mm}:{0:ss}.{0:fff} ({1} ms)", averageTime, averageTime.TotalMilliseconds);
+                        }
+                    }
+                }
             }
         }
 
-        public static void CleanEmptyAndNonSubtitles(CleanEmptyAndNonSubtitlesOptions options)
+        private IEnumerable<Task> DoConcurrently<TSubtitlesAction, TSharedOptions>(string[] filePaths, TSharedOptions options)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
             foreach (var filePath in filePaths)
             {
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? FirstSubtitlesCount
-                );
-
-                subtitles = subtitles.CleanEmptyAndNonSubtitles(options.printCleaning || PrintCleaning);
-
-                if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
-
-                if (options.print)
-                    Print(subtitles);
+                var action = new TSubtitlesAction();
+                action.Init(filePath, options);
+                yield return Task.Run(() => { blockingQueue.Add(action.Do()); });
             }
         }
 
-        public static void AddTime(AddTimeOptions options)
+        private IEnumerable<Task<SubtitlesActionResult>> DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(string[] filePaths, TSharedOptions options)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
             foreach (var filePath in filePaths)
             {
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? FirstSubtitlesCount
-                );
-
-                subtitles.AddTime(options.timeAdded, options.subtitleNumber);
-
-                if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
-
-                if (options.print)
-                    Print(subtitles);
+                var action = new TSubtitlesAction();
+                action.Init(filePath, options);
+                yield return Task.Run(action.Do);
             }
         }
 
-        public static void SetShowTime(SetShowTimeOptions options)
+        private IEnumerable<SubtitlesActionResult> DoSequentially<TSubtitlesAction, TSharedOptions>(string[] filePaths, TSharedOptions options)
+            where TSubtitlesAction : SubtitlesAction, new()
+            where TSharedOptions : SharedOptions
         {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
             foreach (var filePath in filePaths)
             {
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? FirstSubtitlesCount
-                );
-
-                subtitles.SetShowTime(options.showTime, options.subtitleNumber);
-
-                if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
-
-                if (options.print)
-                    Print(subtitles);
+                var action = new TSubtitlesAction();
+                action.Init(filePath, options);
+                yield return action.Do();
             }
         }
 
-        public static void AdjustTiming(AdjustTimingOptions options)
-        {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
+        #endregion
 
-            foreach (var filePath in filePaths)
-            {
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(
-                    filePath,
-                    ref encoding,
-                    options.firstSubtitlesCount ?? FirstSubtitlesCount
-                );
+        #region Files
 
-                subtitles.AdjustTiming(options.firstShowTime, options.lastShowTime);
-
-                if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
-
-                if (options.print)
-                    Print(subtitles);
-            }
-        }
-
-        public static void Reorder(ReorderOptions options)
-        {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-            {
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
-
-                subtitles = subtitles.Reorder();
-
-                if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
-
-                if (options.print)
-                    Print(subtitles);
-            }
-        }
-
-        public static void BalanceLines(BalanceLinesOptions options)
-        {
-            string[] filePaths = GetFilePaths(options.path);
-            if (filePaths == null || filePaths.Length == 0)
-                return;
-
-            foreach (var filePath in filePaths)
-            {
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
-
-                subtitles = subtitles.BalanceLines();
-
-                if (options.save)
-                    Save(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, true);
-
-                if (options.print)
-                    Print(subtitles);
-            }
-        }
-
-        private static string[] GetFilePaths(string path)
+        private string[] GetFilePaths(string path, out bool isPathExists)
         {
             if (string.IsNullOrEmpty(path))
+            {
+                isPathExists = false;
                 return null;
+            }
 
             if (path.EndsWith(":\""))
                 path = path.Replace(":\"", ":");
 
             bool isRecursive = false;
-            string[] filePaths = GetFiles(path, isRecursive);
-
-            return filePaths;
+            return GetFiles(path, isRecursive, out isPathExists);
         }
 
-        private static string[] GetFiles(string path, bool isRecursive)
+        private string[] GetFiles(string path, bool isRecursive, out bool isPathExists)
         {
-            string[] filePaths = null;
+            isPathExists = File.Exists(path) || Directory.Exists(path);
 
-            string extension = Path.GetExtension(path);
-            bool isSRTFile = string.Compare(extension, ".srt", true) == 0;
+            bool isSRTFile = string.Compare(Path.GetExtension(path), ".srt", true) == 0;
             if (isSRTFile)
             {
                 if (File.Exists(path))
-                    filePaths = new string[] { path };
+                    return new string[] { path };
             }
             else if (Directory.Exists(path))
             {
-                List<string> lst = new List<string>(Directory.GetFiles(path, "*.srt", (isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)));
-                var bakFiles = lst.Where(x => x.EndsWith(".bak.srt")).ToArray();
+                List<string> files = new List<string>(Directory.GetFiles(path, "*.srt", (isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)));
+                var bakFiles = files.Where(x => x.EndsWith(".bak.srt")).ToArray();
                 foreach (var bakFile in bakFiles)
                 {
-                    lst.Remove(bakFile);
-                    lst.Remove(bakFile.Replace(".bak.srt", ".srt"));
+                    files.Remove(bakFile);
+                    files.Remove(bakFile.Replace(".bak.srt", ".srt"));
                 }
-                filePaths = lst.ToArray();
+                return files.ToArray();
             }
 
-            return filePaths;
+            return null;
         }
 
-        private static void Save(
-            List<Subtitle> subtitles,
-            Encoding encoding,
-            string filePath,
-            string outputFile,
-            string outputFolder,
-            bool suppressBackupFile,
-            bool suppressErrorFile)
+        #endregion
+
+        #region Log
+
+        private static readonly Encoding encoding = Encoding.UTF8;
+
+        private string GetLogFilePath(SharedOptions options)
         {
-            string outputFilePath = GetOutputFilePath(filePath, outputFile, outputFolder);
+            string logFilePath = null;
+            if (string.IsNullOrEmpty(options.log) == false)
+                logFilePath = options.log;
+            else if (string.IsNullOrEmpty(options.logAppend) == false)
+                logFilePath = options.logAppend;
 
-            CreateOutputFolder(outputFilePath);
-
-            if (suppressBackupFile == false)
+            if (string.IsNullOrEmpty(logFilePath) == false)
             {
-                string backupFile = outputFilePath.Replace(".srt", ".bak.srt");
-
-                try
+                if (Directory.Exists(logFilePath) || logFilePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 {
-                    File.Copy(filePath, backupFile, true);
+                    logFilePath = Path.Combine(logFilePath,
+                        string.Format("log_{0}.{1}", options.Verb, options.csv ? "csv" : "txt"));
                 }
-                catch (Exception ex)
+                else if (string.IsNullOrEmpty(Path.GetExtension(logFilePath)))
                 {
-                    throw new Exception("Failed to save backup file " + backupFile, ex);
-                }
-            }
-
-            try
-            {
-                string[] lines = subtitles.ToLines();
-                File.WriteAllLines(outputFilePath, lines.Take(lines.Length - 1), encoding);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to save subtitles file " + outputFilePath, ex);
-            }
-
-            if (suppressErrorFile == false)
-            {
-                string[] errors = SubtitlesHelper.GetSubtitlesErrors(subtitles);
-
-                if (errors != null && errors.Length > 0)
-                {
-                    string errorFile = outputFilePath.Replace(".srt", ".error.srt");
-
-                    try
-                    {
-                        File.WriteAllLines(errorFile, errors, encoding);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("Failed to save error file" + errorFile, ex);
-                    }
+                    logFilePath += options.csv ? ".csv" : ".txt";
                 }
             }
+
+            return logFilePath;
         }
 
-        private static string GetOutputFilePath(string filePath, string outputFile, string outputFolder)
+        private void CreateLogFile(string logFilePath)
         {
-            if (string.IsNullOrEmpty(outputFile) && string.IsNullOrEmpty(outputFolder))
-                return filePath;
-
-            if (string.IsNullOrEmpty(outputFile))
-                outputFile = Path.GetFileName(filePath);
-
-            if (string.IsNullOrEmpty(outputFolder))
-                outputFolder = Path.GetDirectoryName(filePath);
-
-            return Path.GetFullPath(Path.Combine(outputFolder, outputFile));
-        }
-
-        private static void CreateOutputFolder(string outputFilePath)
-        {
-            string folder = Path.GetDirectoryName(outputFilePath);
-            if (Directory.Exists(folder))
-                return;
-
-            try
-            {
+            string folder = Path.GetDirectoryName(logFilePath);
+            if (Directory.Exists(folder) == false)
                 Directory.CreateDirectory(folder);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to create folder " + folder, ex);
-            }
+
+            File.WriteAllText(logFilePath, string.Empty, encoding);
         }
 
-        private static void Print(List<Subtitle> subtitles)
+        private ConcurrentQueue<SubtitlesActionResult> queue;
+        private BlockingCollection<SubtitlesActionResult> blockingQueue;
+
+        private void ConsumeLogQueueToFile(string logFilePath)
         {
-            foreach (var line in subtitles.ToLines())
-                Console.WriteLine(line);
+            foreach (var result in blockingQueue.GetConsumingEnumerable())
+                OutputLogToFile(logFilePath, result.Log);
         }
+
+        private void ConsumeLogQueueToConsole()
+        {
+            foreach (var result in blockingQueue.GetConsumingEnumerable())
+                OutputLogToConsole(result.Log);
+        }
+
+        private void WriteLogToFile(string path, DateTime time, SharedOptions options, string name, string format, params object[] args)
+        {
+            OutputLogToFile(path, GetLog(time, options, name, string.Format(format, args)));
+        }
+
+        private void WriteLogToConsole(DateTime time, SharedOptions options, string name, string format, params object[] args)
+        {
+            OutputLogToConsole(GetLog(time, options, name, string.Format(format, args)));
+        }
+
+        private void WriteLogToFile(string path, DateTime time, SharedOptions options, string name, string message)
+        {
+            OutputLogToFile(path, GetLog(time, options, name, message));
+        }
+
+        private void WriteLogToConsole(DateTime time, SharedOptions options, string name, string message)
+        {
+            OutputLogToConsole(GetLog(time, options, name, message));
+        }
+
+        private void OutputLogToFile(string logFilePath, StringBuilder log)
+        {
+            File.AppendAllText(logFilePath, log.ToString(), encoding);
+        }
+
+        private void OutputLogToConsole(StringBuilder log)
+        {
+            Console.WriteLine(log.ToString().Trim());
+        }
+
+        private StringBuilder GetLog(DateTime time, SharedOptions options, string name, string message)
+        {
+            string[] lines = (message ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+            StringBuilder log = new StringBuilder();
+
+            if (options.csv)
+            {
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    log.AppendFormat("\"{0:yyyy-MM-ddTHH:mm:ss.fffZ}\"", time);
+                    log.Append(",\"");
+                    log.Append(name);
+                    log.Append("\",\"");
+                    log.Append(lines[i].Replace("\"", "\"\""));
+                    log.AppendLine("\"");
+                }
+            }
+            else
+            {
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    log.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}", time);
+                    log.Append("\t");
+                    log.Append(name);
+                    log.Append("\t");
+                    log.AppendLine(lines[i]);
+                }
+            }
+
+            return log;
+        }
+
+        #endregion
     }
 }
