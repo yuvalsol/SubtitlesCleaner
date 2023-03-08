@@ -3430,8 +3430,8 @@ namespace SubtitlesCleaner.Library
         #region OCR Errors
 
         public static readonly FindAndReplace[] OCRErrors = new FindAndReplace[] {
-            // Mr. Mrs. Dr. St.
-            new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
+            // Mr. Mrs. Dr. St. Sr. Jr.
+            new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St|Sr|Jr)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
 
             // a.m. p.m.
             ,new FindAndReplace(new Regex(@"(?<OCR>a|p)\.M\.", RegexOptions.Compiled), "${OCR}.m.", SubtitleError.OCR_Error)
