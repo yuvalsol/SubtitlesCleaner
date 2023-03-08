@@ -3456,6 +3456,9 @@ namespace SubtitlesCleaner.Library
             // Mr. Mrs. Dr. St. Sr. Jr.
             new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St|Sr|Jr)(?<OCR>\s+)\b", RegexOptions.Compiled), "OCR", ". ", SubtitleError.OCR_Error)
 
+            // O'Sullivan, O'Connor, O'Brien, O'Leary
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>o)'[A-ZÀ-Ý][a-zà-ÿ]", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
+
             // a.m. p.m.
             ,new FindAndReplace(new Regex(@"(?<OCR>a|p)\.M\.", RegexOptions.Compiled), "${OCR}.m.", SubtitleError.OCR_Error)
             ,new FindAndReplace(new Regex(@"(?<OCR>A|P)\.m\.", RegexOptions.Compiled), "${OCR}.M.", SubtitleError.OCR_Error)
