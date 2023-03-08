@@ -2733,6 +2733,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"-\s-", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^[—–―‒]", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^<i>(?<Dash>[—–―‒])</i>", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace(new Regex(@"Uh(?<Dash>[—–―‒])huh", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"[…—–―‒]", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"\.\s\.\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"\.\.\s\.", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
