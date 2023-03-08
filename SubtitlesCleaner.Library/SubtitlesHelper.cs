@@ -3206,6 +3206,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I- l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>ll/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.Malformed_Letters)
             // aften/vards, othen/vise, papen/vork => afterwards, otherwise, paperwork
