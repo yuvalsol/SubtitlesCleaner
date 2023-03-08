@@ -3218,7 +3218,9 @@ namespace SubtitlesCleaner.Library
             // I'i/, We 'i/
             ,new FindAndReplace(new Regex(@"\w(?<OCR>\s?'(i|I)/)", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
             // /t => It
-            ,new FindAndReplace(new Regex(@"(?:^|\s)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.Malformed_Letters)
+            // |'m => I'm
+            ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>\|)'\w", RegexOptions.Compiled), "OCR", "I", SubtitleError.Malformed_Letters)
             // morn => mom
             ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.Malformed_Letters)
         };
