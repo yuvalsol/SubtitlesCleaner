@@ -3571,7 +3571,7 @@ namespace SubtitlesCleaner.Library
         private static void PrintCleaning(string text, string cleanText, FindAndReplace rule, bool cleanHICaseInsensitive)
         {
             Console.WriteLine("Error:  " + rule.SubtitleError);
-            PrintCleaning(text, cleanText, cleanHICaseInsensitive ? rule.RegexCI : rule.Regex, rule.GroupName, rule.Replacement, null);
+            PrintCleaning(text, cleanText, cleanHICaseInsensitive ? rule.RegexCI : rule.Regex, rule.GroupName, rule.Evaluator != null && string.IsNullOrEmpty(rule.Replacement) ? null : rule.Replacement, null);
         }
 
         private static void PrintCleaning(IEnumerable<string> text, string cleanText, [CallerMemberName] string name = null)
