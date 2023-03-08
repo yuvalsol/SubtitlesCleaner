@@ -3274,8 +3274,8 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\w(?<OCR>\s?'/(i|I))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
             // He/io, Mil/ion, Rea/iy, Wi/I, Sha/I
             ,new FindAndReplace(new Regex(@"\w(?<OCR>/(i|I))", RegexOptions.Compiled), "OCR", "ll", SubtitleError.Malformed_Letters)
-            // I'i/, We 'i/
-            ,new FindAndReplace(new Regex(@"\w(?<OCR>\s?'(i|I)/)", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
+            // I'i/, We 'i/, They'i|
+            ,new FindAndReplace(new Regex(@"\w(?<OCR>\s?'(i|I)(/|\|))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
             // prob/em => problem
             ,new FindAndReplace(new Regex(@"\w(?<OCR>/)em", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters)
             // /t => It
