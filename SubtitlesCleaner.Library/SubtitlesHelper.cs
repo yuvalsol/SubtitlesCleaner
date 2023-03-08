@@ -3208,7 +3208,10 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.Malformed_Letters)
-            ,new FindAndReplace(new Regex(@"(?<OCR>n/v)", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
+            // aften/vards, othen/vise, papen/vork => afterwards, otherwise, paperwork
+            ,new FindAndReplace(new Regex(@"\w(?<OCR>n/v)", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
+            // He/io, Mil/ion, Rea/iy => Hello, Milllon, Really
+            ,new FindAndReplace(new Regex(@"\w(?<OCR>/i)", RegexOptions.Compiled), "OCR", "ll", SubtitleError.Malformed_Letters)
             // /t => It
             ,new FindAndReplace(new Regex(@"(?:^|\s)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.Malformed_Letters)
             // morn => mom
