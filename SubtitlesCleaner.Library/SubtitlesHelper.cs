@@ -974,7 +974,7 @@ namespace SubtitlesCleaner.Library
             return lines;
         }
 
-        public static readonly Regex regexMergedLinesWithHI = new Regex(@"(?<Line1>^-[^-]+)(?<Line2><i>-.*?</i>$)");
+        public static readonly Regex regexMergedLinesWithHI = new Regex(@"(?<Line1>^-[^-]+)(?<Line2><i>-.*?</i>$)", RegexOptions.Compiled);
 
         public static List<string> CleanMergedLinesWithHIToSingleLine(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
@@ -2263,11 +2263,65 @@ namespace SubtitlesCleaner.Library
                 return null;
             }
 
+            lines = CleanOpenBracket(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanMissingDialogDashSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanRedundantItalicsMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanMergeLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanMissingDialogDashMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanLineEndWithApostropheAndQuestionMark(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+
+            return lines;
+        }
+
+        public static List<string> CleanOpenBracket(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
+                return null;
+            }
+
+            // [need
+            // 
+            // I need
+            if (lines.Count > 0)
+            {
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    string line = lines[i];
+                    string nextLine = (i + 1 < lines.Count ? lines[i + 1] : null);
+
+                    int index = line.IndexOf("[");
+                    if (index != -1 &&
+                        line.IndexOf("]", index) == -1 &&
+                        (string.IsNullOrEmpty(nextLine) || nextLine.IndexOf("]") == -1) &&
+                        index + 1 < line.Length)
+                    {
+                        string nextChar = line[index + 1].ToString();
+                        if (regexCapitalLetter.IsMatch(nextChar))
+                        {
+                            lines[i] = line.Remove(index, 2).Insert(index, "I " + nextChar.ToLower());
+
+                            if (isPrintCleaning)
+                                PrintCleaning(line, lines[i]);
+
+                            if (isCheckMode)
+                                subtitleError |= SubtitleError.Malformed_Letters;
+                        }
+                        else if (regexLowerLetter.IsMatch(nextChar))
+                        {
+                            lines[i] = line.Remove(index, 1).Insert(index, "I ");
+
+                            if (isPrintCleaning)
+                                PrintCleaning(line, lines[i]);
+
+                            if (isCheckMode)
+                                subtitleError |= SubtitleError.Malformed_Letters;
+                        }
+                    }
+                }
+            }
 
             return lines;
         }
@@ -2346,8 +2400,8 @@ namespace SubtitlesCleaner.Library
             return lines;
         }
 
-        public static readonly Regex regexLine1WithSingleWord = new Regex(@"^\w+,?$");
-        public static readonly Regex regexLine2WithSingleWord = new Regex(@"^\w+\.?$");
+        public static readonly Regex regexLine1WithSingleWord = new Regex(@"^\w+,?$", RegexOptions.Compiled);
+        public static readonly Regex regexLine2WithSingleWord = new Regex(@"^\w+\.?$", RegexOptions.Compiled);
 
         public static List<string> CleanMergeLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
