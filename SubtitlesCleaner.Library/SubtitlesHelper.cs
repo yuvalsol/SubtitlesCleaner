@@ -3267,6 +3267,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\b(?i:C)af(?<OCR>'e|Ã©)", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
             ,new FindAndReplace(new Regex(@"\b(?i:C)ach(?<OCR>'e|Ã©)", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
             ,new FindAndReplace(new Regex(@"\b(?i:M)(?<OCR>'e|Ã©)xico", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
+            ,new FindAndReplace(new Regex(@"\b(?i:R)(?<OCR>'e|Ã©)sum(?<OCR>'e|Ã©)", RegexOptions.Compiled), "OCR", "é", SubtitleError.Accent_Letters)
         };
 
         #endregion
