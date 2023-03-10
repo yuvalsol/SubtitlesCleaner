@@ -3270,19 +3270,24 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.Malformed_Letters)
             // aften/vards, othen/vise, papen/vork => afterwards, otherwise, paperwork
-            ,new FindAndReplace(new Regex(@"\w(?<OCR>n/v)", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>n/v)", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
+            // fonnard => forward
+            ,new FindAndReplace(new Regex(@"(?i:f)o(?<OCR>nn)ard", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
             // I'/I, I '/I
-            ,new FindAndReplace(new Regex(@"\w(?<OCR>\s?'/(i|I))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\s?'/(i|I))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
             // He/io, Mil/ion, Rea/iy, Wi/I, Sha/I
-            ,new FindAndReplace(new Regex(@"\w(?<OCR>/(i|I))", RegexOptions.Compiled), "OCR", "ll", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>/(i|I))", RegexOptions.Compiled), "OCR", "ll", SubtitleError.Malformed_Letters)
             // I'i/, We 'i/, They'i|
-            ,new FindAndReplace(new Regex(@"\w(?<OCR>\s?'(i|I)(/|\|))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
-            // prob/em => problem
-            ,new FindAndReplace(new Regex(@"\w(?<OCR>/)em", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\s?'(i|I)(/|\|))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
+            // prob/em => problem (lem)
+            // coke/y => cokely (ly)
+            // gal/o => gallo (lo/llo)
+            // hi/dy =< hildy (ldy)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>/)(em|y|o|lo|dy)", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters)
             // /t => It
             ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.Malformed_Letters)
             // |'m => I'm
-            ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>\|)'\w", RegexOptions.Compiled), "OCR", "I", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>\|)'[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled), "OCR", "I", SubtitleError.Malformed_Letters)
             // morn => mom
             ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.Malformed_Letters)
             // Theyte => They're
@@ -3481,6 +3486,7 @@ namespace SubtitlesCleaner.Library
             new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in)(?i)(?<Suffix>the|you|we|him|her|it|this|they|them|those|thing|things|too)\b", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in)(?<Suffix>[A-ZÀ-Ý][a-zà-ÿ])", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:after|don't|for|of|our|that|this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"(?i:y)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>off)(?i:first|too)\b", RegexOptions.Compiled), "OCR", "off ", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>fora)\b", RegexOptions.Compiled), "OCR", "for a", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>numberi)\b", RegexOptions.Compiled), "OCR", "number one", SubtitleError.Merged_Words_Error)
