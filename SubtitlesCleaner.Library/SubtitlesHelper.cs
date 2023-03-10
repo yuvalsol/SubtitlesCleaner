@@ -3192,6 +3192,7 @@ namespace SubtitlesCleaner.Library
         public static readonly FindAndReplace[] NonAnsiChars = new FindAndReplace[] {
             new FindAndReplace(new Regex(@" ", RegexOptions.Compiled), " ", SubtitleError.Non_Ansi_Chars)
             ,new FindAndReplace(new Regex(@"ﬁ", RegexOptions.Compiled), "fi", SubtitleError.Non_Ansi_Chars)
+            ,new FindAndReplace(new Regex(@"§", RegexOptions.Compiled), "sl", SubtitleError.Non_Ansi_Chars)
             ,new FindAndReplace(new Regex(@"Α", RegexOptions.Compiled), "A", SubtitleError.Non_Ansi_Chars) //  913 => A
             ,new FindAndReplace(new Regex(@"Β", RegexOptions.Compiled), "B", SubtitleError.Non_Ansi_Chars) //  914 => B
             ,new FindAndReplace(new Regex(@"Ε", RegexOptions.Compiled), "E", SubtitleError.Non_Ansi_Chars) //  917 => E
