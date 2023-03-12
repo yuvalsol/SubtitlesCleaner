@@ -3300,6 +3300,8 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>/)(em|y|o|lo|dy)", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters)
             // /t => It
             ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.Malformed_Letters)
+            // if! => if I
+            ,new FindAndReplace(new Regex(@"(?:^|\s|\b)if(?<OCR>!)(?:$|\s|\b)", RegexOptions.Compiled), "OCR", " I", SubtitleError.Malformed_Letters)
             // |'m => I'm
             ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>\|)'[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled), "OCR", "I", SubtitleError.Malformed_Letters)
             // morn => mom
