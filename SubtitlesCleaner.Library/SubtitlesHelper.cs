@@ -4191,7 +4191,7 @@ namespace SubtitlesCleaner.Library
                 Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
                 // exclude:                        A...    I...    OK                         123.45      555-12345  12  A-B-C-D
                 ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+|[A-Z](-[A-Z]){2,})[!?.]*$", RegexOptions.Compiled),
-                Description = "Possible miswritten line"
+                Description = "No lower-case letters (All caps)"
             }
             /*, new Error() {
                 Regex = new Regex(@"(?<!""[A-ZÀ-Ýa-zà-ÿ0-9 #\-'.]+)(""[!?])(\s|$)", RegexOptions.Compiled),
