@@ -3372,8 +3372,9 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"[^.?!—–―‒-][^']\b[IVXLCDM]*(?<OCR>ll)I{0,1}\b", RegexOptions.Compiled), "OCR", "II", SubtitleError.I_And_L_Error)
             ,new FindAndReplace(new Regex(@"^(?<OCR>ll)\b", RegexOptions.Compiled), "OCR", "II", SubtitleError.I_And_L_Error)
 
-            ,new FindAndReplace(new Regex(@"\b[IVXLCDM]*(?<OCR>l)(?!-l)[IVX]*\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
-                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 8, IgnoreIfEqualsTo = "Il y avait" }
+            ,new FindAndReplace(new Regex(@"\b[IVXLCDM]*(?<OCR>l)[IVX]*\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-l", IgnoreIfEndsWith = @"l-" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 8, IgnoreIfEqualsTo = "Il y avait" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "Il est" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il faut" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il y a " }
@@ -3395,9 +3396,10 @@ namespace SubtitlesCleaner.Library
             // Uppercase word at the end: l => I
 			,new FindAndReplace(new Regex(@"[A-ZÀ-Ý]{2,}(?<OCR>l)", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
 
-			// Replace single l with I. not preceding l- and follwoing -l
-            ,new FindAndReplace(new Regex(@"\b(?<!l-)(?<OCR>l)(?!-l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
-                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
+			// Replace single l with I. not preceding l- and following -l
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-l", IgnoreIfEndsWith = @"l-" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
             )
             
             // i-i-i => I-I-I (but not i-i-it or i-i-is)
@@ -3408,8 +3410,8 @@ namespace SubtitlesCleaner.Library
 			// Replace single i with I, but not <i> or </i> and not -i or i-
             ,new FindAndReplace(new Regex(@"\b(?<OCR>i)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"<i", IgnoreIfEndsWith = @"i>" }
-                ,new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"</i", IgnoreIfEndsWith = @"i>" }
-                ,new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-i", IgnoreIfEndsWith = @"i-" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"</i", IgnoreIfEndsWith = @"i>" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-i", IgnoreIfEndsWith = @"i-" }
             )
 
             // I'II => I'll
@@ -3446,8 +3448,9 @@ namespace SubtitlesCleaner.Library
             )
 
             // l at the beginning before a consonant different from l is most likely an I
-            ,new FindAndReplace(new Regex(@"\b(?<!l-)(?<OCR>l)(?!-l)[^aeiouyà-ÿl]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
-                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "lbs" }
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)[^aeiouyà-ÿl]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-l", IgnoreIfEndsWith = @"l-" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "lbs" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "l'chaim" }
             )
 
