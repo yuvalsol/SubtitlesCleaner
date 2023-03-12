@@ -4130,7 +4130,7 @@ namespace SubtitlesCleaner.Library
                 Description = "Brackets"
             }
             , new Error() {
-                Regex = new Regex(@"[~_#]", RegexOptions.Compiled),
+                Regex = new Regex(@"[~_#|]", RegexOptions.Compiled),
                 Description = "Special characters"
             }
             , new Error() {
