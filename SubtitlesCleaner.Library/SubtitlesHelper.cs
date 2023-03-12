@@ -3405,8 +3405,12 @@ namespace SubtitlesCleaner.Library
                 new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfMatchsWithRegex = @"-i\B" }
             )
             
-			// Replace single i with I, but not <i> or </i> and not with following -i (i-i-is)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>(?<!<|/)i(?!>|-i))\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+			// Replace single i with I, but not <i> or </i> and not -i or i-
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>i)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"<i", IgnoreIfEndsWith = @"i>" }
+                ,new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"</i", IgnoreIfEndsWith = @"i>" }
+                ,new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-i", IgnoreIfEndsWith = @"i-" }
+            )
 
             // I'II => I'll
 			,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ]'(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
