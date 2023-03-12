@@ -3272,11 +3272,15 @@ namespace SubtitlesCleaner.Library
         public static readonly FindAndReplace[] MalformedLetters = new FindAndReplace[] {
             new FindAndReplace(new Regex(@"\b(?<OCR>I-l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I- l)", RegexOptions.Compiled), "OCR", "H", SubtitleError.Malformed_Letters)
+
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>I\\/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>ll/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
+
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.Malformed_Letters)
+
             ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.Malformed_Letters)
+
             // aften/vard, othen/vise, papen/vork => afterward, otherwise, paperwork
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>n/v)", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
             // aftennard => afterward
@@ -3287,12 +3291,21 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i:o)the(?<OCR>nn)ise", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
             // papennork => paperwork
             ,new FindAndReplace(new Regex(@"(?i:p)ape(?<OCR>nn)ork", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
-            // I'/I, I '/I
-            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\s?'/(i|I))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
+
+            // '|i, '|I, 'i|, 'I|, '/i, '/I, 'i/, 'I/, '|| => 'll
+            ,new FindAndReplace(new Regex(@"\s?'[iI/|][iI/|]", RegexOptions.Compiled), "'ll", SubtitleError.Malformed_Letters)
+            // 'l|, '|l => 'll
+            ,new FindAndReplace(new Regex(@"\s?'(?:l\||\|l)", RegexOptions.Compiled), "'ll", SubtitleError.Malformed_Letters)
+
+            // al| => all, a| => al
+            ,new FindAndReplace(new Regex(@"(?:al|a)(?<OCR>\|)", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters)
+            // |' => I'
+            ,new FindAndReplace(new Regex(@"(?<OCR>\|)'", RegexOptions.Compiled), "OCR", "I", SubtitleError.Malformed_Letters)
+            // | => I
+            ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>\|)(?:$|\s|\b)", RegexOptions.Compiled), "OCR", "I", SubtitleError.Malformed_Letters)
+
             // He/io, Mil/ion, Rea/iy, Wi/I, Sha/I
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>/(i|I))", RegexOptions.Compiled), "OCR", "ll", SubtitleError.Malformed_Letters)
-            // I'i/, We 'i/, They'i|
-            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\s?'(i|I)(/|\|))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
             // prob/em => problem (lem)
             // coke/y => cokely (ly)
             // gal/o => gallo (lo/llo)
@@ -3300,19 +3313,19 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>/)(em|y|o|lo|dy)", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters)
             // /t => It
             ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.Malformed_Letters)
+
             // if! => if I
             ,new FindAndReplace(new Regex(@"(?:^|\s|\b)if(?<OCR>!)(?:$|\s|\b)", RegexOptions.Compiled), "OCR", " I", SubtitleError.Malformed_Letters)
-            // |'m => I'm
-            ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>\|)'[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled), "OCR", "I", SubtitleError.Malformed_Letters)
+
             // morn => mom
             ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.Malformed_Letters)
+
             // Theyte => They're
             ,new FindAndReplace(new Regex(@"\b(?i:t)hey(?<OCR>t)e\b", RegexOptions.Compiled), "OCR", "'r", SubtitleError.Malformed_Letters)
             // Wete => We're
             ,new FindAndReplace(new Regex(@"\b(?i:w)e(?<OCR>t)e\b", RegexOptions.Compiled), "OCR", "'r", SubtitleError.Malformed_Letters)
             // Youte => You're
             ,new FindAndReplace(new Regex(@"\b(?i:y)ou(?<OCR>t)e\b", RegexOptions.Compiled), "OCR", "'r", SubtitleError.Malformed_Letters)
-
         };
 
         #endregion
