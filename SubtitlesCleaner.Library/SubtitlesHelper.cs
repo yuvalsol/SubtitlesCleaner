@@ -2799,6 +2799,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace("Three Dots", new Regex(@"-{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace("Three Dots", new Regex(@"-\.{3,}$", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             // - _oh__ => - Oh...
             ,new FindAndReplace("Three Dots", new Regex(@"^(?<Dash>-)?\s*_(?<Subtitle1>[A-ZÀ-Ýa-zà-ÿ])(?<Subtitle2>[A-ZÀ-Ýa-zà-ÿ]*)_{1,}""?", RegexOptions.Compiled), m => {
                 Group Dash = m.Groups["Dash"];
