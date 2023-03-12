@@ -2799,6 +2799,14 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace("Three Dots", new Regex(@"-{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@",{2,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"\.{4,}", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
+            // - _oh__ => - Oh...
+            ,new FindAndReplace("Three Dots", new Regex(@"^(?<Dash>-)?\s*_(?<Subtitle1>[A-ZÀ-Ýa-zà-ÿ])(?<Subtitle2>[A-ZÀ-Ýa-zà-ÿ]*)_{1,}""?", RegexOptions.Compiled), m => {
+                Group Dash = m.Groups["Dash"];
+                if (Dash.Success)
+                    return string.Format("{0} {1}{2}...", Dash.Value, m.Groups["Subtitle1"].Value.ToUpper(), m.Groups["Subtitle2"].Value);
+                else
+                    return string.Format("{0}{1}...", m.Groups["Subtitle1"].Value.ToUpper(), m.Groups["Subtitle2"].Value);
+            }, SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"(_{1,}""|""?_{1,})$", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"[;，]", RegexOptions.Compiled), ",", SubtitleError.Punctuations_Error)
         };
