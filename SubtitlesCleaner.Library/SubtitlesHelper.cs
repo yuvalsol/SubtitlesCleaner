@@ -3277,10 +3277,16 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\b(?<OCR>ll/l)", RegexOptions.Compiled), "OCR", "M", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L/V)", RegexOptions.Compiled), "OCR", "W", SubtitleError.Malformed_Letters)
             ,new FindAndReplace(new Regex(@"(?<OCR>\(\))(kay|K)", RegexOptions.Compiled), "OCR", "O", SubtitleError.Malformed_Letters)
-            // aften/vards, othen/vise, papen/vork => afterwards, otherwise, paperwork
+            // aften/vard, othen/vise, papen/vork => afterward, otherwise, paperwork
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>n/v)", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
+            // aftennard => afterward
+            ,new FindAndReplace(new Regex(@"(?i:a)fte(?<OCR>nn)ard", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
             // fonnard => forward
             ,new FindAndReplace(new Regex(@"(?i:f)o(?<OCR>nn)ard", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
+            // othennise => otherwise
+            ,new FindAndReplace(new Regex(@"(?i:o)the(?<OCR>nn)ise", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
+            // papennork => paperwork
+            ,new FindAndReplace(new Regex(@"(?i:p)ape(?<OCR>nn)ork", RegexOptions.Compiled), "OCR", "rw", SubtitleError.Malformed_Letters)
             // I'/I, I '/I
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\s?'/(i|I))", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.Malformed_Letters)
             // He/io, Mil/ion, Rea/iy, Wi/I, Sha/I
