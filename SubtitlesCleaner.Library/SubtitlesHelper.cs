@@ -3134,8 +3134,13 @@ namespace SubtitlesCleaner.Library
         #region Missing Spaces
 
         public static readonly FindAndReplace[] MissingSpaces = new FindAndReplace[] {
+            // Text<i>Text => Text <i>Text
+            new FindAndReplace(new Regex(@"([A-ZÀ-Ýa-zà-ÿ!?.])<i>([A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "$1 <i>$2", SubtitleError.Missing_Spaces)
+            // Text</i>Text => Text</i> Text
+            ,new FindAndReplace(new Regex(@"([A-ZÀ-Ýa-zà-ÿ!?.])</i>([A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "$1</i> $2", SubtitleError.Missing_Spaces)
+
             // <i>♪Lyrics => <i>♪ Lyrics
-            new FindAndReplace(new Regex(@"^(?<Prefix>(?:<i>)?♪+)(?<Lyrics>[^ ♪])", RegexOptions.Compiled), "${Prefix} ${Lyrics}", SubtitleError.Missing_Spaces)
+            ,new FindAndReplace(new Regex(@"^(?<Prefix>(?:<i>)?♪+)(?<Lyrics>[^ ♪])", RegexOptions.Compiled), "${Prefix} ${Lyrics}", SubtitleError.Missing_Spaces)
             // ♪<i>Lyrics => ♪ <i>Lyrics
             ,new FindAndReplace(new Regex(@"^(?<Prefix>♪+)(?<Italic><i>)?(?<Lyrics>[^ ♪])", RegexOptions.Compiled), "${Prefix} ${Italic}${Lyrics}", SubtitleError.Missing_Spaces)
 
