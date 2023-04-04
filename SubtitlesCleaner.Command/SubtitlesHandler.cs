@@ -337,26 +337,22 @@ namespace SubtitlesCleaner.Command
 
         private string[] GetFiles(string path, bool isRecursive, out bool isPathExists)
         {
-            isPathExists = File.Exists(path) || Directory.Exists(path);
-
-            bool isSRTFile = string.Compare(Path.GetExtension(path), ".srt", true) == 0;
-            if (isSRTFile)
+            if (Directory.Exists(path))
             {
-                if (File.Exists(path))
+                isPathExists = true;
+
+                return Directory.GetFiles(path, "*.srt", (isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+            }
+            else if (File.Exists(path))
+            {
+                isPathExists = true;
+
+                bool isSRTFile = string.Compare(Path.GetExtension(path), ".srt", true) == 0;
+                if (isSRTFile)
                     return new string[] { path };
             }
-            else if (Directory.Exists(path))
-            {
-                List<string> files = new List<string>(Directory.GetFiles(path, "*.srt", (isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)));
-                var bakFiles = files.Where(x => x.EndsWith(".bak.srt")).ToArray();
-                foreach (var bakFile in bakFiles)
-                {
-                    files.Remove(bakFile);
-                    files.Remove(bakFile.Replace(".bak.srt", ".srt"));
-                }
-                return files.ToArray();
-            }
 
+            isPathExists = false;
             return null;
         }
 
