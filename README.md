@@ -64,7 +64,7 @@ SubtitlesCleanerCommand clean --path <fileOrFolder>
                               [--firstSubtitlesCount <N>]
                               [--suppressBackupFile]
                               [--suppressBackupFileOnSame]
-                              [--suppressErrorFile]
+                              [--suppressWarningsFile]
                               [--printCleaning]
                               [--log <logFile>]
                               [--log+ <logFile>]
@@ -117,10 +117,10 @@ Suppress creating a backup file if the subtitles after processing are the same a
 --suppressBackupFileOnSame  Do not create backup file if processing results the same file
 ```
 
-Subtitles Cleaner Command creates an error file with extension .error.srt. This file includes all the **_possible_** errors the program encountered but didn't cleaned up. These are meant to be viewed by a human eye and fix accordingly. This parameter suppresses the error file.
+Subtitles Cleaner Command creates a warnings file with extension .warnings.txt. This file includes all the **_possible_** errors the program encountered but didn't cleaned up. These are meant to be viewed by a human eye and fix accordingly. This parameter suppresses the warnings file.
 
 ```console
---suppressErrorFile         Do not create error file with possible errors
+--suppressWarningsFile      Do not create warnings file
 ```
 
 Print to console the cleaning process.
@@ -176,16 +176,16 @@ Clean hearing-impaired case-insensitive.
 SubtitlesCleanerCommand clean --cleanHICaseInsensitive --path "C:\My Documents\Subtitle.srt" --save
 ```
 
-Clean subtitle file and suppress backup & error files.
+Clean subtitle file and suppress backup & warnings files.
 
 ```console
-SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --suppressBackupFile --suppressErrorFile
+SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --suppressBackupFile --suppressWarningsFile
 ```
 
-Clean subtitle file and suppress error file. Create backup file if the cleaned subtitles are not the same as the original subtitles.
+Clean subtitle file and suppress warnings file. Create backup file if the cleaned subtitles are not the same as the original subtitles.
 
 ```console
-SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --suppressBackupFileOnSame --suppressErrorFile
+SubtitlesCleanerCommand clean --path "C:\My Documents\Subtitle.srt" --save --suppressBackupFileOnSame --suppressWarningsFile
 ```
 
 Clean all subtitle files in the folder.

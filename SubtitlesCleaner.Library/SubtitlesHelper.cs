@@ -4115,178 +4115,181 @@ namespace SubtitlesCleaner.Library
 
         #endregion
 
-        #region Errors
+        #region Warnings
 
-        private interface IError
+        private interface IWarning
         {
             string Description { get; }
-            bool HasError(string line);
-            string GetErrors(string line);
+            bool HasWarning(string line);
+            string GetWarnings(string line);
         }
 
-        private class Error : IError
+        private class Warning : IWarning
         {
             internal Regex Regex;
 
             public virtual string Description { get; internal set; }
 
-            public virtual bool HasError(string line)
+            public virtual bool HasWarning(string line)
             {
                 return Regex.IsMatch(line);
             }
 
-            public virtual string GetErrors(string line)
+            public virtual string GetWarnings(string line)
             {
                 return string.Join(" | ", Regex.Matches(line).Cast<Match>().Select(m => m.Value));
             }
         }
 
-        private class ComplexError : Error
+        private class ComplexWarning : Warning
         {
             internal Regex ExcludeRegex;
 
-            public override bool HasError(string line)
+            public override bool HasWarning(string line)
             {
-                return base.HasError(line) && ExcludeRegex.IsMatch(line) == false;
+                return base.HasWarning(line) && ExcludeRegex.IsMatch(line) == false;
             }
         }
 
-        private static readonly IError[] ErrorList = new IError[]
+        private static readonly IWarning[] WarningList = new IWarning[]
         {
-            new Error() {
+            new Warning() {
                 Regex = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled),
-                Description = "Brackets"
+                Description = "Parentheses and brackets"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"[~_#|]", RegexOptions.Compiled),
                 Description = "Special characters"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9#\-'.]+:\s", RegexOptions.Compiled),
                 Description = "Colon"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"<(?!/?i>)|(?<!</?i)>", RegexOptions.Compiled),
                 Description = "Italic with space"
             }
-            , new Error() {
+            , new Warning() {
                 // Of course 1 can
                 Regex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ]\s+1\s+[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
-                Description = "1 instead of I"
+                Description = "Possible 1 instead of I"
             }
-            , new Error() {
+            , new Warning() {
                 // a/b
                 Regex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ]/[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
                 Description = "Slash"
             }
-            , new Error() {
+            , new Warning() {
                 // " / " -> " I "
                 Regex = new Regex(@"\s+/\s+", RegexOptions.Compiled),
-                Description = "Slash instead of I"
+                Description = "Possible slash instead of I"
             }
-            , new Error() {
+            , new Warning() {
                 // replace with new line
                 Regex = new Regex(@"[!?][A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
                 Description = "Possible missing new line after punctuation"
             }
-            , new ComplexError() {
+            , new ComplexWarning() {
                 Regex = new Regex(@"^[A-ZÀ-Ýa-zà-ÿ0-9#\-'.]+:", RegexOptions.Compiled),
                 // exclude time
                 ExcludeRegex = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled),
                 Description = "Possible hearing-impaired"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"^[A-ZÀ-Ý]+$", RegexOptions.Compiled),
                 Description = "Possible hearing-impaired (All caps)"
             }
-            , new ComplexError() {
+            , new ComplexWarning() {
                 Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
                 // exclude:                        A...    I...    OK                         123.45      555-12345  12  A-B-C-D
                 ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+|[A-Z](-[A-Z]){2,})[!?.]*$", RegexOptions.Compiled),
                 Description = "No lower-case letters (All caps)"
             }
-            /*, new Error() {
+            /*, new Warning() {
                 Regex = new Regex(@"(?<!""[A-ZÀ-Ýa-zà-ÿ0-9 #\-'.]+)(""[!?])(\s|$)", RegexOptions.Compiled),
                 Description = "Punctuation outside of quotation marks"
             }*/
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
                 Description = "Ending with comma and question mark"
             }
-            , new Error() {
+            , new Warning() {
                 // ignore Mc, PhD
                 Regex = new Regex(@"((?<!M)c|(?<!P)h|[a-bd-gi-zà-ÿ])[A-ZÀ-Ý]", RegexOptions.Compiled),
                 Description = "Lower letter before capital letter"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"<i><i>", RegexOptions.Compiled),
                 Description = "Consecutive opening italic"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"</i></i>", RegexOptions.Compiled),
                 Description = "Consecutive closing italic"
             }
-            /*, new Error() {
+            /*, new Warning() {
                 Regex = new Regex(@"^""[^""]*$", RegexOptions.Compiled),
                 Description = "Opening quotation marks without closing"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"^'[^']*$", RegexOptions.Compiled),
                 Description = "Opening quotation marks without closing"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"^[^""]*""$", RegexOptions.Compiled),
                 Description = "Closing quotation marks without opening"
             }
-            , new Error() {
+            , new Warning() {
                 Regex = new Regex(@"^[^']*'$", RegexOptions.Compiled),
                 Description = "Closing quotation marks without opening"
             }*/
+            , new Warning() {
+                Regex = new Regex(@"^I\s.*?\sI$", RegexOptions.Compiled),
+                Description = "Possible start & end I instead of music notes"
+            }
         };
 
-        public static string[] GetSubtitlesErrors(List<Subtitle> subtitles)
+        public static string[] GetSubtitlesWarnings(List<Subtitle> subtitles)
         {
-            List<string> errorLines = new List<string>();
+            List<string> warningLines = new List<string>();
 
             foreach (var subtitle in subtitles)
             {
-                bool hasError = false;
-                List<string> errorDescriptions = new List<string>();
+                bool hasWarning = false;
+                List<string> WarningDescriptions = new List<string>();
 
                 if (subtitle.Lines.HasAny())
                 {
-                    foreach (var error in ErrorList)
+                    foreach (var warning in WarningList)
                     {
                         foreach (string line in subtitle.Lines)
                         {
-                            if (error.HasError(line))
+                            if (warning.HasWarning(line))
                             {
-                                if (errorDescriptions.Contains(error.Description) == false)
+                                if (WarningDescriptions.Contains(warning.Description) == false)
                                 {
-                                    errorLines.Add("- " + error.Description);
-                                    //errorLines.Add(error.GetErrors(line));
-                                    errorDescriptions.Add(error.Description);
+                                    warningLines.Add("- " + warning.Description);
+                                    WarningDescriptions.Add(warning.Description);
                                 }
 
-                                hasError = true;
+                                hasWarning = true;
                             }
                         }
                     }
                 }
 
-                if (hasError)
+                if (hasWarning)
                 {
                     int index = subtitles.IndexOf(subtitle);
-                    errorLines.AddRange(subtitle.ToLines(index));
+                    warningLines.AddRange(subtitle.ToLines(index));
                 }
             }
 
-            return errorLines.ToArray();
+            return warningLines.ToArray();
         }
 
-        public static bool HasErrors(string line)
+        public static bool HasWarnings(string line)
         {
-            return ErrorList.Any(err => err.HasError(line));
+            return WarningList.Any(warning => warning.HasWarning(line));
         }
 
         #endregion

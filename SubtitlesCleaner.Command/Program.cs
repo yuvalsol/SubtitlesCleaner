@@ -61,7 +61,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                              [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                              [--suppressBackupFile]");
                                 Console.WriteLine("                              [--suppressBackupFileOnSame]");
-                                Console.WriteLine("                              [--suppressErrorFile]");
+                                Console.WriteLine("                              [--suppressWarningsFile]");
                                 Console.WriteLine("                              [--printCleaning]");
                                 Console.WriteLine("                              [--log <logFile>]");
                                 Console.WriteLine("                              [--log+ <logFile>]");

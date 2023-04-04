@@ -85,7 +85,7 @@ namespace SubtitlesCleaner.Command
                 }
 
                 if (options.save)
-                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressBackupFileOnSame, options.suppressErrorFile, originalSubtitles);
+                    SaveSubtitles(subtitles, encoding, filePath, options.outputFile, options.outputFolder, options.suppressBackupFile, options.suppressBackupFileOnSame, options.suppressWarningsFile, originalSubtitles);
 
                 if (options.print)
                     PrintSubtitles(subtitles);

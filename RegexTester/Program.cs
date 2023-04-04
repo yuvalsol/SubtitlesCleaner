@@ -42,9 +42,9 @@ namespace RegexTester
             Console.WriteLine("Is Match With Regex:");
             RegexHelper.PrintIsMatch(input, regex);
 
-            Console.WriteLine("Has Errors:");
-            bool hasErrors = SubtitlesHelper.HasErrors(input);
-            Console.WriteLine(hasErrors ? "Has Errors" : "No Errors");
+            Console.WriteLine("Has Warnings:");
+            bool hasWarnings = SubtitlesHelper.HasWarnings(input);
+            Console.WriteLine(hasWarnings ? "Has Warnings" : "No Warnings");
             Console.WriteLine();
         }
     }

@@ -116,8 +116,8 @@ namespace SubtitlesCleaner.Command
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
         public int? firstSubtitlesCount { get; set; }
 
-        [Option("suppressErrorFile", HelpText = "Do not create error file with possible errors")]
-        public bool suppressErrorFile { get; set; }
+        [Option("suppressWarningsFile", HelpText = "Do not create warnings file")]
+        public bool suppressWarningsFile { get; set; }
 
         [Option("printCleaning", HelpText = "Print to console what the cleaning process does")]
         public bool printCleaning { get; set; }
@@ -139,8 +139,8 @@ namespace SubtitlesCleaner.Command
                 sb.Append(firstSubtitlesCount.Value);
             }
 
-            if (suppressErrorFile)
-                sb.Append(" --suppressErrorFile");
+            if (suppressWarningsFile)
+                sb.Append(" --suppressWarningsFile");
 
             if (printCleaning)
                 sb.Append(" --printCleaning");

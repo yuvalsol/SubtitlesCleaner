@@ -33,7 +33,7 @@ namespace SubtitlesCleaner.Command
             string outputFolder,
             bool suppressBackupFile,
             bool suppressBackupFileOnSame,
-            bool suppressErrorFile,
+            bool suppressWarningsFile,
             List<Subtitle> originalSubtitles)
         {
             string fileName = Path.GetFileName(filePath);
@@ -42,6 +42,15 @@ namespace SubtitlesCleaner.Command
 
             CreateOutputFolder(outputFilePath, fileName);
 
+            SaveBackupFile(outputFilePath, fileName, filePath, subtitles, suppressBackupFile, suppressBackupFileOnSame, originalSubtitles);
+
+            SaveSubtitlesFile(outputFilePath, fileName, filePath, subtitles, encoding);
+
+            SaveWarningsFile(outputFilePath, fileName, filePath, subtitles, encoding, suppressWarningsFile);
+        }
+
+        protected virtual void SaveBackupFile(string outputFilePath, string fileName, string filePath, List<Subtitle> subtitles, bool suppressBackupFile, bool suppressBackupFileOnSame, List<Subtitle> originalSubtitles)
+        {
             if (suppressBackupFile == false && suppressBackupFileOnSame)
             {
                 suppressBackupFile = (
@@ -80,7 +89,10 @@ namespace SubtitlesCleaner.Command
                     }
                 }
             }
+        }
 
+        protected virtual void SaveSubtitlesFile(string outputFilePath, string fileName, string filePath, List<Subtitle> subtitles, Encoding encoding)
+        {
             try
             {
                 string[] lines = subtitles.ToLines();
@@ -105,20 +117,23 @@ namespace SubtitlesCleaner.Command
                     WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
                 }
             }
+        }
 
-            if (suppressErrorFile == false)
+        protected virtual void SaveWarningsFile(string outputFilePath, string fileName, string filePath, List<Subtitle> subtitles, Encoding encoding, bool suppressWarningsFile)
+        {
+            if (suppressWarningsFile == false)
             {
-                string[] errors = SubtitlesHelper.GetSubtitlesErrors(subtitles);
+                string[] warnings = SubtitlesHelper.GetSubtitlesWarnings(subtitles);
 
-                if (errors != null && errors.Length > 0)
+                if (warnings != null && warnings.Length > 0)
                 {
-                    string errorFile = outputFilePath.Replace(".srt", ".error.srt");
+                    string warningsFile = outputFilePath.Replace(".srt", ".warnings.txt");
 
                     try
                     {
-                        File.WriteAllLines(errorFile, errors, encoding);
+                        File.WriteAllLines(warningsFile, warnings, encoding);
                         if (sharedOptions.quiet == false)
-                            WriteLog(DateTime.Now, fileName, "Save subtitles error file {0}", errorFile);
+                            WriteLog(DateTime.Now, fileName, "Save subtitles warnings file {0}", warningsFile);
                     }
                     catch (Exception ex)
                     {
@@ -127,13 +142,13 @@ namespace SubtitlesCleaner.Command
                             lock (Console.Error)
                             {
                                 Console.Error.WriteLine(filePath);
-                                Console.Error.WriteLine("Save subtitles error file failed {0}", errorFile);
+                                Console.Error.WriteLine("Save subtitles warnings file failed {0}", warningsFile);
                                 Console.Error.WriteLine(ex.GetExceptionErrorMessage());
                             }
                         }
                         else
                         {
-                            WriteLog(DateTime.Now, fileName, "Save subtitles error file failed {0}", errorFile);
+                            WriteLog(DateTime.Now, fileName, "Save subtitles warnings file failed {0}", warningsFile);
                             WriteLog(DateTime.Now, fileName, ex.GetExceptionErrorMessage());
                         }
                     }
