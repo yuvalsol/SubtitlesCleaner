@@ -2751,6 +2751,8 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i)Translated by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Translation by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Translations by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)YIFY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)YTS.MX", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
 
             ,new FindAndReplace(new Regex(@"DIRECTED BY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"PRODUCED BY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
