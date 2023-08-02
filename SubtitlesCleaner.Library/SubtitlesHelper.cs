@@ -3535,7 +3535,7 @@ namespace SubtitlesCleaner.Library
         #region Merged Words
 
         public static readonly FindAndReplace[] MergedWords = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in)(?i)(?<Suffix>the|you|we|him|her|it|this|they|them|those|thing|things|too)\b", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
+            new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in)(?i)(?<Suffix>the|you|we|him|her|he|she|it|this|they|them|those|thing|things|too)\b", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in)(?<Suffix>[A-ZÀ-Ý][a-zà-ÿ])", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:after|don't|for|of|our|that|this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"(?i:y)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error,
