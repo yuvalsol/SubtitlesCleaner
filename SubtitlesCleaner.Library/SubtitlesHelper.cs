@@ -2863,9 +2863,9 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"^(?<OCR>&).*?[♪&]$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
 
             // ♪ Text I
-            ,new FindAndReplace(new Regex(@"^♪.*?\s+(?<OCR>I)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            //,new FindAndReplace(new Regex(@"^♪.*?\s+(?<OCR>I)$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
             // I Text ♪
-            ,new FindAndReplace(new Regex(@"^(?<OCR>I)\s+.*?♪$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
+            //,new FindAndReplace(new Regex(@"^(?<OCR>I)\s+.*?♪$", RegexOptions.Compiled), "OCR", "♪", SubtitleError.Notes_Error)
         };
 
         #endregion
