@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -3732,8 +3731,8 @@ namespace SubtitlesCleaner.Library
             Console.WriteLine();
         }
 
-        private static readonly Color textDeletedColor = Color.Red;
-        private static readonly Color textInsertedColor = Color.FromArgb(171, 242, 188);
+        private static readonly ConsoleColor textDeletedColor = ConsoleColor.Red;
+        private static readonly ConsoleColor textInsertedColor = ConsoleColor.Green;
 
         private static void PrintCleaningBeforeAndAfter(string text, string cleanText)
         {
@@ -3862,10 +3861,10 @@ namespace SubtitlesCleaner.Library
             Console.WriteLine();
         }
 
-        private static void ColorChar(char chr, Color backColor)
+        private static void ColorChar(char chr, ConsoleColor backColor)
         {
             Console.ForegroundColor = ConsoleColor.Black;
-            Colorful.Console.BackgroundColor = backColor;
+            Console.BackgroundColor = backColor;
             Console.Write(chr);
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.BackgroundColor = ConsoleColor.Black;

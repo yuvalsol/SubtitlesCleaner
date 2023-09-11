@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace RegexTester
@@ -36,7 +35,13 @@ namespace RegexTester
                 Console.WriteLine("Index: {0}, Length: {1}", match.Index, match.Length);
 
                 Console.Write(input.Substring(0, match.Index));
-                Colorful.Console.Write(input.Substring(match.Index, match.Length), Color.Red);
+
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.Write(input.Substring(match.Index, match.Length));
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.BackgroundColor = ConsoleColor.Black;
+
                 Console.Write(input.Substring(match.Index + match.Length));
                 Console.WriteLine();
 
