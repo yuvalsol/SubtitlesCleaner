@@ -40,8 +40,7 @@ namespace SubtitlesCleaner.Editor
                     bool isSRT = string.Compare(extension, ".srt", true) == 0;
                     if (isSRT)
                     {
-                        Encoding encoding = Encoding.UTF8;
-                        List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
+                        List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, out _);
 
                         if (subtitles.HasAny())
                         {

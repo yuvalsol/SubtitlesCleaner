@@ -193,8 +193,7 @@ namespace SubtitlesCleaner.Editor
                     this.Cursor = Cursors.WaitCursor;
                     Application.DoEvents();
 
-                    encoding = Encoding.UTF8;
-                    subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
+                    subtitles = SubtitlesHelper.GetSubtitles(filePath, out encoding);
                     subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
                     originalSubtitles = subtitles.Clone();
                     this.filePath = filePath;

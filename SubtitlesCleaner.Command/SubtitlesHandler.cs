@@ -360,7 +360,7 @@ namespace SubtitlesCleaner.Command
 
         #region Log
 
-        private static readonly Encoding encoding = Encoding.UTF8;
+        private static readonly Encoding logEncoding = Encoding.UTF8;
 
         private string GetLogFilePath(SharedOptions options)
         {
@@ -392,7 +392,7 @@ namespace SubtitlesCleaner.Command
             if (Directory.Exists(folder) == false)
                 Directory.CreateDirectory(folder);
 
-            File.WriteAllText(logFilePath, string.Empty, encoding);
+            File.WriteAllText(logFilePath, string.Empty, logEncoding);
         }
 
         private ConcurrentQueue<SubtitlesActionResult> queue;
@@ -432,7 +432,7 @@ namespace SubtitlesCleaner.Command
 
         private void OutputLogToFile(string logFilePath, StringBuilder log)
         {
-            File.AppendAllText(logFilePath, log.ToString(), encoding);
+            File.AppendAllText(logFilePath, log.ToString(), logEncoding);
         }
 
         private void OutputLogToConsole(StringBuilder log)

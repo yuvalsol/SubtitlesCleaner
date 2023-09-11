@@ -29,8 +29,7 @@ namespace SubtitlesCleaner.Command
                     WriteLog(DateTime.Now, fileName, "Read subtitles start");
                 }
 
-                Encoding encoding = Encoding.UTF8;
-                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, ref encoding);
+                List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, out Encoding encoding);
 
                 List<Subtitle> originalSubtitles = null;
                 if (options.suppressBackupFileOnSame)

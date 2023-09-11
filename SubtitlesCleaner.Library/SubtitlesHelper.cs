@@ -96,37 +96,46 @@ namespace SubtitlesCleaner.Library
         #region File Encoding
 
         // https://stackoverflow.com/questions/3825390/effective-way-to-find-any-files-encoding
-        public static Encoding GetEncoding(string filePath)
+
+        private static Encoding TestEncoding(Encoding testEncoding, byte[] byteArray)
         {
-            using (var reader = new StreamReader(filePath, Encoding.UTF8 /* defaultEncodingIfNoBom*/, true))
+            try
             {
-                reader.Peek();
-                return reader.CurrentEncoding;
+                var encoding = Encoding.GetEncoding(testEncoding.CodePage, EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback);
+                encoding.GetCharCount(byteArray);
+                return testEncoding;
+            }
+            catch
+            {
+                return null;
             }
         }
 
-        //public static readonly Encoding ISO_8859_1 = Encoding.GetEncoding("ISO-8859-1");
-        //public static readonly Regex regexAccentedCharacters = new Regex(@"[À-Ýà-ÿ]", RegexOptions.Compiled);
-
-        //public static bool HasAccentedCharacters(string filePath)
-        //{
-        //    return regexAccentedCharacters.IsMatch(File.ReadAllText(filePath, ISO_8859_1));
-        //}
-
         public static Encoding GetFileEncoding(string filePath)
         {
-            return GetEncoding(filePath);
-            //return HasAccentedCharacters(filePath) ? ISO_8859_1 : Encoding.UTF8;
+            byte[] contents = File.ReadAllBytes(filePath);
+
+            if (contents.IsNullOrEmpty())
+                return Encoding.Default;
+
+            return
+                TestEncoding(Encoding.UTF8, contents) ??
+                TestEncoding(Encoding.GetEncoding("Windows-1252"), contents) ??
+                TestEncoding(Encoding.GetEncoding("ISO-8859-1"), contents) ??
+                TestEncoding(Encoding.ASCII, contents) ??
+                TestEncoding(Encoding.Unicode, contents) ??
+                TestEncoding(Encoding.BigEndianUnicode, contents) ??
+                TestEncoding(Encoding.UTF32, contents) ??
+                TestEncoding(Encoding.Default, contents);
         }
 
         #endregion
 
         #region Get Subtitles
 
-        public static List<Subtitle> GetSubtitles(string filePath, ref Encoding encoding, int? firstSubtitlesCount = null)
+        public static List<Subtitle> GetSubtitles(string filePath, out Encoding encoding, int? firstSubtitlesCount = null)
         {
             encoding = GetFileEncoding(filePath);
-            //encoding = Encoding.UTF8;
             List<string> lines = new List<string>(File.ReadAllLines(filePath, encoding));
 
             for (int i = 0; i < lines.Count; i++)
