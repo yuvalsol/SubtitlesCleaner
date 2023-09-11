@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30711.63
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegexTester", "RegexTester\RegexTester.csproj", "{4FBA507D-75DE-4C93-A401-06C3874252EA}"
 EndProject
@@ -20,6 +20,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{6E119C67-7B5E-4C3A-A18E-EAFEEEBFDAB7}"
 	ProjectSection(SolutionItems) = preProject
 		Solution Items\Images\AdjustTiming.jpg = Solution Items\Images\AdjustTiming.jpg
+		Solution Items\Images\PrintCleaning.jpg = Solution Items\Images\PrintCleaning.jpg
 		Solution Items\Images\QuickActions.jpg = Solution Items\Images\QuickActions.jpg
 		Solution Items\Images\SubtitlesCleanerEditor.jpg = Solution Items\Images\SubtitlesCleanerEditor.jpg
 		Solution Items\Images\TimeCalculator.jpg = Solution Items\Images\TimeCalculator.jpg

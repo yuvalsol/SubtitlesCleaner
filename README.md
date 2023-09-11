@@ -1,10 +1,10 @@
 # Subtitles Cleaner
 
-Subtitles Cleaner cleans SubRip .srt subtitle files from OCR errors, Hearing-impaired lines and other junk.
+Subtitles Cleaner cleans English SubRip .srt subtitle files from OCR errors, Hearing-impaired lines and other junk.
 
 The program includes many cleaning rules and several complex cleaning routines. It also has some basic nice-to-have synchronization features.
 
-This program is not, and was not meant to be, a comprehensive subtitles editor.
+For a comprehensive subtitles editor, use [Subtitle Edit](https://www.nikse.dk/subtitleedit "Subtitle Edit").
 
 ## Subtitles Cleaner Editor
 
@@ -379,14 +379,6 @@ If the path points to a folder, it will balance the lines of all the subtitle fi
 ```console
 --path <fileOrFolder>       Path to subtitle file or folder
 ```
-
-## Useful Subtitle Resources
-
-[Subtitle Edit](https://www.nikse.dk/subtitleedit "Subtitle Edit")
-
-[Subtitle Edit GitHub](https://github.com/SubtitleEdit/subtitleedit "Subtitle Edit GitHub")
-
-[WinMerge](https://winmerge.org/ "WinMerge")
 
 ## Acknowledgments
 
