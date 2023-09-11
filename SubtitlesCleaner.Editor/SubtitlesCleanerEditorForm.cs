@@ -27,6 +27,12 @@ namespace SubtitlesCleaner.Editor
             lstEditor.AutoGenerateColumns = false;
             lstErrors.AutoGenerateColumns = false;
 
+            lstEditor.EnableHeadersVisualStyles = false;
+            lstEditor.ColumnHeadersDefaultCellStyle.SelectionBackColor = lstEditor.ColumnHeadersDefaultCellStyle.BackColor;
+
+            lstErrors.EnableHeadersVisualStyles = false;
+            lstErrors.ColumnHeadersDefaultCellStyle.SelectionBackColor = lstErrors.ColumnHeadersDefaultCellStyle.BackColor;
+
             txtSubtitle.Init(lstEditor);
 
             ParseArgs(args);

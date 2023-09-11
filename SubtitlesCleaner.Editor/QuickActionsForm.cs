@@ -25,6 +25,9 @@ namespace SubtitlesCleaner.Editor
             this.subtitles = subtitles;
 
             lstQuickActions.AutoGenerateColumns = false;
+            lstQuickActions.EnableHeadersVisualStyles = false;
+            lstQuickActions.ColumnHeadersDefaultCellStyle.SelectionBackColor = lstQuickActions.ColumnHeadersDefaultCellStyle.BackColor;
+
             lstQuickActions.DataSource = new BindingList<QuickAction>(quickActions);
         }
 
