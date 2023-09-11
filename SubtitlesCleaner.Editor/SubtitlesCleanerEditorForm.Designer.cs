@@ -110,6 +110,7 @@
             this.chkInteractiveRetiming = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.btnOpenNextSubtitle = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -210,19 +211,19 @@
             this.fixAllErrorsToolStripMenuItem});
             this.contextMenuStripErrors.Name = "contextMenuStripErrors";
             this.contextMenuStripErrors.ShowImageMargin = false;
-            this.contextMenuStripErrors.Size = new System.Drawing.Size(114, 48);
+            this.contextMenuStripErrors.Size = new System.Drawing.Size(115, 48);
             // 
             // fixErrorToolStripMenuItem
             // 
             this.fixErrorToolStripMenuItem.Name = "fixErrorToolStripMenuItem";
-            this.fixErrorToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.fixErrorToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.fixErrorToolStripMenuItem.Text = "Fix Error";
             this.fixErrorToolStripMenuItem.Click += new System.EventHandler(this.fixErrorToolStripMenuItem_Click);
             // 
             // fixAllErrorsToolStripMenuItem
             // 
             this.fixAllErrorsToolStripMenuItem.Name = "fixAllErrorsToolStripMenuItem";
-            this.fixAllErrorsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.fixAllErrorsToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.fixAllErrorsToolStripMenuItem.Text = "Fix All Errors";
             this.fixAllErrorsToolStripMenuItem.Click += new System.EventHandler(this.fixAllErrorsToolStripMenuItem_Click);
             // 
@@ -462,14 +463,14 @@
             this.toolStripSeparator2,
             this.txtCleanSubtitle_selectAllToolStripMenuItem});
             this.contextMenuStripTxtCleanSubtitle.Name = "contextMenuStripTxtCleanSubtitle";
-            this.contextMenuStripTxtCleanSubtitle.Size = new System.Drawing.Size(181, 76);
+            this.contextMenuStripTxtCleanSubtitle.Size = new System.Drawing.Size(123, 54);
             this.contextMenuStripTxtCleanSubtitle.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTxtCleanSubtitle_Opening);
             // 
             // txtCleanSubtitle_copyToolStripMenuItem
             // 
             this.txtCleanSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtCleanSubtitle_copyToolStripMenuItem.Image")));
             this.txtCleanSubtitle_copyToolStripMenuItem.Name = "txtCleanSubtitle_copyToolStripMenuItem";
-            this.txtCleanSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtCleanSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.txtCleanSubtitle_copyToolStripMenuItem.Text = "Copy";
             this.txtCleanSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_copyToolStripMenuItem_Click);
             // 
@@ -519,7 +520,7 @@
             // 
             this.txtSubtitle_cutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_cutToolStripMenuItem.Image")));
             this.txtSubtitle_cutToolStripMenuItem.Name = "txtSubtitle_cutToolStripMenuItem";
-            this.txtSubtitle_cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtSubtitle_cutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.txtSubtitle_cutToolStripMenuItem.Text = "Cut";
             this.txtSubtitle_cutToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_cutToolStripMenuItem_Click);
             // 
@@ -527,7 +528,7 @@
             // 
             this.txtSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_copyToolStripMenuItem.Image")));
             this.txtSubtitle_copyToolStripMenuItem.Name = "txtSubtitle_copyToolStripMenuItem";
-            this.txtSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.txtSubtitle_copyToolStripMenuItem.Text = "Copy";
             this.txtSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_copyToolStripMenuItem_Click);
             // 
@@ -535,7 +536,7 @@
             // 
             this.txtSubtitle_pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_pasteToolStripMenuItem.Image")));
             this.txtSubtitle_pasteToolStripMenuItem.Name = "txtSubtitle_pasteToolStripMenuItem";
-            this.txtSubtitle_pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtSubtitle_pasteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.txtSubtitle_pasteToolStripMenuItem.Text = "Paste";
             this.txtSubtitle_pasteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_pasteToolStripMenuItem_Click);
             // 
@@ -543,19 +544,19 @@
             // 
             this.txtSubtitle_deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_deleteToolStripMenuItem.Image")));
             this.txtSubtitle_deleteToolStripMenuItem.Name = "txtSubtitle_deleteToolStripMenuItem";
-            this.txtSubtitle_deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtSubtitle_deleteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.txtSubtitle_deleteToolStripMenuItem.Text = "Delete";
             this.txtSubtitle_deleteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_deleteToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(119, 6);
             // 
             // txtSubtitle_selectAllToolStripMenuItem
             // 
             this.txtSubtitle_selectAllToolStripMenuItem.Name = "txtSubtitle_selectAllToolStripMenuItem";
-            this.txtSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.txtSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.txtSubtitle_selectAllToolStripMenuItem.Text = "Select All";
             this.txtSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_selectAllToolStripMenuItem_Click);
             // 
@@ -860,13 +861,14 @@
             this.flowLayoutPanel5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel5.Controls.Add(this.btnClear);
             this.flowLayoutPanel5.Controls.Add(this.btnOpen);
+            this.flowLayoutPanel5.Controls.Add(this.btnOpenNextSubtitle);
             this.flowLayoutPanel5.Controls.Add(this.btnSave);
             this.flowLayoutPanel5.Controls.Add(this.btnSaveAs);
             this.flowLayoutPanel5.Controls.Add(this.chkBackupSRT);
             this.flowLayoutPanel5.Controls.Add(this.btnClose);
             this.flowLayoutPanel5.Location = new System.Drawing.Point(3, 242);
             this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(377, 30);
+            this.flowLayoutPanel5.Size = new System.Drawing.Size(506, 30);
             this.flowLayoutPanel5.TabIndex = 6;
             // 
             // btnClear
@@ -901,10 +903,10 @@
             this.btnSave.AutoSize = true;
             this.btnSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnSave.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.Location = new System.Drawing.Point(105, 3);
+            this.btnSave.Location = new System.Drawing.Point(234, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(43, 24);
-            this.btnSave.TabIndex = 3;
+            this.btnSave.TabIndex = 4;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -914,10 +916,10 @@
             this.btnSaveAs.AutoSize = true;
             this.btnSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnSaveAs.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaveAs.Location = new System.Drawing.Point(154, 3);
+            this.btnSaveAs.Location = new System.Drawing.Point(283, 3);
             this.btnSaveAs.Name = "btnSaveAs";
             this.btnSaveAs.Size = new System.Drawing.Size(72, 24);
-            this.btnSaveAs.TabIndex = 4;
+            this.btnSaveAs.TabIndex = 5;
             this.btnSaveAs.Text = "Save As...";
             this.btnSaveAs.UseVisualStyleBackColor = true;
             this.btnSaveAs.Click += new System.EventHandler(this.btnSaveAs_Click);
@@ -926,11 +928,11 @@
             // 
             this.chkBackupSRT.AutoSize = true;
             this.chkBackupSRT.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkBackupSRT.Location = new System.Drawing.Point(232, 3);
+            this.chkBackupSRT.Location = new System.Drawing.Point(361, 3);
             this.chkBackupSRT.Name = "chkBackupSRT";
             this.chkBackupSRT.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.chkBackupSRT.Size = new System.Drawing.Size(91, 22);
-            this.chkBackupSRT.TabIndex = 5;
+            this.chkBackupSRT.TabIndex = 6;
             this.chkBackupSRT.Text = "Backup SRT";
             this.chkBackupSRT.UseVisualStyleBackColor = true;
             // 
@@ -941,10 +943,10 @@
             this.btnClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(329, 3);
+            this.btnClose.Location = new System.Drawing.Point(458, 3);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(45, 24);
-            this.btnClose.TabIndex = 6;
+            this.btnClose.TabIndex = 7;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
@@ -1012,6 +1014,19 @@
             // 
             this.saveAsFileDialog.DefaultExt = "srt";
             this.saveAsFileDialog.Filter = "SubRip Subtitle|*.srt";
+            // 
+            // btnOpenNextSubtitle
+            // 
+            this.btnOpenNextSubtitle.AutoSize = true;
+            this.btnOpenNextSubtitle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnOpenNextSubtitle.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOpenNextSubtitle.Location = new System.Drawing.Point(105, 3);
+            this.btnOpenNextSubtitle.Name = "btnOpenNextSubtitle";
+            this.btnOpenNextSubtitle.Size = new System.Drawing.Size(123, 24);
+            this.btnOpenNextSubtitle.TabIndex = 3;
+            this.btnOpenNextSubtitle.Text = "Open Next Subtitle";
+            this.btnOpenNextSubtitle.UseVisualStyleBackColor = true;
+            this.btnOpenNextSubtitle.Click += new System.EventHandler(this.btnOpenNextSubtitle_Click);
             // 
             // SubtitlesCleanerEditorForm
             // 
@@ -1141,6 +1156,7 @@
         private System.Windows.Forms.ToolStripMenuItem txtCleanSubtitle_selectAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.Button btnOpenNextSubtitle;
     }
 }
 

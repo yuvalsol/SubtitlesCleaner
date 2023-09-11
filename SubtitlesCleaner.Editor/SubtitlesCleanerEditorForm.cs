@@ -250,6 +250,26 @@ namespace SubtitlesCleaner.Editor
                 LoadFile(openFileDialog.FileName);
         }
 
+        private void btnOpenNextSubtitle_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(openFileDialog.InitialDirectory) == false)
+            {
+                var filePaths = new List<string>(Directory.GetFiles(openFileDialog.InitialDirectory, "*.srt"));
+                if (filePaths.Count > 0)
+                {
+                    filePaths.Sort(StringComparer.OrdinalIgnoreCase);
+
+                    int index = -1;
+                    if (string.IsNullOrEmpty(this.filePath) == false)
+                        index = filePaths.IndexOf(this.filePath);
+
+                    index += 1;
+                    if (index < filePaths.Count)
+                        LoadFile(filePaths[index]);
+                }
+            }
+        }
+
         private void SubtitlesCleanerEditorForm_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
