@@ -133,11 +133,22 @@ namespace SubtitlesCleaner.Library
 
         #region Get Subtitles
 
+        public static List<Subtitle> GetSubtitlesFromText(string text, out Encoding encoding, int? firstSubtitlesCount = null)
+        {
+            encoding = Encoding.UTF8;
+            List<string> lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return GetSubtitles(lines, firstSubtitlesCount);
+        }
+
         public static List<Subtitle> GetSubtitles(string filePath, out Encoding encoding, int? firstSubtitlesCount = null)
         {
             encoding = GetFileEncoding(filePath);
             List<string> lines = new List<string>(File.ReadAllLines(filePath, encoding));
+            return GetSubtitles(lines, firstSubtitlesCount);
+        }
 
+        private static List<Subtitle> GetSubtitles(List<string> lines, int? firstSubtitlesCount)
+        {
             for (int i = 0; i < lines.Count; i++)
                 lines[i] = (lines[i] ?? string.Empty).Trim();
 
