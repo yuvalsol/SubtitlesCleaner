@@ -6,6 +6,8 @@ The program includes many cleaning rules and several complex cleaning routines. 
 
 For a comprehensive subtitles editor, use [Subtitle Edit](https://www.nikse.dk/subtitleedit "Subtitle Edit").
 
+Subtitles Cleaner requires .NET Framework 4.8 Runtime to run.
+
 ## Subtitles Cleaner Editor
 
 ![Subtitles Cleaner Editor](./Solution%20Items/Images/SubtitlesCleanerEditor.jpg "Subtitles Cleaner Editor")
