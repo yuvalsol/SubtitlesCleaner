@@ -2288,6 +2288,7 @@ namespace SubtitlesCleaner.Library
             lines = CleanMergeLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanMissingDialogDashMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanLineEndWithApostropheAndQuestionMark(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            lines = CleanLinesWithDictionary(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
             return lines;
         }
@@ -2587,6 +2588,53 @@ namespace SubtitlesCleaner.Library
                     }
                 }
             }
+
+            return lines;
+        }
+
+        public static List<string> CleanLinesWithDictionary(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
+                return null;
+            }
+
+            List<(int lineIndex, string cleanLine)> cleanedLines = new List<(int lineIndex, string cleanLine)>();
+
+            foreach (var misspelledLine in DictionaryHelper.GetMisspelledLines(lines))
+            {
+                string line = misspelledLine.Line;
+                int lineIndex = misspelledLine.LineIndex;
+
+                List<char> chars = line.ToCharArray().ToList();
+
+                foreach (var misspelledWord in misspelledLine.MisspelledWords.OrderByDescending(w => w.Index))
+                {
+                    if (misspelledWord.HasSuggestions)
+                    {
+                        chars.RemoveRange(misspelledWord.Index, misspelledWord.Length);
+                        chars.InsertRange(misspelledWord.Index, misspelledWord.Suggestions.First());
+                    }
+                }
+
+                string cleanLine = string.Concat(chars);
+
+                if (line != cleanLine)
+                {
+                    cleanedLines.Add((lineIndex, cleanLine));
+
+                    if (isPrintCleaning)
+                        PrintCleaning(line, cleanLine);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.OCR_Error;
+                }
+            }
+
+            foreach (var (lineIndex, cleanLine) in cleanedLines)
+                lines[lineIndex] = cleanLine;
 
             return lines;
         }

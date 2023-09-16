@@ -592,6 +592,12 @@ namespace SubtitlesCleaner.Editor
 
         private void SetTextToTextBoxes(string text, string cleanText)
         {
+            SetDiffTextToTextBoxes(text, cleanText);
+            SetDictionaryErrorsToSubtitlesTextBox();
+        }
+
+        private void SetDiffTextToTextBoxes(string text, string cleanText)
+        {
             txtSubtitle.Clear();
             txtCleanSubtitle.Clear();
 
@@ -712,6 +718,78 @@ namespace SubtitlesCleaner.Editor
             box.SelectionStart = selectionStart;
             box.SelectionLength = 1;
             box.SelectionBackColor = backColor;
+        }
+
+        private static readonly Regex regexRtfUnderline = new Regex(@"\\ul[^n]", RegexOptions.Compiled); // \ul but not \ulnone
+
+        private void SetDictionaryErrorsToSubtitlesTextBox()
+        {
+            bool isChanged = false;
+            foreach (var misspelledLine in DictionaryHelper.GetMisspelledLines(txtSubtitle.Lines))
+            {
+                string line = misspelledLine.Line;
+                int lineIndex = misspelledLine.LineIndex;
+
+                foreach (var misspelledWord in misspelledLine.MisspelledWords)
+                {
+                    if (misspelledWord.HasSuggestions)
+                    {
+                        int selectionStart = misspelledWord.Index + txtSubtitle.Lines.Take(lineIndex).Sum(l => l.Length + 1);
+                        int selectionLength = misspelledWord.Length;
+
+                        for (int i = selectionStart; i < selectionStart + selectionLength; i++)
+                        {
+                            txtSubtitle.SelectionStart = i;
+                            txtSubtitle.SelectionLength = 1;
+                            txtSubtitle.SelectionFont = new Font(txtSubtitle.SelectionFont, FontStyle.Underline);
+                        }
+
+                        isChanged = true;
+                    }
+                }
+            }
+
+            if (isChanged == false)
+                return;
+
+            string rtf = txtSubtitle.Rtf;
+            int colorIndex = 0;
+
+            int colortblStart = rtf.IndexOf(@"{\colortbl");
+            if (colortblStart != -1)
+            {
+                int colortblEnd = rtf.IndexOf(@"}", colortblStart);
+                int colortblLength = colortblEnd - colortblStart + 1;
+                string colortbl = rtf.Substring(colortblStart, colortblLength);
+
+                int redIndex = 0;
+                do
+                {
+                    redIndex = colortbl.IndexOf("red", redIndex);
+                    if (redIndex != -1)
+                    {
+                        colorIndex += 1;
+                        redIndex += 1;
+                    }
+                } while (redIndex != -1);
+
+                rtf = rtf.Insert(colortblEnd, @"\red255\green0\blue0;");
+                colorIndex += 1;
+            }
+            else
+            {
+                int index = rtf.IndexOf('\n');
+                rtf = rtf.Insert(index + 1, @"{\colortbl ;\red255\green0\blue0;}" + "\n");
+                colorIndex = 1;
+            }
+
+            foreach (var match in regexRtfUnderline.Matches(rtf).Cast<Match>().OrderByDescending(m => m.Index))
+                rtf = rtf.Remove(match.Index, 3).Insert(match.Index, @"\ulwave\ulc" + colorIndex);
+
+            txtSubtitle.Rtf = rtf;
+
+            txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
+            txtSubtitle.SelectionLength = 0;
         }
 
         #endregion
