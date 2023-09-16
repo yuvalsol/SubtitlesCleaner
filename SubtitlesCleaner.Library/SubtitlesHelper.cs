@@ -2630,7 +2630,7 @@ namespace SubtitlesCleaner.Library
                         PrintCleaning(line, cleanLine);
 
                     if (isCheckMode)
-                        subtitleError |= SubtitleError.OCR_Error;
+                        subtitleError |= SubtitleError.Dictionary_Error;
                 }
             }
 
