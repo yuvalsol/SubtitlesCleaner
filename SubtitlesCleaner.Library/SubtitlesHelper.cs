@@ -253,20 +253,20 @@ namespace SubtitlesCleaner.Library
 
         public static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isPrintCleaning)
         {
-            return CleanSubtitle(subtitle, cleanHICaseInsensitive, false, isDictionaryCleaning, isPrintCleaning);
+            return CleanSubtitle(subtitle, cleanHICaseInsensitive, isDictionaryCleaning, false, isPrintCleaning);
         }
 
         public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isPrintCleaning)
         {
-            return CleanSubtitles(subtitles, cleanHICaseInsensitive, false, isDictionaryCleaning, isPrintCleaning);
+            return CleanSubtitles(subtitles, cleanHICaseInsensitive, isDictionaryCleaning, false, isPrintCleaning);
         }
 
-        private static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isCheckMode, bool isDictionaryCleaning, bool isPrintCleaning)
+        private static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, bool isPrintCleaning)
         {
-            return new List<Subtitle>() { subtitle }.CleanSubtitles(cleanHICaseInsensitive, isCheckMode, isDictionaryCleaning, isPrintCleaning)?.FirstOrDefault();
+            return new List<Subtitle>() { subtitle }.CleanSubtitles(cleanHICaseInsensitive, isDictionaryCleaning, isCheckMode, isPrintCleaning)?.FirstOrDefault();
         }
 
-        private static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isDictionaryCleaning, bool isPrintCleaning)
+        private static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, bool isPrintCleaning)
         {
             if (subtitles.IsNullOrEmpty())
                 return null;
@@ -325,7 +325,7 @@ namespace SubtitlesCleaner.Library
                 }
             } while (subtitlesChanged);
 
-            subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive, isCheckMode, isDictionaryCleaning, isPrintCleaning);
+            subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive, isDictionaryCleaning, isCheckMode, isPrintCleaning);
             if (subtitles.IsNullOrEmpty())
                 return null;
 
@@ -562,7 +562,7 @@ namespace SubtitlesCleaner.Library
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isDictionaryCleaning, bool isPrintCleaning)
+        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, bool isPrintCleaning)
         {
             if (subtitles.IsNullOrEmpty())
                 return null;
@@ -598,7 +598,7 @@ namespace SubtitlesCleaner.Library
                 {
                     subtitleError = SubtitleError.None;
                     List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
-                    cleanLines = CleanSubtitleMultipleLinesPost(cleanLines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isDictionaryCleaning, isPrintCleaning);
+                    cleanLines = CleanSubtitleMultipleLinesPost(cleanLines, cleanHICaseInsensitive, isDictionaryCleaning, isCheckMode, ref subtitleError, isPrintCleaning);
                     bool isChanged =
                         cleanLines == null ||
                         subtitle.Lines.Count != cleanLines.Count ||
@@ -2273,7 +2273,7 @@ namespace SubtitlesCleaner.Library
 
         #region Multiple Lines Post
 
-        private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isDictionaryCleaning, bool isPrintCleaning)
+        private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
             if (lines.IsNullOrEmpty())
             {

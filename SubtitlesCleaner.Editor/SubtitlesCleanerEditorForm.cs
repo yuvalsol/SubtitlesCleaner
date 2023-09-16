@@ -594,7 +594,8 @@ namespace SubtitlesCleaner.Editor
         private void SetTextToTextBoxes(string text, string cleanText)
         {
             SetDiffTextToTextBoxes(text, cleanText);
-            SetDictionaryErrorsToSubtitlesTextBox();
+            if (dictionaryCleaning)
+                SetDictionaryErrorsToSubtitlesTextBox();
         }
 
         private void SetDiffTextToTextBoxes(string text, string cleanText)
@@ -1061,9 +1062,40 @@ namespace SubtitlesCleaner.Editor
         private void ChangeHICaseSensitivity()
         {
             cleanHICaseInsensitive = rdbHIUpperLowerCases.Checked;
+            if (subtitles.IsNullOrEmpty())
+                return;
+
+            this.Cursor = Cursors.WaitCursor;
+
             subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
             SetFormTitle(true);
+
+            this.Cursor = Cursors.Default;
+        }
+
+        #endregion
+
+        #region Dictionary Cleaning
+
+        private void chkDictionaryCleaning_CheckedChanged(object sender, EventArgs e)
+        {
+            ChangeDictionaryCleaning();
+        }
+
+        private void ChangeDictionaryCleaning()
+        {
+            dictionaryCleaning = chkDictionaryCleaning.Checked;
+            if (subtitles.IsNullOrEmpty())
+                return;
+
+            this.Cursor = Cursors.WaitCursor;
+
+            subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
+            SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
+            SetFormTitle(true);
+
+            this.Cursor = Cursors.Default;
         }
 
         #endregion
