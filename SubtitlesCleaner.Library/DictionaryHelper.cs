@@ -64,7 +64,7 @@ namespace SubtitlesCleaner.Library
             }
         }
 
-        private static readonly Regex regexDictionarySplitToWords = new Regex(@"\b[A-ZÀ-Ýa-zà-ÿ]{2,}\b", RegexOptions.Compiled);
+        private static readonly Regex regexDictionarySplitToWords = new Regex(@"\b[A-ZÀ-Ýa-zà-ÿ']{2,}\b", RegexOptions.Compiled);
 
         private static IEnumerable<MisspelledWord> GetMisspelledWords(string line)
         {
