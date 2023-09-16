@@ -27,41 +27,46 @@ namespace SubtitlesCleaner.Library
             public bool HasSuggestions { get { return Suggestions.Any(); } }
         }
 
-        public static IEnumerable<MisspelledLine> GetMisspelledLines(IEnumerable<string> lines)
+        static DictionaryHelper()
         {
-            if (lines.IsNullOrEmpty())
-                yield break;
-
             var assembly = Assembly.GetExecutingAssembly();
             using (var dictionaryStream = assembly.GetManifestResourceStream("SubtitlesCleaner.Library.Dictionaries.en-US.dic"))
             {
                 using (var affixStream = assembly.GetManifestResourceStream("SubtitlesCleaner.Library.Dictionaries.en-US.aff"))
                 {
-                    WordList dictionary = WordList.CreateFromStreams(dictionaryStream, affixStream);
-
-                    int lineIndex = 0;
-                    foreach (string line in lines)
-                    {
-                        var misspelledWords = GetMisspelledWords(line, dictionary);
-                        if (misspelledWords.Any())
-                        {
-                            yield return new MisspelledLine()
-                            {
-                                Line = line,
-                                LineIndex = lineIndex,
-                                MisspelledWords = misspelledWords
-                            };
-                        }
-
-                        lineIndex++;
-                    }
+                    Dictionary = WordList.CreateFromStreams(dictionaryStream, affixStream);
                 }
+            }
+        }
+
+        public static WordList Dictionary { get; private set; }
+
+        public static IEnumerable<MisspelledLine> GetMisspelledLines(IEnumerable<string> lines)
+        {
+            if (lines.IsNullOrEmpty())
+                yield break;
+
+            int lineIndex = 0;
+            foreach (string line in lines)
+            {
+                var misspelledWords = GetMisspelledWords(line);
+                if (misspelledWords.Any())
+                {
+                    yield return new MisspelledLine()
+                    {
+                        Line = line,
+                        LineIndex = lineIndex,
+                        MisspelledWords = misspelledWords
+                    };
+                }
+
+                lineIndex++;
             }
         }
 
         private static readonly Regex regexDictionarySplitToWords = new Regex(@"\b[A-ZÀ-Ýa-zà-ÿ]{2,}\b", RegexOptions.Compiled);
 
-        private static IEnumerable<MisspelledWord> GetMisspelledWords(string line, WordList dictionary)
+        private static IEnumerable<MisspelledWord> GetMisspelledWords(string line)
         {
             if (string.IsNullOrEmpty(line))
                 yield break;
@@ -69,9 +74,9 @@ namespace SubtitlesCleaner.Library
             foreach (Match match in regexDictionarySplitToWords.Matches(line))
             {
                 var misspelledWord = new MisspelledWord() { Match = match };
-                if (dictionary.Check(misspelledWord.Word) == false)
+                if (Dictionary.Check(misspelledWord.Word) == false)
                 {
-                    misspelledWord.Suggestions = dictionary.Suggest(misspelledWord.Word);
+                    misspelledWord.Suggestions = Dictionary.Suggest(misspelledWord.Word);
                     yield return misspelledWord;
                 }
             }
