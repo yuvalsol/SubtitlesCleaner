@@ -63,6 +63,7 @@ SubtitlesCleanerCommand clean --path <fileOrFolder>
                               [--save [--outputFile <file>] [--outputFolder <folder>]]
                               [--print]
                               [--cleanHICaseInsensitive]
+                              [--dictionaryCleaning]
                               [--firstSubtitlesCount <N>]
                               [--suppressBackupFile]
                               [--suppressBackupFileOnSame]
@@ -99,6 +100,12 @@ By default, Subtitles Cleaner Command identifies hearing-impaired line, which is
 
 ```console
 --cleanHICaseInsensitive    Clean HI case-insensitive
+```
+
+Enable English dictionary (Hunspell dictionary) for cleaning misspelled words. This feature increases the cleaning time.
+
+```console
+--dictionaryCleaning    Enable English dictionary cleaning
 ```
 
 Use this parameter to read the first N subtitles out of the file (not the first number of lines).

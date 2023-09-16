@@ -40,6 +40,7 @@ namespace SubtitlesCleaner.Command
                     WriteLog(DateTime.Now, fileName, "Read subtitles end");
 
                     WriteLog(DateTime.Now, fileName, "Clean hearing-impaired case insensitive is {0}", (options.cleanHICaseInsensitive ? "enabled" : "disabled"));
+                    WriteLog(DateTime.Now, fileName, "Dictionary cleaning is {0}", (options.dictionaryCleaning ? "enabled" : "disabled"));
                     WriteLog(DateTime.Now, fileName, "Print cleaning is {0}", (options.printCleaning ? "enabled" : "disabled"));
                     WriteLog(DateTime.Now, fileName, "Clean subtitles start");
                 }
@@ -49,7 +50,7 @@ namespace SubtitlesCleaner.Command
 
                 try
                 {
-                    subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive, options.printCleaning);
+                    subtitles = subtitles.CleanSubtitles(options.cleanHICaseInsensitive, options.dictionaryCleaning, options.printCleaning);
                 }
                 catch (Exception ex)
                 {

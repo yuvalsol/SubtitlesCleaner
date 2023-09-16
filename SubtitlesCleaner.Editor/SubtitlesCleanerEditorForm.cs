@@ -98,6 +98,7 @@ namespace SubtitlesCleaner.Editor
         private List<Subtitle> subtitles;
         private List<Subtitle> originalSubtitles;
         private bool cleanHICaseInsensitive;
+        private bool dictionaryCleaning;
         private string filePath;
         private Encoding encoding = Encoding.UTF8;
 
@@ -119,7 +120,7 @@ namespace SubtitlesCleaner.Editor
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) =>
                 {
-                    Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+                    Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
                     if (cleanSubtitle != null)
                         cleanSubtitle.SubtitleError = SubtitleError.None;
 
@@ -200,7 +201,7 @@ namespace SubtitlesCleaner.Editor
                     Application.DoEvents();
 
                     subtitles = SubtitlesHelper.GetSubtitles(filePath, out encoding);
-                    subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+                    subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
                     originalSubtitles = subtitles.Clone();
                     this.filePath = filePath;
                     openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
@@ -460,8 +461,8 @@ namespace SubtitlesCleaner.Editor
             if (subtitles == null)
                 return;
 
-            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -481,7 +482,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             var newSubtitles = subtitles.Reorder();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -501,7 +502,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             var newSubtitles = subtitles.BalanceLines();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -521,7 +522,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             var newSubtitles = originalSubtitles.Clone();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(false);
         }
@@ -1060,7 +1061,7 @@ namespace SubtitlesCleaner.Editor
         private void ChangeHICaseSensitivity()
         {
             cleanHICaseInsensitive = rdbHIUpperLowerCases.Checked;
-            subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
             SetFormTitle(true);
         }
@@ -1503,7 +1504,7 @@ namespace SubtitlesCleaner.Editor
             }
 
             if (isFound && isReplaced)
-                subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
+                subtitle.CheckSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
         }
 
         #endregion
@@ -1528,7 +1529,7 @@ namespace SubtitlesCleaner.Editor
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
+            subtitle.CheckSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
 
             SetSubtitleToEditor(editorRow, subtitle);
 
@@ -1543,7 +1544,7 @@ namespace SubtitlesCleaner.Editor
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
 
-            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
             if (cleanSubtitle != null)
                 cleanSubtitle.SubtitleError = SubtitleError.None;
             editorRow.CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty);
@@ -1840,7 +1841,7 @@ namespace SubtitlesCleaner.Editor
         {
             EditorRow editorRow = GetEditorRowAt(rowIndex);
             Subtitle subtitle = subtitles[editorRow.Num - 1];
-            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
             if (cleanSubtitle != null)
                 cleanSubtitle.SubtitleError = SubtitleError.None;
 
@@ -2154,7 +2155,7 @@ namespace SubtitlesCleaner.Editor
             var dialog = new QuickActionsForm(this.filePath, newSubtitles, quickActions);
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+                newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
                 SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
                 SetFormTitle(true);
             }
