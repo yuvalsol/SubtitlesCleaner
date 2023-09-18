@@ -113,7 +113,7 @@ namespace SubtitlesCleaner.Command
         [Option("cleanHICaseInsensitive", HelpText = "Clean HI case-insensitive")]
         public bool cleanHICaseInsensitive { get; set; }
 
-        [Option("dictionaryCleaning", HelpText = "Enable English dictionary cleaning for cleaning misspelled words")]
+        [Option("dictionaryCleaning", HelpText = "Clean misspelled words with English dictionary")]
         public bool dictionaryCleaning { get; set; }
 
         [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]

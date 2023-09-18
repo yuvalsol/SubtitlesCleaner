@@ -107,7 +107,7 @@ By default, Subtitles Cleaner Command identifies hearing-impaired line, which is
 Enable English dictionary (Hunspell dictionary) for cleaning misspelled words. This feature increases the cleaning time.
 
 ```console
---dictionaryCleaning    Enable English dictionary cleaning
+--dictionaryCleaning    Clean misspelled words with English dictionary
 ```
 
 Use this parameter to read the first N subtitles out of the file (not the first number of lines).
