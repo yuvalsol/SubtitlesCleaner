@@ -40,17 +40,19 @@ Subtitles Cleaner requires .NET Framework 4.8 Runtime to run.
 
 11. Hearing-Impaired Detection. Identifies hearing-impaired with only capital letters text or all-case text.
 
-12. Selected subtitle. Changes can be made in the textbox.
+12. Enable English dictionary (Hunspell dictionary) for cleaning misspelled words. This feature increases the cleaning time.
 
-13. Cleaned subtitle.
+13. Selected subtitle. Changes can be made in the textbox.
 
-14. Fix buttons will copy the cleaned subtitle to the subtitle itself. The advance button will also jump to the next subtitle with an error.
+14. Cleaned subtitle.
 
-15. Set Show Time. Set the specified show time to the selected subtitle and change the timings of all the subtitles below it based on their time differences. When the Interactive Retiming is checked, the show timings will change in the subtitles panel as the show time is changed.
+15. Fix buttons will copy the cleaned subtitle to the subtitle itself. The advance button will also jump to the next subtitle with an error.
 
-16. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
+16. Set Show Time. Set the specified show time to the selected subtitle and change the timings of all the subtitles below it based on their time differences. When the Interactive Retiming is checked, the show timings will change in the subtitles panel as the show time is changed.
 
-17. Sync Errors & Subtitles. When checked, clicking on an error or a subtitle will also focus on the other one.
+17. Add Time starting from the selected subtitle. Time can be positive or negative. The time sign is clickable and changes between `+` and `-`.
+
+18. Sync Errors & Subtitles. When checked, clicking on an error or a subtitle will also focus on the other one.
 
 ## Subtitles Cleaner Command
 
