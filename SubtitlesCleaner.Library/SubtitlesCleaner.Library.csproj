@@ -81,8 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="Dictionaries\en-US.aff" />
-    <EmbeddedResource Include="Dictionaries\en-US.dic" />
+    <EmbeddedResource Include="Dictionaries\en_US.aff" />
+    <EmbeddedResource Include="Dictionaries\en_US.dic" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

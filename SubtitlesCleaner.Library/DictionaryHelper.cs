@@ -30,9 +30,9 @@ namespace SubtitlesCleaner.Library
         static DictionaryHelper()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            using (var dictionaryStream = assembly.GetManifestResourceStream("SubtitlesCleaner.Library.Dictionaries.en-US.dic"))
+            using (var dictionaryStream = assembly.GetManifestResourceStream("SubtitlesCleaner.Library.Dictionaries.en_US.dic"))
             {
-                using (var affixStream = assembly.GetManifestResourceStream("SubtitlesCleaner.Library.Dictionaries.en-US.aff"))
+                using (var affixStream = assembly.GetManifestResourceStream("SubtitlesCleaner.Library.Dictionaries.en_US.aff"))
                 {
                     Dictionary = WordList.CreateFromStreams(dictionaryStream, affixStream);
                 }
