@@ -251,22 +251,22 @@ namespace SubtitlesCleaner.Library
 
         #region Clean Subtitles
 
-        public static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        public static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isPrintCleaning)
         {
-            return CleanSubtitle(subtitle, cleanHICaseInsensitive, false, isPrintCleaning);
+            return CleanSubtitle(subtitle, cleanHICaseInsensitive, isDictionaryCleaning, false, isPrintCleaning);
         }
 
-        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        public static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isPrintCleaning)
         {
-            return CleanSubtitles(subtitles, cleanHICaseInsensitive, false, isPrintCleaning);
+            return CleanSubtitles(subtitles, cleanHICaseInsensitive, isDictionaryCleaning, false, isPrintCleaning);
         }
 
-        private static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
+        private static Subtitle CleanSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, bool isPrintCleaning)
         {
-            return new List<Subtitle>() { subtitle }.CleanSubtitles(cleanHICaseInsensitive, isCheckMode, isPrintCleaning)?.FirstOrDefault();
+            return new List<Subtitle>() { subtitle }.CleanSubtitles(cleanHICaseInsensitive, isDictionaryCleaning, isCheckMode, isPrintCleaning)?.FirstOrDefault();
         }
 
-        private static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
+        private static List<Subtitle> CleanSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, bool isPrintCleaning)
         {
             if (subtitles.IsNullOrEmpty())
                 return null;
@@ -325,7 +325,7 @@ namespace SubtitlesCleaner.Library
                 }
             } while (subtitlesChanged);
 
-            subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive, isCheckMode, isPrintCleaning);
+            subtitles = IterateSubtitlesPost(subtitles, cleanHICaseInsensitive, isDictionaryCleaning, isCheckMode, isPrintCleaning);
             if (subtitles.IsNullOrEmpty())
                 return null;
 
@@ -562,7 +562,7 @@ namespace SubtitlesCleaner.Library
             return subtitles;
         }
 
-        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isCheckMode, bool isPrintCleaning)
+        private static List<Subtitle> IterateSubtitlesPost(List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, bool isPrintCleaning)
         {
             if (subtitles.IsNullOrEmpty())
                 return null;
@@ -598,7 +598,7 @@ namespace SubtitlesCleaner.Library
                 {
                     subtitleError = SubtitleError.None;
                     List<string> cleanLines = subtitle.Lines.GetRange(0, subtitle.Lines.Count);
-                    cleanLines = CleanSubtitleMultipleLinesPost(cleanLines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+                    cleanLines = CleanSubtitleMultipleLinesPost(cleanLines, cleanHICaseInsensitive, isDictionaryCleaning, isCheckMode, ref subtitleError, isPrintCleaning);
                     bool isChanged =
                         cleanLines == null ||
                         subtitle.Lines.Count != cleanLines.Count ||
@@ -2273,7 +2273,7 @@ namespace SubtitlesCleaner.Library
 
         #region Multiple Lines Post
 
-        private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        private static List<string> CleanSubtitleMultipleLinesPost(List<string> lines, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
             if (lines.IsNullOrEmpty())
             {
@@ -2288,6 +2288,8 @@ namespace SubtitlesCleaner.Library
             lines = CleanMergeLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanMissingDialogDashMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
             lines = CleanLineEndWithApostropheAndQuestionMark(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (isDictionaryCleaning)
+                lines = CleanLinesWithDictionary(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
             return lines;
         }
@@ -2591,6 +2593,53 @@ namespace SubtitlesCleaner.Library
             return lines;
         }
 
+        public static List<string> CleanLinesWithDictionary(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
+                return null;
+            }
+
+            List<(int lineIndex, string cleanLine)> cleanedLines = new List<(int lineIndex, string cleanLine)>();
+
+            foreach (var misspelledLine in DictionaryHelper.GetMisspelledLines(lines))
+            {
+                string line = misspelledLine.Line;
+                int lineIndex = misspelledLine.LineIndex;
+
+                List<char> chars = line.ToCharArray().ToList();
+
+                foreach (var misspelledWord in misspelledLine.MisspelledWords.OrderByDescending(w => w.Index))
+                {
+                    if (misspelledWord.HasSuggestions)
+                    {
+                        chars.RemoveRange(misspelledWord.Index, misspelledWord.Length);
+                        chars.InsertRange(misspelledWord.Index, misspelledWord.Suggestions.First());
+                    }
+                }
+
+                string cleanLine = string.Concat(chars);
+
+                if (line != cleanLine)
+                {
+                    cleanedLines.Add((lineIndex, cleanLine));
+
+                    if (isPrintCleaning)
+                        PrintCleaning(line, cleanLine);
+
+                    if (isCheckMode)
+                        subtitleError |= SubtitleError.Dictionary_Error;
+                }
+            }
+
+            foreach (var (lineIndex, cleanLine) in cleanedLines)
+                lines[lineIndex] = cleanLine;
+
+            return lines;
+        }
+
         #endregion
 
         #endregion
@@ -2671,12 +2720,12 @@ namespace SubtitlesCleaner.Library
 
         #region Check Subtitles
 
-        public static void CheckSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        public static void CheckSubtitle(this Subtitle subtitle, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isPrintCleaning)
         {
-            new List<Subtitle>() { subtitle }.CheckSubtitles(cleanHICaseInsensitive, isPrintCleaning);
+            new List<Subtitle>() { subtitle }.CheckSubtitles(cleanHICaseInsensitive, isDictionaryCleaning, isPrintCleaning);
         }
 
-        public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isPrintCleaning)
+        public static void CheckSubtitles(this List<Subtitle> subtitles, bool cleanHICaseInsensitive, bool isDictionaryCleaning, bool isPrintCleaning)
         {
             if (subtitles.IsNullOrEmpty())
                 return;
@@ -2684,7 +2733,7 @@ namespace SubtitlesCleaner.Library
             var tempSubtitles = subtitles.Clone();
             foreach (var subtitle in tempSubtitles)
                 subtitle.SubtitleError = SubtitleError.None;
-            tempSubtitles = tempSubtitles.CleanSubtitles(cleanHICaseInsensitive, true, isPrintCleaning);
+            tempSubtitles = tempSubtitles.CleanSubtitles(cleanHICaseInsensitive, isDictionaryCleaning, true, isPrintCleaning);
 
             if (subtitles.Count != tempSubtitles.Count)
                 throw new Exception("Checking subtitles failed. Number of subtitles is different before and after the cleaning");

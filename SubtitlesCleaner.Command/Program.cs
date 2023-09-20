@@ -58,6 +58,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("                              [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                              [--print]");
                                 Console.WriteLine("                              [--cleanHICaseInsensitive]");
+                                Console.WriteLine("                              [--dictionaryCleaning]");
                                 Console.WriteLine("                              [--firstSubtitlesCount <N>]");
                                 Console.WriteLine("                              [--suppressBackupFile]");
                                 Console.WriteLine("                              [--suppressBackupFileOnSame]");

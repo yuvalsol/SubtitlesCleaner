@@ -98,6 +98,7 @@ namespace SubtitlesCleaner.Editor
         private List<Subtitle> subtitles;
         private List<Subtitle> originalSubtitles;
         private bool cleanHICaseInsensitive;
+        private bool dictionaryCleaning;
         private string filePath;
         private Encoding encoding = Encoding.UTF8;
 
@@ -119,7 +120,7 @@ namespace SubtitlesCleaner.Editor
             {
                 lstEditor.DataSource = new BindingList<EditorRow>(subtitles.Select((subtitle, index) =>
                 {
-                    Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+                    Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
                     if (cleanSubtitle != null)
                         cleanSubtitle.SubtitleError = SubtitleError.None;
 
@@ -200,7 +201,7 @@ namespace SubtitlesCleaner.Editor
                     Application.DoEvents();
 
                     subtitles = SubtitlesHelper.GetSubtitles(filePath, out encoding);
-                    subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+                    subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
                     originalSubtitles = subtitles.Clone();
                     this.filePath = filePath;
                     openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
@@ -460,8 +461,8 @@ namespace SubtitlesCleaner.Editor
             if (subtitles == null)
                 return;
 
-            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, false);
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            var newSubtitles = subtitles.CleanSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -481,7 +482,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             var newSubtitles = subtitles.Reorder();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -501,7 +502,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             var newSubtitles = subtitles.BalanceLines();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(true);
         }
@@ -521,7 +522,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             var newSubtitles = originalSubtitles.Clone();
-            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
             SetFormTitle(false);
         }
@@ -591,6 +592,13 @@ namespace SubtitlesCleaner.Editor
         private static readonly Color textInsertedColor = Color.FromArgb(171, 242, 188);
 
         private void SetTextToTextBoxes(string text, string cleanText)
+        {
+            SetDiffTextToTextBoxes(text, cleanText);
+            if (dictionaryCleaning)
+                SetDictionaryErrorsToSubtitlesTextBox();
+        }
+
+        private void SetDiffTextToTextBoxes(string text, string cleanText)
         {
             txtSubtitle.Clear();
             txtCleanSubtitle.Clear();
@@ -712,6 +720,78 @@ namespace SubtitlesCleaner.Editor
             box.SelectionStart = selectionStart;
             box.SelectionLength = 1;
             box.SelectionBackColor = backColor;
+        }
+
+        private static readonly Regex regexRtfUnderline = new Regex(@"\\ul[^n]", RegexOptions.Compiled); // \ul but not \ulnone
+
+        private void SetDictionaryErrorsToSubtitlesTextBox()
+        {
+            bool isChanged = false;
+            foreach (var misspelledLine in DictionaryHelper.GetMisspelledLines(txtSubtitle.Lines))
+            {
+                string line = misspelledLine.Line;
+                int lineIndex = misspelledLine.LineIndex;
+
+                foreach (var misspelledWord in misspelledLine.MisspelledWords)
+                {
+                    if (misspelledWord.HasSuggestions)
+                    {
+                        int selectionStart = misspelledWord.Index + txtSubtitle.Lines.Take(lineIndex).Sum(l => l.Length + 1);
+                        int selectionLength = misspelledWord.Length;
+
+                        for (int i = selectionStart; i < selectionStart + selectionLength; i++)
+                        {
+                            txtSubtitle.SelectionStart = i;
+                            txtSubtitle.SelectionLength = 1;
+                            txtSubtitle.SelectionFont = new Font(txtSubtitle.SelectionFont, FontStyle.Underline);
+                        }
+
+                        isChanged = true;
+                    }
+                }
+            }
+
+            if (isChanged == false)
+                return;
+
+            string rtf = txtSubtitle.Rtf;
+            int colorIndex = 0;
+
+            int colortblStart = rtf.IndexOf(@"{\colortbl");
+            if (colortblStart != -1)
+            {
+                int colortblEnd = rtf.IndexOf(@"}", colortblStart);
+                int colortblLength = colortblEnd - colortblStart + 1;
+                string colortbl = rtf.Substring(colortblStart, colortblLength);
+
+                int redIndex = 0;
+                do
+                {
+                    redIndex = colortbl.IndexOf("red", redIndex);
+                    if (redIndex != -1)
+                    {
+                        colorIndex += 1;
+                        redIndex += 1;
+                    }
+                } while (redIndex != -1);
+
+                rtf = rtf.Insert(colortblEnd, @"\red255\green0\blue0;");
+                colorIndex += 1;
+            }
+            else
+            {
+                int index = rtf.IndexOf('\n');
+                rtf = rtf.Insert(index + 1, @"{\colortbl ;\red255\green0\blue0;}" + "\n");
+                colorIndex = 1;
+            }
+
+            foreach (var match in regexRtfUnderline.Matches(rtf).Cast<Match>().OrderByDescending(m => m.Index))
+                rtf = rtf.Remove(match.Index, 3).Insert(match.Index, @"\ulwave\ulc" + colorIndex);
+
+            txtSubtitle.Rtf = rtf;
+
+            txtSubtitle.SelectionStart = txtSubtitle.Text.Length;
+            txtSubtitle.SelectionLength = 0;
         }
 
         #endregion
@@ -982,9 +1062,40 @@ namespace SubtitlesCleaner.Editor
         private void ChangeHICaseSensitivity()
         {
             cleanHICaseInsensitive = rdbHIUpperLowerCases.Checked;
-            subtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+            if (subtitles.IsNullOrEmpty())
+                return;
+
+            this.Cursor = Cursors.WaitCursor;
+
+            subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
             SetFormTitle(true);
+
+            this.Cursor = Cursors.Default;
+        }
+
+        #endregion
+
+        #region Dictionary Cleaning
+
+        private void chkDictionaryCleaning_CheckedChanged(object sender, EventArgs e)
+        {
+            ChangeDictionaryCleaning();
+        }
+
+        private void ChangeDictionaryCleaning()
+        {
+            dictionaryCleaning = chkDictionaryCleaning.Checked;
+            if (subtitles.IsNullOrEmpty())
+                return;
+
+            this.Cursor = Cursors.WaitCursor;
+
+            subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
+            SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
+            SetFormTitle(true);
+
+            this.Cursor = Cursors.Default;
         }
 
         #endregion
@@ -1425,7 +1536,7 @@ namespace SubtitlesCleaner.Editor
             }
 
             if (isFound && isReplaced)
-                subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
+                subtitle.CheckSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
         }
 
         #endregion
@@ -1450,7 +1561,7 @@ namespace SubtitlesCleaner.Editor
             Subtitle subtitle = subtitles[editorRow.Num - 1];
 
             subtitle.Lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            subtitle.CheckSubtitle(cleanHICaseInsensitive, false);
+            subtitle.CheckSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
 
             SetSubtitleToEditor(editorRow, subtitle);
 
@@ -1465,7 +1576,7 @@ namespace SubtitlesCleaner.Editor
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
 
-            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
             if (cleanSubtitle != null)
                 cleanSubtitle.SubtitleError = SubtitleError.None;
             editorRow.CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty);
@@ -1762,7 +1873,7 @@ namespace SubtitlesCleaner.Editor
         {
             EditorRow editorRow = GetEditorRowAt(rowIndex);
             Subtitle subtitle = subtitles[editorRow.Num - 1];
-            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, false);
+            Subtitle cleanSubtitle = ((Subtitle)subtitle.Clone()).CleanSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
             if (cleanSubtitle != null)
                 cleanSubtitle.SubtitleError = SubtitleError.None;
 
@@ -2076,7 +2187,7 @@ namespace SubtitlesCleaner.Editor
             var dialog = new QuickActionsForm(this.filePath, newSubtitles, quickActions);
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                newSubtitles.CheckSubtitles(cleanHICaseInsensitive, false);
+                newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
                 SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
                 SetFormTitle(true);
             }

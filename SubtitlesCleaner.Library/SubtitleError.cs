@@ -69,7 +69,10 @@ namespace SubtitlesCleaner.Library
         Dialog_Error = (1 << 19),
 
         [ErrorColor(255, 255, 153)]
-        Hearing_Impaired = (1 << 20)
+        Hearing_Impaired = (1 << 20),
+
+        [ErrorColor(236, 41, 56, 255, 255, 255)]
+        Dictionary_Error = (1 << 21)
     }
 
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
