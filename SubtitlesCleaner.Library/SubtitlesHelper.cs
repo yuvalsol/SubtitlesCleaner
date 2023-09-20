@@ -2758,7 +2758,7 @@ namespace SubtitlesCleaner.Library
 
         #endregion
 
-        #region Non Subtitle
+        #region Non-Subtitles
 
         public static readonly FindAndReplace[] NonSubtitle = new FindAndReplace[] {
             new FindAndReplace(new Regex(@"(?i)AllSubs\.org", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
@@ -2781,6 +2781,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i)Copyright Australian", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Corrected by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)DVDRIP by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Encoded by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)ENGLISH - PSDH", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)ENGLISH - SDH", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)ENGLISH - US", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
@@ -2820,7 +2821,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i)Translation by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Translations by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)YIFY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
-            ,new FindAndReplace(new Regex(@"(?i)YTS.MX", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)YTS\.[A-Z]{2}", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
 
             ,new FindAndReplace(new Regex(@"DIRECTED BY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"PRODUCED BY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
