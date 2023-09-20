@@ -3207,6 +3207,34 @@ namespace SubtitlesCleaner.Library
 
         #endregion
 
+        #region O and 0
+
+        public static readonly FindAndReplace[] O_And_0 = new FindAndReplace[] {
+            // 1OOO
+            new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>OOO)", RegexOptions.Compiled), "OCR", "000", SubtitleError.O_And_0_Error)
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>OO)", RegexOptions.Compiled), "OCR", "00", SubtitleError.O_And_0_Error)
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>O)", RegexOptions.Compiled), "OCR", "0", SubtitleError.O_And_0_Error)
+
+            // 1.OOO
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>\.OOO)", RegexOptions.Compiled), "OCR", ".000", SubtitleError.O_And_0_Error)
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>\.OO)", RegexOptions.Compiled), "OCR", ".00", SubtitleError.O_And_0_Error)
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>\.O)", RegexOptions.Compiled), "OCR", ".0", SubtitleError.O_And_0_Error)
+
+            // 1,OOO
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>,OOO)", RegexOptions.Compiled), "OCR", ",000", SubtitleError.O_And_0_Error)
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>,OO)", RegexOptions.Compiled), "OCR", ",00", SubtitleError.O_And_0_Error)
+            ,new FindAndReplace(new Regex(@"(?i)[0-9](?<OCR>,O)", RegexOptions.Compiled), "OCR", ",0", SubtitleError.O_And_0_Error)
+
+            // S0ME
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ý](?<OCR>0)", RegexOptions.Compiled), "OCR", "O", SubtitleError.O_And_0_Error)
+            // 0ver
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>0)[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled), "OCR", "O", SubtitleError.O_And_0_Error)
+            // Someb0dy
+            ,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>0)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "o", SubtitleError.O_And_0_Error)
+        };
+
+        #endregion
+
         #region Missing Spaces
 
         public static readonly FindAndReplace[] MissingSpaces = new FindAndReplace[] {
@@ -3620,22 +3648,6 @@ namespace SubtitlesCleaner.Library
 
         #endregion
 
-        #region O and 0
-
-        public static readonly FindAndReplace[] O_And_0 = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"[0-9](?<OCR>O)", RegexOptions.Compiled), "OCR", "0", SubtitleError.O_And_0_Error)
-            ,new FindAndReplace(new Regex(@"[0-9](?<OCR>\.O)", RegexOptions.Compiled), "OCR", ".0", SubtitleError.O_And_0_Error)
-            ,new FindAndReplace(new Regex(@"[0-9](?<OCR>,O)", RegexOptions.Compiled), "OCR", ",0", SubtitleError.O_And_0_Error)
-            // S0ME
-            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ý](?<OCR>0)", RegexOptions.Compiled), "OCR", "O", SubtitleError.O_And_0_Error)
-            // 0ver
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>0)[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled), "OCR", "O", SubtitleError.O_And_0_Error)
-            // Someb0dy
-            ,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>0)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "o", SubtitleError.O_And_0_Error)
-        };
-
-        #endregion
-
         #region OCR Errors
 
         public static readonly FindAndReplace[] OCRErrors = new FindAndReplace[] {
@@ -3711,13 +3723,13 @@ namespace SubtitlesCleaner.Library
             .Concat(RedundantSpaces)
             .Concat(HearingImpaired)
             .Concat(RedundantItalics)
+            .Concat(O_And_0)
             .Concat(MissingSpaces)
             .Concat(TrimSpaces)
             .Concat(Contractions)
             .Concat(AccentLetters)
             .Concat(I_And_L)
             .Concat(MergedWords)
-            .Concat(O_And_0)
             .Concat(OCRErrors)
             .ToArray();
 
