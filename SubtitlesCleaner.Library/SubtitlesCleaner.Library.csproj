@@ -77,6 +77,7 @@
     <Compile Include="SubtitlesHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dictionaries\README_en_US.txt" />
     <Content Include="SubtitleError.html" />
   </ItemGroup>
   <ItemGroup>
