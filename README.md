@@ -40,7 +40,7 @@ Subtitles Cleaner requires .NET Framework 4.8 Runtime to run.
 
 11. Hearing-Impaired Detection. Identifies hearing-impaired with only capital letters text or all-case text.
 
-12. Enable English dictionary (Hunspell dictionary) for cleaning misspelled words. This feature increases the cleaning time.
+12. Enable English dictionary (Hunspell en-US dictionary) for cleaning misspelled words. This feature increases the cleaning time.
 
 13. Selected subtitle. Changes can be made in the textbox.
 
