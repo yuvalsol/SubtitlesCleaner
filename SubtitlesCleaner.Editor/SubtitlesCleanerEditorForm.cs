@@ -105,6 +105,7 @@ namespace SubtitlesCleaner.Editor
         private void SetSubtitlesToEditor(List<Subtitle> subtitles)
         {
             this.Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
 
             this.subtitles = subtitles;
             lstErrors_SortedColumnIndex = 0;
@@ -1066,6 +1067,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             this.Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
 
             subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
@@ -1090,6 +1092,7 @@ namespace SubtitlesCleaner.Editor
                 return;
 
             this.Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
 
             subtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);
@@ -1954,6 +1957,7 @@ namespace SubtitlesCleaner.Editor
         private void FixAllErrors(int rowIndex)
         {
             this.Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
 
             ErrorRow selectedErrorRow = GetErrorRowAt(rowIndex);
             SubtitleError selectedSubtitleError = selectedErrorRow.SubtitleError;
