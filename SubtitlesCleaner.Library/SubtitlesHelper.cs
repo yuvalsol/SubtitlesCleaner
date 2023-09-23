@@ -12,9 +12,9 @@ namespace SubtitlesCleaner.Library
     {
         #region Time Parsing
 
-        private const string showTimeFormat = @"(?<Show_HH>\d{2}):(?<Show_MM>\d{2}):(?<Show_SS>\d{2}),(?<Show_MS>\d{3})";
-        private const string hideTimeFormat = @"(?<Hide_HH>\d{2}):(?<Hide_MM>\d{2}):(?<Hide_SS>\d{2}),(?<Hide_MS>\d{3})";
-        private const string showTimeFormatAlternate = @"(?:(?<Show_HH>\d{2}):)?(?<Show_MM>\d{2}):(?<Show_SS>\d{2})(?:[.,](?<Show_MS>\d{3}))?";
+        private const string showTimeFormat = @"(?<Show_HH>\d{2}):(?<Show_MM>\d{2}):(?<Show_SS>\d{1,2}),(?<Show_MS>\d{1,3})";
+        private const string hideTimeFormat = @"(?<Hide_HH>\d{2}):(?<Hide_MM>\d{2}):(?<Hide_SS>\d{1,2}),(?<Hide_MS>\d{1,3})";
+        private const string showTimeFormatAlternate = @"(?:(?<Show_HH>\d{2}):)?(?<Show_MM>\d{2}):(?<Show_SS>\d{1,2})(?:[.,](?<Show_MS>\d{1,3}))?";
         private const string fullTimeFormat = showTimeFormat + " --> " + hideTimeFormat;
         private const string diffTimeFormat = @"(?<Diff_Sign>-|\+)?(?:(?:(?:(?<Diff_HH>\d{1,2}):)?(?<Diff_MM>\d{1,2}):)?(?<Diff_SS>\d{1,2})(?:,|:|\.))?(?<Diff_MS>\d{1,3})";
 
