@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using NetDiff;
 
 namespace SubtitlesCleaner.Library
 {
@@ -3836,113 +3835,129 @@ namespace SubtitlesCleaner.Library
 
         private static void PrintCleaningBeforeAndAfter(string text, string cleanText)
         {
-            List<IEnumerable<DiffResult<char>>> diffs = PrintCleaningDiffs(text, cleanText);
+            var results = NetDiff.DiffUtil.Diff(text ?? string.Empty, cleanText ?? string.Empty);
 
-            for (int i = 0; i < diffs.Count; i++)
+            Console.Write("Before: ");
+            foreach (var item in results)
             {
-                var diff = diffs[i];
-                if (i == 0)
-                    Console.Write("Before: ");
-                else
-                    Console.Write("        ");
-                PrintCleaningBefore(diff);
-                Console.WriteLine();
-            }
-
-            for (int i = 0; i < diffs.Count; i++)
-            {
-                var diff = diffs[i];
-                if (i == 0)
-                    Console.Write("After:  ");
-                else
-                    Console.Write("        ");
-                PrintCleaningAfter(diff);
-                Console.WriteLine();
-            }
-        }
-
-        private static List<IEnumerable<DiffResult<char>>> PrintCleaningDiffs(string text, string cleanText)
-        {
-            List<IEnumerable<DiffResult<char>>> diffs = new List<IEnumerable<DiffResult<char>>>();
-
-            string[] lines = (text ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
-            string[] cleanLines = (cleanText ?? string.Empty).Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
-
-            int linesCount = (lines.Length > cleanLines.Length ? lines.Length : cleanLines.Length);
-            for (int i = 0; i < linesCount; i++)
-            {
-                string line = string.Empty;
-                if (i < lines.Length)
-                    line = (lines[i] ?? string.Empty).Trim('\r', '\n');
-
-                string cleanLine = string.Empty;
-                if (i < cleanLines.Length)
-                    cleanLine = (cleanLines[i] ?? string.Empty).Trim('\r', '\n');
-
-                diffs.Add(DiffUtil.Diff(line, cleanLine));
-            }
-
-            return diffs;
-        }
-
-        private static void PrintCleaningBefore(IEnumerable<DiffResult<char>> diff)
-        {
-            foreach (var item in diff)
-            {
-                if (item.Status == DiffStatus.Equal)
+                if (item.Status == NetDiff.DiffStatus.Equal)
                 {
                     if (item.Obj1 != '\r')
                         Console.Write(item.Obj1);
+                    if (item.Obj1 == '\n')
+                        Console.Write("        ");
                 }
-                else if (item.Status == DiffStatus.Deleted)
+                else if (item.Status == NetDiff.DiffStatus.Deleted)
                 {
                     if (item.Obj1 != default(char) && item.Obj1 != '\r')
-                        ColorChar(item.Obj1, textDeletedColor);
+                    {
+                        if (item.Obj1 != '\n')
+                        {
+                            ColorChar(item.Obj1, textDeletedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("        ");
+                        }
+                    }
                 }
-                else if (item.Status == DiffStatus.Inserted)
+                else if (item.Status == NetDiff.DiffStatus.Inserted)
                 {
                     if (item.Obj1 != default(char) && item.Obj1 != '\r')
-                        ColorChar(item.Obj1, textInsertedColor);
+                    {
+                        if (item.Obj1 != '\n')
+                        {
+                            ColorChar(item.Obj1, textInsertedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("        ");
+                        }
+                    }
                 }
-                else if (item.Status == DiffStatus.Modified)
+                else if (item.Status == NetDiff.DiffStatus.Modified)
                 {
                     if (item.Obj1 != item.Obj2)
                     {
                         if (item.Obj1 != default(char) && item.Obj1 != '\r')
-                            ColorChar(item.Obj1, textDeletedColor);
+                        {
+                            if (item.Obj1 != '\n')
+                            {
+                                ColorChar(item.Obj1, textDeletedColor);
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                Console.Write("        ");
+                            }
+                        }
                     }
                 }
             }
-        }
+            Console.WriteLine();
 
-        private static void PrintCleaningAfter(IEnumerable<DiffResult<char>> diff)
-        {
-            foreach (var item in diff)
+            Console.Write("After:  ");
+            foreach (var item in results)
             {
-                if (item.Status == DiffStatus.Equal)
+                if (item.Status == NetDiff.DiffStatus.Equal)
                 {
                     if (item.Obj2 != '\r')
                         Console.Write(item.Obj2);
+                    if (item.Obj2 == '\n')
+                        Console.Write("        ");
                 }
-                else if (item.Status == DiffStatus.Deleted)
+                else if (item.Status == NetDiff.DiffStatus.Deleted)
                 {
                     if (item.Obj2 != default(char) && item.Obj2 != '\r')
-                        ColorChar(item.Obj2, textDeletedColor);
+                    {
+                        if (item.Obj2 != '\n')
+                        {
+                            ColorChar(item.Obj2, textDeletedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("        ");
+                        }
+                    }
                 }
-                else if (item.Status == DiffStatus.Inserted)
+                else if (item.Status == NetDiff.DiffStatus.Inserted)
                 {
                     if (item.Obj2 != default(char) && item.Obj2 != '\r')
-                        ColorChar(item.Obj2, textInsertedColor);
+                    {
+                        if (item.Obj2 != '\n')
+                        {
+                            ColorChar(item.Obj2, textInsertedColor);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            Console.Write("        ");
+                        }
+                    }
                 }
-                else if (item.Status == DiffStatus.Modified)
+                else if (item.Status == NetDiff.DiffStatus.Modified)
                 {
                     if (item.Obj1 != item.Obj2)
                     {
                         if (item.Obj2 != default(char) && item.Obj2 != '\r')
-                            ColorChar(item.Obj2, textInsertedColor);
+                        {
+                            if (item.Obj2 != '\n')
+                            {
+                                ColorChar(item.Obj2, textInsertedColor);
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                Console.Write("        ");
+                            }
+                        }
                     }
                 }
             }
+            Console.WriteLine();
         }
 
         private static void ColorChar(char chr, ConsoleColor backColor)
