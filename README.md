@@ -1,12 +1,14 @@
+![Subtitles Cleaner Editor](./Solution%20Items/Images/SubtitlesCleanerEditor.gif "Subtitles Cleaner Editor")
+
 # Subtitles Cleaner
 
 Subtitles Cleaner cleans English SubRip .srt subtitle files from OCR errors, Hearing-impaired lines and other junk.
 
 The program includes many cleaning rules and several complex cleaning routines. It also has some basic nice-to-have synchronization features.
 
-For a comprehensive subtitles editor, use [Subtitle Edit](https://www.nikse.dk/subtitleedit "Subtitle Edit").
+For a comprehensive subtitles editor use [Subtitle Edit](https://www.nikse.dk/subtitleedit "Subtitle Edit").
 
-Subtitles Cleaner requires .NET Framework 4.8 Runtime to run.
+Subtitles Cleaner requires .NET Framework 4.8 Runtime.
 
 ## Subtitles Cleaner Editor
 
