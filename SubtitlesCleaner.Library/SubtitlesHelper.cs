@@ -2882,6 +2882,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<Dash>\s-\s-\s?)[A-ZÀ-Ý]", RegexOptions.Compiled), "Dash", "... - ", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"-\s-", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^[—–―‒]", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace(new Regex(@">>", RegexOptions.Compiled), "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"^<i>(?<Dash>[—–―‒])</i>", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"Uh(?<Dash>[—–―‒])huh", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"\w+(?<Dash>[—–―‒])\w+(?:(?<Dash>[-—–―‒])\w+)+", RegexOptions.Compiled), "Dash", "-", SubtitleError.Punctuations_Error)

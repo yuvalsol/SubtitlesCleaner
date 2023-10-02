@@ -2191,9 +2191,14 @@ namespace SubtitlesCleaner.Editor
             var dialog = new QuickActionsForm(this.filePath, newSubtitles, quickActions);
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
+                this.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 newSubtitles.CheckSubtitles(cleanHICaseInsensitive, dictionaryCleaning, false);
                 SetSubtitlesToEditorAndKeepSubtitleNumber(newSubtitles);
                 SetFormTitle(true);
+
+                this.Cursor = Cursors.Default;
             }
         }
 
