@@ -3638,6 +3638,7 @@ namespace SubtitlesCleaner.Library
                 , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 4, IgnoreIfEqualsTo = "Mrs L" }
                 , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 4, IgnoreIfEqualsTo = "Mr. L" }
                 , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, IgnoreIfEqualsTo = "Mr L" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = @"""L""" } // "L"
             )
 
             ,new FindAndReplace(new Regex(@"\b(?<OCR>L)'m\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
