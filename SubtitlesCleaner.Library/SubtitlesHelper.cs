@@ -3502,7 +3502,8 @@ namespace SubtitlesCleaner.Library
             // 's
             ,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>""|''|'’| ""|"" )s\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.Contractions_Error)
             // in ' => in' (sayin')
-            ,new FindAndReplace(new Regex(@"\win(?<OCR>\s)'", RegexOptions.Compiled), "OCR", "", SubtitleError.Contractions_Error)
+            ,new FindAndReplace(new Regex(@"\win(?<OCR>\s)'", RegexOptions.Compiled), "OCR", "", SubtitleError.Contractions_Error,
+                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfEndsWith = "'em" }) // join 'em
         };
 
         #endregion
