@@ -2761,6 +2761,7 @@ namespace SubtitlesCleaner.Library
         #region Non-Subtitles
 
         public static readonly FindAndReplace[] NonSubtitle = new FindAndReplace[] {
+            // case insensitive
             new FindAndReplace(new Regex(@"(?i)Addic7ed", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)AllSubs", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Best watched using", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
@@ -2781,6 +2782,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i)Contains Strong Language", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Copyright Australian", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Corrected by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?i)Created and Encoded by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Downsub", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)DVDRIP by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Encoded by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
@@ -2843,6 +2845,8 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i)YIFY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)YTS\.[A-Z]{2}", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
 
+            // case sensitive
+            ,new FindAndReplace(new Regex(@"ENGLISH", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"DIRECTED BY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"PRODUCED BY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"WRITTEN BY", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
