@@ -2925,6 +2925,7 @@ namespace SubtitlesCleaner.Library
             // - ? Lyrics ♪
             ,new FindAndReplace(new Regex(@"^(?:-\s*)?(?<QM>\?+)\s+.*?♪+$", RegexOptions.Compiled), "QM", "♪", SubtitleError.Notes_Error)
 
+            ,new FindAndReplace(new Regex(@"â™ª", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"[♫¶*]", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"<i>[♪♫¶*#]+</i>", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"\#(?![0-9])", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
