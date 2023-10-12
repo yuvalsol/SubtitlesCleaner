@@ -675,8 +675,14 @@ namespace SubtitlesCleaner.Library
                 return null;
             }
 
-            /*lines = CleanMissingNewLineMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);*/
+            /*lines = CleanMissingNewLineMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;*/
+
             lines = CleanLyricsMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanHIPrefixWithoutDialogDash(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
             return lines;
@@ -1011,14 +1017,41 @@ namespace SubtitlesCleaner.Library
             }
 
             lines = CleanMergedLinesWithHIToSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanHearingImpairedMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanItalicsThreeLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanItalicsTwoLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanDialogSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanHIPrefixSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanHIPrefixMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanDialogMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanNotesMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanStartWithPunctuationSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
             return lines;
@@ -2314,11 +2347,29 @@ namespace SubtitlesCleaner.Library
             }
 
             lines = CleanOpenBracket(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanMissingDialogDashSingleLine(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanRedundantItalicsMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanMergeLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanMissingDialogDashMultipleLines(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             lines = CleanLineEndWithApostropheAndQuestionMark(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
+            if (lines == null)
+                return null;
+
             if (isDictionaryCleaning)
                 lines = CleanLinesWithDictionary(lines, cleanHICaseInsensitive, isCheckMode, ref subtitleError, isPrintCleaning);
 
