@@ -45,7 +45,7 @@ namespace SubtitlesCleaner.Editor
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Tahoma", 13F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(356, 14);
+            this.label1.Location = new System.Drawing.Point(384, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(18, 22);
             this.label1.TabIndex = 0;
@@ -55,7 +55,7 @@ namespace SubtitlesCleaner.Editor
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Tahoma", 13F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(352, 65);
+            this.label2.Location = new System.Drawing.Point(381, 65);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(25, 22);
             this.label2.TabIndex = 0;
@@ -65,7 +65,7 @@ namespace SubtitlesCleaner.Editor
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Tahoma", 13F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(352, 115);
+            this.label3.Location = new System.Drawing.Point(381, 115);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(25, 22);
             this.label3.TabIndex = 0;
@@ -122,7 +122,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker4.Name = "timePicker4";
             this.timePicker4.ReadOnly = true;
             this.timePicker4.ShowSign = true;
-            this.timePicker4.Size = new System.Drawing.Size(249, 31);
+            this.timePicker4.Size = new System.Drawing.Size(281, 31);
             this.timePicker4.SS = 0;
             this.timePicker4.TabIndex = 6;
             this.timePicker4.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -139,7 +139,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker3.MM = 0;
             this.timePicker3.MS = 0;
             this.timePicker3.Name = "timePicker3";
-            this.timePicker3.Size = new System.Drawing.Size(342, 31);
+            this.timePicker3.Size = new System.Drawing.Size(374, 31);
             this.timePicker3.SS = 0;
             this.timePicker3.TabIndex = 5;
             this.timePicker3.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -157,7 +157,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker2.MM = 0;
             this.timePicker2.MS = 0;
             this.timePicker2.Name = "timePicker2";
-            this.timePicker2.Size = new System.Drawing.Size(342, 31);
+            this.timePicker2.Size = new System.Drawing.Size(374, 31);
             this.timePicker2.SS = 0;
             this.timePicker2.TabIndex = 3;
             this.timePicker2.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -175,7 +175,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker1.MM = 0;
             this.timePicker1.MS = 0;
             this.timePicker1.Name = "timePicker1";
-            this.timePicker1.Size = new System.Drawing.Size(342, 31);
+            this.timePicker1.Size = new System.Drawing.Size(374, 31);
             this.timePicker1.SS = 0;
             this.timePicker1.TabIndex = 1;
             this.timePicker1.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -187,7 +187,7 @@ namespace SubtitlesCleaner.Editor
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(384, 247);
+            this.ClientSize = new System.Drawing.Size(409, 247);
             this.Controls.Add(this.lblSwitch2And3);
             this.Controls.Add(this.lblSwitch1And2);
             this.Controls.Add(this.btnClose);
