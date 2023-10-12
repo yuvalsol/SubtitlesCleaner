@@ -854,7 +854,7 @@ namespace SubtitlesCleaner.Library
                 {
                     line,
                     index,
-                    isMatchDialog = regexDialog.IsMatch(line),
+                    isDialog = regexDialog.IsMatch(line),
                     isInlineHIWithoutDialog = regexInlineHIWithoutDialog.Any(far => (cleanHICaseInsensitive && far.HasRegexCI ? far.RegexCI : far.Regex).IsMatch(line))
                 }).ToArray();
 
@@ -868,11 +868,11 @@ namespace SubtitlesCleaner.Library
                     //
                     // - Line 1.
                     // - MAN: Line 2.
-                    if (item.isMatchDialog == false &&
+                    if (item.isDialog == false &&
                         prevItem.isInlineHIWithoutDialog == false &&
                         item.isInlineHIWithoutDialog)
                     {
-                        if (prevItem.isMatchDialog == false)
+                        if (prevItem.isDialog == false)
                         {
                             // prevent this:
                             // WOMAN: HI Line (or - HI Line)
@@ -883,7 +883,7 @@ namespace SubtitlesCleaner.Library
                             // - continuation of previous line.
                             // - Line 3.
                             var prevItem2 = (i - 2 >= 0 ? results1[i - 2] : null);
-                            if ((prevItem2 != null && (prevItem2.isMatchDialog || prevItem2.isInlineHIWithoutDialog)) == false)
+                            if ((prevItem2 != null && (prevItem2.isDialog || prevItem2.isInlineHIWithoutDialog)) == false)
                             {
                                 lines[i - 1] = "- " + prevItem.line;
                             }
@@ -902,7 +902,7 @@ namespace SubtitlesCleaner.Library
                 {
                     line,
                     index,
-                    isMatchDialog = regexDialog.IsMatch(line),
+                    isDialog = regexDialog.IsMatch(line),
                     isHIFullLine = regexHIFullLine.Any(far => (cleanHICaseInsensitive && far.HasRegexCI ? far.RegexCI : far.Regex).IsMatch(line))
                 }).ToArray();
 
@@ -920,13 +920,13 @@ namespace SubtitlesCleaner.Library
                     //
                     // - Line 1.
                     // - MAN: Line 3.
-                    if (prevItem1.isMatchDialog == false &&
-                        item.isMatchDialog == false &&
+                    if (prevItem1.isDialog == false &&
+                        item.isDialog == false &&
                         prevItem2.isHIFullLine == false &&
                         prevItem1.isHIFullLine &&
                         item.isHIFullLine == false)
                     {
-                        if (prevItem2.isMatchDialog == false)
+                        if (prevItem2.isDialog == false)
                             lines[i - 2] = "- " + prevItem2.line;
                         lines[i - 1] = "- " + prevItem1.line + " " + item.line;
                         toDeleeIndexes.Add(i);
@@ -950,14 +950,14 @@ namespace SubtitlesCleaner.Library
                 {
                     line,
                     index,
-                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
+                    isHIPrefixWithoutDialogDash = (cleanHICaseInsensitive ? regexHIPrefixWithoutDialogDashCI : regexHIPrefixWithoutDialogDash).IsMatch(line)
                 }).ToArray();
 
-                if (results3.Count(x => x.isMatchHIPrefix) > 1)
+                if (results3.Count(x => x.isHIPrefixWithoutDialogDash) > 1)
                 {
                     foreach (var item in results3)
                     {
-                        if (item.isMatchHIPrefix)
+                        if (item.isHIPrefixWithoutDialogDash)
                         {
                             string lineBefore = (isPrintCleaning ? lines[item.index] : null);
 
@@ -1432,10 +1432,10 @@ namespace SubtitlesCleaner.Library
                 {
                     line,
                     index,
-                    isMatchHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
+                    isHIPrefix = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).IsMatch(line)
                 }).ToArray();
 
-                if (resultsHIPrefix[0].isMatchHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isMatchHIPrefix == false))
+                if (resultsHIPrefix[0].isHIPrefix && resultsHIPrefix.Skip(1).All(x => x.isHIPrefix == false))
                 {
                     Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[0]);
                     string newLine = match.Groups["Subtitle"].Value;
@@ -1452,11 +1452,11 @@ namespace SubtitlesCleaner.Library
                             subtitleError |= SubtitleError.Hearing_Impaired;
                     }
                 }
-                else if (resultsHIPrefix.Count(x => x.isMatchHIPrefix) > 1)
+                else if (resultsHIPrefix.Count(x => x.isHIPrefix) > 1)
                 {
                     foreach (var item in resultsHIPrefix)
                     {
-                        if (item.isMatchHIPrefix)
+                        if (item.isHIPrefix)
                         {
                             Match match = (cleanHICaseInsensitive ? regexHIPrefixCI : regexHIPrefix).Match(lines[item.index]);
                             string newLine = match.Groups["Prefix"].Value + match.Groups["Subtitle"].Value;
@@ -1501,7 +1501,7 @@ namespace SubtitlesCleaner.Library
                 {
                     line,
                     index,
-                    isMatchDialog = regexDialog.IsMatch(line),
+                    isDialog = regexDialog.IsMatch(line),
                     isContainsDialog_CapitalLetter = regexContainsDialog.IsMatch(line),
                     isStartsWithDots = line.StartsWith("..."),
                     isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
@@ -1516,7 +1516,7 @@ namespace SubtitlesCleaner.Library
                     isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
                 }).ToArray();
 
-                if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isMatchDialog))
+                if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isDialog))
                 {
                     List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
@@ -1533,7 +1533,7 @@ namespace SubtitlesCleaner.Library
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
-                else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isMatchDialog))
+                else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isDialog))
                 {
                     List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
@@ -1550,7 +1550,7 @@ namespace SubtitlesCleaner.Library
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
-                else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isMatchDialog))
+                else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isDialog))
                 {
                     List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
@@ -1567,7 +1567,7 @@ namespace SubtitlesCleaner.Library
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
+                else if (resultsDialog[0].isDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
                 {
                     List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
@@ -1585,7 +1585,7 @@ namespace SubtitlesCleaner.Library
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
+                else if (resultsDialog[0].isDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
                 {
                     List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
 
@@ -1603,13 +1603,13 @@ namespace SubtitlesCleaner.Library
                     if (isCheckMode)
                         subtitleError |= SubtitleError.Dialog_Error;
                 }
-                else if (resultsDialog[0].isMatchDialog && resultsDialog.Skip(1).All(x => x.isMatchDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
+                else if (resultsDialog[0].isDialog && resultsDialog.Skip(1).All(x => x.isDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
                 {
                     string firstCharSecondLine = (lines[1].Length > 0 ? lines[1][0].ToString() : string.Empty);
 
                     if (regexCapitalLetter.IsMatch(firstCharSecondLine))
                     {
-                        if (resultsDialog[0].isMatchDialog &&
+                        if (resultsDialog[0].isDialog &&
                             resultsDialog[0].isContainsDialog_CapitalLetter &&
                             (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
                         {
@@ -1618,7 +1618,7 @@ namespace SubtitlesCleaner.Library
                             //
                             // do nothing
                         }
-                        else if (resultsDialog[0].isMatchDialog &&
+                        else if (resultsDialog[0].isDialog &&
                             resultsDialog[0].isContainsDialog_CapitalLetter &&
                             resultsDialog[0].isEndsWithDots)
                         {
@@ -1627,7 +1627,7 @@ namespace SubtitlesCleaner.Library
                             //
                             // do nothing
                         }
-                        else if (resultsDialog[0].isMatchDialog &&
+                        else if (resultsDialog[0].isDialog &&
                             resultsDialog[0].isEndsWithComma &&
                             (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
                         {
@@ -1651,7 +1651,7 @@ namespace SubtitlesCleaner.Library
                                     subtitleError |= SubtitleError.Dialog_Error;
                             }
                         }
-                        else if (resultsDialog[0].isMatchDialog &&
+                        else if (resultsDialog[0].isDialog &&
                             resultsDialog[0].isEndsWithLowerCaseLetter &&
                             (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
                         {
@@ -1695,9 +1695,9 @@ namespace SubtitlesCleaner.Library
                     }
                     else
                     {
-                        if (resultsDialog[0].isMatchDialog &&
+                        if (resultsDialog[0].isDialog &&
                             resultsDialog[0].isContainsDialog_CapitalLetter &&
-                            resultsDialog[1].isMatchDialog == false)
+                            resultsDialog[1].isDialog == false)
                         {
                             // - Line 1 - Dialog
                             // line 2
@@ -1728,7 +1728,7 @@ namespace SubtitlesCleaner.Library
                         }
                     }
                 }
-                else if (resultsDialog[0].isMatchDialog == false && resultsDialog.Skip(1).All(x => x.isMatchDialog))
+                else if (resultsDialog[0].isDialog == false && resultsDialog.Skip(1).All(x => x.isDialog))
                 {
                     bool isStartsWithItalics = false;
                     string line0 = lines[0];
@@ -1800,11 +1800,11 @@ namespace SubtitlesCleaner.Library
                         }
                     }
                 }
-                else if (resultsDialog.Count(x => x.isMatchDialog) > 1)
+                else if (resultsDialog.Count(x => x.isDialog) > 1)
                 {
                     foreach (var item in resultsDialog)
                     {
-                        if (item.isMatchDialog)
+                        if (item.isDialog)
                         {
                             Match match = regexDialog.Match(lines[item.index]);
                             string newLine = match.Groups["Italic"].Value + "- " + match.Groups["Subtitle"].Value;
@@ -2372,9 +2372,9 @@ namespace SubtitlesCleaner.Library
             // - Line 1 - Dialog
             if (lines.Count > 0)
             {
-                bool isMatchDialog = regexDialog.IsMatch(lines[0]);
+                bool isDialog = regexDialog.IsMatch(lines[0]);
                 bool isContainsDialog = regexContainsDialog.IsMatch(lines[0]);
-                if (isMatchDialog == false && isContainsDialog)
+                if (isDialog == false && isContainsDialog)
                 {
                     string lineBefore = (isPrintCleaning ? lines[0] : null);
 
