@@ -41,7 +41,8 @@
             this.btnPlus = new SubtitlesCleaner.Editor.RepeatButton();
             this.btnMinus = new SubtitlesCleaner.Editor.RepeatButton();
             this.btnReset = new SubtitlesCleaner.Editor.RepeatButton();
-            this.btnCopy = new SubtitlesCleaner.Editor.RepeatButton();
+            this.btnCopy1 = new SubtitlesCleaner.Editor.RepeatButton();
+            this.btnCopy2 = new SubtitlesCleaner.Editor.RepeatButton();
             this.btnPaste = new SubtitlesCleaner.Editor.RepeatButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1.SuspendLayout();
@@ -66,11 +67,12 @@
             this.flowLayoutPanel1.Controls.Add(this.btnPlus);
             this.flowLayoutPanel1.Controls.Add(this.btnMinus);
             this.flowLayoutPanel1.Controls.Add(this.btnReset);
-            this.flowLayoutPanel1.Controls.Add(this.btnCopy);
+            this.flowLayoutPanel1.Controls.Add(this.btnCopy1);
+            this.flowLayoutPanel1.Controls.Add(this.btnCopy2);
             this.flowLayoutPanel1.Controls.Add(this.btnPaste);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(350, 28);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(382, 28);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // lblSign
@@ -259,20 +261,35 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
-            // btnCopy
+            // btnCopy1
             // 
-            this.btnCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnCopy.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.btnCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
-            this.btnCopy.Interval = 80;
-            this.btnCopy.Location = new System.Drawing.Point(301, 3);
-            this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(20, 20);
-            this.btnCopy.TabIndex = 9;
-            this.btnCopy.Text = "C";
-            this.toolTip.SetToolTip(this.btnCopy, "Copy Time");
-            this.btnCopy.UseVisualStyleBackColor = true;
-            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+            this.btnCopy1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnCopy1.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.btnCopy1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
+            this.btnCopy1.Interval = 80;
+            this.btnCopy1.Location = new System.Drawing.Point(301, 3);
+            this.btnCopy1.Name = "btnCopy1";
+            this.btnCopy1.Size = new System.Drawing.Size(23, 20);
+            this.btnCopy1.TabIndex = 9;
+            this.btnCopy1.Text = "C,";
+            this.toolTip.SetToolTip(this.btnCopy1, "Copy Time (Comma Milliseconds Separator)");
+            this.btnCopy1.UseVisualStyleBackColor = true;
+            this.btnCopy1.Click += new System.EventHandler(this.btnCopy1_Click);
+            // 
+            // btnCopy2
+            // 
+            this.btnCopy2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnCopy2.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.btnCopy2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
+            this.btnCopy2.Interval = 80;
+            this.btnCopy2.Location = new System.Drawing.Point(330, 3);
+            this.btnCopy2.Name = "btnCopy2";
+            this.btnCopy2.Size = new System.Drawing.Size(23, 20);
+            this.btnCopy2.TabIndex = 10;
+            this.btnCopy2.Text = "C.";
+            this.toolTip.SetToolTip(this.btnCopy2, "Copy Time (Dot  Milliseconds Separator)");
+            this.btnCopy2.UseVisualStyleBackColor = true;
+            this.btnCopy2.Click += new System.EventHandler(this.btnCopy2_Click);
             // 
             // btnPaste
             // 
@@ -280,10 +297,10 @@
             this.btnPaste.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.btnPaste.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
             this.btnPaste.Interval = 80;
-            this.btnPaste.Location = new System.Drawing.Point(327, 3);
+            this.btnPaste.Location = new System.Drawing.Point(359, 3);
             this.btnPaste.Name = "btnPaste";
             this.btnPaste.Size = new System.Drawing.Size(20, 20);
-            this.btnPaste.TabIndex = 10;
+            this.btnPaste.TabIndex = 11;
             this.btnPaste.Text = "P";
             this.toolTip.SetToolTip(this.btnPaste, "Paste Time");
             this.btnPaste.UseVisualStyleBackColor = true;
@@ -299,7 +316,7 @@
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.Name = "TimePicker";
-            this.Size = new System.Drawing.Size(353, 31);
+            this.Size = new System.Drawing.Size(385, 31);
             this.flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHH)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMM)).EndInit();
@@ -322,10 +339,11 @@
         private System.Windows.Forms.Label lblSeperator3;
         private RepeatButton btnPlus;
         private RepeatButton btnMinus;
-        private RepeatButton btnCopy;
+        private RepeatButton btnCopy1;
         private RepeatButton btnPaste;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label lblSign;
         private RepeatButton btnReset;
+        private RepeatButton btnCopy2;
     }
 }

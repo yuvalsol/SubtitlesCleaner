@@ -83,9 +83,19 @@ namespace SubtitlesCleaner.Editor
         public int SS { get { return decimal.ToInt32(numericUpDownSS.Value); } set { numericUpDownSS.Value = value; } }
         public int MS { get { return decimal.ToInt32(numericUpDownMS.Value); } set { numericUpDownMS.Value = value; } }
 
-        public override string ToString()
+        public string ToStringCommaMillisecondsSeparator()
         {
             return string.Format("{0}{1:D2}:{2:D2}:{3:D2},{4:D3}", (IsNegativeTime ? Sign : string.Empty), HH, MM, SS, MS);
+        }
+
+        public string ToStringDotMillisecondsSeparator()
+        {
+            return string.Format("{0}{1:D2}:{2:D2}:{3:D2}.{4:D3}", (IsNegativeTime ? Sign : string.Empty), HH, MM, SS, MS);
+        }
+
+        public override string ToString()
+        {
+            return ToStringCommaMillisecondsSeparator();
         }
 
         public void Reset()
@@ -250,11 +260,22 @@ namespace SubtitlesCleaner.Editor
                 handler(this, -MillisecondsInterval);
         }
 
-        private void btnCopy_Click(object sender, EventArgs e)
+        private void btnCopy1_Click(object sender, EventArgs e)
         {
             try
             {
-                Clipboard.SetText(this.ToString());
+                Clipboard.SetText(ToStringCommaMillisecondsSeparator());
+            }
+            catch
+            {
+            }
+        }
+
+        private void btnCopy2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Clipboard.SetText(ToStringDotMillisecondsSeparator());
             }
             catch
             {
