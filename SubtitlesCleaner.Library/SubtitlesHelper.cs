@@ -3511,9 +3511,6 @@ namespace SubtitlesCleaner.Library
             // if! => if I
             ,new FindAndReplace(new Regex(@"(?:^|\s|\b)if(?<OCR>!)(?:$|\s|\b)", RegexOptions.Compiled), "OCR", " I", SubtitleError.Malformed_Letters)
 
-            // morn => mom
-            ,new FindAndReplace(new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled), "OCR", "m", SubtitleError.Malformed_Letters)
-
             // Theyte => They're
             ,new FindAndReplace(new Regex(@"\b(?i:t)hey(?<OCR>t)e\b", RegexOptions.Compiled), "OCR", "'r", SubtitleError.Malformed_Letters)
             // Wete => We're
@@ -4412,6 +4409,10 @@ namespace SubtitlesCleaner.Library
             , new Warning() {
                 Regex = new Regex(@"^I\s.*?\sI$", RegexOptions.Compiled),
                 Description = "Possible start & end I instead of music notes"
+            }
+            , new Warning() {
+                Regex = new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled),
+                Description = "Possible malformed word morn => mom"
             }
         };
 
