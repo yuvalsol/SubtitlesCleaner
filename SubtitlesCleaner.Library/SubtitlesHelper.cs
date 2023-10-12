@@ -873,7 +873,21 @@ namespace SubtitlesCleaner.Library
                         item.isInlineHIWithoutDialog)
                     {
                         if (prevItem.isMatchDialog == false)
-                            lines[i - 1] = "- " + prevItem.line;
+                        {
+                            // prevent this:
+                            // WOMAN: HI Line (or - HI Line)
+                            // continuation of previous line.
+                            // MAN: Line 3.
+                            //
+                            // WOMAN: HI Line (or - HI Line)
+                            // - continuation of previous line.
+                            // - Line 3.
+                            var prevItem2 = (i - 2 >= 0 ? results1[i - 2] : null);
+                            if ((prevItem2 != null && (prevItem2.isMatchDialog || prevItem2.isInlineHIWithoutDialog)) == false)
+                            {
+                                lines[i - 1] = "- " + prevItem.line;
+                            }
+                        }
                         lines[i] = "- " + item.line;
 
                         if (isPrintCleaning)
