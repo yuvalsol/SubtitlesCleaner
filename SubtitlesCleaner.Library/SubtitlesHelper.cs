@@ -2893,7 +2893,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i)Resynced by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Resynced:", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             // not: gripped by
-			,new FindAndReplace(new Regex(@"(?<!g|G)(?i)Rip by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
+            ,new FindAndReplace(new Regex(@"(?<!g|G)(?i)Rip by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?<!g|G)(?i)Ripped by", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)SharePirate", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
             ,new FindAndReplace(new Regex(@"(?i)Subdl", RegexOptions.Compiled), "", SubtitleError.Non_Subtitle)
@@ -3167,13 +3167,13 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace("Space After 1", new Regex(@"1\s+(?=[0-9.,/])(?!1/2|1 /2)", RegexOptions.Compiled), "1", SubtitleError.Redundant_Spaces)
 
             // 9: 55 => 9:55
-			,new FindAndReplace(new Regex(@"[0-2]?\d(?<OCR>: )[0-5]\d", RegexOptions.Compiled), "OCR", ":", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"[0-2]?\d(?<OCR>: )[0-5]\d", RegexOptions.Compiled), "OCR", ":", SubtitleError.Redundant_Spaces)
 
             // 1 : => 1:
-			,new FindAndReplace(new Regex(@"\d(?<OCR> :)", RegexOptions.Compiled), "OCR", ":", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"\d(?<OCR> :)", RegexOptions.Compiled), "OCR", ":", SubtitleError.Redundant_Spaces)
 
             // Spaces after aphostrophes
-			,new FindAndReplace(new Regex(@"(?i)[A-ZÀ-Ýa-zà-ÿ](?<OCR>'\s|\s')(?:ll|ve|s|m|d|t|re)\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"(?i)[A-ZÀ-Ýa-zà-ÿ](?<OCR>'\s|\s')(?:ll|ve|s|m|d|t|re)\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.Redundant_Spaces)
 
             // ma' am => ma'am
             ,new FindAndReplace(new Regex(@"(?i)ma(?<OCR>'\s|\s')am\b", RegexOptions.Compiled), "OCR", "'", SubtitleError.Redundant_Spaces)
@@ -3202,13 +3202,13 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*[4-9](?<OCR>\s+)th\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
 
             // $ 1 => $1
-			,new FindAndReplace(new Regex(@"(?<OCR>\$\s)\d", RegexOptions.Compiled), "OCR", "$", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"(?<OCR>\$\s)\d", RegexOptions.Compiled), "OCR", "$", SubtitleError.Redundant_Spaces)
 
             // 1 % => 1%
-			,new FindAndReplace(new Regex(@"\d(?<OCR>\s%)", RegexOptions.Compiled), "OCR", "%", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"\d(?<OCR>\s%)", RegexOptions.Compiled), "OCR", "%", SubtitleError.Redundant_Spaces)
 
             // H i => Hi
-			,new FindAndReplace(new Regex(@"\b(?i:H)(?<OCR>\s)i\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace(new Regex(@"\b(?i:H)(?<OCR>\s)i\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
         };
 
         #endregion
@@ -3386,7 +3386,7 @@ namespace SubtitlesCleaner.Library
             // \s-Text => \s- Text
             ,new FindAndReplace("Space After Dialog Dash", new Regex(@"(?<Prefix>\s+)(?<Dash>-)(?<Suffix>[A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "${Prefix}${Dash} ${Suffix}", SubtitleError.Missing_Spaces)
 
-			// Gun Calibre
+            // Gun Calibre
             // Derringer.22 => Derringer .22
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\.)\d+\b", RegexOptions.Compiled), "OCR", " .", SubtitleError.Missing_Spaces)
 
@@ -3421,7 +3421,10 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?<Prefix>[!?])(?<Suffix>[A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Missing_Spaces)
 
             // Text...Text => Text... Text
-            ,new FindAndReplace("Space After Three Dot", new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9](?:(?<OCR>\.{2,})[A-ZÀ-Ýa-zà-ÿ0-9'])+", RegexOptions.Compiled), "OCR", "... ", SubtitleError.Missing_Spaces)
+            // Text...'Text' => Text... 'Text'
+            // 'Text...'$ => ignore
+            // (?!$) is negative lookahead, prevents capturing pattern '$ at the end of a line
+            ,new FindAndReplace("Space After Three Dot", new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9](?:(?<OCR>\.{2,})(?:[A-ZÀ-Ýa-zà-ÿ0-9]|'(?!$)))+", RegexOptions.Compiled), "OCR", "... ", SubtitleError.Missing_Spaces)
 
             // "Quotation"Text => "Quotation" Text
             // (?!s\b) is negative lookahead, prevents capturing pattern "L"s
@@ -3650,21 +3653,21 @@ namespace SubtitlesCleaner.Library
             )
 
             // Lowercase word at the end: II => ll
-			,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>II)", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>II)", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
             // Lowercase word at the beginning: II => ll
-			,new FindAndReplace(new Regex(@"(?<OCR>II)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"(?<OCR>II)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
             // Lowercase word at the middle: I => l
-			,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>I)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "l", SubtitleError.I_And_L_Error,
+            ,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>I)[a-zà-ÿ]", RegexOptions.Compiled), "OCR", "l", SubtitleError.I_And_L_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfStartsWith = "McI" } // ignore names McIntyre
             )
             // Lowercase word at the end: I => l
-			,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>I)\b", RegexOptions.Compiled), "OCR", "l", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"[a-zà-ÿ](?<OCR>I)\b", RegexOptions.Compiled), "OCR", "l", SubtitleError.I_And_L_Error)
             // Uppercase word at the middle: l => I
-			,new FindAndReplace(new Regex(@"[A-ZÀ-Ý](?<OCR>l)[A-ZÀ-Ý]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ý](?<OCR>l)[A-ZÀ-Ý]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
             // Uppercase word at the end: l => I
-			,new FindAndReplace(new Regex(@"[A-ZÀ-Ý]{2,}(?<OCR>l)", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ý]{2,}(?<OCR>l)", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
 
-			// Replace single l with I. not preceding l- and following -l
+            // Replace single l with I. not preceding l- and following -l
             ,new FindAndReplace(new Regex(@"\b(?<OCR>l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-l", IgnoreIfEndsWith = @"l-" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
@@ -3675,7 +3678,7 @@ namespace SubtitlesCleaner.Library
                 new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfMatchsWithRegex = @"-i\B" }
             )
             
-			// Replace single i with I, but not <i> or </i> and not -i or i-
+            // Replace single i with I, but not <i> or </i> and not -i or i-
             ,new FindAndReplace(new Regex(@"\b(?<OCR>i)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"<i", IgnoreIfEndsWith = @"i>" }
                 , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"</i", IgnoreIfEndsWith = @"i>" }
@@ -3683,10 +3686,10 @@ namespace SubtitlesCleaner.Library
             )
 
             // I'II => I'll
-			,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ]'(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ]'(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
 
             // I 'II/I' II => I'll
-			,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>'\sII|\s'II)\b", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>'\sII|\s'II)\b", RegexOptions.Compiled), "OCR", "'ll", SubtitleError.I_And_L_Error)
 
             // AII => All
             ,new FindAndReplace(new Regex(@"\bA(?<OCR>II)\b", RegexOptions.Compiled), "OCR", "ll", SubtitleError.I_And_L_Error)
@@ -3722,18 +3725,18 @@ namespace SubtitlesCleaner.Library
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "l'chaim" }
             )
 
-			// The name "Ian"
-			,new FindAndReplace(new Regex(@"\b(?<OCR>lan)\b", RegexOptions.Compiled), "OCR", "Ian", SubtitleError.I_And_L_Error)
-			// The name "Iowa"
-			,new FindAndReplace(new Regex(@"\b(?<OCR>lowa)\b", RegexOptions.Compiled), "OCR", "Iowa", SubtitleError.I_And_L_Error)
-			// The word "Ill"
-			,new FindAndReplace(new Regex(@"[.?!-]\s?(?<OCR>III)\b", RegexOptions.Compiled), "OCR", "Ill", SubtitleError.I_And_L_Error)
+            // The name "Ian"
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>lan)\b", RegexOptions.Compiled), "OCR", "Ian", SubtitleError.I_And_L_Error)
+            // The name "Iowa"
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>lowa)\b", RegexOptions.Compiled), "OCR", "Iowa", SubtitleError.I_And_L_Error)
+            // The word "Ill"
+            ,new FindAndReplace(new Regex(@"[.?!-]\s?(?<OCR>III)\b", RegexOptions.Compiled), "OCR", "Ill", SubtitleError.I_And_L_Error)
             ,new FindAndReplace(new Regex(@"^(?<OCR>III)\b.", RegexOptions.Compiled), "OCR", "Ill", SubtitleError.I_And_L_Error)
-			// The word "Ion" and its derivatives
-			,new FindAndReplace(new Regex(@"\b(?<OCR>l)on\b.", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            // The word "Ion" and its derivatives
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)on\b.", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>l)oni", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
-			// The word "Iodine" and its derivatives
-			,new FindAndReplace(new Regex(@"\b(?<OCR>l)odi", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            // The word "Iodine" and its derivatives
+            ,new FindAndReplace(new Regex(@"\b(?<OCR>l)odi", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>l)odo", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
 
             // Single L. ignore L- -L- -L L. .L. .L L'
