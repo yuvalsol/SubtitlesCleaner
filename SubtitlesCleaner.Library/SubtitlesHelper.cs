@@ -3390,8 +3390,12 @@ namespace SubtitlesCleaner.Library
             // Derringer.22 => Derringer .22
             ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>\.)\d+\b", RegexOptions.Compiled), "OCR", " .", SubtitleError.Missing_Spaces)
 
-            // fix acronym with periods (replace match to upper case)
-            // this is an OCR_Error but it needs to be executed before the next one - Add space after a single dot
+            // fix acronym with periods
+            // these are non Missing_Spaces errors but they need to be executed before the next one - Add space after a single dot
+            // l.R.S => I.R.S, C.l.A => C.I.A
+            ,new FindAndReplace("Space After Dot", new Regex(@"(?<OCR>l)\.[A-Z]\.[A-Z]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace("Space After Dot", new Regex(@"[A-Z]\.(?<OCR>l)\.[A-Z]", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
+            ,new FindAndReplace("Space After Dot", new Regex(@"[A-Z]\.[A-Z]\.(?<OCR>l)", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error)
             // c.E.O. => C.E.O.
             ,new FindAndReplace("Space After Dot", new Regex(@"(\b[a-zà-ÿ])\.([A-ZÀ-Ý]\.)+", RegexOptions.Compiled), m => m.ToString().ToUpper(), SubtitleError.OCR_Error)
             // A.k.a. => A.K.A.
