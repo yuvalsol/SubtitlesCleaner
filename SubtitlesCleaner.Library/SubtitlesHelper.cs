@@ -2677,6 +2677,49 @@ namespace SubtitlesCleaner.Library
             return lines;
         }
 
+        public static readonly Regex regexLine1SingleQuotationMarks = new Regex(@"^-?\s*(?<SQM>').*?[^']$", RegexOptions.Compiled);
+        public static readonly Regex regexLine2SingleQuotationMarks = new Regex(@"^[^'-].*?(?<SQM>')$", RegexOptions.Compiled);
+        public static readonly Regex regexLine3SingleQuotationMarks = new Regex(@"^[^'].*?[^']$", RegexOptions.Compiled);
+
+        public static List<string> CleanSingleQuotationMarksMultipleLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
+                return null;
+            }
+
+            if (lines.Count > 1)
+            {
+                string line1 = lines[0];
+                string line2 = lines[lines.Count - 1];
+
+                if (regexLine1SingleQuotationMarks.IsMatch(line1) &&
+                    regexLine2SingleQuotationMarks.IsMatch(line2))
+                {
+                    bool haveNoSingleQuotationMarks = true;
+
+                    if (lines.Count > 2)
+                        for (int i = 1; i < lines.Count - 1 && (haveNoSingleQuotationMarks &= regexLine3SingleQuotationMarks.IsMatch(lines[i])); i++) ;
+
+                    if (haveNoSingleQuotationMarks)
+                    {
+                        lines[0] = regexLine1SingleQuotationMarks.ReplaceGroup(line1, "SQM", "");
+                        lines[lines.Count - 1] = regexLine2SingleQuotationMarks.ReplaceGroup(line2, "SQM", "");
+
+                        if (isPrintCleaning)
+                            PrintCleaning(new string[] { line1, line2 }, new string[] { lines[0], lines[lines.Count - 1] });
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Punctuations_Error;
+                    }
+                }
+            }
+
+            return lines;
+        }
+
         public static List<string> CleanLinesWithDictionary(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
             if (lines.IsNullOrEmpty())
@@ -2995,6 +3038,11 @@ namespace SubtitlesCleaner.Library
             }, SubtitleError.Punctuations_Error)
             ,new FindAndReplace("Three Dots", new Regex(@"(_{1,}""|""?_{1,})$", RegexOptions.Compiled), "...", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"[;，]", RegexOptions.Compiled), ",", SubtitleError.Punctuations_Error)
+        };
+
+        public static readonly FindAndReplace[] SingleQuotationMarks = new FindAndReplace[] {
+            new FindAndReplace(new Regex(@"^(?<SQM>').*?(?<SQM>')$", RegexOptions.Compiled), "SQM", "", SubtitleError.Punctuations_Error)
+            ,new FindAndReplace(new Regex(@"^-\s*(?<SQM>').*?(?<SQM>')$", RegexOptions.Compiled), "SQM", "", SubtitleError.Punctuations_Error)
         };
 
         #endregion

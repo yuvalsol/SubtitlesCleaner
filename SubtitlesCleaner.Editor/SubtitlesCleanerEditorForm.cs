@@ -2184,7 +2184,8 @@ namespace SubtitlesCleaner.Editor
                 ,new QuickAction("Fix Merged Words", "ofthe => of the", FixMergedWords)
                 ,new QuickAction("Add Dot After Abbreviation", "Mr => Mr.  Dr => Dr.  St => St.", AddDotAfterAbbreviation)
                 ,new QuickAction("Fix I And 1 Errors", "I6 => 16  1 can => I can", FixIAnd1Errors)
-                ,new QuickAction("Merge Lines", "", MergeLines)
+                ,new QuickAction("Merge Lines", "Hi,|How are you? => Hi, How are you?", MergeLines)
+                ,new QuickAction("Remove Single Quotation Marks", "'Text Line' => Text Line", RemoveSingleQuotationMarks)
             };
 
             List<Subtitle> newSubtitles = subtitles.Clone();
@@ -2358,6 +2359,17 @@ namespace SubtitlesCleaner.Editor
         private QuickActionResult MergeLines(List<Subtitle> subtitles, bool isPreview)
         {
             return QuickActionFindAndReplace(subtitles, SubtitlesHelper.CleanMergeLines, isPreview);
+        }
+
+        private QuickActionResult RemoveSingleQuotationMarks(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(
+                subtitles,
+                null,
+                SubtitlesHelper.SingleQuotationMarks,
+                new QuickActionCleanHandler[] { SubtitlesHelper.CleanSingleQuotationMarksMultipleLines },
+                isPreview
+            );
         }
 
         private QuickActionResult QuickActionFindAndReplace(

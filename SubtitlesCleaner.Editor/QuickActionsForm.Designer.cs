@@ -78,7 +78,7 @@ namespace SubtitlesCleaner.Editor
             this.lstQuickActions.ReadOnly = true;
             this.lstQuickActions.RowHeadersVisible = false;
             this.lstQuickActions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.lstQuickActions.Size = new System.Drawing.Size(844, 552);
+            this.lstQuickActions.Size = new System.Drawing.Size(844, 571);
             this.lstQuickActions.TabIndex = 1;
             this.lstQuickActions.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.lstQuickActions_CellContentClick);
             // 
@@ -186,7 +186,7 @@ namespace SubtitlesCleaner.Editor
             this.tableLayoutPanel1.Controls.Add(this.btnPreviewChanges, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 552);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 571);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
@@ -214,7 +214,7 @@ namespace SubtitlesCleaner.Editor
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnDiscardChanges;
-            this.ClientSize = new System.Drawing.Size(844, 604);
+            this.ClientSize = new System.Drawing.Size(844, 623);
             this.Controls.Add(this.lstQuickActions);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
