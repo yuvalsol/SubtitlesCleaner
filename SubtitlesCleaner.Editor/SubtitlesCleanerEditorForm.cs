@@ -272,6 +272,12 @@ namespace SubtitlesCleaner.Editor
             }
         }
 
+        private void btnReloadFile_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(this.filePath) == false)
+                LoadFile(this.filePath);
+        }
+
         private void SubtitlesCleanerEditorForm_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
