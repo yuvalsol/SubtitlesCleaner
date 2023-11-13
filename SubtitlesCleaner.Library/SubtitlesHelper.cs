@@ -3417,7 +3417,8 @@ namespace SubtitlesCleaner.Library
 
         public static readonly FindAndReplace[] MissingSpaces = new FindAndReplace[] {
             // Text<i>Text => Text <i>Text
-            new FindAndReplace(new Regex(@"([A-ZÀ-Ýa-zà-ÿ!?.])<i>([A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "$1 <i>$2", SubtitleError.Missing_Spaces)
+            // (?<!\.\.) is negative lookbehind, prevents capturing pattern ...<i>
+            new FindAndReplace(new Regex(@"(?<!\.\.)([A-ZÀ-Ýa-zà-ÿ!?.])<i>([A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "$1 <i>$2", SubtitleError.Missing_Spaces)
             // Text</i>Text => Text</i> Text
             ,new FindAndReplace(new Regex(@"([A-ZÀ-Ýa-zà-ÿ!?.])</i>([A-ZÀ-Ýa-zà-ÿ])", RegexOptions.Compiled), "$1</i> $2", SubtitleError.Missing_Spaces)
 
