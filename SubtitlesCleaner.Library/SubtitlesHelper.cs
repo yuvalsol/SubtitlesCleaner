@@ -3611,7 +3611,9 @@ namespace SubtitlesCleaner.Library
             // coke/y => cokely (ly)
             // gal/o => gallo (lo/llo)
             // hi/dy =< hildy (ldy)
-            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>/)(em|y|o|lo|dy)", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters)
+            ,new FindAndReplace(new Regex(@"[A-ZÀ-Ýa-zà-ÿ](?<OCR>/)(em|y|o|lo|dy)", RegexOptions.Compiled), "OCR", "l", SubtitleError.Malformed_Letters,
+                new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, ReadNextCharsFromMatch = 1, IgnoreIfCaseInsensitiveEqualsTo = "and/or" })
+
             // /t => It
             ,new FindAndReplace(new Regex(@"(?:^|\s|\b)(?<OCR>/t)", RegexOptions.Compiled), "OCR", "It", SubtitleError.Malformed_Letters)
 
