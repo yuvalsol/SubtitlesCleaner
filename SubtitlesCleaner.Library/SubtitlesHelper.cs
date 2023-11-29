@@ -2504,8 +2504,8 @@ namespace SubtitlesCleaner.Library
         }
 
         public static readonly Regex regexInlineDialog = new Regex(@"[.?!]\s*-\s*[A-ZÀ-Ý0-9 #\'\[\]]", RegexOptions.Compiled);
-        public static readonly Regex regexLine1WithSingleWord = new Regex(@"^\w+,?$", RegexOptions.Compiled);
-        public static readonly Regex regexLine2WithSingleWord = new Regex(@"^\w+\.?$", RegexOptions.Compiled);
+        public static readonly Regex regexLine1WithSingleWord = new Regex(@"^(?:<i>)?\w+,?$", RegexOptions.Compiled);
+        public static readonly Regex regexLine2WithSingleWord = new Regex(@"^\w+\.?(?:</i>)?$", RegexOptions.Compiled);
 
         public static List<string> CleanMergeLines(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
         {
@@ -2525,7 +2525,10 @@ namespace SubtitlesCleaner.Library
                     string line1 = lines[i];
                     string line2 = lines[i + 1];
 
-                    if (line1.Length + line2.Length + 1 <= SINGLE_LINE_MAX_LENGTH)
+                    int line1DisplayCharCount = GetDisplayCharCount(line1);
+                    int line2DisplayCharCount = GetDisplayCharCount(line2);
+
+                    if (line1DisplayCharCount + line2DisplayCharCount + 1 <= SINGLE_LINE_MAX_LENGTH)
                     {
                         if (regexInlineDialog.IsMatch(line1) == false && regexInlineDialog.IsMatch(line2) == false)
                         {
