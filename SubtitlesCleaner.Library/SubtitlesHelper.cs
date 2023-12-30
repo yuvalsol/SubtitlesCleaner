@@ -3886,11 +3886,10 @@ namespace SubtitlesCleaner.Library
             // I6 => 16
             ,new FindAndReplace("I And 1", new Regex(@"\b(?<OCR>I)\d+\b", RegexOptions.Compiled), "OCR", "1", SubtitleError.OCR_Error)
 
-            // 1 => I
-            // 1 can
+            // 1 can => I can
             ,new FindAndReplace("I And 1", new Regex(@"(?i)\b(?<OCR>1)\s+(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
-            // can 1
-            ,new FindAndReplace("I And 1", new Regex(@"(?i)\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(?<OCR>1)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
+            // can 1 => can I
+            ,new FindAndReplace("I And 1", new Regex(@"(?i)\b(?:can|can't|did|didn't|do|don't|had|hadn't|am|ain't|will|won't|would|wouldn't)\s+(?<OCR>1)(?!\.\d)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.OCR_Error)
         };
 
         #endregion
