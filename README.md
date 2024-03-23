@@ -64,6 +64,7 @@ Clean subtitles.
 
 ```console
 SubtitlesCleanerCommand clean --path <fileOrFolder>
+                              [--subfolders]
                               [--save [--outputFile <file>] [--outputFolder <folder>]]
                               [--print]
                               [--cleanHICaseInsensitive]
@@ -84,6 +85,12 @@ If the path points to a folder, it will clean all the subtitle files in that fol
 
 ```console
 --path <fileOrFolder>       Path to subtitle file or folder
+```
+
+If the path points to a folder and `subfolders` is enabled, Subtitles Cleaner Command will get all the subtitle files in `path` and any subfolder under it.
+
+```console
+--subfolders                Include all subfolders under path
 ```
 
 Outputs the cleaned subtitles to a file. By default, Subtitles Cleaner Command will save the cleaned subtitles to the same subtitle file, overwriting it. Use `outputFile` switch to write to a new subtitle file with different name. use `outputFolder` switch to write to a different folder than the original subtitle file.
@@ -251,6 +258,7 @@ Clean empty lines and non-subtitles.
 
 ```console
 SubtitlesCleanerCommand cleanEmptyAndNonSubtitles --path <fileOrFolder>
+                                                  [--subfolders]
                                                   [--save [--outputFile <file>] [--outputFolder <folder>]]
                                                   [--print]
                                                   [--firstSubtitlesCount <N>]
@@ -271,6 +279,7 @@ Add time to subtitles.
 ```console
 SubtitlesCleanerCommand addTime --timeAdded <+00:00:00,000|-00:00:00,000>
                                 --path <fileOrFolder>
+                                [--subfolders]
                                 [--save [--outputFile <file>] [--outputFolder <folder>]]
                                 [--print]
                                 [--subtitleNumber <N>]
@@ -301,6 +310,7 @@ Move subtitles to show time.
 ```console
 SubtitlesCleanerCommand setShowTime --showTime <00:00:00,000>
                                     --path <fileOrFolder>
+                                    [--subfolders]
                                     [--save [--outputFile <file>] [--outputFolder <folder>]]
                                     [--print]
                                     [--subtitleNumber <N>]
@@ -330,6 +340,7 @@ Adjust subtitles timing by 2 sync points.
 SubtitlesCleanerCommand adjustTiming --firstShowTime <00:00:00,000>
                                      --lastShowTime <00:00:00,000>
                                      --path <fileOrFolder>
+                                     [--subfolders]
                                      [--save [--outputFile <file>] [--outputFolder <folder>]]
                                      [--print]
                                      [--firstSubtitlesCount <N>]
@@ -353,6 +364,7 @@ Reorder subtitles based on their show time.
 
 ```console
 SubtitlesCleanerCommand reorder --path <fileOrFolder>
+                                [--subfolders]
                                 [--save]
                                 [--print]
                                 [--suppressBackupFile]
@@ -376,6 +388,7 @@ Merge short line with long line, or first line with its continuation in the seco
 
 ```console
 SubtitlesCleanerCommand balanceLines --path <fileOrFolder>
+                                     [--subfolders]
                                      [--save]
                                      [--print]
                                      [--suppressBackupFile]
