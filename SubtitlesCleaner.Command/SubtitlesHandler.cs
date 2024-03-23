@@ -84,7 +84,7 @@ namespace SubtitlesCleaner.Command
             {
                 if (options.quiet)
                 {
-                    string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                    string[] filePaths = GetFilePaths(options.path, options.subfolders, out bool isPathExists);
                     if (filePaths != null && filePaths.Length > 0)
                         DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray();
                 }
@@ -99,7 +99,7 @@ namespace SubtitlesCleaner.Command
                         var stopwatch = Stopwatch.StartNew();
 
                         int fileCount = 0;
-                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        string[] filePaths = GetFilePaths(options.path, options.subfolders, out bool isPathExists);
                         if (filePaths != null && filePaths.Length > 0)
                         {
                             foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options))
@@ -137,7 +137,7 @@ namespace SubtitlesCleaner.Command
                         var stopwatch = Stopwatch.StartNew();
 
                         int fileCount = 0;
-                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        string[] filePaths = GetFilePaths(options.path, options.subfolders, out bool isPathExists);
                         if (filePaths != null && filePaths.Length > 0)
                         {
                             foreach (var result in DoSequentially<TSubtitlesAction, TSharedOptions>(filePaths, options))
@@ -171,7 +171,7 @@ namespace SubtitlesCleaner.Command
             {
                 if (options.quiet)
                 {
-                    string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                    string[] filePaths = GetFilePaths(options.path, options.subfolders, out bool isPathExists);
                     if (filePaths != null && filePaths.Length > 0)
                         Task.WaitAll(DoQuietConcurrently<TSubtitlesAction, TSharedOptions>(filePaths, options).ToArray());
                 }
@@ -186,7 +186,7 @@ namespace SubtitlesCleaner.Command
                         var stopwatch = Stopwatch.StartNew();
 
                         int fileCount = 0;
-                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        string[] filePaths = GetFilePaths(options.path, options.subfolders, out bool isPathExists);
                         if (filePaths != null && filePaths.Length > 0)
                         {
                             queue = new ConcurrentQueue<SubtitlesActionResult>();
@@ -236,7 +236,7 @@ namespace SubtitlesCleaner.Command
                         var stopwatch = Stopwatch.StartNew();
 
                         int fileCount = 0;
-                        string[] filePaths = GetFilePaths(options.path, out bool isPathExists);
+                        string[] filePaths = GetFilePaths(options.path, options.subfolders, out bool isPathExists);
                         if (filePaths != null && filePaths.Length > 0)
                         {
                             queue = new ConcurrentQueue<SubtitlesActionResult>();
@@ -320,7 +320,7 @@ namespace SubtitlesCleaner.Command
 
         #region Files
 
-        private string[] GetFilePaths(string path, out bool isPathExists)
+        private string[] GetFilePaths(string path, bool subfolders, out bool isPathExists)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -331,17 +331,16 @@ namespace SubtitlesCleaner.Command
             if (path.EndsWith(":\""))
                 path = path.Replace(":\"", ":");
 
-            bool isRecursive = false;
-            return GetFiles(path, isRecursive, out isPathExists);
+            return GetFiles(path, subfolders, out isPathExists);
         }
 
-        private string[] GetFiles(string path, bool isRecursive, out bool isPathExists)
+        private string[] GetFiles(string path, bool subfolders, out bool isPathExists)
         {
             if (Directory.Exists(path))
             {
                 isPathExists = true;
 
-                return Directory.GetFiles(path, "*.srt", (isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+                return Directory.GetFiles(path, "*.srt", (subfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
             }
             else if (File.Exists(path))
             {
@@ -354,6 +353,66 @@ namespace SubtitlesCleaner.Command
 
             isPathExists = false;
             return null;
+        }
+
+        private void DeleteDuplicateSrtFiles(string root)
+        {
+            var groups = Directory.GetFiles(root, "*.srt", SearchOption.AllDirectories)
+                .Select(file => new
+                {
+                    file,
+                    fileName = Path.GetFileName(file),
+                    folder = Path.GetDirectoryName(file)
+                })
+                .OrderBy(x => x.file)
+                .GroupBy(x => x.folder)
+                .Where(g => g.Count() >= 2);
+
+            List<string> srtFilesToDelete = new List<string>();
+
+            foreach (var group in groups)
+            {
+                var items = group
+                    .Select(x => new { x.file, content = File.ReadAllText(x.file) })
+                    .ToArray();
+
+                var item0 = items[0];
+                var item1 = items[1];
+
+                if (item0.content == item1.content)
+                    srtFilesToDelete.Add(item1.file);
+
+                if (items.Length >= 3)
+                {
+                    var item2 = items[2];
+
+                    if (item0.content == item2.content || item1.content == item2.content)
+                        srtFilesToDelete.Add(item2.file);
+                }
+            }
+
+            srtFilesToDelete = srtFilesToDelete.Distinct().OrderBy(x => x).ToList();
+
+            int srtFilesDeleted = 0;
+
+            foreach (var file in srtFilesToDelete)
+            {
+                Console.WriteLine(file);
+
+                try
+                {
+                    File.Delete(file);
+                    srtFilesDeleted++;
+                }
+                catch
+                {
+
+                }
+            }
+
+            Console.WriteLine("Duplicate .srt Files Found: " + srtFilesToDelete.Count);
+            Console.WriteLine("Duplicate .srt Files Deleted: " + srtFilesToDelete.Count);
+            Console.WriteLine();
         }
 
         #endregion

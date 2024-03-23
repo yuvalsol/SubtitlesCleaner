@@ -8,6 +8,9 @@ namespace SubtitlesCleaner.Command
         [Option("path", Required = true, HelpText = "Path to subtitle file or folder")]
         public string path { get; set; }
 
+        [Option("subfolders", Required = false, HelpText = "Include all subfolders under path")]
+        public bool subfolders { get; set; }
+
         [Option("print", HelpText = "Print to console")]
         public bool print { get; set; }
 
@@ -53,6 +56,9 @@ namespace SubtitlesCleaner.Command
                 sb.Append(path);
                 sb.Append("\"");
             }
+
+            if (subfolders)
+                sb.Append(" --subfolders");
 
             if (print)
                 sb.Append(" --print");

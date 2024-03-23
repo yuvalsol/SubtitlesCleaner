@@ -55,6 +55,7 @@ namespace SubtitlesCleaner.Command
                             if (options.clean)
                             {
                                 Console.WriteLine("SubtitlesCleanerCommand clean --path <fileOrFolder>");
+                                Console.WriteLine("                              [--subfolders]");
                                 Console.WriteLine("                              [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                              [--print]");
                                 Console.WriteLine("                              [--cleanHICaseInsensitive]");
@@ -76,6 +77,7 @@ namespace SubtitlesCleaner.Command
                             if (options.cleanEmptyAndNonSubtitles)
                             {
                                 Console.WriteLine("SubtitlesCleanerCommand cleanEmptyAndNonSubtitles --path <fileOrFolder>");
+                                Console.WriteLine("                                                  [--subfolders]");
                                 Console.WriteLine("                                                  [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                                                  [--print]");
                                 Console.WriteLine("                                                  [--firstSubtitlesCount <N>]");
@@ -95,6 +97,7 @@ namespace SubtitlesCleaner.Command
                             {
                                 Console.WriteLine("SubtitlesCleanerCommand addTime --timeAdded <+00:00:00,000|-00:00:00,000>");
                                 Console.WriteLine("                                --path <fileOrFolder>");
+                                Console.WriteLine("                                [--subfolders]");
                                 Console.WriteLine("                                [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                                [--print]");
                                 Console.WriteLine("                                [--subtitleNumber <N>]");
@@ -114,6 +117,7 @@ namespace SubtitlesCleaner.Command
                             {
                                 Console.WriteLine("SubtitlesCleanerCommand setShowTime --showTime <00:00:00,000>");
                                 Console.WriteLine("                                    --path <fileOrFolder>");
+                                Console.WriteLine("                                    [--subfolders]");
                                 Console.WriteLine("                                    [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                                    [--print]");
                                 Console.WriteLine("                                    [--subtitleNumber <N>]");
@@ -134,6 +138,7 @@ namespace SubtitlesCleaner.Command
                                 Console.WriteLine("SubtitlesCleanerCommand adjustTiming --firstShowTime <00:00:00,000>");
                                 Console.WriteLine("                                     --lastShowTime <00:00:00,000>");
                                 Console.WriteLine("                                     --path <fileOrFolder>");
+                                Console.WriteLine("                                     [--subfolders]");
                                 Console.WriteLine("                                     [--save [--outputFile <file>] [--outputFolder <folder>]]");
                                 Console.WriteLine("                                     [--print]");
                                 Console.WriteLine("                                     [--firstSubtitlesCount <N>]");
@@ -151,6 +156,7 @@ namespace SubtitlesCleaner.Command
                             if (options.reorder)
                             {
                                 Console.WriteLine("SubtitlesCleanerCommand reorder --path <fileOrFolder>");
+                                Console.WriteLine("                                [--subfolders]");
                                 Console.WriteLine("                                [--save]");
                                 Console.WriteLine("                                [--print]");
                                 Console.WriteLine("                                [--suppressBackupFile]");
@@ -167,6 +173,7 @@ namespace SubtitlesCleaner.Command
                             if (options.balanceLines)
                             {
                                 Console.WriteLine("SubtitlesCleanerCommand balanceLines --path <fileOrFolder>");
+                                Console.WriteLine("                                     [--subfolders]");
                                 Console.WriteLine("                                     [--save]");
                                 Console.WriteLine("                                     [--print]");
                                 Console.WriteLine("                                     [--suppressBackupFile]");
