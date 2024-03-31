@@ -287,6 +287,10 @@ namespace System.Reflection
                 return "internal";
             else if (method.IsFamily)
                 return "protected";
+            else if (method.IsFamilyAndAssembly)
+                return "private protected";
+            else if (method.IsFamilyOrAssembly)
+                return "protected internal";
             else
             {
                 throw new Exception("I wasn't able to parse the visibility of this method.");

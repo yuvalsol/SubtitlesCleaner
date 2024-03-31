@@ -568,6 +568,10 @@ namespace SubtitlesCleaner.Editor
 
                 DeleteSubtitle(editorRow);
             }
+            else
+            {
+                e.SuppressKeyPress = true;
+            }
         }
 
         private void DeleteSubtitle(EditorRow editorRow)
