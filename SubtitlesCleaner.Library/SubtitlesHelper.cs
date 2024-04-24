@@ -3004,7 +3004,7 @@ namespace SubtitlesCleaner.Library
             // don't clean abbreviation with question mark (Mr.?)
             ,new FindAndReplace(new Regex(@"((?<!\w\.)\w|\s)(?<Dot>\.)[?!:]", RegexOptions.Compiled), "Dot", string.Empty, SubtitleError.Punctuations_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, IgnoreIfCaseInsensitiveMatchsWithRegex = @"(Mr|Dr|St|Sr|Jr)\." }
-                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, IgnoreIfCaseInsensitiveMatchsWithRegex = @"(Mrs|Ave)\." }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, IgnoreIfCaseInsensitiveMatchsWithRegex = @"(Mrs|Ave|Inc)\." }
             )
             ,new FindAndReplace(new Regex(@"\(\?\)", RegexOptions.Compiled), "?", SubtitleError.Punctuations_Error)
             ,new FindAndReplace(new Regex(@"\(!\)", RegexOptions.Compiled), "!", SubtitleError.Punctuations_Error)
@@ -3844,8 +3844,8 @@ namespace SubtitlesCleaner.Library
         #region OCR Errors
 
         public static readonly FindAndReplace[] OCRErrors = new FindAndReplace[] {
-            // Mr. Mrs. Dr. St. Sr. Jr. Ave.
-            new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St|Sr|Jr|Ave)(?<OCR>)(?:[!?]|\s|\b(?!\.)|$)", RegexOptions.Compiled), "OCR", ".", SubtitleError.OCR_Error)
+            // Mr. Mrs. Dr. St. Sr. Jr. Ave. Inc.
+            new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St|Sr|Jr|Ave|Inc)(?<OCR>)(?:[!?]|\s|\b(?!\.)|$)", RegexOptions.Compiled), "OCR", ".", SubtitleError.OCR_Error)
 
             // O'Sullivan, O'Connor, O'Brien, O'Leary
             ,new FindAndReplace(new Regex(@"\b(?<OCR>o)'[A-ZÀ-Ý][a-zà-ÿ]", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
