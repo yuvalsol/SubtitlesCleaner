@@ -2196,6 +2196,7 @@ namespace SubtitlesCleaner.Editor
                 ,new QuickAction("Fix I And 1 Errors", "I6 => 16  1 can => I can", FixIAnd1Errors)
                 ,new QuickAction("Merge Lines", "Hi,|How are you? => Hi, How are you?", MergeLines)
                 ,new QuickAction("Remove Single Quotation Marks", "'Text Line' => Text Line", RemoveSingleQuotationMarks)
+                ,new QuickAction("Remove Dash From First Line Of Dialog", "- Dialog|Continuation => Dialog|Continuation", RemoveDashFromFirstLineOfDialog)
             };
 
             List<Subtitle> newSubtitles = subtitles.Clone();
@@ -2378,6 +2379,19 @@ namespace SubtitlesCleaner.Editor
                 null,
                 SubtitlesHelper.SingleQuotationMarks,
                 new QuickActionCleanHandler[] { SubtitlesHelper.CleanSingleQuotationMarksMultipleLines },
+                isPreview
+            );
+        }
+
+        private QuickActionResult RemoveDashFromFirstLineOfDialog(List<Subtitle> subtitles, bool isPreview)
+        {
+            return QuickActionFindAndReplace(
+                subtitles,
+                new QuickActionCleanHandler[] {
+                    SubtitlesHelper.RemoveDashFromFirstLineOfDialog
+                },
+                null,
+                null,
                 isPreview
             );
         }

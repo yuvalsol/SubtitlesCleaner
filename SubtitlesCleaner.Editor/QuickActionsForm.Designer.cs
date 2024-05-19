@@ -34,16 +34,16 @@ namespace SubtitlesCleaner.Editor
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lstQuickActions = new System.Windows.Forms.DataGridView();
-            this.ColumnFix = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.ColumnAction = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnExamples = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnPreview = new System.Windows.Forms.DataGridViewButtonColumn();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnApply = new System.Windows.Forms.Button();
             this.btnDiscardChanges = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnPreviewChanges = new System.Windows.Forms.Button();
+            this.ColumnFix = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.ColumnAction = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnExamples = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnPreview = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.lstQuickActions)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -78,65 +78,9 @@ namespace SubtitlesCleaner.Editor
             this.lstQuickActions.ReadOnly = true;
             this.lstQuickActions.RowHeadersVisible = false;
             this.lstQuickActions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.lstQuickActions.Size = new System.Drawing.Size(844, 571);
+            this.lstQuickActions.Size = new System.Drawing.Size(844, 595);
             this.lstQuickActions.TabIndex = 1;
             this.lstQuickActions.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.lstQuickActions_CellContentClick);
-            // 
-            // ColumnFix
-            // 
-            this.ColumnFix.HeaderText = "";
-            this.ColumnFix.Name = "ColumnFix";
-            this.ColumnFix.ReadOnly = true;
-            this.ColumnFix.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnFix.Text = "Fix";
-            this.ColumnFix.UseColumnTextForButtonValue = true;
-            this.ColumnFix.Width = 60;
-            // 
-            // ColumnAction
-            // 
-            this.ColumnAction.DataPropertyName = "Action";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.ColumnAction.DefaultCellStyle = dataGridViewCellStyle2;
-            this.ColumnAction.HeaderText = "Action";
-            this.ColumnAction.Name = "ColumnAction";
-            this.ColumnAction.ReadOnly = true;
-            this.ColumnAction.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnAction.Width = 260;
-            // 
-            // ColumnExamples
-            // 
-            this.ColumnExamples.DataPropertyName = "Examples";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.ColumnExamples.DefaultCellStyle = dataGridViewCellStyle3;
-            this.ColumnExamples.HeaderText = "Examples";
-            this.ColumnExamples.Name = "ColumnExamples";
-            this.ColumnExamples.ReadOnly = true;
-            this.ColumnExamples.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnExamples.Width = 260;
-            // 
-            // ColumnResult
-            // 
-            this.ColumnResult.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColumnResult.DataPropertyName = "Result";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.ColumnResult.DefaultCellStyle = dataGridViewCellStyle4;
-            this.ColumnResult.HeaderText = "Result";
-            this.ColumnResult.Name = "ColumnResult";
-            this.ColumnResult.ReadOnly = true;
-            this.ColumnResult.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // ColumnPreview
-            // 
-            this.ColumnPreview.HeaderText = "";
-            this.ColumnPreview.Name = "ColumnPreview";
-            this.ColumnPreview.ReadOnly = true;
-            this.ColumnPreview.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnPreview.Text = "Preview";
-            this.ColumnPreview.UseColumnTextForButtonValue = true;
-            this.ColumnPreview.Width = 80;
             // 
             // flowLayoutPanel1
             // 
@@ -186,7 +130,7 @@ namespace SubtitlesCleaner.Editor
             this.tableLayoutPanel1.Controls.Add(this.btnPreviewChanges, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 571);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 595);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
@@ -208,13 +152,69 @@ namespace SubtitlesCleaner.Editor
             this.btnPreviewChanges.UseVisualStyleBackColor = true;
             this.btnPreviewChanges.Click += new System.EventHandler(this.btnPreviewChanges_Click);
             // 
+            // ColumnFix
+            // 
+            this.ColumnFix.HeaderText = "";
+            this.ColumnFix.Name = "ColumnFix";
+            this.ColumnFix.ReadOnly = true;
+            this.ColumnFix.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnFix.Text = "Fix";
+            this.ColumnFix.UseColumnTextForButtonValue = true;
+            this.ColumnFix.Width = 60;
+            // 
+            // ColumnAction
+            // 
+            this.ColumnAction.DataPropertyName = "Action";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.ColumnAction.DefaultCellStyle = dataGridViewCellStyle2;
+            this.ColumnAction.HeaderText = "Action";
+            this.ColumnAction.Name = "ColumnAction";
+            this.ColumnAction.ReadOnly = true;
+            this.ColumnAction.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnAction.Width = 240;
+            // 
+            // ColumnExamples
+            // 
+            this.ColumnExamples.DataPropertyName = "Examples";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.ColumnExamples.DefaultCellStyle = dataGridViewCellStyle3;
+            this.ColumnExamples.HeaderText = "Examples";
+            this.ColumnExamples.Name = "ColumnExamples";
+            this.ColumnExamples.ReadOnly = true;
+            this.ColumnExamples.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnExamples.Width = 280;
+            // 
+            // ColumnResult
+            // 
+            this.ColumnResult.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColumnResult.DataPropertyName = "Result";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.ColumnResult.DefaultCellStyle = dataGridViewCellStyle4;
+            this.ColumnResult.HeaderText = "Result";
+            this.ColumnResult.Name = "ColumnResult";
+            this.ColumnResult.ReadOnly = true;
+            this.ColumnResult.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // ColumnPreview
+            // 
+            this.ColumnPreview.HeaderText = "";
+            this.ColumnPreview.Name = "ColumnPreview";
+            this.ColumnPreview.ReadOnly = true;
+            this.ColumnPreview.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnPreview.Text = "Preview";
+            this.ColumnPreview.UseColumnTextForButtonValue = true;
+            this.ColumnPreview.Width = 80;
+            // 
             // QuickActionsForm
             // 
             this.AcceptButton = this.btnApply;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnDiscardChanges;
-            this.ClientSize = new System.Drawing.Size(844, 623);
+            this.ClientSize = new System.Drawing.Size(844, 647);
             this.Controls.Add(this.lstQuickActions);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
@@ -238,12 +238,12 @@ namespace SubtitlesCleaner.Editor
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnDiscardChanges;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button btnPreviewChanges;
         private System.Windows.Forms.DataGridViewButtonColumn ColumnFix;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnAction;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnExamples;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnResult;
         private System.Windows.Forms.DataGridViewButtonColumn ColumnPreview;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button btnPreviewChanges;
     }
 }

@@ -1877,6 +1877,238 @@ namespace SubtitlesCleaner.Library
                     }
                 }
             }
+            return lines;
+        }
+
+        public static List<string> RemoveDashFromFirstLineOfDialog(List<string> lines, bool cleanHICaseInsensitive, bool isCheckMode, ref SubtitleError subtitleError, bool isPrintCleaning)
+        {
+            if (lines.IsNullOrEmpty())
+            {
+                if (isCheckMode)
+                    subtitleError |= SubtitleError.Empty_Line;
+                return null;
+            }
+
+            if (lines.Count > 1)
+            {
+                var resultsDialog = lines.Select((line, index) => new
+                {
+                    line,
+                    index,
+                    isDialog = regexDialog.IsMatch(line),
+                    isContainsDialog_CapitalLetter = regexContainsDialog.IsMatch(line),
+                    isStartsWithDots = line.StartsWith("..."),
+                    isStartsWithDotsAndItalics = line.StartsWith("<i>..."),
+                    isStartsWithI = line.StartsWith("I "),
+                    isStartsWithContractionI = line.StartsWith("I'"),
+                    isStartsWithNote = line.StartsWith("♪"),
+                    isEndsWithDots = line.EndsWith("..."),
+                    isEndsWithComma = line.EndsWith(","),
+                    isEndsWithPeriod = line.EndsWith("."),
+                    isEndsWithQuestionMark = line.EndsWith("?"),
+                    isEndsWithExclamationMark = line.EndsWith("!"),
+                    isEndsWithLowerCaseLetter = regexEndsWithLowerCaseLetter.IsMatch(line)
+                }).ToArray();
+
+                if (resultsDialog[0].isStartsWithDots && resultsDialog.Skip(1).All(x => x.isDialog))
+                {
+                    // ...line 1
+                    // - Line 2
+                    //
+                    // - ...line 1
+                    // - Line 2
+                }
+                else if (resultsDialog[0].isStartsWithNote && resultsDialog.Skip(1).All(x => x.isDialog))
+                {
+                    // ♪ Line 1
+                    // - Line 2
+                    //
+                    // - ♪ Line 1
+                    // - Line 2
+                }
+                else if (resultsDialog[0].isStartsWithDotsAndItalics && resultsDialog.Skip(1).All(x => x.isDialog))
+                {
+                    // <i>...line 1
+                    // - Line 2
+                    //
+                    // <i>- ...line 1
+                    // - Line 2
+                }
+                else if (resultsDialog[0].isDialog && resultsDialog.Skip(1).All(x => x.isStartsWithDots || x.isStartsWithDotsAndItalics))
+                {
+                    // - Line 1
+                    // ...line 2
+                    //
+                    // Line 1
+                    // ...line 2
+                    Match match = regexDialog.Match(lines[0]);
+                    string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                    if (lines[0] != newLine)
+                    {
+                        List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
+
+                        lines[0] = newLine;
+
+                        if (isPrintCleaning)
+                            PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                }
+                else if (resultsDialog[0].isDialog && resultsDialog.Skip(1).All(x => x.isStartsWithNote))
+                {
+                    // - Line 1
+                    // ♪ Line 2
+                    //
+                    // Line 1
+                    // ♪ Line 2
+                    Match match = regexDialog.Match(lines[0]);
+                    string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                    if (lines[0] != newLine)
+                    {
+                        List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
+
+                        lines[0] = newLine;
+
+                        if (isPrintCleaning)
+                            PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
+
+                        if (isCheckMode)
+                            subtitleError |= SubtitleError.Dialog_Error;
+                    }
+                }
+                else if (resultsDialog[0].isDialog && resultsDialog.Skip(1).All(x => x.isDialog == false) && resultsDialog.Skip(1).All(x => x.isContainsDialog_CapitalLetter == false))
+                {
+                    string firstCharSecondLine = (lines[1].Length > 0 ? lines[1][0].ToString() : string.Empty);
+
+                    if (regexCapitalLetter.IsMatch(firstCharSecondLine))
+                    {
+                        if (resultsDialog[0].isDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
+                        {
+                            // - Line 1 - Dialog
+                            // I am line 2
+                            //
+                            // do nothing
+                        }
+                        else if (resultsDialog[0].isDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[0].isEndsWithDots)
+                        {
+                            // - Line 1 - Dialog...
+                            // Line 2
+                            //
+                            // do nothing
+                        }
+                        else if (resultsDialog[0].isDialog &&
+                            resultsDialog[0].isEndsWithComma &&
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
+                        {
+                            // - Line 1,
+                            // I'll Line 2
+                            //
+                            // Line 1,
+                            // I'll Line 2
+                            Match match = regexDialog.Match(lines[0]);
+                            string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[0] != newLine)
+                            {
+                                List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
+
+                                lines[0] = newLine;
+
+                                if (isPrintCleaning)
+                                    PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
+
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            }
+                        }
+                        else if (resultsDialog[0].isDialog &&
+                            resultsDialog[0].isEndsWithLowerCaseLetter &&
+                            (resultsDialog[1].isStartsWithI || resultsDialog[1].isStartsWithContractionI))
+                        {
+                            // - Line 1 end with lower case letter
+                            // I'll Line 2
+                            //
+                            // Line 1 end with lower case letter
+                            // I'll Line 2
+                            Match match = regexDialog.Match(lines[0]);
+                            string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[0] != newLine)
+                            {
+                                List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
+
+                                lines[0] = newLine;
+
+                                if (isPrintCleaning)
+                                    PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
+
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            }
+                        }
+                        else
+                        {
+                            // - Line 1
+                            // Line 2
+                            //
+                            // Line 1
+                            // Line 2
+                            Match match = regexDialog.Match(lines[0]);
+                            string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[0] != newLine)
+                            {
+                                List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
+
+                                lines[0] = newLine;
+
+                                if (isPrintCleaning)
+                                    PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
+
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (resultsDialog[0].isDialog &&
+                            resultsDialog[0].isContainsDialog_CapitalLetter &&
+                            resultsDialog[1].isDialog == false)
+                        {
+                            // - Line 1 - Dialog
+                            // line 2
+                            //
+                            // do nothing
+                        }
+                        else
+                        {
+                            // - Line 1
+                            // line 2
+                            //
+                            // Line 1
+                            // line 2
+                            Match match = regexDialog.Match(lines[0]);
+                            string newLine = match.Groups["Italic"].Value + match.Groups["Subtitle"].Value;
+                            if (lines[0] != newLine)
+                            {
+                                List<string> linesBefore = (isPrintCleaning ? new List<string>(lines) : null);
+
+                                lines[0] = newLine;
+
+                                if (isPrintCleaning)
+                                    PrintCleaning(linesBefore, lines, regexDialog, "${Italic}${Subtitle}");
+
+                                if (isCheckMode)
+                                    subtitleError |= SubtitleError.Dialog_Error;
+                            }
+                        }
+                    }
+                }
+            }
 
             return lines;
         }
