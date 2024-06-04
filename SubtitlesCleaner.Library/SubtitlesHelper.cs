@@ -4057,17 +4057,16 @@ namespace SubtitlesCleaner.Library
         #region Merged Words
 
         public static readonly FindAndReplace[] MergedWords = new FindAndReplace[] {
-            new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in)(?i)(?<Suffix>the|you|we|him|her|he|she|it|this|they|them|those|thing|things|too)\b", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in)(?<Suffix>[A-ZÀ-Ý][a-zà-ÿ])", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:after|don't|for|of|our|that|this)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error)
+            new FindAndReplace(new Regex(@"(?i)\b(?<Prefix>of|on|if|in|for)(?<Suffix>a|all|the|you|we|him|her|he|she|it|this|they|them|their|those|thing|things|too|what)\b", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"\b(?<Prefix>of|on|if|in|for)(?<Suffix>[A-ZÀ-Ý][a-zà-ÿ])", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"(?i)\b(?<Prefix>after|don't|doesn't|for|of|our|that|this|was|were|it's|that's|there's|let's|is|are)(?<Suffix>j)", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"(?i:y)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 3, IgnoreIfCaseInsensitiveEqualsTo = @"pyjama" }
             )
             ,new FindAndReplace(new Regex(@"\b(?<OCR>off)(?i:first|too)\b", RegexOptions.Compiled), "OCR", "off ", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?<OCR>fora)\b", RegexOptions.Compiled), "OCR", "for a", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>numberi)\b", RegexOptions.Compiled), "OCR", "number one", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:time)(?<OCR>to)\b", RegexOptions.Compiled), "OCR", " to", SubtitleError.Merged_Words_Error)
-            ,new FindAndReplace(new Regex(@"\b(?i:don't)(?<OCR>do)\b", RegexOptions.Compiled), "OCR", " do", SubtitleError.Merged_Words_Error)
+            ,new FindAndReplace(new Regex(@"\b(?i:don't|doesn't)(?<OCR>do)\b", RegexOptions.Compiled), "OCR", " do", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?i:you)(?<OCR>have)\b", RegexOptions.Compiled), "OCR", " have", SubtitleError.Merged_Words_Error)
         };
 
