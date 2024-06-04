@@ -3482,7 +3482,7 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*1(?<OCR>\s+)st\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*2(?<OCR>\s+)nd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
             ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*3(?<OCR>\s+)rd\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
-            ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*[4-9](?<OCR>\s+)th\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
+            ,new FindAndReplace("Ordinal Numbers", new Regex(@"\b\d*(?:[4-9]|1[0-3])(?<OCR>\s+)th\b", RegexOptions.Compiled), "OCR", "", SubtitleError.Redundant_Spaces)
 
             // $ 1 => $1
             ,new FindAndReplace(new Regex(@"(?<OCR>\$\s)\d", RegexOptions.Compiled), "OCR", "$", SubtitleError.Redundant_Spaces)
