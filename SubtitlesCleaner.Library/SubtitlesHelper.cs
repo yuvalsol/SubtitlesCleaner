@@ -2789,7 +2789,9 @@ namespace SubtitlesCleaner.Library
                                     // 
                                     // - Line 1 line 2
                                     // - Line 3
+                                    //
                                     // or
+                                    //
                                     // - Line
                                     // - Line 1
                                     // line 2
@@ -2799,7 +2801,31 @@ namespace SubtitlesCleaner.Library
                                     string line3 = (i + 2 < lines.Count ? lines[i + 2] : null);
                                     isMergeLines =
                                         regexDialog.IsMatch(line1) &&
-                                        regexLowerLetter.IsMatch(line2.Length > 0 ? line2[0].ToString() : string.Empty) &&
+                                        (line2.Length > 0 ? regexLowerLetter.IsMatch(line2[0].ToString()) : false) &&
+                                        (isDialogFound || (string.IsNullOrEmpty(line3) == false && regexDialog.IsMatch(line3)));
+                                }
+
+                                if (isMergeLines == false)
+                                {
+                                    // - Line 1.
+                                    // Line 2
+                                    // - Line 3
+                                    // 
+                                    // - Line 1. Line 2
+                                    // - Line 3
+                                    //
+                                    // or
+                                    //
+                                    // - Line
+                                    // - Line 1.
+                                    // Line 2
+                                    // 
+                                    // - Line
+                                    // - Line 1. Line 2
+                                    string line3 = (i + 2 < lines.Count ? lines[i + 2] : null);
+                                    isMergeLines =
+                                        regexDialog.IsMatch(line1) && line1.EndsWith(".") &&
+                                        (line2.Length > 0 ? regexCapitalLetter.IsMatch(line2[0].ToString()) : false) &&
                                         (isDialogFound || (string.IsNullOrEmpty(line3) == false && regexDialog.IsMatch(line3)));
                                 }
 
