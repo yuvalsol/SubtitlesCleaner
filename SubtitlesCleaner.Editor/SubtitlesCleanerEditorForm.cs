@@ -1192,7 +1192,7 @@ namespace SubtitlesCleaner.Editor
             if (withAlert)
             {
                 message = message.Trim();
-                MessageBox.Show(this, message, "File Save", MessageBoxButtons.OK, isFileSaveHasErrors ? MessageBoxIcon.Error : MessageBoxIcon.Information);
+                MessageBoxHelper.ShowWithOKBtn(this, message, "File Save", isFileSaveHasErrors ? MessageBoxIcon.Error : MessageBoxIcon.Information);
             }
         }
 
@@ -1219,16 +1219,16 @@ namespace SubtitlesCleaner.Editor
                     openFileDialog.InitialDirectory = saveAsFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
                     this.SetFormTitle(false);
 
-                    MessageBox.Show(this,
+                    MessageBoxHelper.ShowWithOKBtn(this,
                         Path.GetFileName(saveAsFileDialog.FileName) + " saved",
-                        "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information
+                        "Subtitle File Save", MessageBoxIcon.Information
                     );
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this,
-                        "Failed to save " + Path.GetFileName(saveAsFileDialog.FileName) + Environment.NewLine + ex.Message,
-                        "Subtitle File Save", MessageBoxButtons.OK, MessageBoxIcon.Information
+                    MessageBoxHelper.Show(this,
+                        "Failed to save " + Path.GetFileName(saveAsFileDialog.FileName) + Environment.NewLine + Environment.NewLine + ex.GetUnhandledExceptionErrorMessage(),
+                        "Subtitle File Save", MessageBoxIcon.Information
                     );
                 }
             }
@@ -1284,7 +1284,7 @@ namespace SubtitlesCleaner.Editor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Add Time Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxHelper.ShowWithOKBtn(this, ex.Message, "Add Time Error", MessageBoxIcon.Error);
             }
 
             SetSubtitlesToEditorAndKeepSubtitleNumber(subtitles);

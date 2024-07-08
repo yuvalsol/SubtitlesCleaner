@@ -285,7 +285,7 @@ namespace SubtitlesCleaner.Command
                     string.Format("Unhandled Error - {0} {1}",
                         Assembly.GetExecutingAssembly().GetName().Name,
                         Assembly.GetExecutingAssembly().GetName().Version.ToString(3)) + Environment.NewLine +
-                    ex.GetUnhandledExceptionErrorMessage();
+                    ex.GetUnhandledExceptionErrorWithApplicationTerminationMessage();
             }
             catch
             {

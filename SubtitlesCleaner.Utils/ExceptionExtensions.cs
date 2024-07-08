@@ -7,10 +7,17 @@ namespace System
 {
     public static partial class ExceptionExtensions
     {
-        public static string GetUnhandledExceptionErrorMessage(this Exception ex)
+        public static string GetUnhandledExceptionErrorWithApplicationTerminationMessage(this Exception ex)
         {
             return GetExceptionErrorMessage(ex,
                 string.Format("An unhandled error occurred.{0}The application will terminate now.{0}", "\n")
+            );
+        }
+
+        public static string GetUnhandledExceptionErrorMessage(this Exception ex)
+        {
+            return GetExceptionErrorMessage(ex,
+                string.Format("An unhandled error occurred.{0}", "\n")
             );
         }
 

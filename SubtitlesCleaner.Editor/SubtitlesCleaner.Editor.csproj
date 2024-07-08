@@ -61,52 +61,59 @@
     <Compile Include="..\Solution Items\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AdjustTimingForm.cs">
+    <Compile Include="AdjustTiming\AdjustTimingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AdjustTimingForm.Designer.cs">
+    <Compile Include="AdjustTiming\AdjustTimingForm.Designer.cs">
       <DependentUpon>AdjustTimingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomNumericUpDown.cs">
+    <Compile Include="CustomMessageBox\CustomMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomMessageBox\CustomMessageBox.Designer.cs">
+      <DependentUpon>CustomMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomMessageBox\MessageBoxHelper.cs" />
+    <Compile Include="CustomAndUserControls\CustomNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomNumericUpDown.Designer.cs">
+    <Compile Include="CustomAndUserControls\CustomNumericUpDown.Designer.cs">
       <DependentUpon>CustomNumericUpDown.cs</DependentUpon>
     </Compile>
     <Compile Include="EditorRow.cs" />
     <Compile Include="ErrorRow.cs" />
-    <Compile Include="Find.cs" />
-    <Compile Include="GoToSubtitleForm.cs">
+    <Compile Include="SearchAndReplace\Find.cs" />
+    <Compile Include="GoToSubtitle\GoToSubtitleForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GoToSubtitleForm.Designer.cs">
+    <Compile Include="GoToSubtitle\GoToSubtitleForm.Designer.cs">
       <DependentUpon>GoToSubtitleForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickAction.cs" />
-    <Compile Include="QuickActionPreviewForm.cs">
+    <Compile Include="QuickAction\QuickAction.cs" />
+    <Compile Include="QuickAction\QuickActionPreviewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="QuickActionPreviewForm.Designer.cs">
+    <Compile Include="QuickAction\QuickActionPreviewForm.Designer.cs">
       <DependentUpon>QuickActionPreviewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="QuickActionsForm.cs">
+    <Compile Include="QuickAction\QuickActionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="QuickActionsForm.Designer.cs">
+    <Compile Include="QuickAction\QuickActionsForm.Designer.cs">
       <DependentUpon>QuickActionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="RepeatButton.cs">
+    <Compile Include="CustomAndUserControls\RepeatButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RepeatButton.Designer.cs">
+    <Compile Include="CustomAndUserControls\RepeatButton.Designer.cs">
       <DependentUpon>RepeatButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="SearchAndReplaceForm.cs">
+    <Compile Include="SearchAndReplace\SearchAndReplaceForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SearchAndReplaceForm.Designer.cs">
+    <Compile Include="SearchAndReplace\SearchAndReplaceForm.Designer.cs">
       <DependentUpon>SearchAndReplaceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SubtitlesCleanerEditorForm.cs">
@@ -115,25 +122,28 @@
     <Compile Include="SubtitlesCleanerEditorForm.Designer.cs">
       <DependentUpon>SubtitlesCleanerEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="RichTextBox.cs">
+    <Compile Include="CustomAndUserControls\RichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TimeCalculatorForm.cs">
+    <Compile Include="TimeCalculator\TimeCalculatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimeCalculatorForm.Designer.cs">
+    <Compile Include="TimeCalculator\TimeCalculatorForm.Designer.cs">
       <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimePicker.cs">
+    <Compile Include="CustomAndUserControls\TimePicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TimePicker.Designer.cs">
+    <Compile Include="CustomAndUserControls\TimePicker.Designer.cs">
       <DependentUpon>TimePicker.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AdjustTimingForm.resx">
+    <EmbeddedResource Include="AdjustTiming\AdjustTimingForm.resx">
       <DependentUpon>AdjustTimingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GoToSubtitleForm.resx">
+    <EmbeddedResource Include="CustomMessageBox\CustomMessageBox.resx">
+      <DependentUpon>CustomMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GoToSubtitle\GoToSubtitleForm.resx">
       <DependentUpon>GoToSubtitleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -146,23 +156,23 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="QuickActionPreviewForm.resx">
+    <EmbeddedResource Include="QuickAction\QuickActionPreviewForm.resx">
       <DependentUpon>QuickActionPreviewForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="QuickActionsForm.resx">
+    <EmbeddedResource Include="QuickAction\QuickActionsForm.resx">
       <DependentUpon>QuickActionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SearchAndReplaceForm.resx">
+    <EmbeddedResource Include="SearchAndReplace\SearchAndReplaceForm.resx">
       <DependentUpon>SearchAndReplaceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubtitlesCleanerEditorForm.resx">
       <DependentUpon>SubtitlesCleanerEditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimeCalculatorForm.resx">
+    <EmbeddedResource Include="TimeCalculator\TimeCalculatorForm.resx">
       <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimePicker.resx">
+    <EmbeddedResource Include="CustomAndUserControls\TimePicker.resx">
       <DependentUpon>TimePicker.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
