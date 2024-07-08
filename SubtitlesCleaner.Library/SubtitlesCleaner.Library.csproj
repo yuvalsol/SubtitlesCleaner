@@ -77,6 +77,11 @@
     <Compile Include="SubtitlesHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Dictionaries\names.txt" />
+    <EmbeddedResource Include="Dictionaries\custom_words.txt" />
+    <EmbeddedResource Include="Dictionaries\english_given_names.txt" />
+    <EmbeddedResource Include="Dictionaries\game_of_thrones_names.txt" />
+    <EmbeddedResource Include="Dictionaries\old_english_given_names.txt" />
     <Content Include="Dictionaries\README_en_US.txt" />
     <Content Include="SubtitleError.html" />
   </ItemGroup>

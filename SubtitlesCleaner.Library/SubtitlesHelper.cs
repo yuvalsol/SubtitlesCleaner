@@ -3001,10 +3001,10 @@ namespace SubtitlesCleaner.Library
 
                 foreach (var misspelledWord in misspelledLine.MisspelledWords.OrderByDescending(w => w.Index))
                 {
-                    if (misspelledWord.HasSuggestions)
+                    if (string.IsNullOrEmpty(misspelledWord.Suggestion) == false)
                     {
                         chars.RemoveRange(misspelledWord.Index, misspelledWord.Length);
-                        chars.InsertRange(misspelledWord.Index, misspelledWord.Suggestions.First());
+                        chars.InsertRange(misspelledWord.Index, misspelledWord.Suggestion);
                     }
                 }
 
@@ -4088,6 +4088,9 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"(?i)\b(?<Prefix>after|don't|doesn't|for|of|our|that|this|was|were|it's|that's|there's|let's|is|are)(?<Suffix>j)", RegexOptions.Compiled), "${Prefix} ${Suffix}", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"(?i:y)(?<OCR>j)", RegexOptions.Compiled), "OCR", " j", SubtitleError.Merged_Words_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 3, IgnoreIfCaseInsensitiveEqualsTo = @"pyjama" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEqualsTo = @"greyjoy" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 2, ReadNextCharsFromMatch = 3, IgnoreIfCaseInsensitiveEqualsTo = @"skyjack" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, ReadNextCharsFromMatch = 3, IgnoreIfCaseInsensitiveEqualsTo = @"maryjane" }
             )
             ,new FindAndReplace(new Regex(@"\b(?<OCR>off)(?i:first|too)\b", RegexOptions.Compiled), "OCR", "off ", SubtitleError.Merged_Words_Error)
             ,new FindAndReplace(new Regex(@"\b(?<OCR>numberi)\b", RegexOptions.Compiled), "OCR", "number one", SubtitleError.Merged_Words_Error)

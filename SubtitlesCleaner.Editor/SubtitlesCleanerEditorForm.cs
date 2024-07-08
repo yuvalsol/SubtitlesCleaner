@@ -733,7 +733,7 @@ namespace SubtitlesCleaner.Editor
             box.SelectionBackColor = backColor;
         }
 
-        private static readonly Regex regexRtfUnderline = new Regex(@"\\ul[^n]", RegexOptions.Compiled); // \ul but not \ulnone
+        public static readonly Regex regexRtfUnderline = new Regex(@"\\ul[^n]", RegexOptions.Compiled); // \ul but not \ulnone
 
         private void SetDictionaryErrorsToSubtitlesTextBox()
         {
@@ -745,7 +745,7 @@ namespace SubtitlesCleaner.Editor
 
                 foreach (var misspelledWord in misspelledLine.MisspelledWords)
                 {
-                    if (misspelledWord.HasSuggestions)
+                    if (string.IsNullOrEmpty(misspelledWord.Suggestion) == false)
                     {
                         int selectionStart = misspelledWord.Index + txtSubtitle.Lines.Take(lineIndex).Sum(l => l.Length + 1);
                         int selectionLength = misspelledWord.Length;

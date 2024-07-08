@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using SubtitlesCleaner.Library;
@@ -10,7 +11,27 @@ namespace RegexTester
         static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
+        }
 
+        private static void TestDictionary(string word)
+        {
+            Console.WriteLine(word);
+            bool inDictionary = DictionaryHelper.CheckWord(word);
+            Console.WriteLine("in dictionary: " + inDictionary);
+            if (inDictionary == false)
+            {
+                var suggestions = DictionaryHelper.GetSuggestions(word);
+                if (suggestions.HasAny())
+                {
+                    Console.WriteLine("Suggestions:");
+                    foreach (var suggestion in suggestions)
+                        Console.WriteLine(suggestion);
+                }
+            }
+        }
+
+        private static void TestRegex()
+        {
             string input = @"Lyrics♪</i>";
 
             Regex regex = new Regex(@"(?<Lyrics>[^ ♪])(?<Suffix>♪+(?:</i>)?)$");
@@ -24,7 +45,7 @@ namespace RegexTester
             Print(input, far);
         }
 
-        static void Print(string input, FindAndReplace far)
+        private static void Print(string input, FindAndReplace far)
         {
             Print(input, far.Regex);
 
@@ -34,7 +55,7 @@ namespace RegexTester
             Console.WriteLine();
         }
 
-        static void Print(string input, Regex regex)
+        private static void Print(string input, Regex regex)
         {
             Console.WriteLine("Input:");
             RegexHelper.PrintInput(input);
