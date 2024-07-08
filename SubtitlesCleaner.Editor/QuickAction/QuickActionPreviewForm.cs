@@ -73,11 +73,11 @@ namespace SubtitlesCleaner.Editor
 
                 File.WriteAllText(path, preview, Encoding.UTF8);
 
-                MessageBox.Show(this, "File saved to" + Environment.NewLine + fileName, "File Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxHelper.ShowWithOKBtn(this, "File saved to" + Environment.NewLine + fileName, "File Saved", MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "Failed to save file." + Environment.NewLine + fileName + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxHelper.ShowWithOKBtn(this, "Failed to save file." + Environment.NewLine + fileName + Environment.NewLine + ex.Message, "Error", MessageBoxIcon.Error);
             }
         }
     }
