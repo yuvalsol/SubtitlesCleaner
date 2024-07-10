@@ -96,38 +96,28 @@ namespace System.Windows.Forms
             CustomButton[] customButtons = null,
             CustomButtonText[] buttonTexts = null)
         {
-            int lblW = lblMessage.Size.Width;
-            int lblH = lblMessage.Size.Height;
+            SetCaption(caption);
+            SetIcon(icon);
+            List<Button> btns = SetButtons(buttons, customButtons, buttonTexts);
+            SetAppearance(appearance, icon, btns);
+            SetMessage(text);
+            SetRightToLeft(appearance, icon, btns);
+        }
 
-            lblMessage.Text = text;
-
-            int lblNewW = lblMessage.Size.Width;
-            int lblNewH = lblMessage.Size.Height;
-
-            if (lblNewW > lblW)
-            {
-                this.Width += lblNewW - lblW;
-            }
-
-            if (lblNewH > lblH)
-            {
-                using (var g = this.CreateGraphics())
-                {
-                    int lineSpacing = lblMessage.Font.FontFamily.GetLineSpacing(lblMessage.Font.Style);
-                    float lineSpacingPixel = lblMessage.Font.Size * lineSpacing / lblMessage.Font.FontFamily.GetEmHeight(lblMessage.Font.Style);
-                    this.Height += (int)(lblNewH - lblH + lineSpacingPixel);
-                }
-            }
-
+        private void SetCaption(string caption)
+        {
             this.Text = caption;
+        }
 
+        private void SetIcon(MessageBoxIcon icon)
+        {
             if (icon == MessageBoxIcon.None)
             {
                 int iconX = pbxIcon.Location.X;
                 int diffX = lblMessage.Location.X - iconX;
                 pbxIcon.Hide();
                 lblMessage.Location = new Point(iconX, lblMessage.Location.Y);
-                lblMessage.Size = new Size(lblMessage.Size.Width + diffX, lblMessage.Size.Height);
+                this.Width -= diffX;
             }
             else if (icon == MessageBoxIcon.Error || icon == MessageBoxIcon.Stop || icon == MessageBoxIcon.Hand)
             {
@@ -145,7 +135,10 @@ namespace System.Windows.Forms
             {
                 pbxIcon.Image = SystemIcons.Information.ToBitmap();
             }
+        }
 
+        private List<Button> SetButtons(CustomMessageBoxButtons buttons, CustomButton[] customButtons, CustomButtonText[] buttonTexts)
+        {
             List<Button> btns = null;
 
             bool hasCustomButtons = customButtons != null && customButtons.Length > 0;
@@ -153,9 +146,9 @@ namespace System.Windows.Forms
             if (buttons == CustomMessageBoxButtons.None && hasCustomButtons == false)
             {
                 int pnlH = pnlButtons.Height;
-                lblMessage.Size = new Size(lblMessage.Size.Width, lblMessage.Size.Height + pnlH);
+                int lblY = lblMessage.Location.Y;
                 pnlButtons.Hide();
-                this.Height -= pnlH;
+                this.Height -= pnlH - lblY;
             }
             else
             {
@@ -191,111 +184,196 @@ namespace System.Windows.Forms
                 pnlButtons.Controls.AddRange(btns.ToArray());
             }
 
-            if (appearance == null)
-                return;
+            return btns;
+        }
 
+        private void SetAppearance(CustomAppearance appearance, MessageBoxIcon icon, List<Button> btns)
+        {
+            if (appearance != null)
+            {
+                SetColors(appearance);
+                SetFont(appearance);
+                SetTextAlign(appearance, icon);
+                SetButtonsAppearance(appearance, btns);
+            }
+        }
+
+        private void SetColors(CustomAppearance appearance)
+        {
             if (appearance.ForeColor != null)
                 this.ForeColor = lblMessage.ForeColor = appearance.ForeColor.Value;
 
             if (appearance.BackColor != null)
                 this.BackColor = lblMessage.BackColor = appearance.BackColor.Value;
+        }
 
-            if (appearance.Font != null)
-                this.Font = lblMessage.Font = new Font(appearance.Font, FontStyle.Regular);
+        private void SetFont(CustomAppearance appearance)
+        {
+            Font newFont = GetFont(
+                this.Font,
+                appearance.Font,
+                appearance.FontFamilyName,
+                appearance.FontSize,
+                appearance.FontStyle
+            );
 
-            if ((string.IsNullOrEmpty(appearance.FontFamilyName) &&
-                appearance.FontSize == null &&
-                appearance.FontStyle == null) == false)
-            {
-                this.Font = lblMessage.Font = new Font
-                (
-                    string.IsNullOrEmpty(appearance.FontFamilyName) ? this.Font.FontFamily.Name : appearance.FontFamilyName,
-                    appearance.FontSize == null ? this.Font.Size : appearance.FontSize.Value,
-                    appearance.FontStyle == null ? this.Font.Style : appearance.FontStyle.Value
-                );
-            }
+            if (this.Font != newFont)
+                this.Font = lblMessage.Font = newFont;
+        }
 
+        private void SetTextAlign(CustomAppearance appearance, MessageBoxIcon icon)
+        {
             if (appearance.TextAlign != null)
             {
                 lblMessage.TextAlign = appearance.TextAlign.Value;
 
-                if (lblMessage.TextAlign == ContentAlignment.MiddleLeft ||
-                    lblMessage.TextAlign == ContentAlignment.MiddleCenter ||
-                    lblMessage.TextAlign == ContentAlignment.MiddleRight)
-                {
-                    pbxIcon.Location = new Point(
-                        pbxIcon.Location.X,
-                        ((2 * lblMessage.Location.Y) + lblMessage.Height - pbxIcon.Height) / 2
-                    );
-                }
-                else if (lblMessage.TextAlign == ContentAlignment.BottomLeft ||
-                    lblMessage.TextAlign == ContentAlignment.BottomCenter ||
-                    lblMessage.TextAlign == ContentAlignment.BottomRight)
-                {
-                    pbxIcon.Location = new Point(
-                        pbxIcon.Location.X,
-                        lblMessage.Location.Y + lblMessage.Height - pbxIcon.Height
-                    );
-                }
-            }
-
-            if (appearance.RightToLeft == true)
-            {
-                lblMessage.RightToLeft = RightToLeft.Yes;
-
                 if (icon != MessageBoxIcon.None)
                 {
-                    int iconX = pbxIcon.Location.X;
-                    int lblX1 = lblMessage.Location.X;
-                    int lblX2 = lblX1 + lblMessage.Width;
-                    int iconNewX = lblX2 - pbxIcon.Width;
-                    int lblNewX = iconX;
-
-                    pbxIcon.Location = new Point(iconNewX, pbxIcon.Location.Y);
-                    lblMessage.Location = new Point(lblNewX, lblMessage.Location.Y);
+                    if (lblMessage.TextAlign == ContentAlignment.MiddleLeft ||
+                        lblMessage.TextAlign == ContentAlignment.MiddleCenter ||
+                        lblMessage.TextAlign == ContentAlignment.MiddleRight)
+                    {
+                        pbxIcon.Location = new Point(
+                            pbxIcon.Location.X,
+                            ((2 * lblMessage.Location.Y) + lblMessage.Height - pbxIcon.Height) / 2
+                        );
+                    }
+                    else if (lblMessage.TextAlign == ContentAlignment.BottomLeft ||
+                        lblMessage.TextAlign == ContentAlignment.BottomCenter ||
+                        lblMessage.TextAlign == ContentAlignment.BottomRight)
+                    {
+                        pbxIcon.Location = new Point(
+                            pbxIcon.Location.X,
+                            lblMessage.Location.Y + lblMessage.Height - pbxIcon.Height
+                        );
+                    }
                 }
+            }
+        }
 
-                pnlButtons.RightToLeft = RightToLeft.No;
+        private void SetButtonsAppearance(CustomAppearance appearance, List<Button> btns)
+        {
+            if (appearance.ButtonsAppearance != null)
+            {
+                SetButtonsPanelColors(appearance);
 
                 if (btns != null && btns.Count > 0)
                 {
                     foreach (var btn in btns)
-                        btn.RightToLeft = RightToLeft.Yes;
+                    {
+                        SetButtonColors(appearance, btn);
+                        SetButtonFont(appearance, btn);
+                    }
                 }
             }
+        }
 
-            if (appearance.ButtonsAppearance == null)
-                return;
-
+        private void SetButtonsPanelColors(CustomAppearance appearance)
+        {
             if (appearance.ButtonsAppearance.ButtonsPanelBackColor != null)
                 pnlButtons.BackColor = appearance.ButtonsAppearance.ButtonsPanelBackColor.Value;
+        }
 
-            if (btns == null || btns.Count == 0)
-                return;
+        private void SetButtonColors(CustomAppearance appearance, Button btn)
+        {
+            if (appearance.ButtonsAppearance.ForeColor != null)
+                btn.ForeColor = appearance.ButtonsAppearance.ForeColor.Value;
 
-            foreach (var btn in btns)
+            if (appearance.ButtonsAppearance.BackColor != null)
+                btn.BackColor = appearance.ButtonsAppearance.BackColor.Value;
+        }
+
+        private void SetButtonFont(CustomAppearance appearance, Button btn)
+        {
+            Font newFont = GetFont(
+                btn.Font,
+                appearance.ButtonsAppearance.Font,
+                appearance.ButtonsAppearance.FontFamilyName,
+                appearance.ButtonsAppearance.FontSize,
+                appearance.ButtonsAppearance.FontStyle
+            );
+
+            if (btn.Font != newFont)
+                btn.Font = newFont;
+        }
+
+        private void SetMessage(string text)
+        {
+            int lblW = lblMessage.Size.Width;
+            int lblH = lblMessage.Size.Height;
+
+            lblMessage.Text = text;
+
+            int lblNewW = lblMessage.Size.Width;
+            int lblNewH = lblMessage.Size.Height;
+
+            if (lblNewW > lblW)
             {
-                if (appearance.ButtonsAppearance.ForeColor != null)
-                    btn.ForeColor = appearance.ButtonsAppearance.ForeColor.Value;
+                this.Width += lblNewW - lblW;
+            }
 
-                if (appearance.ButtonsAppearance.BackColor != null)
-                    btn.BackColor = appearance.ButtonsAppearance.BackColor.Value;
-
-                if (appearance.ButtonsAppearance.Font != null)
-                    btn.Font = new Font(appearance.ButtonsAppearance.Font, FontStyle.Regular);
-
-                if ((string.IsNullOrEmpty(appearance.ButtonsAppearance.FontFamilyName) &&
-                    appearance.ButtonsAppearance.FontSize == null &&
-                    appearance.ButtonsAppearance.FontStyle == null) == false)
+            if (lblNewH > lblH)
+            {
+                using (var g = this.CreateGraphics())
                 {
-                    btn.Font = new Font
-                    (
-                        string.IsNullOrEmpty(appearance.ButtonsAppearance.FontFamilyName) ? btn.Font.FontFamily.Name : appearance.ButtonsAppearance.FontFamilyName,
-                        appearance.ButtonsAppearance.FontSize == null ? btn.Font.Size : appearance.ButtonsAppearance.FontSize.Value,
-                        appearance.ButtonsAppearance.FontStyle == null ? btn.Font.Style : appearance.ButtonsAppearance.FontStyle.Value
-                    );
+                    int lineSpacing = lblMessage.Font.FontFamily.GetLineSpacing(lblMessage.Font.Style);
+                    float lineSpacingPixel = lblMessage.Font.Size * lineSpacing / lblMessage.Font.FontFamily.GetEmHeight(lblMessage.Font.Style);
+                    this.Height += (int)(lblNewH - lblH + lineSpacingPixel);
                 }
             }
+        }
+
+        private void SetRightToLeft(CustomAppearance appearance, MessageBoxIcon icon, List<Button> btns)
+        {
+            if (appearance != null)
+            {
+                if (appearance.RightToLeft == true)
+                {
+                    lblMessage.RightToLeft = RightToLeft.Yes;
+
+                    if (icon != MessageBoxIcon.None)
+                    {
+                        int iconX = pbxIcon.Location.X;
+                        int lblX1 = lblMessage.Location.X;
+                        int lblX2 = lblX1 + lblMessage.Width;
+                        int iconNewX = lblX2 - pbxIcon.Width;
+                        int lblNewX = iconX;
+
+                        pbxIcon.Location = new Point(iconNewX, pbxIcon.Location.Y);
+                        lblMessage.Location = new Point(lblNewX, lblMessage.Location.Y);
+                    }
+
+                    pnlButtons.RightToLeft = RightToLeft.No;
+
+                    if (btns != null && btns.Count > 0)
+                    {
+                        foreach (var btn in btns)
+                            btn.RightToLeft = RightToLeft.Yes;
+                    }
+                }
+            }
+        }
+
+        private Font GetFont(Font controlFont, Font font, string fontFamilyName, float? fontSize, FontStyle? fontStyle)
+        {
+            Font newFont = controlFont;
+
+            if (font != null)
+                newFont = (Font)font.Clone();
+
+            if ((string.IsNullOrEmpty(fontFamilyName) &&
+                fontSize == null &&
+                fontStyle == null) == false)
+            {
+                newFont = new Font
+                (
+                    string.IsNullOrEmpty(fontFamilyName) ? newFont.FontFamily.Name : fontFamilyName,
+                    fontSize == null ? newFont.Size : fontSize.Value,
+                    fontStyle == null ? newFont.Style : fontStyle.Value
+                );
+            }
+
+            return newFont;
         }
 
         private void AddButton(
@@ -339,6 +417,36 @@ namespace System.Windows.Forms
             }
 
             return btn;
+        }
+
+        public static CustomAppearance GetDefaultCustomAppearance()
+        {
+            var messageBox = new CustomMessageBox();
+
+            var appearance = new CustomAppearance()
+            {
+                ForeColor = messageBox.ForeColor,
+                BackColor = messageBox.BackColor,
+                Font = (Font)messageBox.Font.Clone(),
+                FontFamilyName = messageBox.Font.FontFamily.Name,
+                FontSize = messageBox.Font.Size,
+                FontStyle = messageBox.Font.Style,
+                TextAlign = messageBox.lblMessage.TextAlign,
+                RightToLeft = messageBox.lblMessage.RightToLeft == RightToLeft.Yes
+            };
+
+            appearance.ButtonsAppearance = new CustomButtonAppearance()
+            {
+                ButtonsPanelBackColor = appearance.BackColor,
+                ForeColor = appearance.ForeColor,
+                BackColor = appearance.BackColor,
+                Font = (Font)appearance.Font.Clone(),
+                FontFamilyName = appearance.Font.FontFamily.Name,
+                FontSize = appearance.Font.Size,
+                FontStyle = appearance.Font.Style
+            };
+
+            return appearance;
         }
     }
 
