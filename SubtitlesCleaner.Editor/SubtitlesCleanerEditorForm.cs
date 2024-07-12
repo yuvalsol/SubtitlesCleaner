@@ -1368,6 +1368,12 @@ namespace SubtitlesCleaner.Editor
                 searchAndReplaceDialog.ReplaceAll += (sender, find) => ReplaceAll(find);
             }
 
+            if (txtSubtitle.SelectionLength > 0)
+            {
+                string search = txtSubtitle.Text.Substring(txtSubtitle.SelectionStart, txtSubtitle.SelectionLength);
+                searchAndReplaceDialog.SetSearch(search);
+            }
+
             searchAndReplaceDialog.ShowDialog(this);
         }
 

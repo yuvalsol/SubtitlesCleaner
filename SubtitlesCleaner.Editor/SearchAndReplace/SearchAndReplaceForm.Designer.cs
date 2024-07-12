@@ -82,6 +82,8 @@
             // chkMatchCase
             // 
             this.chkMatchCase.AutoSize = true;
+            this.chkMatchCase.Checked = true;
+            this.chkMatchCase.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMatchCase.Location = new System.Drawing.Point(12, 73);
             this.chkMatchCase.Name = "chkMatchCase";
             this.chkMatchCase.Size = new System.Drawing.Size(88, 18);
@@ -92,6 +94,8 @@
             // chkMatchWholeWord
             // 
             this.chkMatchWholeWord.AutoSize = true;
+            this.chkMatchWholeWord.Checked = true;
+            this.chkMatchWholeWord.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMatchWholeWord.Location = new System.Drawing.Point(106, 73);
             this.chkMatchWholeWord.Name = "chkMatchWholeWord";
             this.chkMatchWholeWord.Size = new System.Drawing.Size(132, 18);
@@ -159,7 +163,7 @@
             this.Name = "SearchAndReplaceForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search and Replace";
-            this.Load += new System.EventHandler(this.SearchAndReplaceForm_Load);
+            this.Shown += new System.EventHandler(this.SearchAndReplaceForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchAndReplaceForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

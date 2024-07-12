@@ -10,14 +10,35 @@ namespace SubtitlesCleaner.Editor
             InitializeComponent();
         }
 
-        private void SearchAndReplaceForm_Load(object sender, EventArgs e)
+        private void SearchAndReplaceForm_Shown(object sender, EventArgs e)
         {
-            txtSearch.Focus();
+            if (isSearchWasSet)
+                txtReplace.Focus();
+            else
+                txtSearch.Focus();
+
+            isSearchWasSet = false;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private bool isSearchWasSet;
+
+        public void SetSearch(string search)
+        {
+            if (string.IsNullOrEmpty(search))
+                return;
+
+            search = search.Trim();
+
+            if (string.IsNullOrEmpty(search))
+                return;
+
+            txtSearch.Text = search;
+            isSearchWasSet = true;
         }
 
         public Find GetFind()
