@@ -74,10 +74,10 @@
       <DependentUpon>CustomMessageBox.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomMessageBox\MessageBoxHelper.cs" />
-    <Compile Include="CustomAndUserControls\CustomNumericUpDown.cs">
+    <Compile Include="Controls\CustomNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomAndUserControls\CustomNumericUpDown.Designer.cs">
+    <Compile Include="Controls\CustomNumericUpDown.Designer.cs">
       <DependentUpon>CustomNumericUpDown.cs</DependentUpon>
     </Compile>
     <Compile Include="EditorRow.cs" />
@@ -104,10 +104,10 @@
     <Compile Include="QuickAction\QuickActionsForm.Designer.cs">
       <DependentUpon>QuickActionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomAndUserControls\RepeatButton.cs">
+    <Compile Include="Controls\RepeatButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomAndUserControls\RepeatButton.Designer.cs">
+    <Compile Include="Controls\RepeatButton.Designer.cs">
       <DependentUpon>RepeatButton.cs</DependentUpon>
     </Compile>
     <Compile Include="SearchAndReplace\SearchAndReplaceForm.cs">
@@ -122,7 +122,7 @@
     <Compile Include="SubtitlesCleanerEditorForm.Designer.cs">
       <DependentUpon>SubtitlesCleanerEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomAndUserControls\RichTextBox.cs">
+    <Compile Include="Controls\RichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TimeCalculator\TimeCalculatorForm.cs">
@@ -131,10 +131,10 @@
     <Compile Include="TimeCalculator\TimeCalculatorForm.Designer.cs">
       <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomAndUserControls\TimePicker.cs">
+    <Compile Include="Controls\TimePicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CustomAndUserControls\TimePicker.Designer.cs">
+    <Compile Include="Controls\TimePicker.Designer.cs">
       <DependentUpon>TimePicker.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="AdjustTiming\AdjustTimingForm.resx">
@@ -172,7 +172,7 @@
     <EmbeddedResource Include="TimeCalculator\TimeCalculatorForm.resx">
       <DependentUpon>TimeCalculatorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomAndUserControls\TimePicker.resx">
+    <EmbeddedResource Include="Controls\TimePicker.resx">
       <DependentUpon>TimePicker.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
