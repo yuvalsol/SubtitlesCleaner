@@ -3322,6 +3322,8 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"[♫¶*]", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"<i>[♪♫¶*#]+</i>", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"\#(?![0-9])", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"♪+\s*<i>♪+", RegexOptions.Compiled), "<i>♪", SubtitleError.Notes_Error)
+            ,new FindAndReplace(new Regex(@"♪+</i>\s*♪+", RegexOptions.Compiled), "♪</i>", SubtitleError.Notes_Error)
             ,new FindAndReplace(new Regex(@"♪{2,}", RegexOptions.Compiled), "♪", SubtitleError.Notes_Error)
 
             // j"
