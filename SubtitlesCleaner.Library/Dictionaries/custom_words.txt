@@ -12,6 +12,7 @@ Café
 D'you
 Doo
 Fiancé
+Heh
 Hells
 Hm
 Hmm
@@ -44,6 +45,7 @@ café
 d'you
 doo
 fiancé
+heh
 hells
 hm
 hmm
