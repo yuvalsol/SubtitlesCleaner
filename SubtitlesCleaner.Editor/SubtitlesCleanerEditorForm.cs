@@ -564,7 +564,11 @@ namespace SubtitlesCleaner.Editor
 
         private void lstEditor_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+            {
+                return;
+            }
+            else if (e.KeyCode == Keys.Delete)
             {
                 EditorRow editorRow = GetSelectedEditorRow();
                 if (editorRow == null)
