@@ -1493,12 +1493,16 @@ namespace SubtitlesCleaner.Editor
 
                     EditorRow editorRow = GetEditorRowAt(i);
 
-                    SetSubtitleToEditor(editorRow, subtitle);
+                    SetSubtitleToEditorRow(editorRow, subtitle);
                 }
             }
 
             if (isFoundAndReplaced)
             {
+                EditorRow editorRow = GetEditorRowAt(lastIndexFoundAndReplaced);
+
+                SetTextToTextBoxes(editorRow.Lines, editorRow.CleanLines, editorRow.MisspelledLines);
+
                 SetSubtitlesErrors();
 
                 SelectEditorRow(lastIndexFoundAndReplaced);
