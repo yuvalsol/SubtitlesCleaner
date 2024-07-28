@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SubtitlesCleaner.Library;
 
 namespace SubtitlesCleaner.Editor
@@ -15,5 +16,6 @@ namespace SubtitlesCleaner.Editor
         public string CleanText { get; set; }
         public string CleanLines { get; set; }
         public SubtitleError SubtitleError { get; set; }
+        public List<MisspelledLine> MisspelledLines { get; set; }
     }
 }

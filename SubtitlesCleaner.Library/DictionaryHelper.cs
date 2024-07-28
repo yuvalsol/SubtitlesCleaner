@@ -8,75 +8,80 @@ using WeCantSpell.Hunspell;
 
 namespace SubtitlesCleaner.Library
 {
+    public class MisspelledLine
+    {
+        public string Line { get; private set; }
+        public int LineIndex { get; private set; }
+        public List<MisspelledWordWithLineLocation> MisspelledWords { get; private set; }
+
+        public MisspelledLine(string line, int lineIndex, List<MisspelledWordWithLineLocation> misspelledWords)
+        {
+            Line = line;
+            LineIndex = lineIndex;
+            MisspelledWords = misspelledWords;
+        }
+
+        public override string ToString()
+        {
+            return Line;
+        }
+    }
+
+    public class MisspelledWord
+    {
+        public string Word { get; private set; }
+        public string[] Suggestions { get; private set; }
+
+        public MisspelledWord(string word, string[] suggestions)
+        {
+            Word = word;
+            Suggestions = suggestions;
+        }
+
+        public MisspelledWord(MisspelledWord misspelledWord)
+            : this(misspelledWord.Word, misspelledWord.Suggestions)
+        { }
+
+        public override string ToString()
+        {
+            return Word;
+        }
+    }
+
+    public class MisspelledWordWithLineLocation : MisspelledWord
+    {
+        public MisspelledLine MisspelledLine { get; private set; }
+        public int Index { get; private set; }
+        public int Length { get; private set; }
+        public int SelectionStart { get; set; }
+        public int SelectionLength { get { return Length; } }
+
+        public MisspelledWordWithLineLocation(string word, string[] suggestions, int index, int length)
+            : base(word, suggestions)
+        {
+            Init(index, length);
+        }
+
+        public MisspelledWordWithLineLocation(MisspelledWord misspelledWord, int index, int length)
+            : base(misspelledWord)
+        {
+            Init(index, length);
+        }
+
+        private void Init(int index, int length)
+        {
+            Index = index;
+            Length = length;
+        }
+
+        internal void SetMisspelledLine(MisspelledLine misspelledLine)
+        {
+            MisspelledLine = misspelledLine;
+        }
+    }
+
     public static class DictionaryHelper
     {
-        public class MisspelledLine
-        {
-            public string Line { get; private set; }
-            public int LineIndex { get; private set; }
-            public IEnumerable<MisspelledWordWithLineLocation> MisspelledWords { get; private set; }
-
-            public MisspelledLine(string line, int lineIndex, IEnumerable<MisspelledWordWithLineLocation> misspelledWords)
-            {
-                Line = line;
-                LineIndex = lineIndex;
-                MisspelledWords = misspelledWords;
-            }
-
-            public override string ToString()
-            {
-                return Line;
-            }
-        }
-
-        public class MisspelledWord
-        {
-            public string Word { get; private set; }
-            public string Suggestion { get; private set; }
-
-            public MisspelledWord(string word)
-            {
-                Word = word;
-
-                Suggestion = dictionary.Suggest(word, new QueryOptions()
-                {
-                    MaxSuggestions = 1
-                }).FirstOrDefault();
-            }
-
-            public MisspelledWord(MisspelledWord misspelledWord)
-            {
-                Word = misspelledWord.Word;
-                Suggestion = misspelledWord.Suggestion;
-            }
-
-            public override string ToString()
-            {
-                return Word;
-            }
-        }
-
-        public class MisspelledWordWithLineLocation : MisspelledWord
-        {
-            public int Index { get; private set; }
-            public int Length { get; private set; }
-
-            public MisspelledWordWithLineLocation(string word, int index, int length) : base(word)
-            {
-                Index = index;
-                Length = length;
-            }
-
-            public MisspelledWordWithLineLocation(MisspelledWord misspelledWord, int index, int length) : base(misspelledWord)
-            {
-                Index = index;
-                Length = length;
-            }
-        }
-
-        private static WordList dictionary;
-        private static readonly HashSet<string> names = new HashSet<string>();
-
         #region Loading
 
         static DictionaryHelper()
@@ -85,6 +90,8 @@ namespace SubtitlesCleaner.Library
             LoadDictionary(assembly);
             LoadNames(assembly);
         }
+
+        private static WordList dictionary;
 
         private static void LoadDictionary(Assembly assembly)
         {
@@ -96,6 +103,8 @@ namespace SubtitlesCleaner.Library
                 }
             }
         }
+
+        private static readonly HashSet<string> names = new HashSet<string>();
 
         private static void LoadNames(Assembly assembly)
         {
@@ -126,9 +135,9 @@ namespace SubtitlesCleaner.Library
                     {
                         while (sr.Peek() != -1)
                         {
-                            string line = (sr.ReadLine() ?? string.Empty).Trim();
-                            if (string.IsNullOrEmpty(line) == false)
-                                names.Add(line);
+                            string word = (sr.ReadLine() ?? string.Empty).Trim();
+                            if (string.IsNullOrEmpty(word) == false)
+                                names.Add(word);
                         }
                     }
                 }
@@ -148,19 +157,23 @@ namespace SubtitlesCleaner.Library
             return dictionary.Check(FixWord(word));
         }
 
-        public static IEnumerable<string> GetSuggestions(string word, int? maxSuggestions = null)
+        public static string[] GetSuggestions(string word, int maxSuggestions = 5)
         {
-            if (maxSuggestions != null)
-            {
-                return dictionary.Suggest(FixWord(word), new QueryOptions()
-                {
-                    MaxSuggestions = maxSuggestions.Value
-                });
-            }
-            else
-            {
-                return dictionary.Suggest(FixWord(word));
-            }
+            return dictionary.Suggest(
+                FixWord(word),
+                new QueryOptions() { MaxSuggestions = maxSuggestions }
+            ).ToArray();
+        }
+
+        #endregion
+
+        #region Ignored Words
+
+        private static readonly HashSet<string> ignoredWords = new HashSet<string>();
+
+        public static void AddIgnoredWord(string word)
+        {
+            ignoredWords.Add(word);
         }
 
         #endregion
@@ -175,7 +188,18 @@ namespace SubtitlesCleaner.Library
             {
                 var misspelledWords = GetMisspelledWords(line);
                 if (misspelledWords.HasAny())
-                    yield return new MisspelledLine(line, lineIndex, misspelledWords);
+                {
+                    var arrMisspelledWords = misspelledWords.ToList();
+                    var misspelledLine = new MisspelledLine(line, lineIndex, arrMisspelledWords);
+
+                    foreach (var misspelledWord in arrMisspelledWords)
+                    {
+                        misspelledWord.SelectionStart = misspelledWord.Index + lines.Take(lineIndex).Sum(l => l.Length + 1);
+                        misspelledWord.SetMisspelledLine(misspelledLine);
+                    }
+
+                    yield return misspelledLine;
+                }
 
                 lineIndex++;
             }
@@ -200,7 +224,7 @@ namespace SubtitlesCleaner.Library
 
                 word = FixWord(word);
 
-                if (wordsSpelledCorrectly.Contains(word) || names.Contains(word))
+                if (wordsSpelledCorrectly.Contains(word) || ignoredWords.Contains(word) || names.Contains(word))
                 {
                     continue;
                 }
@@ -214,7 +238,12 @@ namespace SubtitlesCleaner.Library
                 }
                 else
                 {
-                    var misspelledWord = new MisspelledWord(word);
+                    var suggestions = dictionary.Suggest(
+                        word,
+                        new QueryOptions() { MaxSuggestions = 5 }
+                    ).ToArray();
+
+                    var misspelledWord = new MisspelledWord(word, suggestions);
                     wordsMisspelled.Add(word, misspelledWord);
                     yield return new MisspelledWordWithLineLocation(misspelledWord, index, length);
                 }

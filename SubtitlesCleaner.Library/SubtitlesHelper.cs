@@ -3001,10 +3001,11 @@ namespace SubtitlesCleaner.Library
 
                 foreach (var misspelledWord in misspelledLine.MisspelledWords.OrderByDescending(w => w.Index))
                 {
-                    if (string.IsNullOrEmpty(misspelledWord.Suggestion) == false)
+                    string suggestion = misspelledWord.Suggestions.FirstOrDefault();
+                    if (string.IsNullOrEmpty(suggestion) == false)
                     {
                         chars.RemoveRange(misspelledWord.Index, misspelledWord.Length);
-                        chars.InsertRange(misspelledWord.Index, misspelledWord.Suggestion);
+                        chars.InsertRange(misspelledWord.Index, suggestion);
                     }
                 }
 

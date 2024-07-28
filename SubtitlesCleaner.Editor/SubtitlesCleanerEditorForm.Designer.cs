@@ -102,6 +102,7 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnOpenNextSubtitle = new System.Windows.Forms.Button();
+            this.btnReloadFile = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnSaveAs = new System.Windows.Forms.Button();
             this.chkBackupSRT = new System.Windows.Forms.CheckBox();
@@ -113,7 +114,6 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveAsFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.btnReloadFile = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -214,19 +214,19 @@
             this.fixAllErrorsToolStripMenuItem});
             this.contextMenuStripErrors.Name = "contextMenuStripErrors";
             this.contextMenuStripErrors.ShowImageMargin = false;
-            this.contextMenuStripErrors.Size = new System.Drawing.Size(115, 48);
+            this.contextMenuStripErrors.Size = new System.Drawing.Size(136, 52);
             // 
             // fixErrorToolStripMenuItem
             // 
             this.fixErrorToolStripMenuItem.Name = "fixErrorToolStripMenuItem";
-            this.fixErrorToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.fixErrorToolStripMenuItem.Size = new System.Drawing.Size(135, 24);
             this.fixErrorToolStripMenuItem.Text = "Fix Error";
             this.fixErrorToolStripMenuItem.Click += new System.EventHandler(this.fixErrorToolStripMenuItem_Click);
             // 
             // fixAllErrorsToolStripMenuItem
             // 
             this.fixAllErrorsToolStripMenuItem.Name = "fixAllErrorsToolStripMenuItem";
-            this.fixAllErrorsToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.fixAllErrorsToolStripMenuItem.Size = new System.Drawing.Size(135, 24);
             this.fixAllErrorsToolStripMenuItem.Text = "Fix All Errors";
             this.fixAllErrorsToolStripMenuItem.Click += new System.EventHandler(this.fixAllErrorsToolStripMenuItem_Click);
             // 
@@ -391,33 +391,33 @@
             this.copyCleanSubtitleToolStripMenuItem});
             this.contextMenuStripEditor.Name = "contextMenuStripEditor";
             this.contextMenuStripEditor.ShowImageMargin = false;
-            this.contextMenuStripEditor.Size = new System.Drawing.Size(154, 92);
+            this.contextMenuStripEditor.Size = new System.Drawing.Size(184, 100);
             // 
             // copyTextToolStripMenuItem
             // 
             this.copyTextToolStripMenuItem.Name = "copyTextToolStripMenuItem";
-            this.copyTextToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copyTextToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.copyTextToolStripMenuItem.Text = "Copy Text";
             this.copyTextToolStripMenuItem.Click += new System.EventHandler(this.copyTextToolStripMenuItem_Click);
             // 
             // copySubtitleToolStripMenuItem
             // 
             this.copySubtitleToolStripMenuItem.Name = "copySubtitleToolStripMenuItem";
-            this.copySubtitleToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copySubtitleToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.copySubtitleToolStripMenuItem.Text = "Copy Subtitle";
             this.copySubtitleToolStripMenuItem.Click += new System.EventHandler(this.copySubtitleToolStripMenuItem_Click);
             // 
             // copyCleanTextToolStripMenuItem
             // 
             this.copyCleanTextToolStripMenuItem.Name = "copyCleanTextToolStripMenuItem";
-            this.copyCleanTextToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copyCleanTextToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.copyCleanTextToolStripMenuItem.Text = "Copy Clean Text";
             this.copyCleanTextToolStripMenuItem.Click += new System.EventHandler(this.copyCleanTextToolStripMenuItem_Click);
             // 
             // copyCleanSubtitleToolStripMenuItem
             // 
             this.copyCleanSubtitleToolStripMenuItem.Name = "copyCleanSubtitleToolStripMenuItem";
-            this.copyCleanSubtitleToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.copyCleanSubtitleToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.copyCleanSubtitleToolStripMenuItem.Text = "Copy Clean Subtitle";
             this.copyCleanSubtitleToolStripMenuItem.Click += new System.EventHandler(this.copyCleanSubtitleToolStripMenuItem_Click);
             // 
@@ -468,26 +468,26 @@
             this.toolStripSeparator2,
             this.txtCleanSubtitle_selectAllToolStripMenuItem});
             this.contextMenuStripTxtCleanSubtitle.Name = "contextMenuStripTxtCleanSubtitle";
-            this.contextMenuStripTxtCleanSubtitle.Size = new System.Drawing.Size(123, 54);
+            this.contextMenuStripTxtCleanSubtitle.Size = new System.Drawing.Size(141, 58);
             this.contextMenuStripTxtCleanSubtitle.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTxtCleanSubtitle_Opening);
             // 
             // txtCleanSubtitle_copyToolStripMenuItem
             // 
             this.txtCleanSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtCleanSubtitle_copyToolStripMenuItem.Image")));
             this.txtCleanSubtitle_copyToolStripMenuItem.Name = "txtCleanSubtitle_copyToolStripMenuItem";
-            this.txtCleanSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtCleanSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(140, 24);
             this.txtCleanSubtitle_copyToolStripMenuItem.Text = "Copy";
             this.txtCleanSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_copyToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(119, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(137, 6);
             // 
             // txtCleanSubtitle_selectAllToolStripMenuItem
             // 
             this.txtCleanSubtitle_selectAllToolStripMenuItem.Name = "txtCleanSubtitle_selectAllToolStripMenuItem";
-            this.txtCleanSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtCleanSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(140, 24);
             this.txtCleanSubtitle_selectAllToolStripMenuItem.Text = "Select All";
             this.txtCleanSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtCleanSubtitle_selectAllToolStripMenuItem_Click);
             // 
@@ -519,14 +519,15 @@
             this.toolStripSeparator1,
             this.txtSubtitle_selectAllToolStripMenuItem});
             this.contextMenuStripTxtSubtitle.Name = "contextMenuStripTextBoxes";
-            this.contextMenuStripTxtSubtitle.Size = new System.Drawing.Size(123, 120);
+            this.contextMenuStripTxtSubtitle.Size = new System.Drawing.Size(181, 152);
+            this.contextMenuStripTxtSubtitle.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.contextMenuStripTxtSubtitle_Closed);
             this.contextMenuStripTxtSubtitle.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTxtSubtitle_Opening);
             // 
             // txtSubtitle_cutToolStripMenuItem
             // 
             this.txtSubtitle_cutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_cutToolStripMenuItem.Image")));
             this.txtSubtitle_cutToolStripMenuItem.Name = "txtSubtitle_cutToolStripMenuItem";
-            this.txtSubtitle_cutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_cutToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.txtSubtitle_cutToolStripMenuItem.Text = "Cut";
             this.txtSubtitle_cutToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_cutToolStripMenuItem_Click);
             // 
@@ -534,7 +535,7 @@
             // 
             this.txtSubtitle_copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_copyToolStripMenuItem.Image")));
             this.txtSubtitle_copyToolStripMenuItem.Name = "txtSubtitle_copyToolStripMenuItem";
-            this.txtSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_copyToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.txtSubtitle_copyToolStripMenuItem.Text = "Copy";
             this.txtSubtitle_copyToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_copyToolStripMenuItem_Click);
             // 
@@ -542,7 +543,7 @@
             // 
             this.txtSubtitle_pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_pasteToolStripMenuItem.Image")));
             this.txtSubtitle_pasteToolStripMenuItem.Name = "txtSubtitle_pasteToolStripMenuItem";
-            this.txtSubtitle_pasteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.txtSubtitle_pasteToolStripMenuItem.Text = "Paste";
             this.txtSubtitle_pasteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_pasteToolStripMenuItem_Click);
             // 
@@ -550,19 +551,19 @@
             // 
             this.txtSubtitle_deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("txtSubtitle_deleteToolStripMenuItem.Image")));
             this.txtSubtitle_deleteToolStripMenuItem.Name = "txtSubtitle_deleteToolStripMenuItem";
-            this.txtSubtitle_deleteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.txtSubtitle_deleteToolStripMenuItem.Text = "Delete";
             this.txtSubtitle_deleteToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_deleteToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(119, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // txtSubtitle_selectAllToolStripMenuItem
             // 
             this.txtSubtitle_selectAllToolStripMenuItem.Name = "txtSubtitle_selectAllToolStripMenuItem";
-            this.txtSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.txtSubtitle_selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.txtSubtitle_selectAllToolStripMenuItem.Text = "Select All";
             this.txtSubtitle_selectAllToolStripMenuItem.Click += new System.EventHandler(this.txtSubtitle_selectAllToolStripMenuItem_Click);
             // 
@@ -946,6 +947,19 @@
             this.btnOpenNextSubtitle.UseVisualStyleBackColor = true;
             this.btnOpenNextSubtitle.Click += new System.EventHandler(this.btnOpenNextSubtitle_Click);
             // 
+            // btnReloadFile
+            // 
+            this.btnReloadFile.AutoSize = true;
+            this.btnReloadFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnReloadFile.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReloadFile.Location = new System.Drawing.Point(234, 3);
+            this.btnReloadFile.Name = "btnReloadFile";
+            this.btnReloadFile.Size = new System.Drawing.Size(74, 24);
+            this.btnReloadFile.TabIndex = 4;
+            this.btnReloadFile.Text = "Reload File";
+            this.btnReloadFile.UseVisualStyleBackColor = true;
+            this.btnReloadFile.Click += new System.EventHandler(this.btnReloadFile_Click);
+            // 
             // btnSave
             // 
             this.btnSave.AutoSize = true;
@@ -1068,19 +1082,6 @@
             // toolTip
             // 
             this.toolTip.AutomaticDelay = 1500;
-            // 
-            // btnReloadFile
-            // 
-            this.btnReloadFile.AutoSize = true;
-            this.btnReloadFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnReloadFile.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReloadFile.Location = new System.Drawing.Point(234, 3);
-            this.btnReloadFile.Name = "btnReloadFile";
-            this.btnReloadFile.Size = new System.Drawing.Size(74, 24);
-            this.btnReloadFile.TabIndex = 4;
-            this.btnReloadFile.Text = "Reload File";
-            this.btnReloadFile.UseVisualStyleBackColor = true;
-            this.btnReloadFile.Click += new System.EventHandler(this.btnReloadFile_Click);
             // 
             // SubtitlesCleanerEditorForm
             // 

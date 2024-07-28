@@ -12,6 +12,7 @@ Café
 D'you
 Doo
 Fiancé
+Hee
 Heh
 Hells
 Hm
@@ -33,6 +34,7 @@ Shh
 Shhh
 Wamp
 Whoo
+Whoo-hoo
 Yah
 Yahh
 ah
@@ -45,6 +47,7 @@ café
 d'you
 doo
 fiancé
+hee
 heh
 hells
 hm
@@ -66,5 +69,6 @@ shh
 shhh
 wamp
 whoo
+whoo-hoo
 yah
 yahh

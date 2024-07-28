@@ -125,7 +125,7 @@ namespace SubtitlesCleaner.Editor
                     if (cleanSubtitle != null)
                         cleanSubtitle.SubtitleError = SubtitleError.None;
 
-                    return new EditorRow()
+                    var editorRow = new EditorRow()
                     {
                         Num = index + 1,
                         ShowValue = subtitle.Show,
@@ -138,6 +138,10 @@ namespace SubtitlesCleaner.Editor
                         CleanLines = (cleanSubtitle != null ? cleanSubtitle.ToString() : string.Empty),
                         SubtitleError = subtitle.SubtitleError
                     };
+
+                    SetMisspelledLinesToEditorRow(editorRow, subtitle);
+
+                    return editorRow;
                 }).ToList());
 
                 CurrentSelectedRow = lstEditor.Rows[0];
@@ -155,7 +159,7 @@ namespace SubtitlesCleaner.Editor
 
             if (subtitles.IsNullOrEmpty())
             {
-                SetTextToTextBoxes(string.Empty, string.Empty);
+                ClearTextFromTextBoxes();
                 ResetLineLengths();
                 timePicker.Reset();
             }
@@ -548,7 +552,7 @@ namespace SubtitlesCleaner.Editor
             SetSubtitlesToEditor(null);
             originalSubtitles = null;
             filePath = null;
-            SetTextToTextBoxes(string.Empty, string.Empty);
+            ClearTextFromTextBoxes();
             ResetLineLengths();
             timePicker.Reset();
             ResetFormTitle();
@@ -586,7 +590,7 @@ namespace SubtitlesCleaner.Editor
 
             if (lstEditor.Rows.Count == 1)
             {
-                SetTextToTextBoxes(string.Empty, string.Empty);
+                ClearTextFromTextBoxes();
                 ResetLineLengths();
             }
 
@@ -602,11 +606,16 @@ namespace SubtitlesCleaner.Editor
         private static readonly Color textDeletedColor = Color.FromArgb(255, 193, 192);
         private static readonly Color textInsertedColor = Color.FromArgb(171, 242, 188);
 
-        private void SetTextToTextBoxes(string text, string cleanText)
+        private void ClearTextFromTextBoxes()
+        {
+            SetTextToTextBoxes(string.Empty, string.Empty, null);
+        }
+
+        private void SetTextToTextBoxes(string text, string cleanText, List<MisspelledLine> misspelledLines)
         {
             SetDiffTextToTextBoxes(text, cleanText);
-            if (dictionaryCleaning)
-                SetDictionaryErrorsToSubtitlesTextBox();
+            if (dictionaryCleaning && misspelledLines.HasAny())
+                SetDictionaryErrorsToSubtitlesTextBox(misspelledLines);
         }
 
         private void SetDiffTextToTextBoxes(string text, string cleanText)
@@ -735,22 +744,16 @@ namespace SubtitlesCleaner.Editor
 
         public static readonly Regex regexRtfUnderline = new Regex(@"\\ul[^n]", RegexOptions.Compiled); // \ul but not \ulnone
 
-        private void SetDictionaryErrorsToSubtitlesTextBox()
+        private void SetDictionaryErrorsToSubtitlesTextBox(List<MisspelledLine> misspelledLines)
         {
             bool isChanged = false;
-            foreach (var misspelledLine in DictionaryHelper.GetMisspelledLines(txtSubtitle.Lines))
+            foreach (var misspelledLine in misspelledLines)
             {
-                string line = misspelledLine.Line;
-                int lineIndex = misspelledLine.LineIndex;
-
                 foreach (var misspelledWord in misspelledLine.MisspelledWords)
                 {
-                    if (string.IsNullOrEmpty(misspelledWord.Suggestion) == false)
+                    if (misspelledWord.Suggestions.HasAny())
                     {
-                        int selectionStart = misspelledWord.Index + txtSubtitle.Lines.Take(lineIndex).Sum(l => l.Length + 1);
-                        int selectionLength = misspelledWord.Length;
-
-                        for (int i = selectionStart; i < selectionStart + selectionLength; i++)
+                        for (int i = misspelledWord.SelectionStart; i < misspelledWord.SelectionStart + misspelledWord.SelectionLength; i++)
                         {
                             txtSubtitle.SelectionStart = i;
                             txtSubtitle.SelectionLength = 1;
@@ -823,7 +826,7 @@ namespace SubtitlesCleaner.Editor
             if (editorRow == null)
                 return;
 
-            SetTextToTextBoxes(editorRow.Lines, editorRow.CleanLines);
+            SetTextToTextBoxes(editorRow.Lines, editorRow.CleanLines, editorRow.MisspelledLines);
             SetLineLengths();
 
             timePicker.Value = editorRow.ShowValue;
@@ -1591,6 +1594,15 @@ namespace SubtitlesCleaner.Editor
 
         private void SetSubtitleToEditor(EditorRow editorRow, Subtitle subtitle)
         {
+            SetSubtitleToEditorRow(editorRow, subtitle);
+
+            SetTextToTextBoxes(txtSubtitle.Text, editorRow.CleanLines, editorRow.MisspelledLines);
+
+            SetLineLengths();
+        }
+
+        private void SetSubtitleToEditorRow(EditorRow editorRow, Subtitle subtitle)
+        {
             editorRow.Text = subtitle.ToStringWithPipe();
             editorRow.Lines = subtitle.ToString();
             editorRow.SubtitleError = subtitle.SubtitleError;
@@ -1600,9 +1612,20 @@ namespace SubtitlesCleaner.Editor
                 cleanSubtitle.SubtitleError = SubtitleError.None;
             editorRow.CleanText = (cleanSubtitle != null ? cleanSubtitle.ToStringWithPipe() : string.Empty);
             editorRow.CleanLines = (cleanSubtitle != null ? cleanSubtitle.ToString() : string.Empty);
-            SetTextToTextBoxes(txtSubtitle.Text, editorRow.CleanLines);
 
-            SetLineLengths();
+            SetMisspelledLinesToEditorRow(editorRow, subtitle);
+        }
+
+        private void SetMisspelledLinesToEditorRow(EditorRow editorRow, Subtitle subtitle)
+        {
+            editorRow.MisspelledLines = null;
+
+            if (dictionaryCleaning)
+            {
+                var ml = DictionaryHelper.GetMisspelledLines(subtitle.Lines);
+                if (ml.HasAny())
+                    editorRow.MisspelledLines = ml.ToList();
+            }
         }
 
         #endregion
@@ -1773,7 +1796,7 @@ namespace SubtitlesCleaner.Editor
             }
             else
             {
-                SetTextToTextBoxes(txtCleanSubtitle.Text, txtCleanSubtitle.Text);
+                SetTextToTextBoxes(txtCleanSubtitle.Text, txtCleanSubtitle.Text, null);
                 ChangeSubtitleText(editorRow, txtCleanSubtitle.Text);
                 return new FixTextResult() { isFixed = true, Num = editorRow.Num, IsRowDeleted = false };
             }
@@ -2080,6 +2103,15 @@ namespace SubtitlesCleaner.Editor
             txtSubtitle_deleteToolStripMenuItem.Enabled = txtSubtitle.SelectionLength > 0;
             txtSubtitle_pasteToolStripMenuItem.Enabled = Clipboard.ContainsText();
             txtSubtitle_selectAllToolStripMenuItem.Enabled = txtSubtitle.TextLength > 0;
+
+            AddDictionaryToolStripMenuItems();
+        }
+
+        private void contextMenuStripTxtSubtitle_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            int indexSelectAllItem = contextMenuStripTxtSubtitle.Items.IndexOf(txtSubtitle_selectAllToolStripMenuItem);
+            for (int i = contextMenuStripTxtSubtitle.Items.Count - 1; i >= indexSelectAllItem + 1; i--)
+                contextMenuStripTxtSubtitle.Items.RemoveAt(i);
         }
 
         private void txtSubtitle_cutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2109,6 +2141,137 @@ namespace SubtitlesCleaner.Editor
         {
             txtSubtitle.SelectAll();
             txtSubtitle.Focus();
+        }
+
+        #endregion
+
+        #region Dictionary Context Menu
+
+        private void AddDictionaryToolStripMenuItems()
+        {
+            if (dictionaryCleaning == false)
+                return;
+
+            EditorRow editorRow = GetSelectedEditorRow();
+            if (editorRow == null)
+                return;
+
+            if (editorRow.MisspelledLines.IsNullOrEmpty())
+                return;
+
+            string word = txtSubtitle.SelectedText;
+
+            if (editorRow.MisspelledLines.Any(ml => ml.MisspelledWords.Any(mw => mw.Word == word)) == false)
+                return;
+
+            contextMenuStripTxtSubtitle.Items.Add(new ToolStripSeparator());
+
+            string[] suggestions = editorRow.MisspelledLines.SelectMany(ml => ml.MisspelledWords).First(mw => mw.Word == word).Suggestions;
+            foreach (string suggestion in suggestions)
+            {
+                ToolStripMenuItem txtSubtitle_suggestionToolStripMenuItem = new ToolStripMenuItem();
+                txtSubtitle_suggestionToolStripMenuItem.Text = suggestion;
+
+                using (var stream = this.GetType().Assembly.GetManifestResourceStream(string.Format("{0}.Images.{1}", this.GetType().Namespace, "txtSubtitle_suggestionToolStripMenuItem.png")))
+                {
+                    txtSubtitle_suggestionToolStripMenuItem.Image = new Bitmap(stream);
+                }
+
+                txtSubtitle_suggestionToolStripMenuItem.Click += new EventHandler((object sender1, EventArgs e1) =>
+                {
+                    int selectedEditorRowIndex = editorRow.Num - 1;
+                    int cursorIndex = txtSubtitle.SelectionStart;
+                    FixMisspelledWord(selectedEditorRowIndex, cursorIndex, word, suggestion);
+                });
+
+                contextMenuStripTxtSubtitle.Items.Add(txtSubtitle_suggestionToolStripMenuItem);
+            }
+
+            contextMenuStripTxtSubtitle.Items.Add(new ToolStripSeparator());
+
+            ToolStripMenuItem txtSubtitle_ignoreToolStripMenuItem = new ToolStripMenuItem();
+            txtSubtitle_ignoreToolStripMenuItem.Text = "Ignore " + word;
+            txtSubtitle_ignoreToolStripMenuItem.Click += new EventHandler((object sender1, EventArgs e1) =>
+            {
+                int selectedEditorRowIndex = editorRow.Num - 1;
+                int cursorIndex = txtSubtitle.SelectionStart;
+                IgnoreMisspelledWord(selectedEditorRowIndex, cursorIndex, word);
+            });
+
+            contextMenuStripTxtSubtitle.Items.Add(txtSubtitle_ignoreToolStripMenuItem);
+        }
+
+        private void IgnoreMisspelledWord(int selectedEditorRowIndex, int cursorIndex, string word)
+        {
+            DictionaryHelper.AddIgnoredWord(word);
+
+            FixMisspelledWord(selectedEditorRowIndex, cursorIndex, word, null);
+        }
+
+        private void FixMisspelledWord(int selectedEditorRowIndex, int cursorIndex, string word, string suggestion)
+        {
+            this.Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
+
+            bool isFixMisspelledWord = false;
+
+            int diffWordsLength = 0;
+            if (string.IsNullOrEmpty(suggestion) == false)
+                diffWordsLength = suggestion.Length - word.Length;
+
+            int cursorIndexNew = cursorIndex;
+
+            for (int i = 0; i < lstEditor.Rows.Count; i++)
+            {
+                EditorRow editorRow = GetEditorRowAt(i);
+
+                if (editorRow.MisspelledLines.HasAny())
+                {
+                    var misspelledWords = editorRow.MisspelledLines.SelectMany(ml => ml.MisspelledWords).Where(mw => mw.Word == word).OrderByDescending(mw => mw.SelectionStart).ToArray();
+                    if (misspelledWords.HasAny())
+                    {
+                        Subtitle subtitle = subtitles[i];
+
+                        if (string.IsNullOrEmpty(suggestion) == false)
+                        {
+                            foreach (var misspelledWord in misspelledWords)
+                            {
+                                string line = subtitle.Lines[misspelledWord.MisspelledLine.LineIndex];
+                                line = line.Remove(misspelledWord.Index, misspelledWord.Length).Insert(misspelledWord.Index, suggestion);
+                                subtitle.Lines[misspelledWord.MisspelledLine.LineIndex] = line;
+
+                                if (diffWordsLength != 0 && selectedEditorRowIndex == i && misspelledWord.SelectionStart < cursorIndex)
+                                    cursorIndexNew += diffWordsLength;
+                            }
+                        }
+
+                        subtitle.CheckSubtitle(cleanHICaseInsensitive, dictionaryCleaning, false);
+                        SetSubtitleToEditorRow(editorRow, subtitle);
+
+                        isFixMisspelledWord = true;
+                    }
+                }
+            }
+
+            if (isFixMisspelledWord)
+            {
+                EditorRow editorRow = GetEditorRowAt(selectedEditorRowIndex);
+
+                SetTextToTextBoxes(editorRow.Lines, editorRow.CleanLines, editorRow.MisspelledLines);
+
+                SetLineLengths();
+
+                SetSubtitlesErrors();
+
+                SelectEditorRow(selectedEditorRowIndex);
+
+                SetFormTitle(true);
+
+                txtSubtitle.SelectionStart = cursorIndexNew;
+                txtSubtitle.SelectionLength = 0;
+            }
+
+            this.Cursor = Cursors.Default;
         }
 
         #endregion
