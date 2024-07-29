@@ -170,7 +170,10 @@ namespace SubtitlesCleaner.Editor
         private void SetSubtitlesToEditorAndKeepSubtitleNumber(List<Subtitle> subtitles)
         {
             if (subtitles == null)
+            {
+                SetSubtitlesToEditor(subtitles);
                 return;
+            }
 
             int num = 1;
 
