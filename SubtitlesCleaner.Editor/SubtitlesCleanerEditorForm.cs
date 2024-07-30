@@ -2170,7 +2170,10 @@ namespace SubtitlesCleaner.Editor
             if (editorRow.MisspelledLines.IsNullOrEmpty())
                 return;
 
-            string word = txtSubtitle.SelectedText;
+            string word = txtSubtitle.SelectedText.Trim();
+
+            if (string.IsNullOrEmpty(word))
+                return;
 
             if (editorRow.MisspelledLines.Any(ml => ml.MisspelledWords.Any(mw => mw.Word == word)) == false)
                 return;
