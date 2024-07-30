@@ -1,47 +1,50 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using CommandLine;
+using CommandLine.Text;
 
 namespace SubtitlesCleaner.Command
 {
     internal abstract class SharedOptions
     {
-        [Option("path", Required = true, HelpText = "Path to subtitle file or folder")]
+        [Option("path", Required = true, HelpText = "Path to subtitle file or folder.")]
         public string path { get; set; }
 
-        [Option("subfolders", Required = false, HelpText = "Include all subfolders under path")]
+        [Option("subfolders", Required = false, HelpText = "Include all subfolders under path.")]
         public bool subfolders { get; set; }
 
-        [Option("print", HelpText = "Print to console")]
+        [Option("print", HelpText = "Print to console.")]
         public bool print { get; set; }
 
-        [Option("save", HelpText = "Save to file")]
+        [Option("save", HelpText = "Save to file.")]
         public bool save { get; set; }
 
-        [Option("outputFile", HelpText = "Output file. If omitted, the program outputs on the original file")]
+        [Option("outputFile", HelpText = "Output file. If omitted, the program outputs on the original file.")]
         public string outputFile { get; set; }
 
-        [Option("outputFolder", HelpText = "Output folder. If omitted, the program outputs in the original folder")]
+        [Option("outputFolder", HelpText = "Output folder. If omitted, the program outputs in the original folder.")]
         public string outputFolder { get; set; }
 
-        [Option("suppressBackupFile", HelpText = "Do not create backup file of the original subtitles file")]
+        [Option("suppressBackupFile", HelpText = "Do not create backup file of the original subtitles file.")]
         public bool suppressBackupFile { get; set; }
 
-        [Option("suppressBackupFileOnSame", HelpText = "Do not create backup file if processing results the same file")]
+        [Option("suppressBackupFileOnSame", HelpText = "Do not create backup file if processing results the same file.")]
         public bool suppressBackupFileOnSame { get; set; }
 
-        [Option("log", HelpText = "Write informative messages to log file. Overwrites existing log file")]
+        [Option("log", HelpText = "Write informative messages to log file. Overwrites existing log file.")]
         public string log { get; set; }
 
-        [Option("log+", HelpText = "Write informative messages to log file. Appends to existing log file")]
+        [Option("log+", HelpText = "Write informative messages to log file. Appends to existing log file.")]
         public string logAppend { get; set; }
 
-        [Option("csv", HelpText = "Write informative messages in a comma-separated values")]
+        [Option("csv", HelpText = "Write informative messages in a comma-separated values.")]
         public bool csv { get; set; }
 
-        [Option("quiet", HelpText = "Do not write informative messages")]
+        [Option("quiet", HelpText = "Do not write informative messages.")]
         public bool quiet { get; set; }
 
-        [Option("sequential", HelpText = "Process subtitle files in sequential order, one after another, instead of concurrently")]
+        [Option("sequential", HelpText = "Process subtitle files in sequential order, one after another, instead of concurrently.")]
         public bool sequential { get; set; }
 
         public abstract string Verb { get; }
@@ -52,8 +55,8 @@ namespace SubtitlesCleaner.Command
 
             if (string.IsNullOrEmpty(path) == false)
             {
-                sb.Append(" --path \"");
-                sb.Append(path);
+                sb.Append(" --path @\"");
+                sb.Append(path.EscapeVerbatim());
                 sb.Append("\"");
             }
 
@@ -68,15 +71,15 @@ namespace SubtitlesCleaner.Command
 
             if (string.IsNullOrEmpty(outputFile) == false)
             {
-                sb.Append(" --outputFile \"");
-                sb.Append(outputFile);
+                sb.Append(" --outputFile @\"");
+                sb.Append(outputFile.EscapeVerbatim());
                 sb.Append("\"");
             }
 
             if (string.IsNullOrEmpty(outputFolder) == false)
             {
-                sb.Append(" --outputFolder \"");
-                sb.Append(outputFolder);
+                sb.Append(" --outputFolder @\"");
+                sb.Append(outputFolder.EscapeVerbatim());
                 sb.Append("\"");
             }
 
@@ -88,15 +91,15 @@ namespace SubtitlesCleaner.Command
 
             if (string.IsNullOrEmpty(log) == false)
             {
-                sb.Append(" --log \"");
-                sb.Append(log);
+                sb.Append(" --log @\"");
+                sb.Append(log.EscapeVerbatim());
                 sb.Append("\"");
             }
 
             if (string.IsNullOrEmpty(logAppend) == false)
             {
-                sb.Append(" --log+ \"");
-                sb.Append(logAppend);
+                sb.Append(" --log+ @\"");
+                sb.Append(logAppend.EscapeVerbatim());
                 sb.Append("\"");
             }
 
@@ -113,22 +116,22 @@ namespace SubtitlesCleaner.Command
         }
     }
 
-    [Verb("clean", HelpText = "Clean subtitles")]
+    [Verb("clean", HelpText = "Clean subtitles.")]
     internal class CleanSubtitlesOptions : SharedOptions
     {
-        [Option("cleanHICaseInsensitive", HelpText = "Clean HI case-insensitive")]
+        [Option("cleanHICaseInsensitive", HelpText = "Clean HI case-insensitive.")]
         public bool cleanHICaseInsensitive { get; set; }
 
-        [Option("dictionaryCleaning", HelpText = "Clean misspelled words with English dictionary")]
+        [Option("dictionaryCleaning", HelpText = "Clean misspelled words with English dictionary.")]
         public bool dictionaryCleaning { get; set; }
 
-        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
+        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles.")]
         public int? firstSubtitlesCount { get; set; }
 
-        [Option("suppressWarningsFile", HelpText = "Do not create warnings file")]
+        [Option("suppressWarningsFile", HelpText = "Do not create warnings file.")]
         public bool suppressWarningsFile { get; set; }
 
-        [Option("printCleaning", HelpText = "Print to console what the cleaning process does")]
+        [Option("printCleaning", HelpText = "Print to console what the cleaning process does.")]
         public bool printCleaning { get; set; }
 
         public override string Verb { get { return "clean"; } }
@@ -161,15 +164,143 @@ namespace SubtitlesCleaner.Command
 
             return sb.ToString();
         }
+
+        [Usage(ApplicationAlias = "SubtitlesCleanerCommand.exe")]
+        public static IEnumerable<Example> Examples
+        {
+            get
+            {
+                yield return new Example(
+                    "Clean subtitle file",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitle.srt",
+                        save = true
+                    }
+                );
+
+                yield return new Example(
+                    "Clean subtitle file and save results in another folder",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitle.srt",
+                        save = true,
+                        outputFile = @"C:\My Documents\Subtitles"
+                    }
+                );
+
+                yield return new Example(
+                    "Clean hearing-impaired case-insensitive",
+                    new CleanSubtitlesOptions
+                    {
+                        cleanHICaseInsensitive = true,
+                        path = @"C:\My Documents\Subtitle.srt",
+                        save = true
+                    }
+                );
+
+                yield return new Example(
+                    "Clean subtitle file and suppress backup & warnings files",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitle.srt",
+                        save = true,
+                        suppressBackupFile = true,
+                        suppressWarningsFile = true
+                    }
+                );
+
+                yield return new Example(
+                    "Clean subtitle file and suppress warnings file. Create backup file if the cleaned subtitles are not the same as the original subtitles",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitle.srt",
+                        save = true,
+                        suppressBackupFileOnSame = true,
+                        suppressWarningsFile = true
+                    }
+                );
+
+                yield return new Example(
+                    "Clean all subtitle files in the folder",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitles",
+                        save = true
+                    }
+                );
+
+                yield return new Example(
+                    "Print to console",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitle.srt",
+                        print = true
+                    }
+                );
+
+                yield return new Example(
+                    "Print to console the cleaned subtitles and the cleaning process. Very useful when tracking cleaning errors",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitle.srt",
+                        print = true,
+                        printCleaning = true
+                    }
+                );
+
+                yield return new Example(
+                    "Clean all subtitle files in the folder. Write informative messages to text log file log_clean.txt",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitles",
+                        save = true,
+                        log = @"C:\My Documents\Subtitles\log_clean.txt"
+                    }
+                );
+
+                yield return new Example(
+                    "Clean all subtitle files in the folder. Write informative messages to csv log file log_clean.csv. If the file already exists, append to it",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitles",
+                        save = true,
+                        logAppend = @"C:\My Documents\Subtitles\log_clean.csv",
+                        csv = true
+                    }
+                );
+
+                yield return new Example(
+                    "Clean all subtitle files in the folder. Don't write informative messages",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitles",
+                        save = true,
+                        quiet = true
+                    }
+                );
+
+                yield return new Example(
+                    "Clean all subtitle files in the folder, one after the other, in sequential order. Don't write informative messages",
+                    new CleanSubtitlesOptions
+                    {
+                        path = @"C:\My Documents\Subtitles",
+                        save = true,
+                        quiet = true,
+                        sequential = true
+                    }
+                );
+            }
+        }
     }
 
-    [Verb("cleanEmptyAndNonSubtitles", HelpText = "Clean empty and non-subtitles")]
+    [Verb("cleanEmptyAndNonSubtitles", HelpText = "Clean empty and non-subtitles.")]
     internal class CleanEmptyAndNonSubtitlesOptions : SharedOptions
     {
-        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
+        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles.")]
         public int? firstSubtitlesCount { get; set; }
 
-        [Option("printCleaning", HelpText = "Print to console what the cleaning process does")]
+        [Option("printCleaning", HelpText = "Print to console what the cleaning process does.")]
         public bool printCleaning { get; set; }
 
         public override string Verb { get { return "cleanEmptyAndNonSubtitles"; } }
@@ -195,16 +326,16 @@ namespace SubtitlesCleaner.Command
         }
     }
 
-    [Verb("addTime", HelpText = "Add time to subtitles")]
+    [Verb("addTime", HelpText = "Add time to subtitles.")]
     internal class AddTimeOptions : SharedOptions
     {
-        [Option("timeAdded", Required = true, HelpText = "Added time to subtitles")]
+        [Option("timeAdded", Required = true, HelpText = "Added time to subtitles.")]
         public string timeAdded { get; set; }
 
-        [Option("subtitleNumber", HelpText = "Start operation from specified subtitle. If omitted, starts with first subtitle")]
+        [Option("subtitleNumber", HelpText = "Start operation from specified subtitle. If omitted, starts with first subtitle.")]
         public int? subtitleNumber { get; set; }
 
-        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
+        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles.")]
         public int? firstSubtitlesCount { get; set; }
 
         public override string Verb { get { return "addTime"; } }
@@ -239,16 +370,16 @@ namespace SubtitlesCleaner.Command
         }
     }
 
-    [Verb("setShowTime", HelpText = "Move subtitles to show time")]
+    [Verb("setShowTime", HelpText = "Move subtitles to show time.")]
     internal class SetShowTimeOptions : SharedOptions
     {
-        [Option("showTime", Required = true, HelpText = "Show time")]
+        [Option("showTime", Required = true, HelpText = "Show time.")]
         public string showTime { get; set; }
 
-        [Option("subtitleNumber", HelpText = "Start operation from specified subtitle. If omitted, starts with first subtitle")]
+        [Option("subtitleNumber", HelpText = "Start operation from specified subtitle. If omitted, starts with first subtitle.")]
         public int? subtitleNumber { get; set; }
 
-        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
+        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles.")]
         public int? firstSubtitlesCount { get; set; }
 
         public override string Verb { get { return "setShowTime"; } }
@@ -283,16 +414,16 @@ namespace SubtitlesCleaner.Command
         }
     }
 
-    [Verb("adjustTiming", HelpText = "Adjust subtitles timing by 2 sync points")]
+    [Verb("adjustTiming", HelpText = "Adjust subtitles timing by 2 sync points.")]
     internal class AdjustTimingOptions : SharedOptions
     {
-        [Option("firstShowTime", Required = true, HelpText = "First subtitle's show time")]
+        [Option("firstShowTime", Required = true, HelpText = "First subtitle's show time.")]
         public string firstShowTime { get; set; }
 
-        [Option("lastShowTime", Required = true, HelpText = "Last subtitle's show time")]
+        [Option("lastShowTime", Required = true, HelpText = "Last subtitle's show time.")]
         public string lastShowTime { get; set; }
 
-        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles")]
+        [Option("firstSubtitlesCount", HelpText = "Read only the specified first number of subtitles.")]
         public int? firstSubtitlesCount { get; set; }
 
         public override string Verb { get { return "adjustTiming"; } }
@@ -327,7 +458,7 @@ namespace SubtitlesCleaner.Command
         }
     }
 
-    [Verb("reorder", HelpText = "Reorder subtitles based on their show time")]
+    [Verb("reorder", HelpText = "Reorder subtitles based on their show time.")]
     internal class ReorderOptions : SharedOptions
     {
         public override string Verb { get { return "reorder"; } }
@@ -344,7 +475,7 @@ namespace SubtitlesCleaner.Command
         }
     }
 
-    [Verb("balanceLines", HelpText = "Merge short line with long line")]
+    [Verb("balanceLines", HelpText = "Merge short line with long line.")]
     internal class BalanceLinesOptions : SharedOptions
     {
         public override string Verb { get { return "balanceLines"; } }
@@ -359,30 +490,5 @@ namespace SubtitlesCleaner.Command
 
             return sb.ToString();
         }
-    }
-
-    [Verb("usage", HelpText = "Command usage")]
-    internal class UsageOptions
-    {
-        [Option("clean", HelpText = "Print usage for clean", Group = "verb")]
-        public bool clean { get; set; }
-
-        [Option("cleanEmptyAndNonSubtitles", HelpText = "Print usage for cleanEmptyAndNonSubtitles", Group = "verb")]
-        public bool cleanEmptyAndNonSubtitles { get; set; }
-
-        [Option("addTime", HelpText = "Print usage for addTime", Group = "verb")]
-        public bool addTime { get; set; }
-
-        [Option("setShowTime", HelpText = "Print usage for setShowTime", Group = "verb")]
-        public bool setShowTime { get; set; }
-
-        [Option("adjustTiming", HelpText = "Print usage for adjustTiming", Group = "verb")]
-        public bool adjustTiming { get; set; }
-
-        [Option("reorder", HelpText = "Print usage for reorder", Group = "verb")]
-        public bool reorder { get; set; }
-
-        [Option("balanceLines", HelpText = "Print usage for balanceLines", Group = "verb")]
-        public bool balanceLines { get; set; }
     }
 }
