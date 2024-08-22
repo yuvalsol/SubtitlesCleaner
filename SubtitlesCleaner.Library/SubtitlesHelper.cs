@@ -4108,7 +4108,9 @@ namespace SubtitlesCleaner.Library
 
         public static readonly FindAndReplace[] OCRErrors = new FindAndReplace[] {
             // Mr. Mrs. Dr. St. Sr. Jr. Ave. Inc.
-            new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St|Sr|Jr|Ave|Inc)(?<OCR>)(?:[!?]|\s|\b(?!\.)|$)", RegexOptions.Compiled), "OCR", ".", SubtitleError.OCR_Error)
+            new FindAndReplace("Dot After Abbreviation", new Regex(@"\b(?:Mr|Mrs|Dr|St|Sr|Jr|Ave|Inc)(?<OCR>)(?:[!?]|\s|\b(?!\.)|$)", RegexOptions.Compiled), "OCR", ".", SubtitleError.OCR_Error,
+                new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfCaseInsensitiveEqualsTo = "Ave Maria" }
+            )
 
             // O'Sullivan, O'Connor, O'Brien, O'Leary
             ,new FindAndReplace(new Regex(@"\b(?<OCR>o)'[A-ZÀ-Ý][a-zà-ÿ]", RegexOptions.Compiled), "OCR", "O", SubtitleError.OCR_Error)
