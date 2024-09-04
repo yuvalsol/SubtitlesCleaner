@@ -7,13 +7,13 @@ namespace System.Collections.Generic
     {
         #region Visual Studio Search and Replace
 
-        // if \((?<lst>[a-zA-Z0-9._]+) == null \|\| \k<lst>\.Count(?:\(\))? == 0\)
+        // if \((?<lst>[a-zA-Z0-9._]+) == null \|\| \k<lst>\.(?:Count|Length)(?:\(\))? == 0\)
         // if (${lst}.IsNullOrEmpty())
 
-        // if \((?<lst>[a-zA-Z0-9._]+) != null && \k<lst>\.Count(?:\(\))? > 0\)
+        // if \((?<lst>[a-zA-Z0-9._]+) != null && \k<lst>\.(?:Count|Length)(?:\(\))? > 0\)
         // if (${lst}.HasAny())
 
-        // if \((?<lst>[a-zA-Z0-9._]+) != null && \k<lst>\.Count(?:\(\))? == 1\)
+        // if \((?<lst>[a-zA-Z0-9._]+) != null && \k<lst>\.(?:Count|Length)(?:\(\))? == 1\)
         // if (${lst}.HasSingle())
 
         #endregion
