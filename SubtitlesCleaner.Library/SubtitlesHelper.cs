@@ -4791,6 +4791,10 @@ namespace SubtitlesCleaner.Library
                 Regex = new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled),
                 Description = "Possible malformed word morn => mom"
             }
+            , new Warning() {
+                Regex = new Regex(@"^\.\s", RegexOptions.Compiled),
+                Description = "Line starts with dot"
+            }
         };
 
         public static string[] GetSubtitlesWarnings(List<Subtitle> subtitles)
