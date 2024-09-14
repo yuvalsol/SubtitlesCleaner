@@ -36,6 +36,9 @@ namespace SubtitlesCleaner.Command
             bool suppressWarningsFile,
             List<Subtitle> originalSubtitles)
         {
+            if (subtitles == null)
+                subtitles = new List<Subtitle>(0);
+
             string fileName = Path.GetFileName(filePath);
 
             string outputFilePath = GetOutputFilePath(filePath, outputFile, outputFolder);
@@ -203,6 +206,9 @@ namespace SubtitlesCleaner.Command
 
         protected virtual void PrintSubtitles(List<Subtitle> subtitles)
         {
+            if (subtitles == null)
+                subtitles = new List<Subtitle>(0);
+
             foreach (var line in subtitles.ToLines())
                 Console.WriteLine(line);
         }

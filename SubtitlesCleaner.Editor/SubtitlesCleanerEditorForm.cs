@@ -1132,9 +1132,6 @@ namespace SubtitlesCleaner.Editor
 
         private void Save(bool withAlert)
         {
-            if (subtitles.IsNullOrEmpty())
-                return;
-
             if (string.IsNullOrEmpty(filePath))
                 return;
 
@@ -1147,7 +1144,7 @@ namespace SubtitlesCleaner.Editor
 
                 try
                 {
-                    string[] lines = originalSubtitles.ToLines();
+                    string[] lines = (originalSubtitles ?? new List<Subtitle>(0)).ToLines();
                     File.WriteAllLines(backPath, lines.Take(lines.Length - 1), encoding);
                     message = Path.GetFileName(backPath) + " saved" + Environment.NewLine;
                 }
@@ -1174,7 +1171,7 @@ namespace SubtitlesCleaner.Editor
 
             try
             {
-                string[] lines = subtitles.ToLines();
+                string[] lines = (subtitles ?? new List<Subtitle>(0)).ToLines();
                 File.WriteAllLines(filePath, lines.Take(lines.Length - 1), encoding);
                 SetFormTitle(false);
                 message += Path.GetFileName(filePath) + " saved";
@@ -1213,7 +1210,7 @@ namespace SubtitlesCleaner.Editor
 
         private void SaveAs()
         {
-            if (subtitles.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(filePath))
                 return;
 
             saveAsFileDialog.FileName = Path.GetFileName(filePath);
@@ -1222,7 +1219,7 @@ namespace SubtitlesCleaner.Editor
             {
                 try
                 {
-                    string[] lines = subtitles.ToLines();
+                    string[] lines = (subtitles ?? new List<Subtitle>(0)).ToLines();
                     File.WriteAllLines(saveAsFileDialog.FileName, lines.Take(lines.Length - 1), encoding);
 
                     filePath = saveAsFileDialog.FileName;
