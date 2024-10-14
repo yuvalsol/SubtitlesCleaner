@@ -157,6 +157,11 @@ namespace SubtitlesCleaner.Library
             return dictionary.Check(FixWord(word));
         }
 
+        public static bool IsName(string word)
+        {
+            return names.Contains(FixWord(word));
+        }
+
         public static string[] GetSuggestions(string word, int maxSuggestions = 5)
         {
             return dictionary.Suggest(

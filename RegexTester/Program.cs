@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using SubtitlesCleaner.Library;
@@ -11,6 +13,27 @@ namespace RegexTester
         static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
+        }
+
+        private static List<Subtitle> LoadTestFile()
+        {
+            string filePath = Path.GetFullPath(Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "..", "..", "..", "Subtitles",
+                "Test.srt"
+            ));
+
+            Encoding encoding = Encoding.UTF8;
+            List<Subtitle> subtitles = SubtitlesHelper.GetSubtitles(filePath, out encoding);
+            return subtitles;
+        }
+
+        private static void TestSubtitlesWarnings()
+        {
+            List<Subtitle> subtitles = LoadTestFile();
+            string[] warnings = SubtitlesHelper.GetSubtitlesWarnings(subtitles);
+            foreach (var warning in warnings)
+                Console.WriteLine(warning);
         }
 
         private static void TestDictionary(string word)

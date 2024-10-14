@@ -4661,24 +4661,34 @@ namespace SubtitlesCleaner.Library
         private interface IWarning
         {
             string Description { get; }
+            Func<string, Regex, bool, bool> PostHasWarning { get; }
             bool HasWarning(string line);
             string GetWarnings(string line);
         }
 
         private class Warning : IWarning
         {
-            internal Regex Regex;
+            internal Regex WarningRegex;
 
             public virtual string Description { get; internal set; }
+            public virtual Func<string, Regex, bool, bool> PostHasWarning { get; internal set; }
 
             public virtual bool HasWarning(string line)
             {
-                return Regex.IsMatch(line);
+                bool hasWarning = WarningRegex.IsMatch(line);
+                return DoPostHasWarning(line, hasWarning);
+            }
+
+            protected virtual bool DoPostHasWarning(string line, bool hasWarning)
+            {
+                if (PostHasWarning != null)
+                    return PostHasWarning(line, WarningRegex, hasWarning);
+                return hasWarning;
             }
 
             public virtual string GetWarnings(string line)
             {
-                return string.Join(" | ", Regex.Matches(line).Cast<Match>().Select(m => m.Value));
+                return string.Join(" | ", WarningRegex.Matches(line).Cast<Match>().Select(m => m.Value));
             }
         }
 
@@ -4688,114 +4698,149 @@ namespace SubtitlesCleaner.Library
 
             public override bool HasWarning(string line)
             {
-                return base.HasWarning(line) && ExcludeRegex.IsMatch(line) == false;
+                bool hasWarning = base.HasWarning(line) && ExcludeRegex.IsMatch(line) == false;
+                return DoPostHasWarning(line, hasWarning);
             }
         }
 
         private static readonly IWarning[] WarningList = new IWarning[]
         {
             new Warning() {
-                Regex = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"[\({\[\]}\)]", RegexOptions.Compiled),
                 Description = "Parentheses and brackets"
             }
             , new Warning() {
-                Regex = new Regex(@"[~_#|]", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"[~_#|]", RegexOptions.Compiled),
                 Description = "Special characters"
             }
             , new Warning() {
-                Regex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9#\-'.]+:\s", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ0-9#\-'.]+:\s", RegexOptions.Compiled),
                 Description = "Colon"
             }
             , new Warning() {
-                Regex = new Regex(@"<(?!/?i>)|(?<!</?i)>", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"<(?!/?i>)|(?<!</?i)>", RegexOptions.Compiled),
                 Description = "Italic with space"
             }
             , new Warning() {
                 // Of course 1 can
-                Regex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ]\s+1\s+[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ]\s+1\s+[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
                 Description = "Possible 1 instead of I"
             }
             , new Warning() {
                 // a/b
-                Regex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ]/[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"[A-ZÀ-Ýa-zà-ÿ]/[A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
                 Description = "Slash"
             }
             , new Warning() {
                 // " / " -> " I "
-                Regex = new Regex(@"\s+/\s+", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"\s+/\s+", RegexOptions.Compiled),
                 Description = "Possible slash instead of I"
             }
             , new Warning() {
                 // replace with new line
-                Regex = new Regex(@"[!?][A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"[!?][A-ZÀ-Ýa-zà-ÿ]", RegexOptions.Compiled),
                 Description = "Possible missing new line after punctuation"
             }
             , new ComplexWarning() {
-                Regex = new Regex(@"^[A-ZÀ-Ýa-zà-ÿ0-9#\-'.]+:", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^[A-ZÀ-Ýa-zà-ÿ0-9#\-'.]+:", RegexOptions.Compiled),
                 // exclude time
                 ExcludeRegex = new Regex(@"^\d{1,2}:\d{2}", RegexOptions.Compiled),
                 Description = "Possible hearing-impaired"
             }
             , new Warning() {
-                Regex = new Regex(@"^[A-ZÀ-Ý]+$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^[A-ZÀ-Ý]+$", RegexOptions.Compiled),
                 Description = "Possible hearing-impaired (All caps)"
             }
             , new ComplexWarning() {
-                Regex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^[" + HI_CHARS + @"]+$", RegexOptions.Compiled),
                 // exclude:                        A...    I...    OK                         123.45      555-12345  12  A-B-C-D
                 ExcludeRegex = new Regex(@"^(-\s)?(A[A. ]*|I[I. ]*|OK|O\.K\.|L\.A\.|F\.B\.I\.|\d+(\.\d+)+|\d+(-\d+)+|\d+|[A-Z](-[A-Z]){2,})[!?.]*$", RegexOptions.Compiled),
                 Description = "No lower-case letters (All caps)"
             }
             /*, new Warning() {
-                Regex = new Regex(@"(?<!""[A-ZÀ-Ýa-zà-ÿ0-9 #\-'.]+)(""[!?])(\s|$)", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"(?<!""[A-ZÀ-Ýa-zà-ÿ0-9 #\-'.]+)(""[!?])(\s|$)", RegexOptions.Compiled),
                 Description = "Punctuation outside of quotation marks"
             }*/
             , new Warning() {
-                Regex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"(?<!in)'\?$", RegexOptions.Compiled),
                 Description = "Ending with comma and question mark"
             }
             , new Warning() {
-                // ignore Mc, PhD
-                Regex = new Regex(@"((?<!M)c|(?<!P)h|[a-bd-gi-zà-ÿ])[A-ZÀ-Ý]", RegexOptions.Compiled),
-                Description = "Lower letter before capital letter"
+                WarningRegex = new Regex(@"[a-zà-ÿ][A-ZÀ-Ý]", RegexOptions.Compiled),
+                Description = "Lower letter before capital letter",
+                PostHasWarning = PostHasWarning_LowerLetterBeforeCapitalLetter
             }
             , new Warning() {
-                Regex = new Regex(@"<i><i>", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"<i><i>", RegexOptions.Compiled),
                 Description = "Consecutive opening italic"
             }
             , new Warning() {
-                Regex = new Regex(@"</i></i>", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"</i></i>", RegexOptions.Compiled),
                 Description = "Consecutive closing italic"
             }
             /*, new Warning() {
-                Regex = new Regex(@"^""[^""]*$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^""[^""]*$", RegexOptions.Compiled),
                 Description = "Opening quotation marks without closing"
             }
             , new Warning() {
-                Regex = new Regex(@"^'[^']*$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^'[^']*$", RegexOptions.Compiled),
                 Description = "Opening quotation marks without closing"
             }
             , new Warning() {
-                Regex = new Regex(@"^[^""]*""$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^[^""]*""$", RegexOptions.Compiled),
                 Description = "Closing quotation marks without opening"
             }
             , new Warning() {
-                Regex = new Regex(@"^[^']*'$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^[^']*'$", RegexOptions.Compiled),
                 Description = "Closing quotation marks without opening"
             }*/
             , new Warning() {
-                Regex = new Regex(@"^I\s.*?\sI$", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^I\s.*?\sI$", RegexOptions.Compiled),
                 Description = "Possible start & end I instead of music notes"
             }
             , new Warning() {
-                Regex = new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"\b(?i:m)o(?<OCR>rn)\b", RegexOptions.Compiled),
                 Description = "Possible malformed word morn => mom"
             }
             , new Warning() {
-                Regex = new Regex(@"^\.\s", RegexOptions.Compiled),
+                WarningRegex = new Regex(@"^\.\s", RegexOptions.Compiled),
                 Description = "Line starts with dot"
             }
         };
+
+        public static readonly Regex regexPunctuations = new Regex(@"[-—–―‒_`~!@#$%^&*()=+[\]{};:'""\\|,.<>/?‘’“”]+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static bool PostHasWarning_LowerLetterBeforeCapitalLetter(string line, Regex WarningRegex, bool hasWarning)
+        {
+            if (hasWarning == false)
+                return false;
+
+            foreach (int index in WarningRegex.Matches(line).Cast<Match>().Select(m => m.Index))
+            {
+                int fromIndex = index;
+                for (; fromIndex >= 0 && !(line[fromIndex] == ' ' || regexPunctuations.IsMatch(line[fromIndex].ToString())); fromIndex--) ;
+
+                if (fromIndex < 0)
+                    fromIndex = 0;
+                else
+                    fromIndex++;
+
+                int toIndex = index;
+                for (; toIndex < line.Length && !(line[toIndex] == ' ' || regexPunctuations.IsMatch(line[toIndex].ToString())); toIndex++) ;
+
+                string word = line.Substring(fromIndex, toIndex - fromIndex);
+
+                bool inDictionary = DictionaryHelper.CheckWord(word);
+                if (inDictionary == false)
+                {
+                    bool isName = DictionaryHelper.IsName(word);
+                    if (isName == false)
+                        return true;
+                }
+            }
+
+            return false;
+        }
 
         public static string[] GetSubtitlesWarnings(List<Subtitle> subtitles)
         {
