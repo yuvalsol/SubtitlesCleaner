@@ -2544,14 +2544,24 @@ namespace SubtitlesCleaner.Library
                 string line = lines[0];
                 if (line.StartsWith("- ") == false)
                 {
-                    int index;
-                    if ((index = line.IndexOf(". - ")) != -1 ||
-                        (index = line.IndexOf("? - ")) != -1 ||
-                        (index = line.IndexOf("! - ")) != -1)
+                    int index2 = -1;
+                    int index1;
+                    if ((index1 = line.IndexOf(". - ")) != -1 ||
+                        (index1 = line.IndexOf("? - ")) != -1 ||
+                        (index1 = line.IndexOf("! - ")) != -1 ||
+                        (index2 = line.IndexOf("</i> - ")) != -1)
                     {
+                        int prefixLength = 1; // . ? !
+
+                        if (index2 != -1)
+                        {
+                            index1 = index2;
+                            prefixLength = 4; // </i>
+                        }
+
                         lines.Clear();
-                        lines.Add("- " + line.Substring(0, index + 1));
-                        lines.Add(line.Substring(index + 2));
+                        lines.Add("- " + line.Substring(0, index1 + prefixLength));
+                        lines.Add(line.Substring(index1 + prefixLength + 1));
 
                         if (isPrintCleaning)
                             PrintCleaning(line, lines);
@@ -3569,9 +3579,10 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"^(?<Subtitle>.+?)\s*\[.*?\]$", RegexOptions.Compiled), "${Subtitle}", SubtitleError.Hearing_Impaired)
 
             // Start Sentence. MAN: Text => Start Sentence. - Text
+            // Start Sentence</i> MAN: Text => Start Sentence</i> - Text
             ,new FindAndReplace("HI Without Dialog",
-                                new Regex(@"(?<Prefix>[.?!])\s*[A-ZÀ-Ý0-9 #\'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*[A-ZÀ-Ý#'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled), "${Prefix} - ${Subtitle}", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"(?<Prefix>[.?!])\s*[A-ZÀ-Ýa-zà-ÿ0-9 #\'\[\]][A-ZÀ-Ýa-zà-ÿ0-9 #\-'\[\]]*[A-ZÀ-Ýa-zà-ÿ#'\[\]][A-ZÀ-Ýa-zà-ÿ0-9 #\-'\[\]]*:(?!\d\d)\s*(?<Subtitle>.+?)$", RegexOptions.Compiled))
+                                new Regex(@"(?<Prefix>[.?!]|</i>)\s*[A-ZÀ-Ý0-9 #\'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*[A-ZÀ-Ý#'\[\]][A-ZÀ-Ý0-9 #\-'\[\]]*:\s*(?<Subtitle>.+?)$", RegexOptions.Compiled), "${Prefix} - ${Subtitle}", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"(?<Prefix>[.?!]|</i>)\s*[A-ZÀ-Ýa-zà-ÿ0-9 #\'\[\]][A-ZÀ-Ýa-zà-ÿ0-9 #\-'\[\]]*[A-ZÀ-Ýa-zà-ÿ#'\[\]][A-ZÀ-Ýa-zà-ÿ0-9 #\-'\[\]]*:(?!\d\d)\s*(?<Subtitle>.+?)$", RegexOptions.Compiled))
 
             // MAN: Text => Text
             ,new FindAndReplace("HI Without Dialog",
@@ -3593,12 +3604,13 @@ namespace SubtitlesCleaner.Library
             // (?!\d\d) prevents cleaning time, like 13:00, in CI mode
 
             // Start Sentence. MAN (laughting): Text => Start Sentence. - Text
+            // Start Sentence</i> MAN (laughting): Text => Start Sentence</i> - Text
             ,new FindAndReplace("HI Without Dialog",
-                                new Regex(@"(?<Prefix>[.?!])\s*[" + HI_CHARS.Replace("-'", "'") + @"]+\(.*?\):\s*", RegexOptions.Compiled), "${Prefix} - ", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"(?<Prefix>[.?!])\s*[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\(.*?\):(?!\d\d)\s*", RegexOptions.Compiled))
+                                new Regex(@"(?<Prefix>[.?!]|</i>)\s*[" + HI_CHARS.Replace("-'", "'") + @"]+\(.*?\):\s*", RegexOptions.Compiled), "${Prefix} - ", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"(?<Prefix>[.?!]|</i>)\s*[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\(.*?\):(?!\d\d)\s*", RegexOptions.Compiled))
             ,new FindAndReplace("HI Without Dialog",
-                                new Regex(@"(?<Prefix>[.?!])\s*[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "${Prefix} - ", SubtitleError.Hearing_Impaired)
-                    .SetRegexCI(new Regex(@"(?<Prefix>[.?!])\s*[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:(?!\d\d)\s*", RegexOptions.Compiled))
+                                new Regex(@"(?<Prefix>[.?!]|</i>)\s*[" + HI_CHARS.Replace("-'", "'") + @"]+\[.*?\]:\s*", RegexOptions.Compiled), "${Prefix} - ", SubtitleError.Hearing_Impaired)
+                    .SetRegexCI(new Regex(@"(?<Prefix>[.?!]|</i>)\s*[" + HI_CHARS_CI.Replace("-'", "'") + @"]+\[.*?\]:(?!\d\d)\s*", RegexOptions.Compiled))
 
             // MAN (laughting): Text => Text
             ,new FindAndReplace("HI Without Dialog",
