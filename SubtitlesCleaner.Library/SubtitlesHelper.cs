@@ -4001,6 +4001,10 @@ namespace SubtitlesCleaner.Library
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il faut" } // It's necessary
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "Il y a " } // There is
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "l... l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l...l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l.. l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l..l" }
             )
 
             // Lowercase word at the end: II => ll
@@ -4022,6 +4026,10 @@ namespace SubtitlesCleaner.Library
             ,new FindAndReplace(new Regex(@"\b(?<OCR>l)\b", RegexOptions.Compiled), "OCR", "I", SubtitleError.I_And_L_Error,
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-l", IgnoreIfEndsWith = @"l-" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 6, IgnoreIfEqualsTo = "l'chaim" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "l... l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l...l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l.. l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l..l" }
             )
             
             // i-i-i => I-I-I (but not i-i-it or i-i-is)
@@ -4074,6 +4082,10 @@ namespace SubtitlesCleaner.Library
                 new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 1, ReadNextCharsFromMatch = 1, IgnoreIfStartsWith = @"-l", IgnoreIfEndsWith = @"l-" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 1, IgnoreIfEqualsTo = "lbs" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 5, IgnoreIfEqualsTo = "l'chaim" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l... l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l...l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l.. l" }
+                , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfEqualsTo = "l..l" }
             )
 
             // The name "Ian"
