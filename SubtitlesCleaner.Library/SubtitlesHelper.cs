@@ -4005,6 +4005,7 @@ namespace SubtitlesCleaner.Library
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l...l" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l.. l" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l..l" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, IgnoreIfEqualsTo = "li'l" }
             )
 
             // Lowercase word at the end: II => ll
@@ -4030,6 +4031,7 @@ namespace SubtitlesCleaner.Library
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l...l" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 4, IgnoreIfEqualsTo = "l.. l" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l..l" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, IgnoreIfEqualsTo = "li'l" }
             )
             
             // i-i-i => I-I-I (but not i-i-it or i-i-is)
@@ -4086,6 +4088,7 @@ namespace SubtitlesCleaner.Library
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l...l" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 3, IgnoreIfEqualsTo = "l.. l" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfEqualsTo = "l..l" }
+                , new FindAndReplace.IgnoreRule() { ReadPrevCharsFromMatch = 3, IgnoreIfStartsWith = "li'l" }
             )
 
             // The name "Ian"
