@@ -89,6 +89,8 @@ namespace SubtitlesCleaner.Library
 
         #endregion
 
+        public delegate bool IsIgnoreMatchEvaluator(string line, Match match);
+
         public class IgnoreRule
         {
             public int ReadPrevCharsFromMatch { get; set; }
@@ -101,6 +103,15 @@ namespace SubtitlesCleaner.Library
             public string IgnoreIfCaseInsensitiveEndsWith { get; set; }
             public string IgnoreIfMatchsWithRegex { get; set; }
             public string IgnoreIfCaseInsensitiveMatchsWithRegex { get; set; }
+            public IsIgnoreMatchEvaluator IsIgnoreMatch { get; set; }
+
+            public IgnoreRule()
+            { }
+
+            public IgnoreRule(IsIgnoreMatchEvaluator isIgnoreMatch)
+            {
+                IsIgnoreMatch = isIgnoreMatch;
+            }
         }
 
         public string CleanLine(string line, bool cleanHICaseInsensitive = false)
@@ -129,31 +140,39 @@ namespace SubtitlesCleaner.Library
                     {
                         foreach (var rule in IgnoreRules)
                         {
-                            int index = match.Index - rule.ReadPrevCharsFromMatch;
-                            int length = match.Length + rule.ReadPrevCharsFromMatch + rule.ReadNextCharsFromMatch;
-                            if (index < 0)
-                                index = 0;
-                            if (index + length > line.Length)
-                                length = line.Length - index;
+                            if (rule.IsIgnoreMatch != null)
+                            {
+                                if (rule.IsIgnoreMatch(line, match))
+                                    return false;
+                            }
+                            else
+                            {
+                                int index = match.Index - rule.ReadPrevCharsFromMatch;
+                                int length = match.Length + rule.ReadPrevCharsFromMatch + rule.ReadNextCharsFromMatch;
+                                if (index < 0)
+                                    index = 0;
+                                if (index + length > line.Length)
+                                    length = line.Length - index;
 
-                            string value = line.Substring(index, length);
+                                string value = line.Substring(index, length);
 
-                            if (string.IsNullOrEmpty(rule.IgnoreIfEqualsTo) == false && value == rule.IgnoreIfEqualsTo)
-                                return false;
-                            if (string.IsNullOrEmpty(rule.IgnoreIfStartsWith) == false && value.StartsWith(rule.IgnoreIfStartsWith))
-                                return false;
-                            if (string.IsNullOrEmpty(rule.IgnoreIfEndsWith) == false && value.EndsWith(rule.IgnoreIfEndsWith))
-                                return false;
-                            if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveEqualsTo) == false && value.ToLowerInvariant() == rule.IgnoreIfCaseInsensitiveEqualsTo.ToLowerInvariant())
-                                return false;
-                            if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveStartsWith) == false && value.ToLowerInvariant().StartsWith(rule.IgnoreIfCaseInsensitiveStartsWith.ToLowerInvariant()))
-                                return false;
-                            if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveEndsWith) == false && value.ToLowerInvariant().EndsWith(rule.IgnoreIfCaseInsensitiveEndsWith.ToLowerInvariant()))
-                                return false;
-                            if (string.IsNullOrEmpty(rule.IgnoreIfMatchsWithRegex) == false && new Regex(rule.IgnoreIfMatchsWithRegex).IsMatch(value))
-                                return false;
-                            if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveMatchsWithRegex) == false && new Regex(rule.IgnoreIfCaseInsensitiveMatchsWithRegex, RegexOptions.IgnoreCase).IsMatch(value))
-                                return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfEqualsTo) == false && value == rule.IgnoreIfEqualsTo)
+                                    return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfStartsWith) == false && value.StartsWith(rule.IgnoreIfStartsWith))
+                                    return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfEndsWith) == false && value.EndsWith(rule.IgnoreIfEndsWith))
+                                    return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveEqualsTo) == false && value.ToLowerInvariant() == rule.IgnoreIfCaseInsensitiveEqualsTo.ToLowerInvariant())
+                                    return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveStartsWith) == false && value.ToLowerInvariant().StartsWith(rule.IgnoreIfCaseInsensitiveStartsWith.ToLowerInvariant()))
+                                    return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveEndsWith) == false && value.ToLowerInvariant().EndsWith(rule.IgnoreIfCaseInsensitiveEndsWith.ToLowerInvariant()))
+                                    return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfMatchsWithRegex) == false && new Regex(rule.IgnoreIfMatchsWithRegex).IsMatch(value))
+                                    return false;
+                                if (string.IsNullOrEmpty(rule.IgnoreIfCaseInsensitiveMatchsWithRegex) == false && new Regex(rule.IgnoreIfCaseInsensitiveMatchsWithRegex, RegexOptions.IgnoreCase).IsMatch(value))
+                                    return false;
+                            }
                         }
 
                         return true;

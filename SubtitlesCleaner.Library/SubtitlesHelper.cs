@@ -3693,6 +3693,9 @@ namespace SubtitlesCleaner.Library
 
         #region Missing Spaces
 
+        // (segment)?@segment(.segment)*
+        public static readonly Regex regexPartialEmail = new Regex(@"(?:[A-Za-z0-9_.+-]+)?@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*", RegexOptions.Compiled);
+
         public static readonly FindAndReplace[] MissingSpaces = new FindAndReplace[] {
             // Text<i>Text => Text <i>Text
             // (?<!\.\.) is negative lookbehind, prevents capturing pattern ...<i>
@@ -3739,6 +3742,24 @@ namespace SubtitlesCleaner.Library
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEndsWith = ".net" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEndsWith = ".org" }
                 , new FindAndReplace.IgnoreRule() { ReadNextCharsFromMatch = 2, IgnoreIfCaseInsensitiveEndsWith = "a.k.a" }
+                , new FindAndReplace.IgnoreRule((string line, Match match) =>
+                {
+                    int fromIndex = match.Index;
+                    int toIndex = match.Index + match.Length - 1;
+
+                    foreach (Match matchPartialEmail in regexPartialEmail.Matches(line))
+                    {
+                        int fromIndexPartialEmail = matchPartialEmail.Index;
+                        int toIndexPartialEmail = matchPartialEmail.Index + matchPartialEmail.Length - 1;
+
+                        // if (fromIndexPartialEmail <= fromIndex <= toIndex <= toIndexPartialEmail)
+                        // than the match is part of a partial email
+                        if (fromIndexPartialEmail <= fromIndex && fromIndex <= toIndex && toIndex <= toIndexPartialEmail)
+                            return true;
+                    }
+
+                    return false;
+                })
             )
 
             // Add space after comma
