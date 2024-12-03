@@ -14,7 +14,7 @@ namespace RegexTester
                     if (i % 10 == 0 && i / 10 > 0)
                         Console.Write(i / 10);
                     else
-                        Console.Write(" ");
+                        Console.Write(' ');
                 }
                 Console.WriteLine();
             }

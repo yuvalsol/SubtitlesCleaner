@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -51,10 +50,10 @@ namespace System
 
         public static string GetFormattedStackTrace(this Exception ex)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             bool isFoundNamespaceNotSystem = false;
 
-            StackTrace st = new StackTrace(ex, true);
+            var st = new StackTrace(ex, true);
             for (int i = 0; i < st.FrameCount; i++)
             {
                 StackFrame sf = st.GetFrame(i);
@@ -66,7 +65,8 @@ namespace System
                         Type reflectedType = method.ReflectedType;
                         if (reflectedType != null)
                         {
-                            if (isFoundNamespaceNotSystem == false || reflectedType.Namespace.StartsWith("System") == false)
+                            if ((isFoundNamespaceNotSystem == false) ||
+                                (string.IsNullOrEmpty(reflectedType.Namespace) == false && reflectedType.Namespace.StartsWith("System") == false))
                             {
                                 isFoundNamespaceNotSystem = reflectedType.Namespace.StartsWith("System") == false;
 
@@ -83,7 +83,7 @@ namespace System
                                         sb.Append(lineNumber);
                                     }
 
-                                    sb.Append("\n");
+                                    sb.Append('\n');
                                 }
                             }
                             else

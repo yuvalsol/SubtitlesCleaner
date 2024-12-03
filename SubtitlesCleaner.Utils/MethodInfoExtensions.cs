@@ -45,7 +45,7 @@ namespace System.Reflection
                 }
                 sigBuilder.Append("set; ");
             }
-            sigBuilder.Append("}");
+            sigBuilder.Append('}');
             return sigBuilder.ToString();
 
         }
@@ -71,7 +71,7 @@ namespace System.Reflection
 
             BuildReturnSignature(sigBuilder, method, callable);
 
-            sigBuilder.Append("(");
+            sigBuilder.Append('(');
             var firstParam = true;
             var secondParam = false;
 
@@ -122,7 +122,7 @@ namespace System.Reflection
                     );
                 }
             }
-            sigBuilder.Append(")");
+            sigBuilder.Append(')');
 
             // generic constraints
 
@@ -229,9 +229,7 @@ namespace System.Reflection
                 }
             }
 
-            var sb = new StringBuilder(typeName.Substring(0,
-                typeName.IndexOf('`'))
-            );
+            var sb = new StringBuilder(typeName.Substring(0, typeName.IndexOf('`')));
 
             sb.Append('<');
             var first = true;
@@ -263,7 +261,7 @@ namespace System.Reflection
             // Add method generics
             if (method.IsGenericMethod)
             {
-                sigBuilder.Append("<");
+                sigBuilder.Append('<');
                 foreach (var g in method.GetGenericArguments())
                 {
                     if (firstParam)
@@ -272,7 +270,7 @@ namespace System.Reflection
                         sigBuilder.Append(", ");
                     sigBuilder.Append(TypeName(g));
                 }
-                sigBuilder.Append(">");
+                sigBuilder.Append('>');
             }
 
         }
