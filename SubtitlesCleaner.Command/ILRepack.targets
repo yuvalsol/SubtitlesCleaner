@@ -13,8 +13,9 @@
             Union="true"
             Internalize="true"
             AllowDuplicateResources="false"
-            InputAssemblies="@(InputAssemblies)"
             TargetKind="SameAsPrimaryAssembly"
+            InputAssemblies="@(InputAssemblies)"
+            LibraryPath="$(OutputPath)"
             OutputFile="$(OutputPath)$(TargetName)$(TargetExt)"
         />
     </Target>
