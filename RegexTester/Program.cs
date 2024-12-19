@@ -8,7 +8,7 @@ using SubtitlesCleaner.Library;
 
 namespace RegexTester
 {
-    class Program
+    static class Program
     {
         static void Main()
         {

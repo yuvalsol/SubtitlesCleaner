@@ -27,18 +27,20 @@ namespace System
 
             string errorMessage = mainMessage;
 
-            errorMessage += string.Format("{0}ERROR: {1}{0}STACK TRACE:{0}{2}",
+            errorMessage += string.Format("{0}ERROR: {1}{0}ERROR TYPE: {2}{0}STACK TRACE:{0}{3}",
                 "\n",
                 ex.Message,
+                ex.GetType(),
                 ex.GetFormattedStackTrace()
             );
 
             while (ex.InnerException != null)
             {
                 ex = ex.InnerException;
-                errorMessage += string.Format("{0}ERROR: {1}{0}STACK TRACE:{0}{2}",
+                errorMessage += string.Format("{0}ERROR: {1}{0}ERROR TYPE: {2}{0}STACK TRACE:{0}{3}",
                     "\n",
                     ex.Message,
+                    ex.GetType(),
                     ex.GetFormattedStackTrace()
                 );
             }

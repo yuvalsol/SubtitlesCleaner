@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -8,14 +9,14 @@ using CommandLine.Text;
 
 namespace SubtitlesCleaner.Command
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             try
             {
-                Console.OutputEncoding = Encoding.UTF8;
-
                 var subtitlesHandler = new SubtitlesHandler();
 
                 if (SubtitlesHandler.IsProduction)
@@ -262,29 +263,19 @@ namespace SubtitlesCleaner.Command
                 {
                     subtitlesHandler.Debug();
                 }
+
+                return 0;
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("_________________________________________");
-                string errorMessage = UnhandledException(ex);
-                if (string.IsNullOrEmpty(errorMessage))
-                {
-                    while (ex != null)
-                    {
-                        Console.Error.WriteLine(string.Format("{0}\n{1}\n_________________________________________", ex.GetType().ToString(), ex.Message));
-                        ex = ex.InnerException;
-                    }
-                }
-                else
-                {
-                    Console.Error.WriteLine(errorMessage);
-                    Console.Error.WriteLine("_________________________________________");
-                }
+                Console.Error.WriteLine(UnhandledException(ex));
+                Console.WriteLine("Press any key to continue . . .");
                 Console.ReadKey(true);
+                return -1;
             }
             finally
             {
-                if (System.Diagnostics.Debugger.IsAttached)
+                if (Debugger.IsAttached)
                 {
                     Console.WriteLine("Press any key to continue . . .");
                     Console.ReadKey(true);
@@ -307,18 +298,28 @@ namespace SubtitlesCleaner.Command
 
         private static string UnhandledException(Exception ex)
         {
+            var errorMessage = new StringBuilder();
+
+            var assemblyName = Assembly.GetExecutingAssembly().GetName();
+            errorMessage.AppendLine($"Unhandled Error - {assemblyName.Name} {assemblyName.Version.ToString(3)}");
+
             try
             {
-                return
-                    string.Format("Unhandled Error - {0} {1}",
-                        Assembly.GetExecutingAssembly().GetName().Name,
-                        Assembly.GetExecutingAssembly().GetName().Version.ToString(3)) + Environment.NewLine +
-                    ex.GetUnhandledExceptionErrorWithApplicationTerminationMessage();
+                errorMessage.AppendLine(ex.GetUnhandledExceptionErrorWithApplicationTerminationMessage());
             }
             catch
             {
-                return null;
+                while (ex != null)
+                {
+                    errorMessage.AppendLine();
+                    errorMessage.AppendLine($"ERROR TYPE: {ex.GetType()}");
+                    errorMessage.AppendLine($"ERROR: {ex.Message}");
+
+                    ex = ex.InnerException;
+                }
             }
+
+            return errorMessage.ToString();
         }
     }
 }
