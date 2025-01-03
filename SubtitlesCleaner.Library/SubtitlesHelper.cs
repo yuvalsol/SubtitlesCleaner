@@ -4859,6 +4859,7 @@ namespace SubtitlesCleaner.Library
         };
 
         public static readonly Regex regexPunctuations = new Regex(@"[-—–―‒_`~!@#$%^&*()=+[\]{};:'""\\|,.<>/?‘’“”]+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public static readonly Regex regexMcPrefix = new Regex(@"^Mc[A-Z]", RegexOptions.Compiled);
 
         private static bool PostHasWarning_LowerLetterBeforeCapitalLetter(string line, Regex WarningRegex, bool hasWarning)
         {
@@ -4879,6 +4880,9 @@ namespace SubtitlesCleaner.Library
                 for (; toIndex < line.Length && !(line[toIndex] == ' ' || regexPunctuations.IsMatch(line[toIndex].ToString())); toIndex++) ;
 
                 string word = line.Substring(fromIndex, toIndex - fromIndex);
+
+                if (regexMcPrefix.IsMatch(word))
+                    continue;
 
                 bool inDictionary = DictionaryHelper.CheckWord(word);
                 if (inDictionary == false)
