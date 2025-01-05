@@ -12,17 +12,17 @@ namespace SubtitlesCleaner.Library
     {
         #region Time Parsing
 
-        private const string showTimeFormat = @"(?<Show_HH>\d{2}):(?<Show_MM>\d{2}):(?<Show_SS>\d{1,2}),(?<Show_MS>\d{1,3})";
-        private const string hideTimeFormat = @"(?<Hide_HH>\d{2}):(?<Hide_MM>\d{2}):(?<Hide_SS>\d{1,2}),(?<Hide_MS>\d{1,3})";
-        private const string showTimeFormatAlternate = @"(?:(?<Show_HH>\d{2}):)?(?<Show_MM>\d{2}):(?<Show_SS>\d{1,2})(?:[.,](?<Show_MS>\d{1,3}))?";
+        private const string showTimeFormat = @"(?<Show_HH>\d{2,}):(?<Show_MM>\d{2}):(?<Show_SS>\d{1,2}),(?<Show_MS>\d{1,3})";
+        private const string hideTimeFormat = @"(?<Hide_HH>\d{2,}):(?<Hide_MM>\d{2}):(?<Hide_SS>\d{1,2}),(?<Hide_MS>\d{1,3})";
+        private const string showTimeFormatAlternate = @"(?:(?<Show_HH>\d{2,}):)?(?<Show_MM>\d{2}):(?<Show_SS>\d{1,2})(?:[.,](?<Show_MS>\d{1,3}))?";
         private const string fullTimeFormat = showTimeFormat + " --> " + hideTimeFormat;
-        private const string diffTimeFormat = @"(?<Diff_Sign>-|\+)?(?:(?:(?:(?<Diff_HH>\d{1,2}):)?(?<Diff_MM>\d{1,2}):)?(?<Diff_SS>\d{1,2})(?:,|:|\.))?(?<Diff_MS>\d{1,3})";
+        private const string diffTimeFormat = @"(?<Diff_Sign>-|\+)?(?:(?:(?:(?<Diff_HH>\d{1,}):)?(?<Diff_MM>\d{1,2}):)?(?<Diff_SS>\d{1,2})(?:,|:|\.))?(?<Diff_MS>\d{1,3})";
 
         public static readonly Regex regexSubtitleNumber = new Regex(@"^\d+$", RegexOptions.Compiled);
-        public static readonly Regex regexShowTime = new Regex(@"^" + showTimeFormat + "$", RegexOptions.Compiled);
-        public static readonly Regex regexShowTimeAlternate = new Regex(@"^" + showTimeFormatAlternate + "$", RegexOptions.Compiled);
-        public static readonly Regex regexTime = new Regex(@"^" + fullTimeFormat + "$", RegexOptions.Compiled);
-        public static readonly Regex regexDiffTime = new Regex(@"^" + diffTimeFormat + "$", RegexOptions.Compiled);
+        public static readonly Regex regexShowTime = new Regex($@"^{showTimeFormat}$", RegexOptions.Compiled);
+        public static readonly Regex regexShowTimeAlternate = new Regex($@"^{showTimeFormatAlternate}$", RegexOptions.Compiled);
+        public static readonly Regex regexTime = new Regex($@"^{fullTimeFormat}$", RegexOptions.Compiled);
+        public static readonly Regex regexDiffTime = new Regex($@"^{diffTimeFormat}$", RegexOptions.Compiled);
 
         public static DateTime ParseShowTime(string showTime)
         {
@@ -32,30 +32,69 @@ namespace SubtitlesCleaner.Library
             Match match = regexShowTime.Match(showTime);
             if (match.Success)
             {
-                var show = new DateTime(
-                    1900, 1, 1,
-                    int.Parse(match.Groups["Show_HH"].Value),
-                    int.Parse(match.Groups["Show_MM"].Value),
-                    int.Parse(match.Groups["Show_SS"].Value),
-                    int.Parse(match.Groups["Show_MS"].Value)
-                );
+                int Show_HH = int.Parse(match.Groups["Show_HH"].Value);
+                if (Show_HH < 0)
+                    Show_HH = 0;
+                else if (Show_HH > 999)
+                    Show_HH = 999;
 
-                return show;
+                if (Show_HH < 24)
+                {
+                    return new DateTime(
+                        1900, 1, 1,
+                        Show_HH,
+                        int.Parse(match.Groups["Show_MM"].Value),
+                        int.Parse(match.Groups["Show_SS"].Value),
+                        int.Parse(match.Groups["Show_MS"].Value)
+                    );
+                }
+                else
+                {
+                    return new DateTime(
+                        1900, 1, 1,
+                        0,
+                        int.Parse(match.Groups["Show_MM"].Value),
+                        int.Parse(match.Groups["Show_SS"].Value),
+                        int.Parse(match.Groups["Show_MS"].Value)
+                    ).AddHours(Show_HH);
+                }
             }
             else
             {
                 match = regexShowTimeAlternate.Match(showTime);
                 if (match.Success)
                 {
-                    var show = new DateTime(
-                        1900, 1, 1,
-                        match.Groups["Show_HH"].Success ? int.Parse(match.Groups["Show_HH"].Value) : 0,
-                        int.Parse(match.Groups["Show_MM"].Value),
-                        int.Parse(match.Groups["Show_SS"].Value),
-                        match.Groups["Show_MS"].Success ? int.Parse(match.Groups["Show_MS"].Value) : 0
-                    );
+                    int Show_HH = 0;
+                    var groupShow_HH = match.Groups["Show_HH"];
+                    if (groupShow_HH.Success)
+                    {
+                        Show_HH = int.Parse(groupShow_HH.Value);
+                        if (Show_HH < 0)
+                            Show_HH = 0;
+                        else if (Show_HH > 999)
+                            Show_HH = 999;
+                    }
 
-                    return show;
+                    if (Show_HH < 24)
+                    {
+                        return new DateTime(
+                            1900, 1, 1,
+                            Show_HH,
+                            int.Parse(match.Groups["Show_MM"].Value),
+                            int.Parse(match.Groups["Show_SS"].Value),
+                            match.Groups["Show_MS"].Success ? int.Parse(match.Groups["Show_MS"].Value) : 0
+                        );
+                    }
+                    else
+                    {
+                        return new DateTime(
+                            1900, 1, 1,
+                            0,
+                            int.Parse(match.Groups["Show_MM"].Value),
+                            int.Parse(match.Groups["Show_SS"].Value),
+                            match.Groups["Show_MS"].Success ? int.Parse(match.Groups["Show_MS"].Value) : 0
+                        ).AddHours(Show_HH);
+                    }
                 }
                 else
                 {
@@ -72,9 +111,21 @@ namespace SubtitlesCleaner.Library
             if (regexDiffTime.IsMatch(diffTime))
             {
                 Match match = regexDiffTime.Match(diffTime);
+
+                int Diff_HH = 0;
+                var groupDiff_HH = match.Groups["Diff_HH"];
+                if (groupDiff_HH.Success)
+                {
+                    Diff_HH = int.Parse(groupDiff_HH.Value);
+                    if (Diff_HH < 0)
+                        Diff_HH = 0;
+                    else if (Diff_HH > 999)
+                        Diff_HH = 999;
+                }
+
                 var span = new TimeSpan(
                     0,
-                    match.Groups["Diff_HH"].Success ? int.Parse(match.Groups["Diff_HH"].Value) : 0,
+                    Diff_HH,
                     match.Groups["Diff_MM"].Success ? int.Parse(match.Groups["Diff_MM"].Value) : 0,
                     match.Groups["Diff_SS"].Success ? int.Parse(match.Groups["Diff_SS"].Value) : 0,
                     match.Groups["Diff_MS"].Success ? int.Parse(match.Groups["Diff_MS"].Value) : 0
@@ -186,21 +237,49 @@ namespace SubtitlesCleaner.Library
 
                     Match match = regexTime.Match(line);
 
-                    subtitle.Show = new DateTime(
-                        1900, 1, 1,
-                        int.Parse(match.Groups["Show_HH"].Value),
-                        int.Parse(match.Groups["Show_MM"].Value),
-                        int.Parse(match.Groups["Show_SS"].Value),
-                        int.Parse(match.Groups["Show_MS"].Value)
-                    );
+                    int Show_HH = int.Parse(match.Groups["Show_HH"].Value);
+                    if (Show_HH < 24)
+                    {
+                        subtitle.Show = new DateTime(
+                            1900, 1, 1,
+                            Show_HH,
+                            int.Parse(match.Groups["Show_MM"].Value),
+                            int.Parse(match.Groups["Show_SS"].Value),
+                            int.Parse(match.Groups["Show_MS"].Value)
+                        );
+                    }
+                    else
+                    {
+                        subtitle.Show = new DateTime(
+                            1900, 1, 1,
+                            0,
+                            int.Parse(match.Groups["Show_MM"].Value),
+                            int.Parse(match.Groups["Show_SS"].Value),
+                            int.Parse(match.Groups["Show_MS"].Value)
+                        ).AddHours(Show_HH);
+                    }
 
-                    subtitle.Hide = new DateTime(
-                        1900, 1, 1,
-                        int.Parse(match.Groups["Hide_HH"].Value),
-                        int.Parse(match.Groups["Hide_MM"].Value),
-                        int.Parse(match.Groups["Hide_SS"].Value),
-                        int.Parse(match.Groups["Hide_MS"].Value)
-                    );
+                    int Hide_HH = int.Parse(match.Groups["Hide_HH"].Value);
+                    if (Hide_HH < 24)
+                    {
+                        subtitle.Hide = new DateTime(
+                            1900, 1, 1,
+                            Hide_HH,
+                            int.Parse(match.Groups["Hide_MM"].Value),
+                            int.Parse(match.Groups["Hide_SS"].Value),
+                            int.Parse(match.Groups["Hide_MS"].Value)
+                        );
+                    }
+                    else
+                    {
+                        subtitle.Hide = new DateTime(
+                            1900, 1, 1,
+                            0,
+                            int.Parse(match.Groups["Hide_MM"].Value),
+                            int.Parse(match.Groups["Hide_SS"].Value),
+                            int.Parse(match.Groups["Hide_MS"].Value)
+                        ).AddHours(Hide_HH);
+                    }
                 }
                 else if (subtitle != null)
                 {
@@ -4589,12 +4668,12 @@ namespace SubtitlesCleaner.Library
                 return;
 
             // x1 -> x2
-            int x1 = x1Show.ToMilliseconds();
-            int x2 = x2Show.ToMilliseconds();
+            int x1 = ToMilliseconds(x1Show);
+            int x2 = ToMilliseconds(x2Show);
 
             // y1 -> y2
-            int y1 = y1Show.ToMilliseconds();
-            int y2 = y2Show.ToMilliseconds();
+            int y1 = ToMilliseconds(y1Show);
+            int y2 = ToMilliseconds(y2Show);
 
             // y = v1 * x + v2
             // (x2,y2) = v1 * (x1,y1) + v2
@@ -4605,9 +4684,18 @@ namespace SubtitlesCleaner.Library
 
             foreach (Subtitle subtitle in subtitles)
             {
-                subtitle.Show = DateTimeZero.AddMilliseconds((v1 * subtitle.Show.ToMilliseconds()) + v2);
-                subtitle.Hide = DateTimeZero.AddMilliseconds((v1 * subtitle.Hide.ToMilliseconds()) + v2);
+                subtitle.Show = DateTimeZero.AddMilliseconds((v1 * ToMilliseconds(subtitle.Show)) + v2);
+                subtitle.Hide = DateTimeZero.AddMilliseconds((v1 * ToMilliseconds(subtitle.Hide)) + v2);
             }
+        }
+
+        private static int ToMilliseconds(DateTime date)
+        {
+            return
+                date.Millisecond +
+                (date.Second * 1000) +
+                (date.Minute * 60 * 1000) +
+                (Convert.ToInt32(Math.Truncate((date - DateTimeZero).TotalHours)) * 60 * 60 * 1000);
         }
 
         #endregion

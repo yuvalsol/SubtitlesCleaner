@@ -45,7 +45,7 @@
             this.btnClose.AutoSize = true;
             this.btnClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(735, 107);
+            this.btnClose.Location = new System.Drawing.Point(740, 107);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(45, 24);
             this.btnClose.TabIndex = 7;
@@ -95,7 +95,7 @@
             this.timePickerY2.MM = 0;
             this.timePickerY2.MS = 0;
             this.timePickerY2.Name = "timePickerY2";
-            this.timePickerY2.Size = new System.Drawing.Size(374, 31);
+            this.timePickerY2.Size = new System.Drawing.Size(379, 31);
             this.timePickerY2.SS = 0;
             this.timePickerY2.TabIndex = 4;
             this.timePickerY2.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -112,7 +112,7 @@
             this.timePickerY1.MM = 0;
             this.timePickerY1.MS = 0;
             this.timePickerY1.Name = "timePickerY1";
-            this.timePickerY1.Size = new System.Drawing.Size(374, 31);
+            this.timePickerY1.Size = new System.Drawing.Size(379, 31);
             this.timePickerY1.SS = 0;
             this.timePickerY1.TabIndex = 3;
             this.timePickerY1.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -129,7 +129,7 @@
             this.timePickerX2.MM = 0;
             this.timePickerX2.MS = 0;
             this.timePickerX2.Name = "timePickerX2";
-            this.timePickerX2.Size = new System.Drawing.Size(374, 31);
+            this.timePickerX2.Size = new System.Drawing.Size(379, 31);
             this.timePickerX2.SS = 0;
             this.timePickerX2.TabIndex = 2;
             this.timePickerX2.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -146,7 +146,7 @@
             this.timePickerX1.MM = 0;
             this.timePickerX1.MS = 0;
             this.timePickerX1.Name = "timePickerX1";
-            this.timePickerX1.Size = new System.Drawing.Size(374, 31);
+            this.timePickerX1.Size = new System.Drawing.Size(379, 31);
             this.timePickerX1.SS = 0;
             this.timePickerX1.TabIndex = 1;
             this.timePickerX1.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -173,7 +173,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(789, 142);
+            this.ClientSize = new System.Drawing.Size(794, 142);
             this.Controls.Add(this.btnLoadFromFile);
             this.Controls.Add(this.btnAdjust);
             this.Controls.Add(this.lblArrow2);

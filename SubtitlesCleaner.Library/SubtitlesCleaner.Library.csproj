@@ -68,7 +68,6 @@
     <Compile Include="..\Solution Items\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="DictionaryHelper.cs" />
     <Compile Include="FindAndReplace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

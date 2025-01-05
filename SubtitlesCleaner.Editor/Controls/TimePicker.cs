@@ -111,12 +111,16 @@ namespace SubtitlesCleaner.Editor
         {
             get
             {
-                return new DateTime(1900, 1, 1, HH, MM, SS, MS);
+                int hh = HH;
+                if (hh < 24)
+                    return new DateTime(1900, 1, 1, hh, MM, SS, MS);
+                else
+                    return new DateTime(1900, 1, 1, 0, MM, SS, MS).AddHours(hh);
             }
 
             set
             {
-                HH = value.Hour;
+                HH = Convert.ToInt32(Math.Truncate((value - SubtitlesHelper.DateTimeZero).TotalHours));
                 MM = value.Minute;
                 SS = value.Second;
                 MS = value.Millisecond;
@@ -138,7 +142,7 @@ namespace SubtitlesCleaner.Editor
             {
                 bool isNegative = value < TimeSpan.Zero;
                 Sign = (isNegative ? "-" : "+");
-                HH = (isNegative ? -value.Hours : value.Hours);
+                HH = Convert.ToInt32(Math.Truncate(isNegative ? -value.TotalHours : value.TotalHours));
                 MM = (isNegative ? -value.Minutes : value.Minutes);
                 SS = (isNegative ? -value.Seconds : value.Seconds);
                 MS = (isNegative ? -value.Milliseconds : value.Milliseconds);
@@ -205,9 +209,9 @@ namespace SubtitlesCleaner.Editor
 
             if (HH == -1)
             {
-                HH = 23;
+                HH = 999;
             }
-            else if (HH == 24)
+            else if (HH == 1000)
             {
                 HH = 0;
             }

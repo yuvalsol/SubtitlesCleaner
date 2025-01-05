@@ -57,16 +57,12 @@ namespace SubtitlesCleaner.Editor
 
         private void lblSwitch1And2_Click(object sender, EventArgs e)
         {
-            var diffValue1 = timePicker1.DiffValue;
-            timePicker1.DiffValue = timePicker2.DiffValue;
-            timePicker2.DiffValue = diffValue1;
+            (timePicker2.DiffValue, timePicker1.DiffValue) = (timePicker1.DiffValue, timePicker2.DiffValue);
         }
 
         private void lblSwitch2And3_Click(object sender, EventArgs e)
         {
-            var diffValue2 = timePicker2.DiffValue;
-            timePicker2.DiffValue = timePicker3.DiffValue;
-            timePicker3.DiffValue = diffValue2;
+            (timePicker3.DiffValue, timePicker2.DiffValue) = (timePicker2.DiffValue, timePicker3.DiffValue);
         }
     }
 }

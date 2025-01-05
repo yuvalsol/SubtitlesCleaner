@@ -38,12 +38,12 @@ namespace SubtitlesCleaner.Library
 
         public string ShowToString()
         {
-            return string.Format(timeFormat, Show.Hour, Show.Minute, Show.Second, Show.Millisecond);
+            return string.Format(timeFormat, Convert.ToInt32(Math.Truncate((Show - SubtitlesHelper.DateTimeZero).TotalHours)), Show.Minute, Show.Second, Show.Millisecond);
         }
 
         public string HideToString()
         {
-            return string.Format(timeFormat, Hide.Hour, Hide.Minute, Hide.Second, Hide.Millisecond);
+            return string.Format(timeFormat, Convert.ToInt32(Math.Truncate((Hide - SubtitlesHelper.DateTimeZero).TotalHours)), Hide.Minute, Hide.Second, Hide.Millisecond);
         }
 
         private const string durationFormat1 = "{0:##}.{1:D3}";
@@ -53,8 +53,9 @@ namespace SubtitlesCleaner.Library
         public string DurationToString()
         {
             TimeSpan duration = Duration;
-            if (duration.Hours > 0)
-                return string.Format(durationFormat3, duration.Hours, duration.Minutes, duration.Seconds, duration.Milliseconds);
+            int totalHours = Convert.ToInt32(Math.Truncate(duration.TotalHours));
+            if (totalHours > 0)
+                return string.Format(durationFormat3, totalHours, duration.Minutes, duration.Seconds, duration.Milliseconds);
             else if (duration.Minutes > 0)
                 return string.Format(durationFormat2, duration.Minutes, duration.Seconds, duration.Milliseconds);
             else

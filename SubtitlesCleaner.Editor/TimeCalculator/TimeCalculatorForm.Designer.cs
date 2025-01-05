@@ -122,7 +122,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker4.Name = "timePicker4";
             this.timePicker4.ReadOnly = true;
             this.timePicker4.ShowSign = true;
-            this.timePicker4.Size = new System.Drawing.Size(281, 31);
+            this.timePicker4.Size = new System.Drawing.Size(286, 31);
             this.timePicker4.SS = 0;
             this.timePicker4.TabIndex = 6;
             this.timePicker4.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -139,7 +139,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker3.MM = 0;
             this.timePicker3.MS = 0;
             this.timePicker3.Name = "timePicker3";
-            this.timePicker3.Size = new System.Drawing.Size(374, 31);
+            this.timePicker3.Size = new System.Drawing.Size(379, 31);
             this.timePicker3.SS = 0;
             this.timePicker3.TabIndex = 5;
             this.timePicker3.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -157,7 +157,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker2.MM = 0;
             this.timePicker2.MS = 0;
             this.timePicker2.Name = "timePicker2";
-            this.timePicker2.Size = new System.Drawing.Size(374, 31);
+            this.timePicker2.Size = new System.Drawing.Size(379, 31);
             this.timePicker2.SS = 0;
             this.timePicker2.TabIndex = 3;
             this.timePicker2.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -175,7 +175,7 @@ namespace SubtitlesCleaner.Editor
             this.timePicker1.MM = 0;
             this.timePicker1.MS = 0;
             this.timePicker1.Name = "timePicker1";
-            this.timePicker1.Size = new System.Drawing.Size(374, 31);
+            this.timePicker1.Size = new System.Drawing.Size(379, 31);
             this.timePicker1.SS = 0;
             this.timePicker1.TabIndex = 1;
             this.timePicker1.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -187,7 +187,7 @@ namespace SubtitlesCleaner.Editor
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(409, 247);
+            this.ClientSize = new System.Drawing.Size(414, 247);
             this.Controls.Add(this.lblSwitch2And3);
             this.Controls.Add(this.lblSwitch1And2);
             this.Controls.Add(this.btnClose);

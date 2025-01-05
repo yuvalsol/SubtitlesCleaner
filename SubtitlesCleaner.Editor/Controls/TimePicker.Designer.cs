@@ -72,7 +72,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnPaste);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(382, 28);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(387, 28);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // lblSign
@@ -96,7 +96,7 @@
             this.numericUpDownHH.Location = new System.Drawing.Point(14, 3);
             this.numericUpDownHH.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.numericUpDownHH.Maximum = new decimal(new int[] {
-            24,
+            1000,
             0,
             0,
             0});
@@ -106,7 +106,7 @@
             0,
             -2147483648});
             this.numericUpDownHH.Name = "numericUpDownHH";
-            this.numericUpDownHH.Size = new System.Drawing.Size(40, 22);
+            this.numericUpDownHH.Size = new System.Drawing.Size(45, 22);
             this.numericUpDownHH.TabIndex = 2;
             this.numericUpDownHH.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.toolTip.SetToolTip(this.numericUpDownHH, "Hours");
@@ -116,7 +116,7 @@
             // 
             // lblSeperator1
             // 
-            this.lblSeperator1.Location = new System.Drawing.Point(54, 3);
+            this.lblSeperator1.Location = new System.Drawing.Point(59, 3);
             this.lblSeperator1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.lblSeperator1.Name = "lblSeperator1";
             this.lblSeperator1.Size = new System.Drawing.Size(11, 22);
@@ -127,7 +127,7 @@
             // numericUpDownMM
             // 
             this.numericUpDownMM.Format = "00";
-            this.numericUpDownMM.Location = new System.Drawing.Point(65, 3);
+            this.numericUpDownMM.Location = new System.Drawing.Point(70, 3);
             this.numericUpDownMM.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.numericUpDownMM.Maximum = new decimal(new int[] {
             60,
@@ -150,7 +150,7 @@
             // 
             // lblSeperator2
             // 
-            this.lblSeperator2.Location = new System.Drawing.Point(105, 3);
+            this.lblSeperator2.Location = new System.Drawing.Point(110, 3);
             this.lblSeperator2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.lblSeperator2.Name = "lblSeperator2";
             this.lblSeperator2.Size = new System.Drawing.Size(11, 22);
@@ -161,7 +161,7 @@
             // numericUpDownSS
             // 
             this.numericUpDownSS.Format = "00";
-            this.numericUpDownSS.Location = new System.Drawing.Point(116, 3);
+            this.numericUpDownSS.Location = new System.Drawing.Point(121, 3);
             this.numericUpDownSS.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.numericUpDownSS.Maximum = new decimal(new int[] {
             60,
@@ -184,7 +184,7 @@
             // 
             // lblSeperator3
             // 
-            this.lblSeperator3.Location = new System.Drawing.Point(156, 3);
+            this.lblSeperator3.Location = new System.Drawing.Point(161, 3);
             this.lblSeperator3.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.lblSeperator3.Name = "lblSeperator3";
             this.lblSeperator3.Size = new System.Drawing.Size(11, 22);
@@ -195,7 +195,7 @@
             // numericUpDownMS
             // 
             this.numericUpDownMS.Format = "000";
-            this.numericUpDownMS.Location = new System.Drawing.Point(167, 3);
+            this.numericUpDownMS.Location = new System.Drawing.Point(172, 3);
             this.numericUpDownMS.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.numericUpDownMS.Maximum = new decimal(new int[] {
             1000,
@@ -222,7 +222,7 @@
             this.btnPlus.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.btnPlus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
             this.btnPlus.Interval = 80;
-            this.btnPlus.Location = new System.Drawing.Point(223, 3);
+            this.btnPlus.Location = new System.Drawing.Point(228, 3);
             this.btnPlus.Name = "btnPlus";
             this.btnPlus.Size = new System.Drawing.Size(20, 20);
             this.btnPlus.TabIndex = 6;
@@ -237,7 +237,7 @@
             this.btnMinus.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.btnMinus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
             this.btnMinus.Interval = 80;
-            this.btnMinus.Location = new System.Drawing.Point(249, 3);
+            this.btnMinus.Location = new System.Drawing.Point(254, 3);
             this.btnMinus.Name = "btnMinus";
             this.btnMinus.Size = new System.Drawing.Size(20, 20);
             this.btnMinus.TabIndex = 7;
@@ -252,7 +252,7 @@
             this.btnReset.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.btnReset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
             this.btnReset.Interval = 80;
-            this.btnReset.Location = new System.Drawing.Point(275, 3);
+            this.btnReset.Location = new System.Drawing.Point(280, 3);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(20, 20);
             this.btnReset.TabIndex = 8;
@@ -267,7 +267,7 @@
             this.btnCopy1.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.btnCopy1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
             this.btnCopy1.Interval = 80;
-            this.btnCopy1.Location = new System.Drawing.Point(301, 3);
+            this.btnCopy1.Location = new System.Drawing.Point(306, 3);
             this.btnCopy1.Name = "btnCopy1";
             this.btnCopy1.Size = new System.Drawing.Size(23, 20);
             this.btnCopy1.TabIndex = 9;
@@ -282,7 +282,7 @@
             this.btnCopy2.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.btnCopy2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
             this.btnCopy2.Interval = 80;
-            this.btnCopy2.Location = new System.Drawing.Point(330, 3);
+            this.btnCopy2.Location = new System.Drawing.Point(335, 3);
             this.btnCopy2.Name = "btnCopy2";
             this.btnCopy2.Size = new System.Drawing.Size(23, 20);
             this.btnCopy2.TabIndex = 10;
@@ -297,7 +297,7 @@
             this.btnPaste.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.btnPaste.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(110)))), ((int)(((byte)(165)))));
             this.btnPaste.Interval = 80;
-            this.btnPaste.Location = new System.Drawing.Point(359, 3);
+            this.btnPaste.Location = new System.Drawing.Point(364, 3);
             this.btnPaste.Name = "btnPaste";
             this.btnPaste.Size = new System.Drawing.Size(20, 20);
             this.btnPaste.TabIndex = 11;
@@ -316,7 +316,7 @@
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.Name = "TimePicker";
-            this.Size = new System.Drawing.Size(385, 31);
+            this.Size = new System.Drawing.Size(390, 31);
             this.flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHH)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMM)).EndInit();
